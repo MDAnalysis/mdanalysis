@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">XVG auxiliary reader --- :mod:`MDAnalysis.auxiliary.XVG`</span>
 <span class="sd">========================================================</span>
 
@@ -195,8 +195,8 @@
 <span class="sd">----</span>
 <span class="sd">Data is assumed to be time-ordered.</span>
 
-<span class="sd">Multiple datasets, separated in the .xvg file by &#39;&amp;&#39;, are currently not</span>
-<span class="sd">supported (the readers will stop at the first line starting &#39;&amp;&#39;).</span>
+<span class="sd">Multiple datasets, separated in the .xvg file by '&amp;', are currently not</span>
+<span class="sd">supported (the readers will stop at the first line starting '&amp;').</span>
 
 
 <span class="sd">.. autoclass:: XVGReader</span>
@@ -208,7 +208,7 @@
 
 <span class="sd">.. autofunction:: uncomment</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -219,7 +219,7 @@
 <div class="viewcode-block" id="uncomment">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.uncomment">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove comments from lines in an .xvg file</span>
+<span class="w">    </span><span class="sd">"""Remove comments from lines in an .xvg file</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -230,17 +230,17 @@
 <span class="sd">    ------</span>
 <span class="sd">    str</span>
 <span class="sd">        The next non-comment line, with any trailing comments removed</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
         <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="c1"># ignore blank lines</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">stripped_line</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="c1"># &#39;@&#39; must be at the beginning of a line to be a grace instruction</span>
-        <span class="k">if</span> <span class="n">stripped_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span><span class="p">:</span>
+        <span class="c1"># '@' must be at the beginning of a line to be a grace instruction</span>
+        <span class="k">if</span> <span class="n">stripped_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"@"</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="c1"># &#39;#&#39; can be anywhere in the line, everything after is a comment</span>
-        <span class="n">comment_position</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+        <span class="c1"># '#' can be anywhere in the line, everything after is a comment</span>
+        <span class="n">comment_position</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">comment_position</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">stripped_line</span><span class="p">[:</span><span class="n">comment_position</span><span class="p">]:</span>
             <span class="k">yield</span> <span class="n">stripped_line</span><span class="p">[:</span><span class="n">comment_position</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">comment_position</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">stripped_line</span><span class="p">:</span>
@@ -252,7 +252,7 @@
 <div class="viewcode-block" id="XVGStep">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGStep">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XVGStep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxStep</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;AuxStep class for .xvg file format.</span>
+<span class="w">    </span><span class="sd">"""AuxStep class for .xvg file format.</span>
 
 <span class="sd">    Extends the base AuxStep class to allow selection of time and</span>
 <span class="sd">    data-of-interest fields (by column index) from the full set of data read</span>
@@ -272,7 +272,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`~MDAnalysis.auxiliary.base.AuxStep`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_selector</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGStep</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -286,7 +286,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time selector must be single index&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Time selector must be single index"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -297,8 +297,8 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> not a valid index for data with &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns&quot;</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> not a valid index for data with "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns"</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -309,7 +309,7 @@
 <div class="viewcode-block" id="XVGReader">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XVGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Auxiliary reader to read data from an .xvg file.</span>
+<span class="w">    </span><span class="sd">"""Auxiliary reader to read data from an .xvg file.</span>
 
 <span class="sd">    Default reader for .xvg files. All data from the file will be read and</span>
 <span class="sd">    stored on initialisation.</span>
@@ -329,9 +329,9 @@
 <span class="sd">    ----</span>
 <span class="sd">    The file is assumed to be of a size such that reading and storing the full</span>
 <span class="sd">    contents is practical.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XVG&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"XVG"</span>
     <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">XVGStep</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -341,15 +341,15 @@
         <span class="n">auxdata_values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># remove comments before storing</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"&amp;"</span><span class="p">:</span>
                 <span class="c1"># multiple data sets not supported; stop at end of first set</span>
                 <span class="k">break</span>
             <span class="n">auxdata_values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
             <span class="c1"># check the number of columns is consistent</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Step </span><span class="si">{0}</span><span class="s2"> has </span><span class="si">{1}</span><span class="s2"> columns instead of &quot;</span>
-                    <span class="s2">&quot;</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">auxdata_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">auxdata_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="s2">"Step </span><span class="si">{0}</span><span class="s2"> has </span><span class="si">{1}</span><span class="s2"> columns instead of "</span>
+                    <span class="s2">"</span><span class="si">{2}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">auxdata_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">auxdata_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">)</span>
@@ -359,7 +359,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="o">.</span><span class="n">nbytes</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read next auxiliary step and update ``auxstep``.</span>
+<span class="w">        </span><span class="sd">"""Read next auxiliary step and update ``auxstep``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -370,7 +370,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        StopIteration</span>
 <span class="sd">            When end of auxiliary data set is reached.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">auxstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span>
         <span class="n">new_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">new_step</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
@@ -382,7 +382,7 @@
             <span class="k">raise</span> <span class="ne">StopIteration</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move to and read i-th auxiliary step.</span>
+<span class="w">        </span><span class="sd">"""Move to and read i-th auxiliary step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -397,11 +397,11 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If step index not in valid range.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Step index </span><span class="si">{0}</span><span class="s2"> is not valid for auxiliary &quot;</span>
-                <span class="s2">&quot;(num. steps </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
+                <span class="s2">"Step index </span><span class="si">{0}</span><span class="s2"> is not valid for auxiliary "</span>
+                <span class="s2">"(num. steps </span><span class="si">{1}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
@@ -410,13 +410,13 @@
 <div class="viewcode-block" id="XVGReader.read_all_times">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader.read_all_times">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get NumPy array of time at each step.</span>
+<span class="w">        </span><span class="sd">"""Get NumPy array of time at each step.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        NumPy array of float</span>
 <span class="sd">            Time at each step.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div>
 </div>
 
@@ -425,7 +425,7 @@
 <div class="viewcode-block" id="XVGFileReader">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XVGFileReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxFileReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Auxiliary reader to read (one step at a time) from an .xvg file.</span>
+<span class="w">    </span><span class="sd">"""Auxiliary reader to read (one step at a time) from an .xvg file.</span>
 
 <span class="sd">    An alternative XVG reader which reads each step from the .xvg file as</span>
 <span class="sd">    needed (rather than reading and storing all from the start), for a lower</span>
@@ -446,16 +446,16 @@
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
 <span class="sd">    The default reader for .xvg files is :class:`XVGReader`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XVG-F&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"XVG-F"</span>
     <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">XVGStep</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGFileReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read next recorded step in xvg file and update ``auxstep``.</span>
+<span class="w">        </span><span class="sd">"""Read next recorded step in xvg file and update ``auxstep``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -466,10 +466,10 @@
 <span class="sd">        ------</span>
 <span class="sd">        StopIteration</span>
 <span class="sd">            When end of file or end of first data set is reached.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"&amp;"</span><span class="p">):</span>
                 <span class="c1"># at end of file or end of first set of data (multiple sets</span>
                 <span class="c1"># currently not supported)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
@@ -480,41 +480,41 @@
                 <span class="n">auxstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span>
                 <span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">uncommented</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-                <span class="c1"># see if we&#39;ve set n_cols yet...</span>
+                <span class="c1"># see if we've set n_cols yet...</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="c1"># haven&#39;t set n_cols yet; set now</span>
+                    <span class="c1"># haven't set n_cols yet; set now</span>
                     <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="si">}</span><span class="s2"> has &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns instead &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;of </span><span class="si">{</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="si">}</span><span class="s2"> has "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns instead "</span>
+                        <span class="sa">f</span><span class="s2">"of </span><span class="si">{</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
                 <span class="k">return</span> <span class="n">auxstep</span>
             <span class="c1"># line is comment only - move to next</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_count_n_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate through all steps to count total number.</span>
+<span class="w">        </span><span class="sd">"""Iterate through all steps to count total number.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
 <span class="sd">            Total number of steps</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant_dt</span><span class="p">:</span>
-            <span class="c1"># check if we&#39;ve already iterated through to build _times list</span>
+            <span class="c1"># check if we've already iterated through to build _times list</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="c1"># might as well build _times now, since we&#39;ll need to iterate</span>
+                <span class="c1"># might as well build _times now, since we'll need to iterate</span>
                 <span class="c1"># through anyway</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_all_times</span><span class="p">()</span>
                 <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_all_times</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># don&#39;t need _times; iterate here instead</span>
+            <span class="c1"># don't need _times; iterate here instead</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
             <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -524,13 +524,13 @@
 <div class="viewcode-block" id="XVGFileReader.read_all_times">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader.read_all_times">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate through all steps to build times list.</span>
+<span class="w">        </span><span class="sd">"""Iterate through all steps to build times list.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        NumPy array of float</span>
 <span class="sd">            Time of each step</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
         <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>

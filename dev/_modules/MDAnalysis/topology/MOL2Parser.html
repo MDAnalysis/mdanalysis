@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">MOL2 file format --- :mod:`MDAnalysis.coordinates.MOL2`</span>
 <span class="sd">========================================================</span>
 
@@ -183,7 +183,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -210,7 +210,7 @@
 <div class="viewcode-block" id="MOL2Parser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MOL2Parser.html#MDAnalysis.topology.MOL2Parser.MOL2Parser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MOL2Parser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads topology from a Tripos_ MOL2_ file.</span>
+<span class="w">    </span><span class="sd">"""Reads topology from a Tripos_ MOL2_ file.</span>
 
 <span class="sd">    Creates the following Attributes:</span>
 <span class="sd">     - Atomids</span>
@@ -244,11 +244,11 @@
 <span class="sd">         If some atoms have ``resname`` while some do not,</span>
 <span class="sd">         :exc:`ValueError` will occur.</span>
 
-<span class="sd">      3. If &quot;NO_CHARGES&quot; shows up in &quot;@&lt;TRIPOS&gt;MOLECULE&quot; section</span>
+<span class="sd">      3. If "NO_CHARGES" shows up in "@&lt;TRIPOS&gt;MOLECULE" section</span>
 <span class="sd">         and no atoms have the ``charge`` field, charges attribute will not be set;</span>
-<span class="sd">         If &quot;NO_CHARGES&quot; shows up while ``charge`` field appears,</span>
+<span class="sd">         If "NO_CHARGES" shows up while ``charge`` field appears,</span>
 <span class="sd">         :exc:`ValueError` will occur;</span>
-<span class="sd">         If a charge model is specified while some atoms don&#39;t have ``charge``,</span>
+<span class="sd">         If a charge model is specified while some atoms don't have ``charge``,</span>
 <span class="sd">         :exc:`ValueError` will occur as well.</span>
 
 <span class="sd">    Raises</span>
@@ -258,11 +258,11 @@
 <span class="sd">      while some do not.</span>
 
 <span class="sd">    ValueError</span>
-<span class="sd">      If &quot;NO_CHARGES&quot; shows up in &quot;@&lt;TRIPOS&gt;MOLECULE&quot; section while</span>
+<span class="sd">      If "NO_CHARGES" shows up in "@&lt;TRIPOS&gt;MOLECULE" section while</span>
 <span class="sd">      some atoms have the optional field ``charge``.</span>
 
 <span class="sd">    ValueError</span>
-<span class="sd">      If a charge model is specified in &quot;@&lt;TRIPOS&gt;MOLECULE&quot; section while</span>
+<span class="sd">      If a charge model is specified in "@&lt;TRIPOS&gt;MOLECULE" section while</span>
 <span class="sd">      some atoms do not have the optional field ``charge``.</span>
 
 
@@ -281,56 +281,56 @@
 <span class="sd">        Removed mass guessing (attributes guessing takes place now</span>
 <span class="sd">        through universe.guess_TopologyAttrs() API).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MOL2&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"MOL2"</span>
 
 <div class="viewcode-block" id="MOL2Parser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MOL2Parser.html#MDAnalysis.topology.MOL2Parser.MOL2Parser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse MOL2 file *filename* and return the dict `structure`.</span>
+<span class="w">        </span><span class="sd">"""Parse MOL2 file *filename* and return the dict `structure`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">blocks</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
                 <span class="c1"># found new molecules</span>
-                <span class="k">if</span> <span class="s2">&quot;@&lt;TRIPOS&gt;MOLECULE&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">"@&lt;TRIPOS&gt;MOLECULE"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">):</span>
                         <span class="k">break</span>
-                    <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;start_line&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">[]})</span>
+                    <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"start_line"</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">"lines"</span><span class="p">:</span> <span class="p">[]})</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">):</span>
-                    <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lines&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"lines"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The mol2 file &#39;</span><span class="si">{0}</span><span class="s2">&#39; needs to have at least one&quot;</span>
-                <span class="s2">&quot; @&lt;TRIPOS&gt;MOLECULE block&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                <span class="s2">"The mol2 file '</span><span class="si">{0}</span><span class="s2">' needs to have at least one"</span>
+                <span class="s2">" @&lt;TRIPOS&gt;MOLECULE block"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="n">block</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">sections</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">cursor</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">block</span><span class="p">[</span><span class="s2">&quot;lines&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="s2">&quot;@&lt;TRIPOS&gt;&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">cursor</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&lt;TRIPOS&gt;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">block</span><span class="p">[</span><span class="s2">"lines"</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">"@&lt;TRIPOS&gt;"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">cursor</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@&lt;TRIPOS&gt;"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
                 <span class="n">sections</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">continue</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">sections</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
-        <span class="n">atom_lines</span><span class="p">,</span> <span class="n">bond_lines</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">],</span> <span class="n">sections</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bond&quot;</span><span class="p">)</span>
+        <span class="n">atom_lines</span><span class="p">,</span> <span class="n">bond_lines</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">"atom"</span><span class="p">],</span> <span class="n">sections</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"bond"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_lines</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The mol2 block (</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">) has no atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span> <span class="n">block</span><span class="p">[</span><span class="s2">&quot;start_line&quot;</span><span class="p">]</span>
+                <span class="s2">"The mol2 block (</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">) has no atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span> <span class="n">block</span><span class="p">[</span><span class="s2">"start_line"</span><span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -340,7 +340,7 @@
         <span class="n">resids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">charges</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">has_charges</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">&quot;molecule&quot;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;NO_CHARGES&quot;</span>
+        <span class="n">has_charges</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">"molecule"</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"NO_CHARGES"</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atom_lines</span><span class="p">:</span>
             <span class="n">columns</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>
@@ -349,12 +349,12 @@
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The @&lt;TRIPOS&gt;ATOM block in mol2 file&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; should have at least 6 fields to be&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; unpacked: atom_id atom_name x y z&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; atom_type [subst_id[subst_name&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; [charge [status_bit]]]]&quot;</span>
+                    <span class="sa">f</span><span class="s2">"The @&lt;TRIPOS&gt;ATOM block in mol2 file"</span>
+                    <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">" should have at least 6 fields to be"</span>
+                    <span class="sa">f</span><span class="s2">" unpacked: atom_id atom_name x y z"</span>
+                    <span class="sa">f</span><span class="s2">" atom_type [subst_id[subst_name"</span>
+                    <span class="sa">f</span><span class="s2">" [charge [status_bit]]]]"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">aid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">atom_type</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>
@@ -365,17 +365,17 @@
             <span class="k">if</span> <span class="n">has_charges</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">charge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; indicates a charge model&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sections</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">, but&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; no charge provided in line: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"The mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span>
+                        <span class="sa">f</span><span class="s2">" indicates a charge model"</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">sections</span><span class="p">[</span><span class="s1">'molecule'</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">, but"</span>
+                        <span class="sa">f</span><span class="s2">" no charge provided in line: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">charge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; indicates no charges, but charge&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">charge</span><span class="si">}</span><span class="s2"> provided in line: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"The mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span>
+                        <span class="sa">f</span><span class="s2">" indicates no charges, but charge"</span>
+                        <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">charge</span><span class="si">}</span><span class="s2"> provided in line: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">."</span>
                     <span class="p">)</span>
 
             <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span>
@@ -387,21 +387,21 @@
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
-        <span class="n">validated_elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;U3&quot;</span><span class="p">)</span>
+        <span class="n">validated_elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"U3"</span><span class="p">)</span>
         <span class="n">invalid_elements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">types</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">SYBYL2SYMB</span><span class="p">:</span>
                 <span class="n">validated_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">SYBYL2SYMB</span><span class="p">[</span><span class="n">at</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">invalid_elements</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
-                <span class="n">validated_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">validated_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span>
 
         <span class="c1"># Print single warning for all unknown elements, if any</span>
         <span class="k">if</span> <span class="n">invalid_elements</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Unknown elements found for some &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;atoms: </span><span class="si">{</span><span class="n">invalid_elements</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="s2">&quot;These have been given an empty element record.&quot;</span>
+                <span class="s2">"Unknown elements found for some "</span>
+                <span class="sa">f</span><span class="s2">"atoms: </span><span class="si">{</span><span class="n">invalid_elements</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="s2">"These have been given an empty element record."</span>
             <span class="p">)</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -411,7 +411,7 @@
         <span class="k">if</span> <span class="n">has_charges</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">validated_elements</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">validated_elements</span> <span class="o">==</span> <span class="s2">""</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">))</span>
 
         <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
@@ -432,13 +432,13 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Some atoms in the mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; have subst_name while some do not.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Some atoms in the mol2 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">" have subst_name while some do not."</span>
             <span class="p">)</span>
 
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
-        <span class="c1"># don&#39;t add Bonds if there are none (Issue #3057)</span>
+        <span class="c1"># don't add Bonds if there are none (Issue #3057)</span>
         <span class="k">if</span> <span class="n">bond_lines</span><span class="p">:</span>
             <span class="n">bonds</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">bondorder</span> <span class="o">=</span> <span class="p">[]</span>

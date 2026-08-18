@@ -216,11 +216,11 @@ trajectory is already appropriately treated for periodic boundary artifacts and
 is suitably superimposed to provide a fixed reference frame) <a class="footnote-reference brackets" href="#testraj" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">DensityAnalysis</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
+<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name OW"</span><span class="p">)</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
-<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">'TIP4P'</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">"water.dx"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"double"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The positions of all water oxygens (the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> <cite>ow</cite>) are
@@ -355,10 +355,10 @@ artifacts and is suitably superimposed to provide a fixed reference frame)
 supplying an AtomGroup, then use  the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">density</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
+<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name OW"</span><span class="p">)</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">density</span><span class="o">.</span><span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">'TIP4P'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The positions of all water oxygens are histogrammed on a grid with spacing
@@ -386,7 +386,7 @@ in this case you need to ensure that the physical density is measured in
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># ensure that the density is A^{-3}</span>
-<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s2">&quot;A^{-3}&quot;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s2">"A^{-3}"</span><span class="p">)</span>
 
 <span class="n">dV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
 <span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">*</span> <span class="n">dV</span>
@@ -398,20 +398,20 @@ in this case you need to ensure that the physical density is measured in
 subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
 For example, to <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data">write a DX file</a>
 <code class="docutils literal notranslate"><span class="pre">water.dx</span></code> that can be read with VMD, PyMOL, or Chimera:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">"water.dx"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"double"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Example: Water density in the whole simulation</p>
 <p>Basic use for creating a water density (just using the water oxygen
 atoms “OW”):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW'</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p class="rubric">Example: Water in a binding site (updating selection)</p>
 <p>If you are only interested in water within a certain region, e.g., within
 a vicinity around a binding site, you can use a selection that updates
 every step by using an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">near_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">near_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW and around 5 (resid 156 157 305)'</span><span class="p">,</span>
               <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">D_site</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">near_waters</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
@@ -424,14 +424,14 @@ ligand (in this case the ligand has been assigned the residue name “LIG”)
 in a cubic grid with 20 Å edges which is centered on the center of mass
 (COM) of the ligand:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a selection based on the ligand</span>
-<span class="n">ligand_selection</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resname LIG&quot;</span><span class="p">)</span>
+<span class="n">ligand_selection</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resname LIG"</span><span class="p">)</span>
 
 <span class="c1"># Extract the COM of the ligand</span>
 <span class="n">ligand_COM</span> <span class="o">=</span> <span class="n">ligand_selection</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
 
 <span class="c1"># Create a density of waters on a cubic grid centered on the ligand COM</span>
 <span class="c1"># In this case, we update the atom selection as shown above.</span>
-<span class="n">ligand_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW and around 5 resname LIG&#39;</span><span class="p">,</span>
+<span class="n">ligand_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW and around 5 resname LIG'</span><span class="p">,</span>
                                       <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">D_water</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ligand_waters</span><span class="p">,</span>
                           <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
@@ -749,30 +749,30 @@ that the data are in fact a density.</p>
 <ol class="arabic">
 <li><p>From a histogram (i.e. counts on a grid):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;isDensity&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">})</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'isDensity'</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">'length'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">})</span>
 <span class="n">D</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
 </pre></div>
 </div>
 </li>
 <li><p>From a saved density file (e.g. in OpenDX format), where the lengths are
 in Angstrom and the density in 1/A**3:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">&quot;density.dx&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">"density.dx"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p>From a saved density file (e.g. in OpenDX format), where the lengths are
 in Angstrom and the density is measured relative to the density of water
 at ambient conditions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">&quot;density.dx&quot;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="s1">&#39;water&#39;</span><span class="p">})</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">"density.dx"</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">'density'</span><span class="p">:</span> <span class="s1">'water'</span><span class="p">})</span>
 </pre></div>
 </div>
 </li>
 <li><p>From a saved <em>histogram</em> (less common, but in order to demonstrate the
 <em>parameters</em> keyword) where the lengths are in nm:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">&quot;counts.dx&quot;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;isDensity&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">})</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s2">"counts.dx"</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'isDensity'</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">'length'</span><span class="p">:</span> <span class="s1">'nm'</span><span class="p">})</span>
 <span class="n">D</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">convert_length</span><span class="p">(</span><span class="s1">&#39;Angstrom^{-3}&#39;</span><span class="p">)</span>
-<span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">convert_length</span><span class="p">(</span><span class="s1">'Angstrom^{-3}'</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">'water'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After the final step, <code class="docutils literal notranslate"><span class="pre">D</span></code> will contain a density on a grid measured in
@@ -1159,7 +1159,7 @@ grid edges for every resampling.</p>
 <p>Internally, this calls
 <code class="docutils literal notranslate"><span class="pre">Grid.export(filename,</span> <span class="pre">format=&quot;python&quot;)</span></code>. A grid can be
 regenerated from the saved data with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;grid.pickle&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"grid.pickle"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">

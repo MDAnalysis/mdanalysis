@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`</span>
+<span class="sa">r</span><span class="sd">"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`</span>
 <span class="sd">=====================================================================</span>
 
 <span class="sd">:Authors: John Detlefs</span>
@@ -223,7 +223,7 @@
 <span class="sd">components.::</span>
 
 <span class="sd">    u = mda.Universe(PSF, DCD)</span>
-<span class="sd">    PSF_pca = pca.PCA(u, select=&#39;backbone&#39;)</span>
+<span class="sd">    PSF_pca = pca.PCA(u, select='backbone')</span>
 <span class="sd">    PSF_pca.run()</span>
 
 
@@ -236,7 +236,7 @@
 <span class="sd">i.::</span>
 
 <span class="sd">    n_pcs = np.where(PSF_pca.results.cumulated_variance &gt; 0.95)[0][0]</span>
-<span class="sd">    atomgroup = u.select_atoms(&#39;backbone&#39;)</span>
+<span class="sd">    atomgroup = u.select_atoms('backbone')</span>
 <span class="sd">    pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)</span>
 
 
@@ -256,7 +256,7 @@
 
 <span class="sd">.. autofunction:: cumulative_overlap</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -275,14 +275,14 @@
 <div class="viewcode-block" id="PCA">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PCA</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Principal component analysis on an MD trajectory.</span>
+<span class="w">    </span><span class="sd">"""Principal component analysis on an MD trajectory.</span>
 
 <span class="sd">    After initializing and calling method with a universe or an atom group,</span>
 <span class="sd">    principal components ordering the atom coordinate data by decreasing</span>
 <span class="sd">    variance will be available for analysis. As an example:::</span>
 
-<span class="sd">        pca = PCA(universe, select=&#39;backbone&#39;).run()</span>
-<span class="sd">        pca_space = pca.transform(universe.select_atoms(&#39;backbone&#39;), 3)</span>
+<span class="sd">        pca = PCA(universe, select='backbone').run()</span>
+<span class="sd">        pca_space = pca.transform(universe.select_atoms('backbone'), 3)</span>
 
 
 <span class="sd">    generates the principal components of the backbone of the atomgroup and</span>
@@ -383,14 +383,14 @@
 <span class="sd">       manually iterate through ``self._trajectory``, which would</span>
 <span class="sd">       incorrectly handle cases where the ``frame`` argument</span>
 <span class="sd">       was passed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">"all"</span><span class="p">,</span>
         <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -422,16 +422,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Number of atoms in reference (</span><span class="si">{}</span><span class="s2">) does &quot;</span>
-                    <span class="s2">&quot;not match number of atoms in the &quot;</span>
-                    <span class="s2">&quot;selection (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="s2">"Number of atoms in reference (</span><span class="si">{}</span><span class="s2">) does "</span>
+                    <span class="s2">"not match number of atoms in the "</span>
+                    <span class="s2">"selection (</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;No covariance information can be gathered from a&quot;</span>
-                <span class="s2">&quot;single trajectory frame.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">"No covariance information can be gathered from a"</span>
+                <span class="s2">"single trajectory frame.</span><span class="se">\n</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="n">n_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_dim</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">))</span>
@@ -443,7 +443,7 @@
             <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">,</span>
-                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Mean Calculation&quot;</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">"Mean Calculation"</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
                     <span class="n">mobile_cog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
@@ -488,9 +488,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">p_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `p_components` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.p_components` instead.&quot;</span>
+            <span class="s2">"The `p_components` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.p_components` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
@@ -498,9 +498,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `variance` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+            <span class="s2">"The `variance` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.variance` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">variance</span>
@@ -508,9 +508,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cumulated_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `cumulated_variance` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.cumulated_variance` instead.&quot;</span>
+            <span class="s2">"The `cumulated_variance` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.cumulated_variance` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span>
@@ -542,7 +542,7 @@
         <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the dimensionality reduction on a trajectory</span>
+<span class="w">        </span><span class="sd">"""Apply the dimensionality reduction on a trajectory</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -580,21 +580,21 @@
 <span class="sd">        .. versionchanged:: 2.8.0</span>
 <span class="sd">           Transform now has shows a tqdm progressbar, which can be toggled</span>
 <span class="sd">           on with ``verbose = True``, or off with ``verbose = False``</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before using transform&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Call run() on the PCA before using transform"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">Universe</span><span class="p">):</span>
             <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">atoms</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">!=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;PCA has been fit for&quot;</span>
-                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> atoms. Your atomgroup&quot;</span>
-                <span class="s2">&quot;has </span><span class="si">{}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+                <span class="s2">"PCA has been fit for"</span>
+                <span class="s2">"</span><span class="si">{}</span><span class="s2"> atoms. Your atomgroup"</span>
+                <span class="s2">"has </span><span class="si">{}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">types</span> <span class="o">==</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">types</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Atom types do not match with types used to fit PCA&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Atom types do not match with types used to fit PCA"</span><span class="p">)</span>
 
         <span class="n">traj</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -623,7 +623,7 @@
 <div class="viewcode-block" id="PCA.project_single_frame">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.project_single_frame">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">project_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes a function to project structures onto selected PCs</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Computes a function to project structures onto selected PCs</span>
 
 <span class="sd">        Applies Inverse-PCA transform to the PCA atomgroup.</span>
 <span class="sd">        Optionally, calculates one displacement vector per residue</span>
@@ -683,7 +683,7 @@
 
 <span class="sd">            w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot</span>
 <span class="sd">                        {\textbf u}_i \\</span>
-<span class="sd">            {\textbf r&#39;}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +</span>
+<span class="sd">            {\textbf r'}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +</span>
 <span class="sd">                              \bar{{\textbf r}}</span>
 
 <span class="sd">        For each residue, the projection can be extended to atoms that were</span>
@@ -694,17 +694,17 @@
 <span class="sd">        If there are r residues and n non-PCA atoms in total, the displacement</span>
 <span class="sd">        vector has the size 3r. This needs to be broadcasted to a size 3n. An</span>
 <span class="sd">        extrapolation trick is used to shape the array, since going over each</span>
-<span class="sd">        residue for each frame can be expensive. Non-PCA atoms&#39; displacement</span>
-<span class="sd">        vector is calculated with fancy indexing on the anchors&#39; displacement</span>
+<span class="sd">        residue for each frame can be expensive. Non-PCA atoms' displacement</span>
+<span class="sd">        vector is calculated with fancy indexing on the anchors' displacement</span>
 <span class="sd">        vector. `index_extrapolate` saves which atoms belong to which anchors.</span>
-<span class="sd">        If there are two non-PCA atoms in the first anchor&#39;s residue and three</span>
-<span class="sd">        in the second anchor&#39;s residue, `index_extrapolate` is [0, 0, 1, 1, 1]</span>
+<span class="sd">        If there are two non-PCA atoms in the first anchor's residue and three</span>
+<span class="sd">        in the second anchor's residue, `index_extrapolate` is [0, 0, 1, 1, 1]</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        Run PCA class before using this function. For backbone PCA, run::</span>
 
-<span class="sd">            pca = PCA(universe, select=&#39;backbone&#39;).run()</span>
+<span class="sd">            pca = PCA(universe, select='backbone').run()</span>
 
 <span class="sd">        Obtain a transformation function to project the</span>
 <span class="sd">        backbone trajectory onto the first principal component::</span>
@@ -716,12 +716,12 @@
 <span class="sd">            project = pca.project_single_frame(components=[0,1])</span>
 
 <span class="sd">        Alternatively, the transformation can be applied to PCA atoms and</span>
-<span class="sd">        extrapolated to other atoms according to the CA atom&#39;s translation</span>
+<span class="sd">        extrapolated to other atoms according to the CA atom's translation</span>
 <span class="sd">        in each residue::</span>
 
-<span class="sd">            all = u.select_atoms(&#39;all&#39;)</span>
+<span class="sd">            all = u.select_atoms('all')</span>
 <span class="sd">            project = pca.project_single_frame(components=0,</span>
-<span class="sd">                                               group=all, anchor=&#39;name CA&#39;)</span>
+<span class="sd">                                               group=all, anchor='name CA')</span>
 
 <span class="sd">        Finally, apply the transformation function to a timestep::</span>
 
@@ -733,28 +733,28 @@
 
 
 <span class="sd">        .. versionadded:: 2.2.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before projecting&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Call run() on the PCA before projecting"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">anchor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;&#39;anchor&#39; cannot be &#39;None&#39;&quot;</span> <span class="o">+</span> <span class="s2">&quot; if &#39;group&#39; is not &#39;None&#39;&quot;</span>
+                    <span class="s2">"'anchor' cannot be 'None'"</span> <span class="o">+</span> <span class="s2">" if 'group' is not 'None'"</span>
                 <span class="p">)</span>
 
             <span class="n">anchors</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
             <span class="n">anchors_res_ids</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">resindices</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">anchors_res_ids</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;More than one &#39;anchor&#39; found in residues&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"More than one 'anchor' found in residues"</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Some residues in &#39;group&#39;&quot;</span> <span class="o">+</span> <span class="s2">&quot; do not have an &#39;anchor&#39;&quot;</span>
+                    <span class="s2">"Some residues in 'group'"</span> <span class="o">+</span> <span class="s2">" do not have an 'anchor'"</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">anchors</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some &#39;anchors&#39; are not part of PCA class&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Some 'anchors' are not part of PCA class"</span><span class="p">)</span>
 
-            <span class="c1"># non_pca has &quot;all&quot; the atoms in residues of `group`. This makes</span>
+            <span class="c1"># non_pca has "all" the atoms in residues of `group`. This makes</span>
             <span class="c1"># sure that extrapolation works on residues, not random atoms.</span>
             <span class="n">non_pca</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span>
             <span class="n">pca_res_indices</span><span class="p">,</span> <span class="n">pca_res_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
@@ -779,7 +779,7 @@
             <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Projects a timestep&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Projects a timestep"""</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">anchors_coords_old</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">positions</span>
 
@@ -807,13 +807,13 @@
 <div class="viewcode-block" id="PCA.rmsip">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&quot;</span><span class="p">),</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1529/biophysj.104.052449&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U"</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1529/biophysj.104.052449"</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"RMSIP"</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.pca"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rmsip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
+<span class="w">        </span><span class="sd">"""Compute the root mean square inner product between subspaces.</span>
 
 <span class="sd">        This is only symmetric if the number of components is the same for</span>
 <span class="sd">        both instances. The RMSIP effectively measures how</span>
@@ -852,9 +852,9 @@
 
 <span class="sd">        .. doctest::</span>
 
-<span class="sd">            &gt;&gt;&gt; first_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=0, stop=25)</span>
-<span class="sd">            &gt;&gt;&gt; second_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=25, stop=50)</span>
-<span class="sd">            &gt;&gt;&gt; last_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=75)</span>
+<span class="sd">            &gt;&gt;&gt; first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)</span>
+<span class="sd">            &gt;&gt;&gt; second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)</span>
+<span class="sd">            &gt;&gt;&gt; last_interval = pca.PCA(u, select="backbone").run(start=75)</span>
 <span class="sd">            &gt;&gt;&gt; round(first_interval.rmsip(second_interval, n_components=3), 6)</span>
 <span class="sd">            0.381476</span>
 <span class="sd">            &gt;&gt;&gt; round(first_interval.rmsip(last_interval, n_components=3), 6)</span>
@@ -867,21 +867,21 @@
 
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before using rmsip&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Call run() on the PCA before using rmsip"</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Call run() on the other PCA before using rmsip&quot;</span>
+                    <span class="s2">"Call run() on the other PCA before using rmsip"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;other must be another PCA class&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"other must be another PCA class"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 
@@ -889,12 +889,12 @@
 <div class="viewcode-block" id="PCA.cumulative_overlap">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.cumulative_overlap">[docs]</a>
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.str.2007.12.011&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1016/j.str.2007.12.011"</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Cumulative overlap"</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.pca"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cumulative_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
+<span class="w">        </span><span class="sd">"""Compute the cumulative overlap of a vector in a subspace.</span>
 
 <span class="sd">        This is not symmetric. The cumulative overlap measures the overlap of</span>
 <span class="sd">        the chosen vector in this instance, in the ``other`` subspace.</span>
@@ -924,13 +924,13 @@
 
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Call run() on the PCA before using cumulative_overlap&quot;</span>
+                <span class="s2">"Call run() on the PCA before using cumulative_overlap"</span>
             <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -938,10 +938,10 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Call run() on the other PCA before using cumulative_overlap&quot;</span>
+                    <span class="s2">"Call run() on the other PCA before using cumulative_overlap"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;other must be another PCA class&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"other must be another PCA class"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 </div>
@@ -951,11 +951,11 @@
 <div class="viewcode-block" id="cosine_content">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cosine_content">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">cosine_content</span><span class="p">(</span><span class="n">pca_space</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Measure the cosine content of the PCA projection.</span>
+<span class="w">    </span><span class="sd">"""Measure the cosine content of the PCA projection.</span>
 
 <span class="sd">    The cosine content of pca projections can be used as an indicator if a</span>
 <span class="sd">    simulation is converged. Values close to 1 are an indicator that the</span>
-<span class="sd">    simulation isn&#39;t converged. For values below 0.7 no statement can be made.</span>
+<span class="sd">    simulation isn't converged. For values below 0.7 no statement can be made.</span>
 <span class="sd">    If you use this function please cite :footcite:p:`BerkHess2002`.</span>
 
 
@@ -976,7 +976,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    .. footbibliography::</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pca_space</span><span class="p">))</span>
     <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pca_space</span><span class="p">)</span>
@@ -992,13 +992,13 @@
 <div class="viewcode-block" id="rmsip">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.rmsip">[docs]</a>
 <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&quot;</span><span class="p">),</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1529/biophysj.104.052449&quot;</span><span class="p">),</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U"</span><span class="p">),</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1529/biophysj.104.052449"</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"RMSIP"</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.pca"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">rmsip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
+<span class="w">    </span><span class="sd">"""Compute the root mean square inner product between subspaces.</span>
 
 <span class="sd">    This is only symmetric if the number of components is the same for</span>
 <span class="sd">    ``a`` and ``b``. The RMSIP effectively measures how</span>
@@ -1044,9 +1044,9 @@
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">        &gt;&gt;&gt; first_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=0, stop=25)</span>
-<span class="sd">        &gt;&gt;&gt; second_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=25, stop=50)</span>
-<span class="sd">        &gt;&gt;&gt; last_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=75)</span>
+<span class="sd">        &gt;&gt;&gt; first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)</span>
+<span class="sd">        &gt;&gt;&gt; second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)</span>
+<span class="sd">        &gt;&gt;&gt; last_interval = pca.PCA(u, select="backbone").run(start=75)</span>
 <span class="sd">        &gt;&gt;&gt; round(pca.rmsip(first_interval.results.p_components.T,</span>
 <span class="sd">        ...           second_interval.results.p_components.T,</span>
 <span class="sd">        ...           n_components=3), 6)</span>
@@ -1058,14 +1058,14 @@
 
 
 <span class="sd">    .. versionadded:: 1.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">n_components</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">n_a</span> <span class="o">=</span> <span class="n">n_b</span> <span class="o">=</span> <span class="n">n_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">n_a</span><span class="p">,</span> <span class="n">n_b</span> <span class="o">=</span> <span class="n">n_components</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many values provided for n_components&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Too many values provided for n_components"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">n_a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">n_a</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
@@ -1081,12 +1081,12 @@
 <div class="viewcode-block" id="cumulative_overlap">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cumulative_overlap">[docs]</a>
 <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.str.2007.12.011&quot;</span><span class="p">),</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1016/j.str.2007.12.011"</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Cumulative overlap"</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.pca"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
+<span class="w">    </span><span class="sd">"""Compute the cumulative overlap of a vector in a subspace.</span>
 
 <span class="sd">    This is not symmetric. The cumulative overlap measures the overlap of</span>
 <span class="sd">    the chosen vector in ``a``, in the ``b`` subspace.</span>
@@ -1115,7 +1115,7 @@
 
 
 <span class="sd">    .. versionadded:: 1.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>

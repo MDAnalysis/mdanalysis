@@ -165,7 +165,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Jmol selections</span>
 <span class="sd">=================</span>
 
@@ -182,30 +182,30 @@
 
 <span class="sd">.. _Jmol: http://wiki.jmol.org/index.php/Main_Page</span>
 <span class="sd">.. _Jmol selection: http://chemapps.stolaf.edu/jmol/docs/#define</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 
 
 <div class="viewcode-block" id="SelectionWriter">
 <a class="viewcode-back" href="../../../documentation_pages/selections/jmol.html#MDAnalysis.selections.jmol.SelectionWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectionWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SelectionWriterBase</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Jmol&quot;</span><span class="p">,</span> <span class="s2">&quot;spt&quot;</span><span class="p">]</span>
-    <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;spt&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Jmol"</span><span class="p">,</span> <span class="s2">"spt"</span><span class="p">]</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="s2">"spt"</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
+    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s2">"#"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Jmol indexing is 0 based when using atom bitsets</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">_index</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@~</span><span class="si">{name!s}</span><span class="s2"> ({{&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"@~</span><span class="si">{name!s}</span><span class="s2"> ({{"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;});&quot;</span><span class="p">)</span></div>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"});"</span><span class="p">)</span></div>
 
 </pre></div>
 

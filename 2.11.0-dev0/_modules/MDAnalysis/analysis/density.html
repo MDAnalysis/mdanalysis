@@ -168,7 +168,7 @@
 <span class="c1"># Copyright (c) 2007-2011 Oliver Beckstein &lt;orbeckst@gmail.com&gt;</span>
 <span class="c1"># (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`</span>
+<span class="sa">r</span><span class="sd">"""Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`</span>
 <span class="sd">=============================================================================</span>
 
 <span class="sd">:Author: Oliver Beckstein</span>
@@ -214,11 +214,11 @@
 
 <span class="sd">  from MDAnalysis.analysis.density import DensityAnalysis</span>
 <span class="sd">  u = Universe(TPR, XTC)</span>
-<span class="sd">  ow = u.select_atoms(&quot;name OW&quot;)</span>
+<span class="sd">  ow = u.select_atoms("name OW")</span>
 <span class="sd">  D = DensityAnalysis(ow, delta=1.0)</span>
 <span class="sd">  D.run()</span>
-<span class="sd">  D.results.density.convert_density(&#39;TIP4P&#39;)</span>
-<span class="sd">  D.results.density.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
+<span class="sd">  D.results.density.convert_density('TIP4P')</span>
+<span class="sd">  D.results.density.export("water.dx", type="double")</span>
 
 <span class="sd">The positions of all water oxygens (the :class:`AtomGroup` `ow`) are</span>
 <span class="sd">histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is</span>
@@ -269,7 +269,7 @@
 
 <span class="sd">.. [#pbc] Making molecules whole can be accomplished with the</span>
 <span class="sd">          :meth:`MDAnalysis.core.groups.AtomGroup.wrap` of</span>
-<span class="sd">          :attr:`Universe.atoms` (use ``compound=&quot;fragments&quot;``).  or the</span>
+<span class="sd">          :attr:`Universe.atoms` (use ``compound="fragments"``).  or the</span>
 <span class="sd">          PBC-wrapping transformations in</span>
 <span class="sd">          :mod:`MDAnalysis.transformations.wrap`.</span>
 
@@ -292,7 +292,7 @@
 <span class="sd">.. _Gromacs: http://www.gromacs.org</span>
 <span class="sd">.. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -320,13 +320,13 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.density&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.density"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DensityAnalysis">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DensityAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Volumetric density analysis.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Volumetric density analysis.</span>
 
 <span class="sd">    The trajectory is read, frame by frame, and the atoms in `atomgroup` are</span>
 <span class="sd">    histogrammed on a 3D grid with spacing `delta`.</span>
@@ -389,18 +389,18 @@
 <span class="sd">    -----</span>
 <span class="sd">    If the `gridcenter` and `x/y/zdim` arguments are not provided,</span>
 <span class="sd">    :class:`DensityAnalysis` will attempt to automatically generate</span>
-<span class="sd">    a gridbox from the atoms in &#39;atomgroup&#39; (See Examples).</span>
+<span class="sd">    a gridbox from the atoms in 'atomgroup' (See Examples).</span>
 
 <span class="sd">    Normal :class:`AtomGroup` instances represent a static selection of</span>
-<span class="sd">    atoms. If you want *dynamically changing selections* (such as &quot;name OW and</span>
-<span class="sd">    around 4.0 (protein and not name H*)&quot;, i.e., the water oxygen atoms that</span>
+<span class="sd">    atoms. If you want *dynamically changing selections* (such as "name OW and</span>
+<span class="sd">    around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that</span>
 <span class="sd">    are within 4 Å of the protein heavy atoms) then create an</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).</span>
 
 <span class="sd">    :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance</span>
 <span class="sd">    does not contain any selection of atoms, even when `updating` is set to</span>
 <span class="sd">    ``True``. In such a situation, user defined box limits can be provided to</span>
-<span class="sd">    generate a `Density`. Although, it remains the user&#39;s responsibility</span>
+<span class="sd">    generate a `Density`. Although, it remains the user's responsibility</span>
 <span class="sd">    to ensure that the provided grid limits encompass atoms to be selected</span>
 <span class="sd">    on all trajectory frames.</span>
 
@@ -437,10 +437,10 @@
 
 <span class="sd">        from MDAnalysis.analysis import density</span>
 <span class="sd">        u = Universe(TPR, XTC)</span>
-<span class="sd">        ow = u.select_atoms(&quot;name OW&quot;)</span>
+<span class="sd">        ow = u.select_atoms("name OW")</span>
 <span class="sd">        D = density.DensityAnalysis(ow, delta=1.0)</span>
 <span class="sd">        D.run()</span>
-<span class="sd">        D.results.density.convert_density(&#39;TIP4P&#39;)</span>
+<span class="sd">        D.results.density.convert_density('TIP4P')</span>
 
 <span class="sd">    The positions of all water oxygens are histogrammed on a grid with spacing</span>
 <span class="sd">    *delta* = 1 Å and stored as a :class:`Density` object in the attribute</span>
@@ -472,7 +472,7 @@
 <span class="sd">      import numpy as np</span>
 
 <span class="sd">      # ensure that the density is A^{-3}</span>
-<span class="sd">      D.results.density.convert_density(&quot;A^{-3}&quot;)</span>
+<span class="sd">      D.results.density.convert_density("A^{-3}")</span>
 
 <span class="sd">      dV = np.prod(D.results.density.delta)</span>
 <span class="sd">      atom_count_histogram = D.results.density.grid * dV</span>
@@ -488,15 +488,15 @@
 <span class="sd">    &lt;https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data&gt;`_</span>
 <span class="sd">    ``water.dx`` that can be read with VMD, PyMOL, or Chimera::</span>
 
-<span class="sd">      D.results.density.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
+<span class="sd">      D.results.density.export("water.dx", type="double")</span>
 
 
 <span class="sd">    .. rubric:: Example: Water density in the whole simulation</span>
 
 <span class="sd">    Basic use for creating a water density (just using the water oxygen</span>
-<span class="sd">    atoms &quot;OW&quot;)::</span>
+<span class="sd">    atoms "OW")::</span>
 
-<span class="sd">      D = DensityAnalysis(universe.select_atoms(&#39;name OW&#39;)).run()</span>
+<span class="sd">      D = DensityAnalysis(universe.select_atoms('name OW')).run()</span>
 
 
 <span class="sd">    .. rubric:: Example: Water in a binding site (updating selection)</span>
@@ -505,7 +505,7 @@
 <span class="sd">    a vicinity around a binding site, you can use a selection that updates</span>
 <span class="sd">    every step by using an :class:`~MDAnalysis.core.groups.UpdatingAtomGroup`::</span>
 
-<span class="sd">      near_waters = universe.select_atoms(&#39;name OW and around 5 (resid 156 157 305)&#39;,</span>
+<span class="sd">      near_waters = universe.select_atoms('name OW and around 5 (resid 156 157 305)',</span>
 <span class="sd">                    updating=True)</span>
 <span class="sd">      D_site = DensityAnalysis(near_waters).run()</span>
 
@@ -515,19 +515,19 @@
 <span class="sd">    If you are interested in explicitly setting a grid box of a given edge size</span>
 <span class="sd">    and origin, you can use the `gridcenter` and `xdim`/`ydim`/`zdim`</span>
 <span class="sd">    arguments.  For example to plot the density of waters within 5 Å of a</span>
-<span class="sd">    ligand (in this case the ligand has been assigned the residue name &quot;LIG&quot;)</span>
+<span class="sd">    ligand (in this case the ligand has been assigned the residue name "LIG")</span>
 <span class="sd">    in a cubic grid with 20 Å edges which is centered on the center of mass</span>
 <span class="sd">    (COM) of the ligand::</span>
 
 <span class="sd">      # Create a selection based on the ligand</span>
-<span class="sd">      ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)</span>
+<span class="sd">      ligand_selection = universe.select_atoms("resname LIG")</span>
 
 <span class="sd">      # Extract the COM of the ligand</span>
 <span class="sd">      ligand_COM = ligand_selection.center_of_mass()</span>
 
 <span class="sd">      # Create a density of waters on a cubic grid centered on the ligand COM</span>
 <span class="sd">      # In this case, we update the atom selection as shown above.</span>
-<span class="sd">      ligand_waters = universe.select_atoms(&#39;name OW and around 5 resname LIG&#39;,</span>
+<span class="sd">      ligand_waters = universe.select_atoms('name OW and around 5 resname LIG',</span>
 <span class="sd">                                            updating=True)</span>
 <span class="sd">      D_water = DensityAnalysis(ligand_waters,</span>
 <span class="sd">                                delta=1.0,</span>
@@ -548,7 +548,7 @@
 <span class="sd">       Introduced :meth:`get_supported_backends` allowing</span>
 <span class="sd">       for parallel execution on :mod:`multiprocessing`</span>
 <span class="sd">       and :mod:`dask` backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -556,7 +556,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"multiprocessing"</span><span class="p">,</span> <span class="s2">"dask"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -593,8 +593,8 @@
             <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="si">}</span><span class="s2">) &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;is not used in user defined grids.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Box padding (currently set at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="si">}</span><span class="s2">) "</span>
+                    <span class="sa">f</span><span class="s2">"is not used in user defined grids."</span>
                 <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -605,10 +605,10 @@
                 <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
-                    <span class="s2">&quot;This may be intended; please ensure that &quot;</span>
-                    <span class="s2">&quot;your grid selection covers the atomic &quot;</span>
-                    <span class="s2">&quot;positions you wish to capture.&quot;</span>
+                    <span class="s2">"No atoms in AtomGroup at input time frame. "</span>
+                    <span class="s2">"This may be intended; please ensure that "</span>
+                    <span class="s2">"your grid selection covers the atomic "</span>
+                    <span class="s2">"positions you wish to capture."</span>
                 <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -624,28 +624,28 @@
                 <span class="n">smax</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
+            <span class="c1"># Make the box bigger to avoid as much as possible 'outlier'. This</span>
             <span class="c1"># is important if the sites are defined at a high density: in this</span>
-            <span class="c1"># case the bulk regions don&#39;t have to be close to 1 * n0 but can</span>
-            <span class="c1"># be less. It&#39;s much more difficult to deal with outliers.  The</span>
-            <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
-            <span class="c1"># periodic boundaries&#39; but that gets complicated when the box</span>
+            <span class="c1"># case the bulk regions don't have to be close to 1 * n0 but can</span>
+            <span class="c1"># be less. It's much more difficult to deal with outliers.  The</span>
+            <span class="c1"># ideal solution would use images: implement 'looking across the</span>
+            <span class="c1"># periodic boundaries' but that gets complicated when the box</span>
             <span class="c1"># rotates due to RMS fitting.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
                 <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
-                    <span class="s2">&quot;Grid for density could not be automatically&quot;</span>
-                    <span class="s2">&quot; generated. If this is expected, a user&quot;</span>
-                    <span class="s2">&quot; defined grid will need to be &quot;</span>
-                    <span class="s2">&quot;provided instead.&quot;</span>
+                    <span class="s2">"No atoms in AtomGroup at input time frame. "</span>
+                    <span class="s2">"Grid for density could not be automatically"</span>
+                    <span class="s2">" generated. If this is expected, a user"</span>
+                    <span class="s2">" defined grid will need to be "</span>
+                    <span class="s2">"provided instead."</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
-        <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])))</span>
-        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;Nbins&quot;</span><span class="p">]</span>
+        <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s2">"min"</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">"max"</span><span class="p">])))</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">"Nbins"</span><span class="p">]</span>
         <span class="c1"># create empty grid with the right dimensions (and get the edges)</span>
         <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span>
@@ -671,21 +671,21 @@
         <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span>
             <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span>
             <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">},</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;isDensity&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">},</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">"isDensity"</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="n">density</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;_grid&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">"_grid"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">})</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `density` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.density` instead&quot;</span>
+            <span class="s2">"The `density` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.density` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span>
@@ -694,7 +694,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis._set_user_grid">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_user_grid</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to set the grid dimensions to user defined values</span>
+<span class="w">        </span><span class="sd">"""Helper function to set the grid dimensions to user defined values</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -722,23 +722,23 @@
 
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Now a staticmethod of :class:`DensityAnalysis`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Check user inputs</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">]):</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Gridcenter or grid dimensions are not provided&quot;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"Gridcenter or grid dimensions are not provided"</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                 <span class="mi">3</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Gridcenter must be a 3D coordinate"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">xyzdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;xdim, ydim, and zdim must be numbers&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"xdim, ydim, and zdim must be numbers"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">xyzdim</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter or grid dimensions have NaN element&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Gridcenter or grid dimensions have NaN element"</span><span class="p">)</span>
 
         <span class="c1"># Set min/max by shifting by half the edge length of each dimension</span>
         <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span> <span class="o">/</span> <span class="mi">2</span>
@@ -748,8 +748,8 @@
         <span class="c1"># if this happens, we warn users they may want to resize their grids</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">smin</span> <span class="o">&lt;</span> <span class="n">umin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">smax</span> <span class="o">&gt;</span> <span class="n">umax</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;Atom selection does not fit grid --- &quot;</span>
-                <span class="s2">&quot;you may want to define a larger box&quot;</span>
+                <span class="s2">"Atom selection does not fit grid --- "</span>
+                <span class="s2">"you may want to define a larger box"</span>
             <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -761,12 +761,12 @@
     <span class="c1"># pmda-style parallelism (see #2542)</span>
     <span class="c1"># @staticmethod</span>
     <span class="c1"># def _reduce(res, result_single_frame):</span>
-    <span class="c1">#     &quot;&quot;&quot;&#39;accumulate&#39; action for a time series</span>
+    <span class="c1">#     """'accumulate' action for a time series</span>
     <span class="c1">#</span>
     <span class="c1">#     If `res` is a numpy array, the `result_single_frame` is added to it</span>
     <span class="c1">#     element-wise. If `res` and `result_single_frame` are lists then</span>
     <span class="c1">#     `result_single_frame` is appended to `res`.</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     """</span>
     <span class="c1">#     if isinstance(res, list) and len(res) == 0:</span>
     <span class="c1">#         res = result_single_frame</span>
     <span class="c1">#     else:</span>
@@ -777,7 +777,7 @@
 <div class="viewcode-block" id="Density">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Density</span><span class="p">(</span><span class="n">Grid</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class representing a density on a regular cartesian grid.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Class representing a density on a regular cartesian grid.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -801,7 +801,7 @@
 
 <span class="sd">        - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]</span>
 <span class="sd">        - *density*: unit of the density if ``isDensity=True`` or ``None``</span>
-<span class="sd">          otherwise; the default is &quot;Angstrom^{-3}&quot; for densities</span>
+<span class="sd">          otherwise; the default is "Angstrom^{-3}" for densities</span>
 <span class="sd">          (meaning :math:`\text{Å}^{-3}`).</span>
 <span class="sd">    metadata : dict</span>
 <span class="sd">        a user defined dictionary of arbitrary values associated with the</span>
@@ -838,10 +838,10 @@
 <span class="sd">    The :meth:`Density.export` method always exports a 3D object (written in</span>
 <span class="sd">    such a way to be readable in VMD_, Chimera_, and PyMOL_), the rest should</span>
 <span class="sd">    work for an array of any dimension. Note that PyMOL_ only understands DX</span>
-<span class="sd">    files with the DX data type &quot;double&quot; in the &quot;array&quot; object (see `known</span>
+<span class="sd">    files with the DX data type "double" in the "array" object (see `known</span>
 <span class="sd">    issues when writing OpenDX files`_ and issue</span>
 <span class="sd">    `MDAnalysis/GridDataFormats#35`_ for details). Using the keyword</span>
-<span class="sd">    ``type=&quot;double&quot;`` for the method :meth:`Density.export`, the user can</span>
+<span class="sd">    ``type="double"`` for the method :meth:`Density.export`, the user can</span>
 <span class="sd">    ensure that the DX file is written in a format suitable for PyMOL_.</span>
 
 <span class="sd">    If the input histogram consists of counts per cell then the</span>
@@ -872,27 +872,27 @@
 <span class="sd">    1. From a histogram (i.e. counts on a grid)::</span>
 
 <span class="sd">        h,edges = numpy.histogramdd(...)</span>
-<span class="sd">        D = Density(h, edges, parameters={&#39;isDensity&#39;: False}, units={&#39;length&#39;: &#39;A&#39;})</span>
+<span class="sd">        D = Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})</span>
 <span class="sd">        D.make_density()</span>
 
 <span class="sd">    2. From a saved density file (e.g. in OpenDX format), where the lengths are</span>
 <span class="sd">       in Angstrom and the density in 1/A**3::</span>
 
-<span class="sd">         D = Density(&quot;density.dx&quot;)</span>
+<span class="sd">         D = Density("density.dx")</span>
 
 <span class="sd">    3. From a saved density file (e.g. in OpenDX format), where the lengths are</span>
 <span class="sd">       in Angstrom and the density is measured relative to the density of water</span>
 <span class="sd">       at ambient conditions::</span>
 
-<span class="sd">         D = Density(&quot;density.dx&quot;, units={&#39;density&#39;: &#39;water&#39;})</span>
+<span class="sd">         D = Density("density.dx", units={'density': 'water'})</span>
 
 <span class="sd">    4. From a saved *histogram* (less common, but in order to demonstrate the</span>
 <span class="sd">       *parameters* keyword) where the lengths are in nm::</span>
 
-<span class="sd">         D = Density(&quot;counts.dx&quot;, parameters={&#39;isDensity&#39;: False}, units={&#39;length&#39;: &#39;nm&#39;})</span>
+<span class="sd">         D = Density("counts.dx", parameters={'isDensity': False}, units={'length': 'nm'})</span>
 <span class="sd">         D.make_density()</span>
-<span class="sd">         D.convert_length(&#39;Angstrom^{-3}&#39;)</span>
-<span class="sd">         D.convert_density(&#39;water&#39;)</span>
+<span class="sd">         D.convert_length('Angstrom^{-3}')</span>
+<span class="sd">         D.convert_density('water')</span>
 
 <span class="sd">       After the final step, ``D`` will contain a density on a grid measured in</span>
 <span class="sd">       ångström, with the density values itself measured relative to the</span>
@@ -910,28 +910,28 @@
 <span class="sd">       :meth:`Density.make_density` to obtain a density. This ensures</span>
 <span class="sd">       that the length- and the density unit correspond to each other.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">length_unit</span> <span class="o">=</span> <span class="s2">&quot;Angstrom&quot;</span>
+        <span class="n">length_unit</span> <span class="o">=</span> <span class="s2">"Angstrom"</span>
 
-        <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
             <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"grid"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="c1"># try to be smart: when reading from a file then it is likely that</span>
             <span class="c1"># this is a density</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;isDensity&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"isDensity"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;isDensity&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;units&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
-            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"isDensity"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"units"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"length"</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">"isDensity"</span><span class="p">]:</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"density"</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"density"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Density</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -939,10 +939,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_set_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check and set units.</span>
+<span class="w">        </span><span class="sd">"""Check and set units.</span>
 
 <span class="sd">        First check that all units and their values in the dict `u` are valid</span>
-<span class="sd">        and then set the object&#39;s units attribute.</span>
+<span class="sd">        and then set the object's units attribute.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -954,7 +954,7 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            if unit types or unit values are not recognized or if required</span>
 <span class="sd">            unit types are not in :attr:`units`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># all this unit crap should be a class...</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -968,26 +968,26 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Unit </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">unit_type</span><span class="si">}</span><span class="s2"> is not &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;recognized.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Unit </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">unit_type</span><span class="si">}</span><span class="s2"> is not "</span>
+                        <span class="sa">f</span><span class="s2">"recognized."</span>
                     <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;&quot;unit&quot; must be a dictionary with keys &quot;length&quot; and &quot;density.&#39;</span>
+                <span class="s1">'"unit" must be a dictionary with keys "length" and "density.'</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="c1"># need at least length and density (can be None)</span>
-        <span class="k">if</span> <span class="s2">&quot;length&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;unit&quot; must contain a unit for &quot;length&quot;.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;density&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">"length"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'"unit" must contain a unit for "length".'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"density"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"density"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Density.make_density">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.make_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</span>
+<span class="w">        </span><span class="sd">"""Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</span>
 
 <span class="sd">        This method changes the grid irrevocably.</span>
 
@@ -995,12 +995,12 @@
 
 <span class="sd">        If this is already a density, then a warning is issued and nothing is</span>
 <span class="sd">        done, so calling `make_density` multiple times does not do any harm.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Make it a density by dividing by the volume of each grid cell</span>
         <span class="c1"># (from numpy.histogramdd, which is for general n-D grids)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Running make_density() makes no sense: Grid is already a density. Nothing done.&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"isDensity"</span><span class="p">]:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">"Running make_density() makes no sense: Grid is already a density. Nothing done."</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span>
@@ -1011,44 +1011,44 @@
             <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
             <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/=</span> <span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"isDensity"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># see units.densityUnit_factor for units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"density"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"length"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"^{-3}"</span></div>
 
 
 <div class="viewcode-block" id="Density.convert_length">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Angstrom&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Grid object to the new `unit`.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"Angstrom"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Convert Grid object to the new `unit`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        unit : str (optional)</span>
 <span class="sd">              unit that the grid should be converted to: one of</span>
-<span class="sd">              &quot;Angstrom&quot;, &quot;nm&quot;</span>
+<span class="sd">              "Angstrom", "nm"</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        This changes the edges but will not change the density; it is the</span>
-<span class="sd">        user&#39;s responsibility to supply the appropriate unit if the Grid object</span>
+<span class="sd">        user's responsibility to supply the appropriate unit if the Grid object</span>
 <span class="sd">        is constructed from a density. It is suggested to start from a</span>
 <span class="sd">        histogram and a length unit and use :meth:`make_density`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"length"</span><span class="p">]:</span>
             <span class="k">return</span>
         <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="n">unit</span>
+            <span class="s2">"length"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"length"</span><span class="p">],</span> <span class="n">unit</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">cvnfact</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"length"</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c1"># needed to recalculate midpoints and origin</span></div>
 
 
 <div class="viewcode-block" id="Density.convert_density">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_density">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Angstrom^{-3}&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the density to the physical units given by `unit`.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"Angstrom^{-3}"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Convert the density to the physical units given by `unit`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1085,37 +1085,37 @@
 <span class="sd">        (2) Conversions always go back to unity so there can be rounding</span>
 <span class="sd">            and floating point artifacts for multiple conversions.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;The grid is not a density so convert_density() makes no sense.&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"isDensity"</span><span class="p">]:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"The grid is not a density so convert_density() makes no sense."</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"density"</span><span class="p">]:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-                <span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">],</span> <span class="n">unit</span>
+                <span class="s2">"density"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"density"</span><span class="p">],</span> <span class="n">unit</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The name of the unit (</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2"> supplied) must be one &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;of:</span><span class="se">\n</span><span class="si">{</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"The name of the unit (</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2"> supplied) must be one "</span>
+                <span class="sa">f</span><span class="s2">"of:</span><span class="se">\n</span><span class="si">{</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">'density'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">"density"</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
-            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">&quot;density&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"isDensity"</span><span class="p">]:</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">"density"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">&quot;histogram&quot;</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">"histogram"</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;&lt;Density &quot;</span>
+            <span class="s2">"&lt;Density "</span>
             <span class="o">+</span> <span class="n">grid_type</span>
-            <span class="o">+</span> <span class="s2">&quot; with &quot;</span>
+            <span class="o">+</span> <span class="s2">" with "</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot; bins&gt;&quot;</span>
+            <span class="o">+</span> <span class="s2">" bins&gt;"</span>
         <span class="p">)</span></div>
 
 </pre></div>

@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">dimensionality reduction frontend --- :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span>
 <span class="sd">======================================================================================================================</span>
 
@@ -179,7 +179,7 @@
 <span class="sd">   MDAKit `mdaencore &lt;https://mdanalysis.org/mdaencore/&gt;`_ and will be removed</span>
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..confdistmatrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distance_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelCalculation</span><span class="p">,</span> <span class="n">merge_universes</span>
@@ -193,13 +193,13 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">reduce_dimensionality</span><span class="p">(</span>
     <span class="n">ensembles</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">"name CA"</span><span class="p">,</span>
     <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Reduce dimensions in frames from one or more ensembles, using one or more</span>
 <span class="sd">    dimensionality reduction methods. The function optionally takes</span>
 <span class="sd">    pre-calculated distances matrices as an argument. Note that not all</span>
@@ -230,7 +230,7 @@
 <span class="sd">        Proximity Embedding or Principal Component Analysis.</span>
 
 <span class="sd">    select : str, optional</span>
-<span class="sd">        Atom selection string in the MDAnalysis format (default is &quot;name CA&quot;)</span>
+<span class="sd">        Atom selection string in the MDAnalysis format (default is "name CA")</span>
 
 <span class="sd">    distance_matrix : encore.utils.TriangularMatrix, optional</span>
 <span class="sd">        Distance matrix for stochastic proximity embedding. If this parameter</span>
@@ -270,8 +270,8 @@
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">        &gt;&gt;&gt; coordinates, details = encore.reduce_dimensionality([ens1,ens2])</span>
 <span class="sd">        &gt;&gt;&gt; plt.scatter(coordinates[0], coordinates[1],</span>
-<span class="sd">                        color=[[&quot;red&quot;, &quot;blue&quot;][m-1] for m</span>
-<span class="sd">                        in details[&quot;ensemble_membership&quot;]])</span>
+<span class="sd">                        color=[["red", "blue"][m-1] for m</span>
+<span class="sd">                        in details["ensemble_membership"]])</span>
 
 <span class="sd">    Note how we extracted information about which conformation belonged to</span>
 <span class="sd">    which ensemble from the details variable.</span>
@@ -299,15 +299,15 @@
 <span class="sd">                     method=[encore.PrincipalComponentAnalysis(dimension=2),</span>
 <span class="sd">                             encore.StochasticProximityEmbeddingNative(dimension=2)])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="s2">"__iter__"</span><span class="p">):</span>
             <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
 
         <span class="n">ensembles_list</span> <span class="o">=</span> <span class="n">ensembles</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"__iter__"</span><span class="p">):</span>
             <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
 
         <span class="c1"># Calculate merged ensembles and transfer to memory</span>
@@ -319,7 +319,7 @@
             <span class="n">merged_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))</span>
 
     <span class="n">methods</span> <span class="o">=</span> <span class="n">method</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s2">"__iter__"</span><span class="p">):</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span><span class="p">]</span>
 
     <span class="c1"># Check whether any of the methods can make use of a distance matrix</span>
@@ -330,15 +330,15 @@
     <span class="c1"># If distance matrices are provided, check that it matches the number</span>
     <span class="c1"># of ensembles</span>
     <span class="k">if</span> <span class="n">distance_matrix</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="s2">"__iter__"</span><span class="p">):</span>
             <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[</span><span class="n">distance_matrix</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span>
             <span class="n">merged_ensembles</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Dimensions of provided list of distance matrices &quot;</span>
-                <span class="s2">&quot;does not match that of provided list of &quot;</span>
-                <span class="s2">&quot;ensembles: </span><span class="si">{0}</span><span class="s2"> vs </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Dimensions of provided list of distance matrices "</span>
+                <span class="s2">"does not match that of provided list of "</span>
+                <span class="s2">"ensembles: </span><span class="si">{0}</span><span class="s2"> vs </span><span class="si">{1}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -361,7 +361,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
                 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+                    <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
                 <span class="p">)</span>
 
                 <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
@@ -384,7 +384,7 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
             <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span>
-        <span class="n">details</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ensemble_assignment</span>
+        <span class="n">details</span><span class="p">[</span><span class="s2">"ensemble_membership"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ensemble_assignment</span>
 
     <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>

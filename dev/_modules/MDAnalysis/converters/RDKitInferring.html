@@ -164,10 +164,10 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;RDKit bond order inferring --- :mod:`MDAnalysis.converters.RDKitInferring`</span>
+<span class="sd">"""RDKit bond order inferring --- :mod:`MDAnalysis.converters.RDKitInferring`</span>
 <span class="sd">=============================================================================</span>
 <span class="sd">Bond order and formal charge inferring for RDKit molecules. Because most MD</span>
-<span class="sd">file formats don&#39;t preserve bond order information directly (or formal charges</span>
+<span class="sd">file formats don't preserve bond order information directly (or formal charges</span>
 <span class="sd">to some extent), the classes provided here give users different options to</span>
 <span class="sd">either provide or infer this information to the RDKit molecule constructed from</span>
 <span class="sd">the topology. Having bond orders and formal charges properly defined is a</span>
@@ -180,8 +180,8 @@
 
 <span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
 <span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
-<span class="sd">    &gt;&gt;&gt; u = mda.Universe(&quot;aspirin.pdb&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; template = Chem.MolFromSmiles(&quot;CC(=O)Oc1ccccc1C(=O)O&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; u = mda.Universe("aspirin.pdb")</span>
+<span class="sd">    &gt;&gt;&gt; template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")</span>
 <span class="sd">    &gt;&gt;&gt; inferrer = mda.converters.RDKitInferring.TemplateInferrer(template)</span>
 <span class="sd">    &gt;&gt;&gt; rdkit_mol = u.atoms.convert_to.rdkit(inferrer=inferrer)</span>
 
@@ -202,7 +202,7 @@
 
 <span class="sd">.. autofunction:: reorder_atoms</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
@@ -221,7 +221,7 @@
     <span class="n">RDBONDORDER</span> <span class="o">=</span> <span class="p">{</span>
         <span class="mi">1</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">,</span>
         <span class="mf">1.5</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">AROMATIC</span><span class="p">,</span>
-        <span class="s2">&quot;ar&quot;</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">AROMATIC</span><span class="p">,</span>
+        <span class="s2">"ar"</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">AROMATIC</span><span class="p">,</span>
         <span class="mi">2</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">,</span>
         <span class="mi">3</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">TRIPLE</span><span class="p">,</span>
     <span class="p">}</span>
@@ -238,21 +238,21 @@
 <div class="viewcode-block" id="reorder_atoms">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.reorder_atoms">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reorder_atoms</span><span class="p">(</span>
-    <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reorder atoms based on the given field. Defaults to sorting in the same</span>
+    <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"_MDAnalysis_index"</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Reorder atoms based on the given field. Defaults to sorting in the same</span>
 <span class="sd">    order as the input AtomGroup.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    If the field is not found on the molecule, skips reordering.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()])</span>
         <span class="k">return</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RenumberAtoms</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
     <span class="c1"># not a molecule converted by MDAnalysis</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">field</span><span class="si">!r}</span><span class="s2"> not available on the input mol atoms, skipping reordering of atoms.&quot;</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">field</span><span class="si">!r}</span><span class="s2"> not available on the input mol atoms, skipping reordering of atoms."</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">mol</span></div>
 
@@ -260,8 +260,8 @@
 
 <div class="viewcode-block" id="sanitize_mol">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.sanitize_mol">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sanitize_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sanitizes the molecule.&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sanitize_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Sanitizes the molecule."""</span>
     <span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span></div>
 
 
@@ -270,7 +270,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MDAnalysisInferrer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bond order and formal charge inferring as originally implemented for</span>
+<span class="w">    </span><span class="sd">"""Bond order and formal charge inferring as originally implemented for</span>
 <span class="sd">    the RDKit converter. This algorithm only relies on the topology with</span>
 <span class="sd">    explicit hydrogens to assign bond orders and formal charges.</span>
 
@@ -298,7 +298,7 @@
 <span class="sd">    more info.</span>
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">MONATOMIC_CATION_CHARGES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -317,21 +317,21 @@
         <span class="mi">13</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">STANDARDIZATION_REACTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;[C-;X2;H0:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]&quot;</span><span class="p">,</span>  <span class="c1"># Cterm</span>
-        <span class="s2">&quot;[N-;X2;H1;$(N-[*^3]):1]&gt;&gt;[N+0:1]&quot;</span><span class="p">,</span>  <span class="c1"># Nterm</span>
-        <span class="s2">&quot;[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]&quot;</span><span class="p">,</span>  <span class="c1"># keto-enolate</span>
-        <span class="s2">&quot;[C-;v3:1]-[#7+0;v3;H2:2]&gt;&gt;[#6+0:1]=[#7+:2]&quot;</span><span class="p">,</span>  <span class="c1"># ARG</span>
-        <span class="s2">&quot;[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]&quot;</span>
-        <span class="s2">&quot;&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]&quot;</span><span class="p">,</span>  <span class="c1"># HIP</span>
-        <span class="s2">&quot;[S;D4;!v6:1]-[*-:2]&gt;&gt;[S;v6:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># sulfone</span>
-        <span class="s2">&quot;[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># charged-N</span>
+        <span class="s2">"[C-;X2;H0:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]"</span><span class="p">,</span>  <span class="c1"># Cterm</span>
+        <span class="s2">"[N-;X2;H1;$(N-[*^3]):1]&gt;&gt;[N+0:1]"</span><span class="p">,</span>  <span class="c1"># Nterm</span>
+        <span class="s2">"[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]"</span><span class="p">,</span>  <span class="c1"># keto-enolate</span>
+        <span class="s2">"[C-;v3:1]-[#7+0;v3;H2:2]&gt;&gt;[#6+0:1]=[#7+:2]"</span><span class="p">,</span>  <span class="c1"># ARG</span>
+        <span class="s2">"[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"</span>
+        <span class="s2">"&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"</span><span class="p">,</span>  <span class="c1"># HIP</span>
+        <span class="s2">"[S;D4;!v6:1]-[*-:2]&gt;&gt;[S;v6:1]=[*+0:2]"</span><span class="p">,</span>  <span class="c1"># sulfone</span>
+        <span class="s2">"[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]"</span><span class="p">,</span>  <span class="c1"># charged-N</span>
     <span class="p">]</span>
 
     <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
     <span class="n">sanitize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer bond orders and formal charges in the molecule.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Infer bond orders and formal charges in the molecule.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -341,7 +341,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A new molecule with proper bond orders and charges.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="n">mol</span> <span class="o">=</span> <span class="n">reorder_atoms</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
@@ -352,11 +352,11 @@
 <div class="viewcode-block" id="MDAnalysisInferrer._atom_sorter">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._atom_sorter">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_atom_sorter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="s2">&quot;Chem.Atom&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sorts atoms in the molecule in a way that makes it easy for the bond</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_atom_sorter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="s2">"Chem.Atom"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Sorts atoms in the molecule in a way that makes it easy for the bond</span>
 <span class="sd">        order and charge infering code to get the correct state on the first</span>
 <span class="sd">        try. Currently sorts by number of unpaired electrons, then by number of</span>
-<span class="sd">        heavy atom neighbors (i.e. atoms at the edge first).&quot;&quot;&quot;</span>
+<span class="sd">        heavy atom neighbors (i.e. atoms at the edge first)."""</span>
         <span class="n">num_heavy_neighbors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">neighbor</span>
@@ -370,10 +370,10 @@
 <div class="viewcode-block" id="MDAnalysisInferrer._infer_bo_and_charges">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._infer_bo_and_charges">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer bond orders and formal charges from a molecule.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Infer bond orders and formal charges from a molecule.</span>
 
-<span class="sd">        Since most MD topology files don&#39;t explicitly retain information on</span>
+<span class="sd">        Since most MD topology files don't explicitly retain information on</span>
 <span class="sd">        bond orders or charges, it has to be guessed from the topology. This</span>
 <span class="sd">        is done by looping over each atom and comparing its expected valence</span>
 <span class="sd">        to the current valence to get the Number of Unpaired Electrons (NUE).</span>
@@ -394,7 +394,7 @@
 <span class="sd">        ``R-C(-O)-O`` the first oxygen read will receive a double bond and the</span>
 <span class="sd">        other one will be charged. It will also affect more complex conjugated</span>
 <span class="sd">        systems.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># heavy atoms sorted by number of heavy atom neighbors (lower first)</span>
         <span class="c1"># then NUE (higher first)</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -415,7 +415,7 @@
                 <span class="k">continue</span>
             <span class="c1"># get NUE for each possible valence</span>
             <span class="n">nue</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
-            <span class="c1"># if there&#39;s only one possible valence state and the corresponding</span>
+            <span class="c1"># if there's only one possible valence state and the corresponding</span>
             <span class="c1"># NUE is negative, it means we can only add a positive charge to</span>
             <span class="c1"># the atom</span>
             <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">nue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
@@ -438,7 +438,7 @@
                     <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="n">nue</span><span class="p">,</span> <span class="o">*</span><span class="n">na_nue</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">],</span>
                     <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="c1"># a common NUE of 0 means we don&#39;t need to do anything</span>
+                <span class="c1"># a common NUE of 0 means we don't need to do anything</span>
                 <span class="k">if</span> <span class="n">common_nue</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># increase bond order</span>
                     <span class="n">bond</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetBondBetweenAtoms</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">(),</span> <span class="n">na</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">())</span>
@@ -462,8 +462,8 @@
 <div class="viewcode-block" id="MDAnalysisInferrer._get_nb_unpaired_electrons">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._get_nb_unpaired_electrons">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="s2">&quot;Chem.Atom&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the number of unpaired electrons (NUE) of an atom</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="s2">"Chem.Atom"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Calculate the number of unpaired electrons (NUE) of an atom</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -474,7 +474,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        nue : List[int]</span>
 <span class="sd">            The NUE for each possible valence of the atom</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">expected_vs</span> <span class="o">=</span> <span class="n">PERIODIC_TABLE</span><span class="o">.</span><span class="n">GetValenceList</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">())</span>
         <span class="n">current_v</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetTotalValence</span><span class="p">()</span> <span class="o">-</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetFormalCharge</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="o">-</span> <span class="n">current_v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">expected_vs</span><span class="p">]</span></div>
@@ -483,9 +483,9 @@
 <div class="viewcode-block" id="MDAnalysisInferrer._standardize_patterns">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._standardize_patterns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_patterns</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardizes functional groups</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Standardizes functional groups</span>
 
 <span class="sd">        Uses :meth:`~MDAnalysisInferrer._rebuild_conjugated_bonds` to</span>
 <span class="sd">        standardize conjugated systems, and SMARTS reactions for other</span>
@@ -540,15 +540,15 @@
 <span class="sd">        | charged N     | ``[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]``                                      |</span>
 <span class="sd">        +---------------+------------------------------------------------------------------------------+</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">max_iter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">max_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Specifying `max_iter` is deprecated and will be removed in a &quot;</span>
-                <span class="s2">&quot;future update. Directly create an instance of &quot;</span>
-                <span class="s2">&quot;`MDAnalysisInferrer` with `MDAnalysisInferrer(max_iter=...)` &quot;</span>
-                <span class="s2">&quot;instead.&quot;</span><span class="p">,</span>
+                <span class="s2">"Specifying `max_iter` is deprecated and will be removed in a "</span>
+                <span class="s2">"future update. Directly create an instance of "</span>
+                <span class="s2">"`MDAnalysisInferrer` with `MDAnalysisInferrer(max_iter=...)` "</span>
+                <span class="s2">"instead."</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -579,9 +579,9 @@
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._apply_reactions">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_reactions</span><span class="p">(</span>
-        <span class="n">reactions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;ChemicalReaction&quot;</span><span class="p">],</span> <span class="n">reactant</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span>
+        <span class="n">reactions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">"ChemicalReaction"</span><span class="p">],</span> <span class="n">reactant</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies a series of unimolecular reactions to a molecule. The</span>
+<span class="w">        </span><span class="sd">"""Applies a series of unimolecular reactions to a molecule. The</span>
 <span class="sd">        reactions must not add any atom to the product. The molecule is</span>
 <span class="sd">        modified inplace.</span>
 
@@ -593,7 +593,7 @@
 <span class="sd">        reactant : rdkit.Chem.rdchem.Mol</span>
 <span class="sd">            The molecule to transform inplace</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">reactant</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">Chem</span><span class="o">.</span><span class="n">KekulizeIfPossible</span><span class="p">(</span><span class="n">reactant</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
@@ -606,9 +606,9 @@
 <div class="viewcode-block" id="MDAnalysisInferrer._rebuild_conjugated_bonds">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rebuild conjugated bonds without negatively charged atoms at the</span>
+<span class="w">        </span><span class="sd">"""Rebuild conjugated bonds without negatively charged atoms at the</span>
 <span class="sd">        beginning and end of the conjugated system</span>
 
 <span class="sd">        Depending on the order in which atoms are read during the conversion,</span>
@@ -625,7 +625,7 @@
 <span class="sd">        reaches the smallest pattern with ``n=1``. This last pattern is then</span>
 <span class="sd">        transformed ``anion-*=*-anion`` to ``*=*-*=*``.</span>
 <span class="sd">        Since ``anion-*=*`` is the same as ``*=*-anion`` in terms of SMARTS,</span>
-<span class="sd">        we can control that we don&#39;t transform the same triplet of atoms back</span>
+<span class="sd">        we can control that we don't transform the same triplet of atoms back</span>
 <span class="sd">        and forth by adding their indices to a list.</span>
 <span class="sd">        This function also handles conjugated systems with triple bonds.</span>
 <span class="sd">        The molecule needs to be kekulized first to also cover systems</span>
@@ -645,20 +645,20 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        The molecule is modified inplace</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">max_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="k">if</span> <span class="n">max_iter</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">max_iter</span>
         <span class="n">mol</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">Chem</span><span class="o">.</span><span class="n">KekulizeIfPossible</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="c1"># pattern used to find problematic conjugated bonds</span>
-        <span class="c1"># there&#39;s usually an even number of matches for this</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s2">&quot;[*-{1-2}]-,=[*+0]=,#[*+0]&quot;</span><span class="p">)</span>
+        <span class="c1"># there's usually an even number of matches for this</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s2">"[*-{1-2}]-,=[*+0]=,#[*+0]"</span><span class="p">)</span>
         <span class="c1"># pattern used to finish fixing a series of conjugated bonds</span>
         <span class="n">base_end_pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span>
-            <span class="s2">&quot;[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]&quot;</span>
+            <span class="s2">"[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]"</span>
         <span class="p">)</span>
-        <span class="c1"># used when there&#39;s an odd number of matches for `pattern`</span>
+        <span class="c1"># used when there's an odd number of matches for `pattern`</span>
         <span class="n">odd_end_pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span>
-            <span class="s2">&quot;[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]&quot;</span>
+            <span class="s2">"[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"</span>
         <span class="p">)</span>
         <span class="c1"># number of unique matches with the pattern</span>
         <span class="n">n_matches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
@@ -748,7 +748,7 @@
             <span class="c1"># switch the position of the charge and the double bond</span>
             <span class="n">matches</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
-                <span class="c1"># check if we haven&#39;t already transformed this triplet</span>
+                <span class="c1"># check if we haven't already transformed this triplet</span>
                 <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
                     <span class="c1"># store order-independent atom indices</span>
                     <span class="n">g</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
@@ -762,12 +762,12 @@
                 <span class="c1"># already performed all changes</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">backtrack_cycles</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="c1"># might be stuck because there were 2 &quot;odd&quot; end</span>
+                        <span class="c1"># might be stuck because there were 2 "odd" end</span>
                         <span class="c1"># patterns  misqualified as a single base one</span>
                         <span class="n">end_pattern</span> <span class="o">=</span> <span class="n">odd_end_pattern</span>
                     <span class="k">elif</span> <span class="n">backtrack_cycles</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="c1"># likely stuck changing the same bonds over and over so</span>
-                        <span class="c1"># let&#39;s stop here</span>
+                        <span class="c1"># let's stop here</span>
                         <span class="n">mol</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                         <span class="k">return</span>
                     <span class="n">match</span> <span class="o">=</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -799,8 +799,8 @@
 
         <span class="c1"># reached max_iter</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;The standardization could not be completed within a &quot;</span>
-            <span class="s2">&quot;reasonable number of iterations&quot;</span>
+            <span class="s2">"The standardization could not be completed within a "</span>
+            <span class="s2">"reasonable number of iterations"</span>
         <span class="p">)</span></div>
 </div>
 
@@ -810,7 +810,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.TemplateInferrer">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TemplateInferrer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Infer bond orders and charges by matching the molecule with a template</span>
+<span class="w">    </span><span class="sd">"""Infer bond orders and charges by matching the molecule with a template</span>
 <span class="sd">    molecule containing bond orders and charges.</span>
 
 <span class="sd">    Attributes</span>
@@ -823,15 +823,15 @@
 <span class="sd">        back. Useful to avoid adding explicit hydrogens on the template which</span>
 <span class="sd">        can prevent RDKit from finding a match between the template and the</span>
 <span class="sd">        molecule. Setting this to ``False`` can be useful to speed things up</span>
-<span class="sd">        for inorganic molecules that don&#39;t have any hydrogens.</span>
+<span class="sd">        for inorganic molecules that don't have any hydrogens.</span>
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">template</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span>
+    <span class="n">template</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span>
     <span class="n">adjust_hydrogens</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust_hydrogens</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assign_from_template_with_adjusted_hydrogens</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AssignBondOrdersFromTemplate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">mol</span><span class="p">)</span>
@@ -839,21 +839,21 @@
 <div class="viewcode-block" id="TemplateInferrer.assign_from_template_with_adjusted_hydrogens">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.TemplateInferrer.assign_from_template_with_adjusted_hydrogens">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">assign_from_template_with_adjusted_hydrogens</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">,</span> <span class="n">index_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Temporarily removes hydrogens from the molecule before assigning</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">,</span> <span class="n">index_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"_MDAnalysis_index"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Temporarily removes hydrogens from the molecule before assigning</span>
 <span class="sd">        bond orders and charges from the template, then adds them back.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mol : rdkit.Chem.rdchem.Mol</span>
 <span class="sd">            Molecule to assign bond orders and charges to.</span>
-<span class="sd">        index_field : str, default = &quot;_MDAnalysis_index&quot;</span>
+<span class="sd">        index_field : str, default = "_MDAnalysis_index"</span>
 <span class="sd">            Atom property corresponding to a unique integer that can used to</span>
 <span class="sd">            put back the hydrogen atoms that were removed before matching,</span>
 <span class="sd">            and sort them back to the original order. Must be accessible</span>
 <span class="sd">            through ``atom.GetIntProp``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># remove explicit hydrogens and assign BO from template</span>
         <span class="n">mol_no_h</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RemoveAllHs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="n">AssignBondOrdersFromTemplate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">mol_no_h</span><span class="p">)</span>
@@ -894,16 +894,16 @@
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitInferring.RDKitInferrer">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RDKitInferrer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Uses RDKit&#39;s :func:`~rdkit.Chem.rdDetermineBonds.DetermineBondOrders`</span>
+<span class="w">    </span><span class="sd">"""Uses RDKit's :func:`~rdkit.Chem.rdDetermineBonds.DetermineBondOrders`</span>
 <span class="sd">    to infer bond orders and formal charges. This is the same algorithm used</span>
 <span class="sd">    by the :ref:`xyz2mol &lt;https://github.com/jensengroup/xyz2mol&gt;` package.</span>
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">charge</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Chem.Mol&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">"Chem.Mol"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Chem.Mol"</span><span class="p">:</span>
         <span class="n">new</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="n">DetermineBondOrders</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new</span></div>

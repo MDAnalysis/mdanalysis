@@ -169,17 +169,17 @@ method to make it usable in two different ways: <code class="docutils literal no
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">person</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">person</span> <span class="o">=</span> <span class="n">person</span>
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;says&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"says"</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">whoami</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s2">"I am </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-<span class="gp">... </span>    <span class="n">say</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">&quot;say&quot;</span><span class="p">,</span> <span class="n">SpeechWrapper</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">say</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">"say"</span><span class="p">,</span> <span class="n">SpeechWrapper</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="s2">"Bob"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
 <span class="go">Bob says hello</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">say</span><span class="o">.</span><span class="n">whoami</span><span class="p">()</span>
 <span class="go">I am Bob</span>
@@ -204,7 +204,7 @@ method to make it usable in two different ways: <code class="docutils literal no
 use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">AtomGroup</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># ...</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">convert_to</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">&quot;convert_to&quot;</span><span class="p">,</span> <span class="n">ConverterWrapper</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">convert_to</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">"convert_to"</span><span class="p">,</span> <span class="n">ConverterWrapper</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>And when calling <code class="docutils literal notranslate"><span class="pre">ag.convert_to.rdkit()</span></code>, the “rdkit” method of the
@@ -230,7 +230,7 @@ metaclass magic.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">GRO</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parmed_structure</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">&#39;PARMED&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parmed_structure</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">'PARMED'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parmed_structure</span>
 <span class="go">&lt;Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized&gt;</span>
 </pre></div>

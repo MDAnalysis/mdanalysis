@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`</span>
+<span class="sd">"""Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`</span>
 <span class="sd">=====================================================================</span>
 
 <span class="sd">:Authors: Eugen Hruska, John Detlefs</span>
@@ -172,9 +172,9 @@
 <span class="sd">:Copyright: Lesser GNU Public License v2.1+</span>
 
 <span class="sd">This module contains the non-linear dimension reduction method diffusion map.</span>
-<span class="sd">The eigenvectors of a diffusion matrix represent the &#39;collective coordinates&#39;</span>
+<span class="sd">The eigenvectors of a diffusion matrix represent the 'collective coordinates'</span>
 <span class="sd">of a molecule; the largest eigenvalues are the more dominant collective</span>
-<span class="sd">coordinates. Assigning physical meaning to the &#39;collective coordinates&#39; is a</span>
+<span class="sd">coordinates. Assigning physical meaning to the 'collective coordinates' is a</span>
 <span class="sd">fundamentally difficult problem. The time complexity of the diffusion map is</span>
 <span class="sd">:math:`O(N^3)`, where N is the number of frames in the trajectory, and the in-memory</span>
 <span class="sd">storage complexity is :math:`O(N^2)`. Instead of a single trajectory a sample of</span>
@@ -221,7 +221,7 @@
 
 <span class="sd">.. code-block:: python</span>
 
-<span class="sd">   dmap = diffusionmap.DiffusionMap(u, select=&#39;backbone&#39;, epsilon=2)</span>
+<span class="sd">   dmap = diffusionmap.DiffusionMap(u, select='backbone', epsilon=2)</span>
 <span class="sd">   dmap.run()</span>
 
 <span class="sd">From here we can perform an embedding onto the k dominant eigenvectors. The</span>
@@ -241,7 +241,7 @@
 <span class="sd">   f, ax = plt.subplots()</span>
 <span class="sd">   upper_limit = # some reasonably high number less than the n_eigenvectors</span>
 <span class="sd">   ax.plot(dmap.eigenvalues[:upper_limit])</span>
-<span class="sd">   ax.set(xlabel =&#39;eigenvalue index&#39;, ylabel=&#39;eigenvalue&#39;)</span>
+<span class="sd">   ax.set(xlabel ='eigenvalue index', ylabel='eigenvalue')</span>
 <span class="sd">   plt.tight_layout()</span>
 
 <span class="sd">From here we can transform into the diffusion space</span>
@@ -277,7 +277,7 @@
 
 
 <span class="sd">.. footbibliography::</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -288,13 +288,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.rms</span><span class="w"> </span><span class="kn">import</span> <span class="n">rmsd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.diffusionmap&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.diffusionmap"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DistanceMatrix">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DistanceMatrix">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DistanceMatrix</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the pairwise distance between each frame in a trajectory</span>
+<span class="w">    </span><span class="sd">"""Calculate the pairwise distance between each frame in a trajectory</span>
 <span class="sd">    using a given metric</span>
 
 <span class="sd">    A distance matrix can be initialized on its own and used as an</span>
@@ -363,7 +363,7 @@
 <span class="sd">    :class:`DiffusionMap`.</span>
 
 <span class="sd">        u = mda.Universe(PSF,DCD)</span>
-<span class="sd">        dist_matrix = diffusionmap.DistanceMatrix(u, select=&#39;all&#39;)</span>
+<span class="sd">        dist_matrix = diffusionmap.DistanceMatrix(u, select='all')</span>
 <span class="sd">        dist_matrix.run()</span>
 <span class="sd">        dmap = diffusionmap.DiffusionMap(dist_matrix)</span>
 <span class="sd">        dmap.run()</span>
@@ -383,22 +383,22 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">"all"</span><span class="p">,</span>
         <span class="n">metric</span><span class="o">=</span><span class="n">rmsd</span><span class="p">,</span>
         <span class="n">cutoff</span><span class="o">=</span><span class="mf">1e0</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -411,9 +411,9 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">UpdatingAtomGroup</span><span class="p">):</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;U must be a static AtomGroup. Parsing an updating AtomGroup &quot;</span>
-                <span class="s2">&quot;will result in a static AtomGroup with the current frame &quot;</span>
-                <span class="s2">&quot;atom selection.&quot;</span>
+                <span class="s2">"U must be a static AtomGroup. Parsing an updating AtomGroup "</span>
+                <span class="s2">"will result in a static AtomGroup with the current frame "</span>
+                <span class="s2">"atom selection."</span>
             <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
@@ -438,9 +438,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dist_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `dist_matrix` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.dist_matrix` instead.&quot;</span>
+            <span class="s2">"The `dist_matrix` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.dist_matrix` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span>
@@ -474,7 +474,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;_positions&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>  <span class="c1"># Get positions</span>
+                <span class="s2">"_positions"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>  <span class="c1"># Get positions</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -483,7 +483,7 @@
 <div class="viewcode-block" id="DiffusionMap">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiffusionMap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Non-linear dimension reduction method</span>
+<span class="w">    </span><span class="sd">"""Non-linear dimension reduction method</span>
 
 <span class="sd">    Dimension reduction with diffusion mapping of selected structures in a</span>
 <span class="sd">    trajectory.</span>
@@ -505,10 +505,10 @@
 
 <span class="sd">    .. versionchanged:: 2.2.0</span>
 <span class="sd">         :class:`DiffusionMap` now also accepts `AtomGroup`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        -------------</span>
 <span class="sd">        u : MDAnalysis Universe or AtomGroup or DistanceMatrix object.</span>
@@ -523,22 +523,22 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Parameters to be passed for the initialization of a</span>
 <span class="sd">            :class:`DistanceMatrix`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Universe</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span> <span class="o">=</span> <span class="n">DistanceMatrix</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">DistanceMatrix</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span> <span class="o">=</span> <span class="n">u</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;U is not a Universe or AtomGroup or DistanceMatrix and&quot;</span>
-                <span class="s2">&quot; so the DiffusionMap has no data to work with.&quot;</span>
+                <span class="s2">"U is not a Universe or AtomGroup or DistanceMatrix and"</span>
+                <span class="s2">" so the DiffusionMap has no data to work with."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
 
 <div class="viewcode-block" id="DiffusionMap.run">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and decompose the diffusion matrix in preparation</span>
+<span class="w">        </span><span class="sd">"""Create and decompose the diffusion matrix in preparation</span>
 <span class="sd">        for a diffusion map.</span>
 
 <span class="sd">        Parameters</span>
@@ -552,7 +552,7 @@
 
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           Added start/stop/step kwargs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># run only if distance matrix not already calculated</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
@@ -560,9 +560,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">n_frames</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;The distance matrix is very large, and can &quot;</span>
-                <span class="s2">&quot;be very slow to compute. Consider picking a larger &quot;</span>
-                <span class="s2">&quot;step size in distance matrix initialization.&quot;</span>
+                <span class="s2">"The distance matrix is very large, and can "</span>
+                <span class="s2">"be very slow to compute. Consider picking a larger "</span>
+                <span class="s2">"step size in distance matrix initialization."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scaled_matrix</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span>
@@ -582,7 +582,7 @@
 <div class="viewcode-block" id="DiffusionMap.transform">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap.transform">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_eigenvectors</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Embeds a trajectory via the diffusion map</span>
+<span class="w">        </span><span class="sd">"""Embeds a trajectory via the diffusion map</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
@@ -596,7 +596,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        diffusion_space : array (n_frames, n_eigenvectors)</span>
 <span class="sd">            The diffusion map embedding as defined by :footcite:p:`Ferguson2011`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eigenvectors</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="n">n_eigenvectors</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">eigenvalues</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="n">n_eigenvectors</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="n">time</span>
         <span class="p">)</span></div>

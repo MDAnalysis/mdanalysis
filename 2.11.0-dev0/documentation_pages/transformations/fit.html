@@ -175,10 +175,10 @@ the translation motions of the AtomGroup over that particular plane.</p>
 <p class="rubric">Example</p>
 <p>Removing the translations of a given AtomGroup <cite>ag</cite> on the XY plane by
 fitting its center of mass to the center of mass of a reference <cite>ref</cite>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;reference.pdb&quot;</span><span class="p">)</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">fit_translation</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                                                <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"reference.pdb"</span><span class="p">)</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">fit_translation</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">"xy"</span><span class="p">,</span>
+                                                <span class="n">weights</span><span class="o">=</span><span class="s2">"mass"</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -243,10 +243,10 @@ with which it performs better.</p>
 <p class="rubric">Example</p>
 <p>Removing the translations and rotations of a given AtomGroup <cite>ag</cite> on the XY plane
 by fitting it to a reference <cite>ref</cite>, using the masses as weights for the RMSD fit:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;reference.pdb&quot;</span><span class="p">)</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">fit_rot_trans</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                                              <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"reference.pdb"</span><span class="p">)</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">fit_rot_trans</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">"xy"</span><span class="p">,</span>
+                                              <span class="n">weights</span><span class="o">=</span><span class="s2">"mass"</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>

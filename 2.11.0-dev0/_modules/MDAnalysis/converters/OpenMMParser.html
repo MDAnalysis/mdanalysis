@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;OpenMM topology parser :mod:`MDAnalysis.converters.OpenMMParser`</span>
+<span class="sd">"""OpenMM topology parser :mod:`MDAnalysis.converters.OpenMMParser`</span>
 <span class="sd">===================================================================</span>
 
 <span class="sd">.. versionadded:: 2.0.0</span>
@@ -199,7 +199,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -225,11 +225,11 @@
 <div class="viewcode-block" id="OpenMMTopologyParser">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OpenMMTopologyParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMTOPOLOGY&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"OPENMMTOPOLOGY"</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this Parser read object *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this Parser read object *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -241,7 +241,7 @@
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_mda_topology_from_omm_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omm_topology</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct mda topology from omm topology</span>
+<span class="w">        </span><span class="sd">"""Construct mda topology from omm topology</span>
 
 <span class="sd">        Can be used for any openmm object that contains a topology object</span>
 
@@ -256,7 +256,7 @@
 
 <span class="sd">        When partial elements are present, values from available elements</span>
 <span class="sd">        are used whereas the absent elements are assigned an empty string</span>
-<span class="sd">        with their atomtype set to &#39;X&#39; and mass set to 0.0.</span>
+<span class="sd">        with their atomtype set to 'X' and mass set to 0.0.</span>
 
 <span class="sd">        For elements with invalid and unreal symbols, the symbol is used</span>
 <span class="sd">        as it is for atomtypes but an empty string is used for elements.</span>
@@ -265,7 +265,7 @@
 <span class="sd">           The parser now works when element attribute is missing in some or</span>
 <span class="sd">           all the atoms.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">openmm.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">daltons</span>
@@ -274,9 +274,9 @@
                 <span class="kn">from</span><span class="w"> </span><span class="nn">simtk.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">daltons</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;OpenMM is required for the OpenMMParser but &quot;</span>
-                    <span class="s2">&quot;it&#39;s not installed. Try installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;conda install -c conda-forge openmm&quot;</span>
+                    <span class="s2">"OpenMM is required for the OpenMMParser but "</span>
+                    <span class="s2">"it's not installed. Try installing it with </span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="s2">"conda install -c conda-forge openmm"</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
@@ -313,30 +313,30 @@
                 <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span><span class="p">:</span>
                     <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
                 <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">daltons</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
                 <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-                <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+                <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"X"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;Element information missing for some atoms. &quot;</span>
-                    <span class="s2">&quot;These have been given an empty element record &quot;</span>
+                    <span class="s2">"Element information missing for some atoms. "</span>
+                    <span class="s2">"These have been given an empty element record "</span>
                 <span class="p">)</span>
-                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;X&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="s2">"X"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">):</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="s2">&quot;For absent elements, atomtype has been  &quot;</span>
-                        <span class="s2">&quot;set to &#39;X&#39; and mass has been set to 0.0. &quot;</span>
-                        <span class="s2">&quot;If needed these can be guessed using &quot;</span>
-                        <span class="s2">&quot;universe.guess_TopologyAttrs(&quot;</span>
-                        <span class="s2">&quot;to_guess=[&#39;masses&#39;, &#39;types&#39;]). &quot;</span>
-                        <span class="s2">&quot;(for MDAnalysis version 2.x &quot;</span>
-                        <span class="s2">&quot;this is done automatically,&quot;</span>
-                        <span class="s2">&quot; but it will be removed in 3.0).&quot;</span>
+                        <span class="s2">"For absent elements, atomtype has been  "</span>
+                        <span class="s2">"set to 'X' and mass has been set to 0.0. "</span>
+                        <span class="s2">"If needed these can be guessed using "</span>
+                        <span class="s2">"universe.guess_TopologyAttrs("</span>
+                        <span class="s2">"to_guess=['masses', 'types']). "</span>
+                        <span class="s2">"(for MDAnalysis version 2.x "</span>
+                        <span class="s2">"this is done automatically,"</span>
+                        <span class="s2">" but it will be removed in 3.0)."</span>
                     <span class="p">)</span>
 
                 <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -345,16 +345,16 @@
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;Element information is missing for all the atoms. &quot;</span>
-                    <span class="s2">&quot;Elements attribute will not be populated. &quot;</span>
-                    <span class="s2">&quot;Atomtype attribute will be guessed using atom &quot;</span>
-                    <span class="s2">&quot;name and mass will be guessed using atomtype.&quot;</span>
-                    <span class="s2">&quot;For MDAnalysis version 2.x this is done automatically, &quot;</span>
-                    <span class="s2">&quot;but it will be removed in MDAnalysis v3.0. &quot;</span>
-                    <span class="s2">&quot;These can be guessed using &quot;</span>
-                    <span class="s2">&quot;universe.guess_TopologyAttrs(&quot;</span>
-                    <span class="s2">&quot;to_guess=[&#39;masses&#39;, &#39;types&#39;]) &quot;</span>
-                    <span class="s2">&quot;See MDAnalysis.guessers.&quot;</span>
+                    <span class="s2">"Element information is missing for all the atoms. "</span>
+                    <span class="s2">"Elements attribute will not be populated. "</span>
+                    <span class="s2">"Atomtype attribute will be guessed using atom "</span>
+                    <span class="s2">"name and mass will be guessed using atomtype."</span>
+                    <span class="s2">"For MDAnalysis version 2.x this is done automatically, "</span>
+                    <span class="s2">"but it will be removed in MDAnalysis v3.0. "</span>
+                    <span class="s2">"These can be guessed using "</span>
+                    <span class="s2">"universe.guess_TopologyAttrs("</span>
+                    <span class="s2">"to_guess=['masses', 'types']) "</span>
+                    <span class="s2">"See MDAnalysis.guessers."</span>
                 <span class="p">)</span>
 
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
@@ -388,11 +388,11 @@
 <div class="viewcode-block" id="OpenMMAppTopologyParser">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMMParser.OpenMMAppTopologyParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OpenMMAppTopologyParser</span><span class="p">(</span><span class="n">OpenMMTopologyParser</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMAPP&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"OPENMMAPP"</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this Parser read object *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this Parser read object *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>

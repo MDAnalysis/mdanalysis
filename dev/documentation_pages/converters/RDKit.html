@@ -515,13 +515,13 @@ is avoided.</p>
 molecule:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromMol2File</span><span class="p">(</span><span class="s2">&quot;docking_poses.mol2&quot;</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromMol2File</span><span class="p">(</span><span class="s2">"docking_poses.mol2"</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
 <span class="go">&lt;Universe with 42 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
 <span class="go">&lt;RDKitReader with 10 frames of 42 atoms&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">"RDKIT"</span><span class="p">)</span>
 <span class="go">&lt;rdkit.Chem.rdchem.Mol object at 0x7fcebb958148&gt;</span>
 </pre></div>
 </div>
@@ -540,7 +540,7 @@ relies on the topology alone and the presence of explicit hydrogen atoms, you
 can also use alternative builtin algorithms (see the
 <a class="reference internal" href="#module-MDAnalysis.converters.RDKitInferring" title="MDAnalysis.converters.RDKitInferring"><code class="xref py py-mod docutils literal notranslate"><span class="pre">RDKitInferring</span></code></a> module) or even your own function
 to modify the RDKit molecule:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)O&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">"CC(=O)Oc1ccccc1C(=O)O"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">inferrer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">RDKitInferring</span><span class="o">.</span><span class="n">TemplateInferrer</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">template</span><span class="o">=</span><span class="n">template</span>
 <span class="gp">... </span><span class="p">)</span>
@@ -650,20 +650,20 @@ atom.GetProp(“_MDAnalysis_name”)</p></td>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB_full</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_full</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname DMS&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">&#39;RDKIT&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'resname DMS'</span><span class="p">)</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">'RDKIT'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">GetMonomerInfo</span><span class="p">()</span><span class="o">.</span><span class="n">GetResidueName</span><span class="p">()</span>
-<span class="go">&#39;DMS&#39;</span>
+<span class="go">'DMS'</span>
 </pre></div>
 </div>
 <p>To create a molecule for each frame of a trajectory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem.Descriptors3D</span><span class="w"> </span><span class="kn">import</span> <span class="n">Asphericity</span>
 
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
-<span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1-10&quot;</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">'elements'</span><span class="p">])</span>
+<span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resid 1-10"</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
-    <span class="n">mol</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">"RDKIT"</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">Asphericity</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -679,7 +679,7 @@ orders and charges. You can also pass your own callable function to
 <code class="docutils literal notranslate"><span class="pre">inferrer</span></code> to assign bond orders and charges as you see fit:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem.AllChem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssignBondOrdersFromTemplate</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;NC(Cc1ccccc1)C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">"NC(Cc1ccccc1)C(=O)O"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">infer_from_template</span><span class="p">(</span><span class="n">mol</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">AssignBondOrdersFromTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">mol</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">infer_from_template</span><span class="p">)</span>
@@ -789,8 +789,8 @@ example.</p>
 <p>These classes are meant to be passed directly to the RDKit converter:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;aspirin.pdb&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"aspirin.pdb"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">"CC(=O)Oc1ccccc1C(=O)O"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">inferrer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">RDKitInferring</span><span class="o">.</span><span class="n">TemplateInferrer</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rdkit_mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">inferrer</span><span class="p">)</span>
 </pre></div>

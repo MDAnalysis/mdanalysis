@@ -335,7 +335,7 @@ polymer chain, ordered in the correct order.</p></li>
 <span class="n">chains</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">fragments</span>
 
 <span class="c1"># select only the backbone atoms for each chain</span>
-<span class="n">backbones</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not name O* H*&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">]</span>
+<span class="n">backbones</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'not name O* H*'</span><span class="p">)</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">]</span>
 
 <span class="c1"># sort the chains, removing any non-backbone atoms</span>
 <span class="n">sorted_backbones</span> <span class="o">=</span> <span class="p">[</span><span class="n">polymer</span><span class="o">.</span><span class="n">sort_backbone</span><span class="p">(</span><span class="n">bb</span><span class="p">)</span> <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="n">backbones</span><span class="p">]</span>
@@ -344,7 +344,7 @@ polymer chain, ordered in the correct order.</p></li>
 <span class="c1"># Run the analysis, this will average over all polymer chains</span>
 <span class="c1"># and all timesteps in trajectory</span>
 <span class="n">persistence_length</span> <span class="o">=</span> <span class="n">persistence_length</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The persistence length is: </span><span class="si">{</span><span class="n">persistence_length</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'The persistence length is: </span><span class="si">{</span><span class="n">persistence_length</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
 <span class="c1"># always check the visualisation of this:</span>
 <span class="n">persistence_length</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>

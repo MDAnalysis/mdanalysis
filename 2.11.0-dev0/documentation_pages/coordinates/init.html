@@ -268,8 +268,8 @@ class can choose an appropriate reader automatically.</p>
 <p>A typical approach is to generate a new trajectory from an old one, e.g., to
 only keep the protein:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">&quot;protein.xtc&quot;</span><span class="p">,</span> <span class="n">protein</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">"protein.xtc"</span><span class="p">,</span> <span class="n">protein</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
         <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
 </pre></div>

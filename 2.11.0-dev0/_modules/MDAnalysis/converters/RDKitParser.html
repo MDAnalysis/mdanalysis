@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">RDKit topology parser --- :mod:`MDAnalysis.converters.RDKitParser`</span>
 <span class="sd">==================================================================</span>
 
@@ -183,7 +183,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -213,21 +213,21 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..topology.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.converters.RDKitParser&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.converters.RDKitParser"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_rdkit_atom_to_RS</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetches RDKit chiral tags&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Fetches RDKit chiral tags"""</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_CIPCode&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_CIPCode"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
 
 
 <div class="viewcode-block" id="RDKitParser">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    For RDKit structures</span>
 
 <span class="sd">    Creates the following Attributes:</span>
@@ -243,7 +243,7 @@
 <span class="sd">     - RSChirality</span>
 <span class="sd">     - Segids</span>
 
-<span class="sd">    Depending on RDKit&#39;s input, the following Attributes might be present:</span>
+<span class="sd">    Depending on RDKit's input, the following Attributes might be present:</span>
 <span class="sd">     - Charges</span>
 <span class="sd">     - Resnames</span>
 <span class="sd">     - AltLocs</span>
@@ -263,8 +263,8 @@
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetChainId()          | chainIDs                |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
-<span class="sd">    | atom.GetDoubleProp(&#39;_GasteigerCharge&#39;)      | charges                 |</span>
-<span class="sd">    | atom.GetDoubleProp(&#39;_TriposPartialCharge&#39;)  |                         |</span>
+<span class="sd">    | atom.GetDoubleProp('_GasteigerCharge')      | charges                 |</span>
+<span class="sd">    | atom.GetDoubleProp('_TriposPartialCharge')  |                         |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetSymbol()                            | elements                |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
@@ -275,9 +275,9 @@
 <span class="sd">    | atom.GetMass()                              | masses                  |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetName()             | names                   |</span>
-<span class="sd">    | atom.GetProp(&#39;_TriposAtomName&#39;)             |                         |</span>
+<span class="sd">    | atom.GetProp('_TriposAtomName')             |                         |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
-<span class="sd">    | atom.GetProp(&#39;_CIPCode&#39;)                    | chiralities             |</span>
+<span class="sd">    | atom.GetProp('_CIPCode')                    | chiralities             |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
@@ -287,7 +287,7 @@
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetTempFactor()       | tempfactors             |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
-<span class="sd">    | atom.GetProp(&#39;_TriposAtomType&#39;)             | types                   |</span>
+<span class="sd">    | atom.GetProp('_TriposAtomType')             | types                   |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 
 <span class="sd">    Raises</span>
@@ -305,13 +305,13 @@
 <span class="sd">       present in the input rdkit molecule as a _TriposAtomType property,</span>
 <span class="sd">       the type attribute get the same values as the element attribute.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;RDKIT&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"RDKIT"</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this Parser read object *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this Parser read object *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># if no rdkit, probably not rdkit</span>
@@ -321,12 +321,12 @@
 <div class="viewcode-block" id="RDKitParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse RDKit into Topology</span>
+<span class="w">        </span><span class="sd">"""Parse RDKit into Topology</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
 
@@ -362,12 +362,12 @@
             <span class="k">return</span> <span class="n">top</span>
 
         <span class="c1"># check if multiple charges present</span>
-        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">&quot;_TriposPartialCharge&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">"_GasteigerCharge"</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">"_TriposPartialCharge"</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Both _GasteigerCharge and _TriposPartialCharge properties &quot;</span>
-                <span class="s2">&quot;are present. Using Gasteiger charges by default.&quot;</span>
+                <span class="s2">"Both _GasteigerCharge and _TriposPartialCharge properties "</span>
+                <span class="s2">"are present. Using Gasteiger charges by default."</span>
             <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
@@ -390,24 +390,24 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># atom name (MOL2 only)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_TriposAtomName&quot;</span><span class="p">))</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_TriposAtomName"</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="c1"># atom type (MOL2 only)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_TriposAtomType&quot;</span><span class="p">))</span>
+                    <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_TriposAtomType"</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="c1"># gasteiger charge (computed):</span>
                 <span class="c1"># if the user took the time to compute them, make it a priority</span>
                 <span class="c1"># over charges read from a MOL2 file</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">))</span>
+                    <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">"_GasteigerCharge"</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="c1"># partial charge (MOL2 only)</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_TriposPartialCharge&quot;</span><span class="p">)</span>
+                            <span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">"_TriposPartialCharge"</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
@@ -418,10 +418,10 @@
 
         <span class="k">if</span> <span class="n">resnums</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resnums</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_atoms</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;ResidueInfo is only partially available in the molecule. &quot;</span>
-                <span class="s2">&quot;If you have added hydrogens to the input RDKit molecule with &quot;</span>
-                <span class="s2">&quot;`Chem.AddHs(mol)`, consider using &quot;</span>
-                <span class="s2">&quot;`Chem.AddHs(mol, addResidueInfo=True)` instead&quot;</span>
+                <span class="s2">"ResidueInfo is only partially available in the molecule. "</span>
+                <span class="s2">"If you have added hydrogens to the input RDKit molecule with "</span>
+                <span class="s2">"`Chem.AddHs(mol)`, consider using "</span>
+                <span class="s2">"`Chem.AddHs(mol, addResidueInfo=True)` instead"</span>
             <span class="p">)</span>
 
         <span class="c1"># * Attributes always present *</span>
@@ -432,7 +432,7 @@
             <span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">Elements</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
             <span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">Masses</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
             <span class="p">(</span><span class="n">aromatics</span><span class="p">,</span> <span class="n">Aromaticities</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">chiralities</span><span class="p">,</span> <span class="n">RSChirality</span><span class="p">,</span> <span class="s2">&quot;U1&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">chiralities</span><span class="p">,</span> <span class="n">RSChirality</span><span class="p">,</span> <span class="s2">"U1"</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
 
@@ -453,7 +453,7 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">atom</span><span class="o">.</span><span class="n">GetSymbol</span><span class="p">()</span><span class="si">}{</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">atom</span><span class="o">.</span><span class="n">GetSymbol</span><span class="p">()</span><span class="si">}{</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
@@ -510,7 +510,7 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
             <span class="n">segidx</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># create topology</span>

@@ -164,14 +164,14 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">Dielectric --- :mod:`MDAnalysis.analysis.dielectric`</span>
 <span class="sd">===========================================================</span>
 
 <span class="sd">:Authors: Mattia Felice Palermo, Philip Loche</span>
 <span class="sd">:Year: 2022</span>
 <span class="sd">:Copyright: Lesser GNU Public License v2.1+</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -181,9 +181,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1080/00268978300102721&quot;</span><span class="p">),</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dielectric analysis&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.dielectric&quot;</span><span class="p">,</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1080/00268978300102721"</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Dielectric analysis"</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.dielectric"</span><span class="p">,</span>
     <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">del</span> <span class="n">Doi</span>
@@ -192,7 +192,7 @@
 <div class="viewcode-block" id="DielectricConstant">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/dielectric.html#MDAnalysis.analysis.dielectric.DielectricConstant">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DielectricConstant</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    Computes the average dipole moment</span>
 
 <span class="sd">    .. math::</span>
@@ -267,7 +267,7 @@
 
 
 <span class="sd">    .. versionadded:: 2.1.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DielectricConstant</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -278,16 +278,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">make_whole</span> <span class="o">=</span> <span class="n">make_whole</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="p">,</span> <span class="s2">&quot;charges&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;No charges defined given atomgroup.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="p">,</span> <span class="s2">"charges"</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">"No charges defined given atomgroup."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s2">"fragments"</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;Analysis for non-neutral systems or&quot;</span>
-                <span class="s2">&quot; systems with free charges are not&quot;</span>
-                <span class="s2">&quot; available.&quot;</span>
+                <span class="s2">"Analysis for non-neutral systems or"</span>
+                <span class="s2">" systems with free charges are not"</span>
+                <span class="s2">" available."</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mi">0</span>
@@ -315,10 +315,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fluct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">M2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">M</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">M</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fluct</span> <span class="o">/</span> <span class="p">(</span>
-            <span class="n">convert</span><span class="p">(</span><span class="n">constants</span><span class="p">[</span><span class="s2">&quot;Boltzmann_constant&quot;</span><span class="p">],</span> <span class="s2">&quot;kJ/mol&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
+            <span class="n">convert</span><span class="p">(</span><span class="n">constants</span><span class="p">[</span><span class="s2">"Boltzmann_constant"</span><span class="p">],</span> <span class="s2">"kJ/mol"</span><span class="p">,</span> <span class="s2">"eV"</span><span class="p">)</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span>
-            <span class="o">*</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;electric_constant&quot;</span><span class="p">]</span>
+            <span class="o">*</span> <span class="n">constants</span><span class="p">[</span><span class="s2">"electric_constant"</span><span class="p">]</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eps_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>

@@ -165,13 +165,13 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;CRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.CRD`</span>
+<span class="sd">"""CRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.CRD`</span>
 <span class="sd">===========================================================================</span>
 
 <span class="sd">Read and write coordinates in CHARMM CARD coordinate format (suffix</span>
-<span class="sd">&quot;crd&quot;). The CHARMM &quot;extended format&quot; is handled automatically.</span>
+<span class="sd">"crd"). The CHARMM "extended format" is handled automatically.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -184,19 +184,19 @@
 <div class="viewcode-block" id="CRDReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CRDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;CRD reader that implements the standard and extended CRD coordinate formats</span>
+<span class="w">    </span><span class="sd">"""CRD reader that implements the standard and extended CRD coordinate formats</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Now returns a ValueError instead of FormatError.</span>
 <span class="sd">       Frames now 0-based instead of 1-based.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CRD&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"CRD"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># EXT:</span>
-        <span class="c1">#      (i10,2x,a)  natoms,&#39;EXT&#39;</span>
+        <span class="c1">#      (i10,2x,a)  natoms,'EXT'</span>
         <span class="c1">#      (2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)</span>
         <span class="c1">#      iatom,ires,resn,typr,x,y,z,segid,rid,wmain</span>
         <span class="c1"># standard:</span>
@@ -208,13 +208,13 @@
             <span class="n">extended</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">natoms</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">linenum</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">crdfile</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
                     <span class="k">continue</span>  <span class="c1"># ignore TITLE and empty lines</span>
                 <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="c1"># should be the natoms line</span>
                     <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="n">extended</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EXT&quot;</span>
+                    <span class="n">extended</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"EXT"</span>
                     <span class="k">continue</span>
                 <span class="c1"># process coordinates</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -228,8 +228,8 @@
                         <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Check CRD format at line </span><span class="si">{</span><span class="n">linenum</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Check CRD format at line </span><span class="si">{</span><span class="n">linenum</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
@@ -245,15 +245,15 @@
         <span class="c1"># sanity check</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">natoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> coordinates in </span><span class="si">%r</span><span class="s2"> but the header claims that there &quot;</span>
-                <span class="s2">&quot;should be </span><span class="si">%d</span><span class="s2"> coordinates.&quot;</span>
+                <span class="s2">"Found </span><span class="si">%d</span><span class="s2"> coordinates in </span><span class="si">%r</span><span class="s2"> but the header claims that there "</span>
+                <span class="s2">"should be </span><span class="si">%d</span><span class="s2"> coordinates."</span>
                 <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">natoms</span><span class="p">)</span>
             <span class="p">)</span>
 
 <div class="viewcode-block" id="CRDReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a CRDWriter for *filename*.</span>
+<span class="w">        </span><span class="sd">"""Returns a CRDWriter for *filename*.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -264,7 +264,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        :class:`CRDWriter`</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">CRDWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
 
@@ -273,7 +273,7 @@
 <div class="viewcode-block" id="CRDWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CRDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;CRD writer that implements the CHARMM CRD coordinate format.</span>
+<span class="w">    </span><span class="sd">"""CRD writer that implements the CHARMM CRD coordinate format.</span>
 
 <span class="sd">    It automatically writes the CHARMM EXT extended format if there</span>
 <span class="sd">    are more than 99,999 atoms.</span>
@@ -293,33 +293,33 @@
 <span class="sd">    .. versionchanged:: 2.6.0</span>
 <span class="sd">       Files are now written in `wt` mode, and keep extensions, allowing</span>
 <span class="sd">       for files to be written under compressed formats</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CRD&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"CRD"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="c1"># crdtype = &#39;extended&#39;</span>
-        <span class="c1"># fortran_format = &#39;(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)&#39;</span>
-        <span class="s2">&quot;ATOM_EXT&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{serial:10d}{totRes:10d}</span><span class="s2">  </span><span class="si">{resname:&lt;8.8s}</span><span class="s2">  </span><span class="si">{name:&lt;8.8s}</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;</span><span class="si">{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}</span><span class="s2">  &quot;</span>
-            <span class="s2">&quot;</span><span class="si">{chainID:&lt;8.8s}</span><span class="s2">  </span><span class="si">{resSeq:&lt;8d}{tempfactor:20.10f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="c1"># crdtype = 'extended'</span>
+        <span class="c1"># fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'</span>
+        <span class="s2">"ATOM_EXT"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"</span><span class="si">{serial:10d}{totRes:10d}</span><span class="s2">  </span><span class="si">{resname:&lt;8.8s}</span><span class="s2">  </span><span class="si">{name:&lt;8.8s}</span><span class="s2">"</span>
+            <span class="s2">"</span><span class="si">{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}</span><span class="s2">  "</span>
+            <span class="s2">"</span><span class="si">{chainID:&lt;8.8s}</span><span class="s2">  </span><span class="si">{resSeq:&lt;8d}{tempfactor:20.10f}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">),</span>
-        <span class="s2">&quot;NUMATOMS_EXT&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{0:10d}</span><span class="s2"> EXT</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="c1"># crdtype = &#39;standard&#39;</span>
-        <span class="c1"># fortran_format = &#39;(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)&#39;</span>
-        <span class="s2">&quot;ATOM&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{serial:5d}{totRes:5d}</span><span class="s2"> </span><span class="si">{resname:&lt;4.4s}</span><span class="s2"> </span><span class="si">{name:&lt;4.4s}</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;</span><span class="si">{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f}</span><span class="s2"> &quot;</span>
-            <span class="s2">&quot;</span><span class="si">{chainID:&lt;4.4s}</span><span class="s2"> </span><span class="si">{resSeq:&lt;4d}{tempfactor:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">"NUMATOMS_EXT"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{0:10d}</span><span class="s2"> EXT</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
+        <span class="c1"># crdtype = 'standard'</span>
+        <span class="c1"># fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'</span>
+        <span class="s2">"ATOM"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"</span><span class="si">{serial:5d}{totRes:5d}</span><span class="s2"> </span><span class="si">{resname:&lt;4.4s}</span><span class="s2"> </span><span class="si">{name:&lt;4.4s}</span><span class="s2">"</span>
+            <span class="s2">"</span><span class="si">{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f}</span><span class="s2"> "</span>
+            <span class="s2">"</span><span class="si">{chainID:&lt;4.4s}</span><span class="s2"> </span><span class="si">{resSeq:&lt;4d}{tempfactor:10.5f}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">),</span>
-        <span class="s2">&quot;TITLE&quot;</span><span class="p">:</span> <span class="s2">&quot;* FRAME </span><span class="si">{frame}</span><span class="s2"> FROM </span><span class="si">{where}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;NUMATOMS&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">"TITLE"</span><span class="p">:</span> <span class="s2">"* FRAME </span><span class="si">{frame}</span><span class="s2"> FROM </span><span class="si">{where}</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"NUMATOMS"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{0:5d}</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str or :class:`~MDAnalysis.lib.util.NamedStream`</span>
@@ -333,18 +333,18 @@
 <span class="sd">             of the setting of `extended`.</span>
 
 <span class="sd">             .. versionadded:: 2.2.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s2">&quot;crd&quot;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s2">"crd"</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">crd</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># account for explicit crd format, if requested</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extended</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;extended&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extended</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"extended"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CRDWriter.write">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter.write">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
+<span class="w">        </span><span class="sd">"""Write selection at current trajectory frame to file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -354,11 +354,11 @@
 <span class="sd">             Move the trajectory to frame `frame`; by default, write</span>
 <span class="sd">             the current frame.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">u</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"Input obj is neither an AtomGroup or Universe"</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -375,16 +375,16 @@
         <span class="p">)</span>  <span class="c1"># can write from selection == Universe (Issue 49)</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-        <span class="c1"># Detect which format string we&#39;re using to output (EXT or not)</span>
+        <span class="c1"># Detect which format string we're using to output (EXT or not)</span>
         <span class="c1"># *len refers to how to truncate various things,</span>
         <span class="c1"># depending on output format!</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extended</span> <span class="ow">or</span> <span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">99999</span><span class="p">:</span>
-            <span class="n">at_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;ATOM_EXT&quot;</span><span class="p">]</span>
+            <span class="n">at_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">"ATOM_EXT"</span><span class="p">]</span>
             <span class="n">serial_len</span> <span class="o">=</span> <span class="mi">10</span>
             <span class="n">resid_len</span> <span class="o">=</span> <span class="mi">8</span>
             <span class="n">totres_len</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">at_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;ATOM&quot;</span><span class="p">]</span>
+            <span class="n">at_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">"ATOM"</span><span class="p">]</span>
             <span class="n">serial_len</span> <span class="o">=</span> <span class="mi">5</span>
             <span class="n">resid_len</span> <span class="o">=</span> <span class="mi">4</span>
             <span class="n">totres_len</span> <span class="o">=</span> <span class="mi">5</span>
@@ -393,11 +393,11 @@
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">missing_topology</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">default</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;resnames&quot;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;UNK&quot;</span><span class="p">,))),</span>
+            <span class="p">(</span><span class="s2">"resnames"</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">"UNK"</span><span class="p">,))),</span>
             <span class="c1"># Resids *must* be an array because we index it later</span>
-            <span class="p">(</span><span class="s2">&quot;resids&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)),</span>
-            <span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;X&quot;</span><span class="p">,))),</span>
-            <span class="p">(</span><span class="s2">&quot;tempfactors&quot;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,))),</span>
+            <span class="p">(</span><span class="s2">"resids"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s2">"names"</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">"X"</span><span class="p">,))),</span>
+            <span class="p">(</span><span class="s2">"tempfactors"</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,))),</span>
         <span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -406,48 +406,48 @@
                 <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
         <span class="c1"># ChainIDs - Try ChainIDs first, fall back to Segids</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;chainIDs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">chainIDs</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"chainIDs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">chainIDs</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoDataError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
             <span class="c1"># try looking for segids instead</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;chainIDs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"chainIDs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">NoDataError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;chainIDs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;&quot;</span><span class="p">,))</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"chainIDs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">""</span><span class="p">,))</span>
                 <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">missing_topology</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Supplied AtomGroup was missing the following attributes: &quot;</span>
-                <span class="s2">&quot;</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. &quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">))</span>
+                <span class="s2">"Supplied AtomGroup was missing the following attributes: "</span>
+                <span class="s2">"</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. "</span>
+                <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">))</span>
             <span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">crd</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"wt"</span><span class="p">)</span> <span class="k">as</span> <span class="n">crd</span><span class="p">:</span>
             <span class="c1"># Write Title</span>
             <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;TITLE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">"TITLE"</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"*</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="c1"># Write NUMATOMS</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extended</span> <span class="ow">or</span> <span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">99999</span><span class="p">:</span>
-                <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;NUMATOMS_EXT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">"NUMATOMS_EXT"</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;NUMATOMS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">"NUMATOMS"</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))</span>
 
             <span class="c1"># Write all atoms</span>
 
             <span class="n">current_resid</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">resids</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resids&quot;</span><span class="p">]</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">"resids"</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">tempfactor</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="nb">range</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">),</span>
                 <span class="n">coor</span><span class="p">,</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resnames&quot;</span><span class="p">],</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;names&quot;</span><span class="p">],</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;chainIDs&quot;</span><span class="p">],</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resids&quot;</span><span class="p">],</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;tempfactors&quot;</span><span class="p">],</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"resnames"</span><span class="p">],</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"names"</span><span class="p">],</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"chainIDs"</span><span class="p">],</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"resids"</span><span class="p">],</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">"tempfactors"</span><span class="p">],</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">resids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">resids</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
                     <span class="n">current_resid</span> <span class="o">+=</span> <span class="mi">1</span>

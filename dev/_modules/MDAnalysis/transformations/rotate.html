@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">Trajectory rotation --- :mod:`MDAnalysis.transformations.rotate`</span>
 <span class="sd">================================================================</span>
 
@@ -173,7 +173,7 @@
 
 <span class="sd">.. autoclass:: rotateby</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
@@ -186,7 +186,7 @@
 <div class="viewcode-block" id="rotateby">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/rotate.html#MDAnalysis.transformations.rotate.rotateby">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">rotateby</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rotates the trajectory by a given angle on a given axis. The axis is defined by</span>
 <span class="sd">    the user, combining the direction vector and a point. This point can be the center</span>
 <span class="sd">    of geometry or the center of mass of a user defined AtomGroup, or an array defining</span>
@@ -239,9 +239,9 @@
 <span class="sd">        list of the coordinates of the point from where a custom axis of rotation will</span>
 <span class="sd">        be defined. Expected shapes are (3, ) or (1, 3). If no point is given, the</span>
 <span class="sd">        `ag` argument becomes mandatory.</span>
-<span class="sd">    weights: {&quot;mass&quot;, ``None``} or array_like, optional</span>
+<span class="sd">    weights: {"mass", ``None``} or array_like, optional</span>
 <span class="sd">        define the weights of the atoms when calculating the center of the AtomGroup.</span>
-<span class="sd">        With ``&quot;mass&quot;`` uses masses as weights; with ``None`` weigh each atom equally.</span>
+<span class="sd">        With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.</span>
 <span class="sd">        If a float array of the same length as `ag` is provided, use each element of</span>
 <span class="sd">        the `array_like` as a weight for the corresponding atom in `ag`. Default is</span>
 <span class="sd">        None.</span>
@@ -268,7 +268,7 @@
 <span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    .. versionchanged:: 2.11.0</span>
 <span class="sd">       Also rotate velocities and forces if present in Timestep.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -297,19 +297,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid direction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+                    <span class="s2">"</span><span class="si">{}</span><span class="s2"> is not a valid direction"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                 <span class="mi">3</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="si">}</span><span class="s2"> is not a valid direction&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="si">}</span><span class="s2"> is not a valid direction"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid point&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2"> is not a valid point"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                 <span class="mi">3</span><span class="p">,</span>
             <span class="p">)</span>
@@ -318,7 +318,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">atoms</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s2"> is not an AtomGroup object&quot;</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s2"> is not an AtomGroup object"</span>
                 <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -327,15 +327,15 @@
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="s2">&quot;weights must be {&#39;mass&#39;, None} or an iterable &quot;</span>
-                        <span class="s2">&quot;of the same size as the atomgroup.&quot;</span>
+                        <span class="s2">"weights must be {'mass', None} or an iterable "</span>
+                        <span class="s2">"of the same size as the atomgroup."</span>
                     <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A point or an AtomGroup must be specified&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A point or an AtomGroup must be specified"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

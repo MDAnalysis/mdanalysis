@@ -166,7 +166,7 @@
 <span class="c1">#</span>
 
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">Simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`</span>
 <span class="sd">==============================================================================</span>
 
@@ -249,7 +249,7 @@
 <span class="sd">          [56.39657447, 41.31816555, 38.81588421, 39.82491432, 38.890219  ],</span>
 <span class="sd">          [39.20012515, 40.00563374, 40.83857688, 38.77886735, 41.45775864]])</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -259,13 +259,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.atomicdistances&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.atomicdistances"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="AtomicDistances">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AtomicDistances</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class to calculate atomic distances between two AtomGroups over a</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Class to calculate atomic distances between two AtomGroups over a</span>
 <span class="sd">    trajectory.</span>
 
 <span class="sd">    Parameters</span>
@@ -301,7 +301,7 @@
 <span class="sd">          backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">          supported backends.</span>
 <span class="sd">    .. _`Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -310,9 +310,9 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -320,11 +320,11 @@
         <span class="c1"># check ag1 and ag2 have the same number of atoms</span>
         <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;AtomGroups do not &quot;</span> <span class="s2">&quot;have the same number of atoms&quot;</span>
+                <span class="s2">"AtomGroups do not "</span> <span class="s2">"have the same number of atoms"</span>
             <span class="p">)</span>
         <span class="c1"># check ag1 and ag2 are from the same trajectory</span>
         <span class="k">elif</span> <span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroups are not &quot;</span> <span class="s2">&quot;from the same trajectory&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"AtomGroups are not "</span> <span class="s2">"from the same trajectory"</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">AtomicDistances</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -349,7 +349,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;distances&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>  <span class="c1"># Get distances</span>
+                <span class="s2">"distances"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>  <span class="c1"># Get distances</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 

@@ -165,7 +165,7 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">Base classes --- :mod:`MDAnalysis.coordinates.base`</span>
 <span class="sd">===================================================</span>
 
@@ -178,7 +178,7 @@
 <span class="sd">FrameIterators</span>
 <span class="sd">--------------</span>
 
-<span class="sd">FrameIterators are &quot;sliced trajectories&quot; (a trajectory is a</span>
+<span class="sd">FrameIterators are "sliced trajectories" (a trajectory is a</span>
 <span class="sd">:ref:`Reader &lt;Readers&gt;`) that can be iterated over. They are typically</span>
 <span class="sd">created by slicing a trajectory or by fancy-indexing of a trajectory</span>
 <span class="sd">with an array of frame numbers or a boolean mask of all frames.</span>
@@ -267,7 +267,7 @@
 <span class="sd">.. autoclass:: IOBase</span>
 <span class="sd">   :members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
@@ -294,7 +294,7 @@
 <div class="viewcode-block" id="FrameIteratorBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.FrameIteratorBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FrameIteratorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base iterable over the frames of a trajectory.</span>
 
 <span class="sd">    A frame iterable has a length that can be accessed with the :func:`len`</span>
@@ -304,7 +304,7 @@
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
 
@@ -326,7 +326,7 @@
 <div class="viewcode-block" id="FrameIteratorSliced">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.FrameIteratorSliced">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Iterable over the frames of a trajectory on the basis of a slice.</span>
 
 <span class="sd">    Parameters</span>
@@ -342,7 +342,7 @@
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">frames</span><span class="p">):</span>
         <span class="c1"># It would be easier to store directly a range object, as it would</span>
         <span class="c1"># store its parameters in a single place, calculate its length, and</span>
@@ -365,7 +365,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="n">length</span> <span class="o">&lt;</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index </span><span class="si">{}</span><span class="s1"> is out of range of the range of length </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">'Index </span><span class="si">{}</span><span class="s1"> is out of range of the range of length </span><span class="si">{}</span><span class="s1">.'</span>
                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">length</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">frame</span>
@@ -423,7 +423,7 @@
 <div class="viewcode-block" id="FrameIteratorAll">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.FrameIteratorAll">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FrameIteratorAll</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Iterable over all the frames of a trajectory.</span>
 
 <span class="sd">    Parameters</span>
@@ -437,7 +437,7 @@
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FrameIteratorAll</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
 
@@ -455,7 +455,7 @@
 <div class="viewcode-block" id="FrameIteratorIndices">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.FrameIteratorIndices">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FrameIteratorIndices</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Iterable over the frames of a trajectory listed in a sequence of indices.</span>
 
 <span class="sd">    Parameters</span>
@@ -468,13 +468,13 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    FrameIteratorBase</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">frames</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FrameIteratorIndices</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Frames indices must be integers.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Frames indices must be integers."</span><span class="p">)</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">_apply_limits</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames</span><span class="p">)</span>
@@ -505,20 +505,20 @@
 <div class="viewcode-block" id="IOBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IOBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class bundling common functionality for trajectory I/O.</span>
+<span class="w">    </span><span class="sd">"""Base class bundling common functionality for trajectory I/O.</span>
 
 <span class="sd">    .. versionchanged:: 0.8</span>
 <span class="sd">       Added context manager protocol.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: dict with units of of *time* and *length* (and *velocity*, *force*,</span>
     <span class="c1">#: ... for formats that support it)</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">'velocity'</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
 <div class="viewcode-block" id="IOBase.convert_pos_from_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_from_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of coordinate array x from native units to base units.</span>
+<span class="w">        </span><span class="sd">"""Conversion of coordinate array x from native units to base units.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -540,9 +540,9 @@
 <span class="sd">           place, in which case the reference to the unmodified `x` is</span>
 <span class="sd">           returned.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">'length'</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'length'</span><span class="p">],</span> <span class="s1">'Angstrom'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -554,7 +554,7 @@
 <div class="viewcode-block" id="IOBase.convert_velocities_from_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_from_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of velocities array *v* from native to base units</span>
+<span class="w">        </span><span class="sd">"""Conversion of velocities array *v* from native to base units</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -571,9 +571,9 @@
 
 
 <span class="sd">        .. versionadded:: 0.7.5</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">)</span>
+            <span class="s1">'speed'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'velocity'</span><span class="p">],</span> <span class="s1">'Angstrom/ps'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -585,7 +585,7 @@
 <div class="viewcode-block" id="IOBase.convert_forces_from_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_from_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of forces array *force* from native to base units</span>
+<span class="w">        </span><span class="sd">"""Conversion of forces array *force* from native to base units</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -601,9 +601,9 @@
 <span class="sd">        is avoided.</span>
 
 <span class="sd">        .. versionadded:: 0.7.7</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">],</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">)</span>
+            <span class="s1">'force'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'force'</span><span class="p">],</span> <span class="s1">'kJ/(mol*Angstrom)'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">force</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -615,7 +615,7 @@
 <div class="viewcode-block" id="IOBase.convert_time_from_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_from_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert time *t* from native units to base units.</span>
+<span class="w">        </span><span class="sd">"""Convert time *t* from native units to base units.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -639,9 +639,9 @@
 <span class="sd">           place, in which case the reference to the unmodified `x` is</span>
 <span class="sd">           returned.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="s1">&#39;ps&#39;</span><span class="p">)</span>
+            <span class="s1">'time'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="s1">'ps'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -653,7 +653,7 @@
 <div class="viewcode-block" id="IOBase.convert_pos_to_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_to_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of coordinate array `x` from base units to native units.</span>
+<span class="w">        </span><span class="sd">"""Conversion of coordinate array `x` from base units to native units.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -675,9 +675,9 @@
 <span class="sd">           place, in which case the reference to the unmodified `x` is</span>
 <span class="sd">           returned.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
+            <span class="s1">'length'</span><span class="p">,</span> <span class="s1">'Angstrom'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'length'</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -689,7 +689,7 @@
 <div class="viewcode-block" id="IOBase.convert_velocities_to_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_to_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of coordinate array `v` from base to native units</span>
+<span class="w">        </span><span class="sd">"""Conversion of coordinate array `v` from base to native units</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -706,9 +706,9 @@
 
 
 <span class="sd">        .. versionadded:: 0.7.5</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span>
+            <span class="s1">'speed'</span><span class="p">,</span> <span class="s1">'Angstrom/ps'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'velocity'</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -720,7 +720,7 @@
 <div class="viewcode-block" id="IOBase.convert_forces_to_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_to_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of force array *force* from base to native units.</span>
+<span class="w">        </span><span class="sd">"""Conversion of force array *force* from base to native units.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -737,9 +737,9 @@
 
 
 <span class="sd">        .. versionadded:: 0.7.7</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">])</span>
+            <span class="s1">'force'</span><span class="p">,</span> <span class="s1">'kJ/(mol*Angstrom)'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'force'</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">force</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -751,7 +751,7 @@
 <div class="viewcode-block" id="IOBase.convert_time_to_native">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_to_native">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert time *t* from base units to native units.</span>
+<span class="w">        </span><span class="sd">"""Convert time *t* from base units to native units.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -773,9 +773,9 @@
 <span class="sd">           place, in which case the reference to the unmodified *x* is</span>
 <span class="sd">           returned.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+            <span class="s1">'time'</span><span class="p">,</span> <span class="s1">'ps'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">'time'</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -787,7 +787,7 @@
 <div class="viewcode-block" id="IOBase.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the trajectory file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the trajectory file."""</span>
         <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
 
@@ -802,16 +802,16 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_Readermeta</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatic Reader registration metaclass</span>
+<span class="w">    </span><span class="sd">"""Automatic Reader registration metaclass</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Added _format_hint functionality</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Auto register upon class creation</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>  <span class="c1"># pylint: disable=non-parent-init-called</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">'format'</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -819,15 +819,15 @@
                 <span class="n">fmt_name</span> <span class="o">=</span> <span class="n">fmt_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
                 <span class="n">_READERS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
-                <span class="k">if</span> <span class="s1">&#39;_format_hint&#39;</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
-                    <span class="c1"># isn&#39;t bound yet, so access __func__</span>
-                    <span class="n">_READER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
+                <span class="k">if</span> <span class="s1">'_format_hint'</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
+                    <span class="c1"># isn't bound yet, so access __func__</span>
+                    <span class="n">_READER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">'_format_hint'</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 
 <div class="viewcode-block" id="ProtoReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProtoReader</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Readermeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Readers, without a :meth:`__del__` method.</span>
+<span class="w">    </span><span class="sd">"""Base class for Readers, without a :meth:`__del__` method.</span>
 
 <span class="sd">    Extends :class:`IOBase` with most attributes and methods of a generic</span>
 <span class="sd">    Reader, with the exception of a :meth:`__del__` method. It should be used</span>
@@ -851,7 +851,7 @@
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">       the modification of coordinates was preserved</span>
 <span class="sd">       after serialization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: The appropriate Timestep class, e.g.</span>
     <span class="c1">#: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.</span>
@@ -874,7 +874,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.parse_n_atoms">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_n_atoms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the coordinate file and deduce the number of atoms</span>
+<span class="w">        </span><span class="sd">"""Read the coordinate file and deduce the number of atoms</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -884,16 +884,16 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        NotImplementedError</span>
-<span class="sd">          when the number of atoms can&#39;t be deduced</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> cannot deduce the number of atoms&quot;</span>
-                                  <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+<span class="sd">          when the number of atoms can't be deduced</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2"> cannot deduce the number of atoms"</span>
+                                  <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ProtoReader.next">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.next">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward one step to next frame.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Forward one step to next frame."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
@@ -909,49 +909,49 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward one step to next frame when using the `next` builtin.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Forward one step to next frame when using the `next` builtin."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ProtoReader.rewind">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.rewind">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Position at beginning of trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Position at beginning of trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Time between two trajectory frames in picoseconds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Time between two trajectory frames in picoseconds."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">totaltime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Total length of the trajectory</span>
+<span class="w">        </span><span class="sd">"""Total length of the trajectory</span>
 
 <span class="sd">        The time is calculated as ``(n_frames - 1) * dt``, i.e., we assume that</span>
 <span class="sd">        the first frame no time as elapsed. Thus, a trajectory with two frames will</span>
 <span class="sd">        be considered to have a length of a single time step `dt` and a</span>
-<span class="sd">        &quot;trajectory&quot; with a single frame will be reported as length 0.</span>
+<span class="sd">        "trajectory" with a single frame will be reported as length 0.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Frame number of the current time step.</span>
+<span class="w">        </span><span class="sd">"""Frame number of the current time step.</span>
 
 <span class="sd">        This is a simple short cut to :attr:`Timestep.frame`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Time of the current frame in MDAnalysis time units (typically ps).</span>
+<span class="w">        </span><span class="sd">"""Time of the current frame in MDAnalysis time units (typically ps).</span>
 
 <span class="sd">        This is either read straight from the Timestep, or calculated as</span>
 <span class="sd">        time = :attr:`Timestep.frame` * :attr:`Timestep.dt`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
 
     <span class="nd">@property</span>
@@ -962,17 +962,17 @@
 <div class="viewcode-block" id="ProtoReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A trajectory writer with the same properties as this trajectory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""A trajectory writer with the same properties as this trajectory."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Sorry, there is no Writer for this format in MDAnalysis. &quot;</span>
-            <span class="s2">&quot;Please file an enhancement request at &quot;</span>
-            <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="p">)</span></div>
+            <span class="s2">"Sorry, there is no Writer for this format in MDAnalysis. "</span>
+            <span class="s2">"Please file an enhancement request at "</span>
+            <span class="s2">"https://github.com/MDAnalysis/mdanalysis/issues"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ProtoReader.OtherWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.OtherWriter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">OtherWriter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a writer appropriate for *filename*.</span>
+<span class="w">        </span><span class="sd">"""Returns a writer appropriate for *filename*.</span>
 
 <span class="sd">        Sets the default keywords *start*, *step* and *dt* (if</span>
 <span class="sd">        available). *n_atoms* is always set from :attr:`Reader.n_atoms`.</span>
@@ -982,11 +982,11 @@
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>  <span class="c1"># essential</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'n_atoms'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>  <span class="c1"># essential</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'start'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'dt'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -1002,28 +1002,28 @@
         <span class="o">...</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterate over trajectory frames. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">""" Iterate over trajectory frames. """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Should position Reader to just before first frame</span>
+<span class="w">        </span><span class="sd">"""Should position Reader to just before first frame</span>
 
 <span class="sd">        Calling next after this should return the first frame</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">frame</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">{}</span><span class="s2"> exceeds length of trajectory (</span><span class="si">{}</span><span class="s2">).&quot;</span>
-                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">"Index </span><span class="si">{}</span><span class="s2"> exceeds length of trajectory (</span><span class="si">{}</span><span class="s2">)."</span>
+                             <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">frame</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Timestep corresponding to *frame*.</span>
+<span class="w">        </span><span class="sd">"""Return the Timestep corresponding to *frame*.</span>
 
 <span class="sd">        If `frame` is a integer then the corresponding frame is</span>
 <span class="sd">        returned. Negative numbers are counted from the end.</span>
@@ -1034,7 +1034,7 @@
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 <span class="sd">        *frame* is a 0-based frame index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_limits</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_with_aux</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -1053,13 +1053,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">FrameIteratorSliced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Trajectories must be an indexed using an integer,&quot;</span>
-                            <span class="s2">&quot; slice or list of indices&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Trajectories must be an indexed using an integer,"</span>
+                            <span class="s2">" slice or list of indices"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move to *frame* and fill timestep with data.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> does not support direct frame indexing.&quot;</span>
-                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+<span class="w">        </span><span class="sd">"""Move to *frame* and fill timestep with data."""</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"</span><span class="si">{0}</span><span class="s2"> does not support direct frame indexing."</span>
+                        <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="c1"># Example implementation in the DCDReader:</span>
         <span class="c1"># self._jump_to_frame(frame)</span>
         <span class="c1"># ts = self.ts</span>
@@ -1068,7 +1068,7 @@
         <span class="c1"># return ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame_with_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move to *frame*, updating ts with trajectory, transformations and auxiliary data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Move to *frame*, updating ts with trajectory, transformations and auxiliary data."""</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>  <span class="c1"># pylint: disable=assignment-from-no-return</span>
         <span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">aux</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -1078,14 +1078,14 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_sliced_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator for slicing a trajectory.</span>
+<span class="w">        </span><span class="sd">"""Generator for slicing a trajectory.</span>
 
 <span class="sd">        *start* *stop* and *step* are 3 integers describing the slice.</span>
 <span class="sd">        Error checking is not done past this point.</span>
 
 <span class="sd">        A :exc:`NotImplementedError` is raised if random access to</span>
 <span class="sd">        frames is not implemented.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># override with an appropriate implementation e.g. using self[i] might</span>
         <span class="c1"># be much slower than skipping steps in a next() loop</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1093,13 +1093,13 @@
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_with_aux</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># if _read_frame not implemented</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support slicing.&quot;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support slicing."</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
 <div class="viewcode-block" id="ProtoReader.check_slice_indices">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.check_slice_indices">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check frame indices are valid and clip to fit trajectory.</span>
+<span class="w">        </span><span class="sd">"""Check frame indices are valid and clip to fit trajectory.</span>
 
 <span class="sd">        The usage follows standard Python conventions for :func:`range` but see</span>
 <span class="sd">        the warning below.</span>
@@ -1145,23 +1145,23 @@
 <span class="sd">            range(10, -1, -1)             # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]</span>
 <span class="sd">            range(10)[slice(10, -1, -1)]  # []</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="n">slice_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">:</span> <span class="n">stop</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="n">step</span><span class="p">}</span>
+        <span class="n">slice_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'start'</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">:</span> <span class="n">stop</span><span class="p">,</span> <span class="s1">'step'</span><span class="p">:</span> <span class="n">step</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">slice_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
                 <span class="n">slice_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
             <span class="k">elif</span> <span class="p">(</span><span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an integer&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">varname</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"</span><span class="si">{0}</span><span class="s2"> is not an integer"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">varname</span><span class="p">))</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">&#39;stop&#39;</span><span class="p">]</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">'start'</span><span class="p">]</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">'stop'</span><span class="p">]</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">slice_dict</span><span class="p">[</span><span class="s1">'step'</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Step size is zero&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Step size is zero"</span><span class="p">)</span>
 
         <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span>
@@ -1188,8 +1188,8 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">{cls}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"&lt;</span><span class="si">{cls}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;"</span>
+                <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
             <span class="n">fname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
             <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
@@ -1198,12 +1198,12 @@
 
 <div class="viewcode-block" id="ProtoReader.timeseries">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.timeseries">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;AtomGroup&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">atomgroup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Atomgroup&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AtomGroup'</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">atomgroup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'Atomgroup'</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup</span>
+                   <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s1">'fac'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a subset of coordinate data for an AtomGroup</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1231,7 +1231,7 @@
 <span class="sd">        order : str (optional)</span>
 <span class="sd">            the order/shape of the return data array, corresponding</span>
 <span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
-<span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
+<span class="sd">            of 'a', 'f', 'c' are allowed ie "fac" - return array</span>
 <span class="sd">            where the shape is (frame, number of atoms,</span>
 <span class="sd">            coordinates)</span>
 
@@ -1241,14 +1241,14 @@
 
 
 <span class="sd">        .. versionadded:: 2.4.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">asel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;asel argument to timeseries will be renamed to&quot;</span>
-                <span class="s2">&quot;&#39;atomgroup&#39; in 3.0, see #3911&quot;</span><span class="p">,</span>
+                <span class="s2">"asel argument to timeseries will be renamed to"</span>
+                <span class="s2">"'atomgroup' in 3.0, see #3911"</span><span class="p">,</span>
                 <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">atomgroup</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot provide both asel and atomgroup kwargs&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot provide both asel and atomgroup kwargs"</span><span class="p">)</span>
             <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">asel</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
@@ -1256,32 +1256,32 @@
         <span class="k">if</span> <span class="n">atomgroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Timeseries requires at least one atom to analyze&quot;</span><span class="p">)</span>
+                    <span class="s2">"Timeseries requires at least one atom to analyze"</span><span class="p">)</span>
             <span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span>
             <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_numbers</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">natoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
             <span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
 
-        <span class="c1"># allocate output array in &#39;fac&#39; order</span>
+        <span class="c1"># allocate output array in 'fac' order</span>
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">atom_numbers</span><span class="p">]</span>
 
         <span class="c1"># switch axes around</span>
-        <span class="n">default_order</span> <span class="o">=</span> <span class="s1">&#39;fac&#39;</span>
+        <span class="n">default_order</span> <span class="o">=</span> <span class="s1">'fac'</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="n">default_order</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">newidx</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized order key in </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2">, &quot;</span>
-                                 <span class="s2">&quot;must be permutation of &#39;fac&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unrecognized order key in </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2">, "</span>
+                                 <span class="s2">"must be permutation of 'fac'"</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">newidx</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Repeated or missing keys passed to argument &quot;</span>
-                          <span class="sa">f</span><span class="s2">&quot;`order`: </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2">, each key must be used once&quot;</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Repeated or missing keys passed to argument "</span>
+                          <span class="sa">f</span><span class="s2">"`order`: </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2">, each key must be used once"</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">coordinates</span></div>
 
@@ -1294,7 +1294,7 @@
                       <span class="n">auxdata</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add auxiliary data to be read alongside trajectory.</span>
+<span class="w">        </span><span class="sd">"""Add auxiliary data to be read alongside trajectory.</span>
 
 <span class="sd">        Auxiliary data may be any data timeseries from the trajectory</span>
 <span class="sd">        additional to that read in by the trajectory reader. *auxdata* can</span>
@@ -1316,10 +1316,10 @@
 <span class="sd">        pull-force.xvg::</span>
 
 <span class="sd">            u = MDAnalysis.Universe(PDB, XTC)</span>
-<span class="sd">            u.trajectory.add_auxiliary(&#39;pull&#39;, &#39;pull-force.xvg&#39;)</span>
+<span class="sd">            u.trajectory.add_auxiliary('pull', 'pull-force.xvg')</span>
 
 <span class="sd">        The representative value for the current timestep may then be accessed</span>
-<span class="sd">        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux[&#39;pull&#39;]``.</span>
+<span class="sd">        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.</span>
 
 
 <span class="sd">        The following applies to energy readers like the</span>
@@ -1328,14 +1328,14 @@
 <span class="sd">        All data that is present in the (energy) file can be added by omitting</span>
 <span class="sd">        `aux_spec` like so::</span>
 
-<span class="sd">            u.trajectory.add_auxiliary(auxdata=&quot;ener.edr&quot;)</span>
+<span class="sd">            u.trajectory.add_auxiliary(auxdata="ener.edr")</span>
 
 <span class="sd">        *aux_spec* is expected to be a dictionary that maps the desired</span>
 <span class="sd">        attribute name in the ``ts.aux`` namespace to the precise data to be</span>
 <span class="sd">        added as identified by a :attr:`data_selector`::</span>
 
-<span class="sd">            term_dict = {&quot;temp&quot;: &quot;Temperature&quot;, &quot;epot&quot;: &quot;Potential&quot;}</span>
-<span class="sd">            u.trajectory.add_auxiliary(term_dict, &quot;ener.edr&quot;)</span>
+<span class="sd">            term_dict = {"temp": "Temperature", "epot": "Potential"}</span>
+<span class="sd">            u.trajectory.add_auxiliary(term_dict, "ener.edr")</span>
 
 <span class="sd">        Adding this data can be useful, for example, to filter trajectory</span>
 <span class="sd">        frames based on non-coordinate data like the potential energy of each</span>
@@ -1354,10 +1354,10 @@
 <span class="sd">        ----</span>
 <span class="sd">        Auxiliary data is assumed to be time-ordered, with no duplicates. See</span>
 <span class="sd">        the :ref:`Auxiliary API`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">auxdata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No input `auxdata` specified, but it needs &quot;</span>
-                             <span class="s2">&quot;to be provided.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"No input `auxdata` specified, but it needs "</span>
+                             <span class="s2">"to be provided."</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">auxdata</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_AUXREADERS</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="c1"># i.e. if auxdata is a file, not an instance of an AuxReader</span>
             <span class="n">reader_type</span> <span class="o">=</span> <span class="n">get_auxreader_for</span><span class="p">(</span><span class="n">auxdata</span><span class="p">)</span>
@@ -1370,13 +1370,13 @@
 <div class="viewcode-block" id="ProtoReader.remove_auxiliary">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.remove_auxiliary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`</span>
+<span class="w">        </span><span class="sd">"""Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`</span>
 <span class="sd">        for the auxiliary *auxname*.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`add_auxiliary`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">aux</span>
@@ -1385,22 +1385,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">aux_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Lists the names of added auxiliary data. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">""" Lists the names of added auxiliary data. """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_for_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check for the existance of an auxiliary *auxname*. If present,</span>
+<span class="w">        </span><span class="sd">""" Check for the existance of an auxiliary *auxname*. If present,</span>
 <span class="sd">        return the AuxReader; if not, raise ValueError</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">auxname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No auxiliary named </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">auxname</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"No auxiliary named </span><span class="si">{name}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">auxname</span><span class="p">))</span>
 
 <div class="viewcode-block" id="ProtoReader.next_as_aux">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.next_as_aux">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">next_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to the next timestep for which there is at least one step from</span>
+<span class="w">        </span><span class="sd">""" Move to the next timestep for which there is at least one step from</span>
 <span class="sd">        the auxiliary *auxname* within the cutoff specified in *auxname*.</span>
 
 <span class="sd">        This allows progression through the trajectory without encountering</span>
@@ -1418,21 +1418,21 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`iter_as_aux`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
         <span class="c1"># catch up auxiliary if it starts earlier than trajectory</span>
         <span class="k">while</span> <span class="n">aux</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="n">aux</span><span class="o">.</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">next</span><span class="p">(</span><span class="n">aux</span><span class="p">)</span>
-        <span class="c1"># find the next frame that&#39;ll have a representative value</span>
+        <span class="c1"># find the next frame that'll have a representative value</span>
         <span class="n">next_frame</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">next_nonempty_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">next_frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># no more frames with corresponding auxiliary values; stop iteration</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         <span class="c1"># some readers set self._frame to -1, rather than self.frame, on</span>
-        <span class="c1"># _reopen; catch here or doesn&#39;t read first frame</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="n">next_frame</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># _reopen; catch here or doesn't read first frame</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="n">next_frame</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_frame'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="c1"># iterate trajectory until frame is reached</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ts</span></div>
@@ -1441,14 +1441,14 @@
 <div class="viewcode-block" id="ProtoReader.iter_as_aux">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_as_aux">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">iter_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate through timesteps for which there is at least one assigned</span>
+<span class="w">        </span><span class="sd">"""Iterate through timesteps for which there is at least one assigned</span>
 <span class="sd">        step from the auxiliary *auxname* within the cutoff specified in *auxname*.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`next_as_aux`</span>
 <span class="sd">        :meth:`iter_auxiliary`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
@@ -1463,7 +1463,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_auxiliary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">iter_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">selected</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterate through the auxiliary *auxname* independently of the trajectory.</span>
+<span class="w">        </span><span class="sd">""" Iterate through the auxiliary *auxname* independently of the trajectory.</span>
 
 <span class="sd">        Will iterate over the specified steps of the auxiliary (defaults to all</span>
 <span class="sd">        steps). Allows to access all values in an auxiliary, including those out</span>
@@ -1488,7 +1488,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`iter_as_aux`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selected</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">selection</span> <span class="o">=</span> <span class="n">selected</span>
@@ -1502,7 +1502,7 @@
 <div class="viewcode-block" id="ProtoReader.get_aux_attribute">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value of *attrname* from the auxiliary *auxname*</span>
+<span class="w">        </span><span class="sd">"""Get the value of *attrname* from the auxiliary *auxname*</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1514,7 +1514,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`set_aux_attribute`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span></div>
 
@@ -1522,7 +1522,7 @@
 <div class="viewcode-block" id="ProtoReader.set_aux_attribute">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.set_aux_attribute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the value of *attrname* in the auxiliary *auxname*.</span>
+<span class="w">        </span><span class="sd">""" Set the value of *attrname* in the auxiliary *auxname*.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1537,9 +1537,9 @@
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`get_aux_attribute`</span>
 <span class="sd">        :meth:`rename_aux` - to change the *auxname* attribute</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">attrname</span> <span class="o">==</span> <span class="s1">&#39;auxname&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attrname</span> <span class="o">==</span> <span class="s1">'auxname'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rename_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span></div>
@@ -1548,10 +1548,10 @@
 <div class="viewcode-block" id="ProtoReader.rename_aux">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.rename_aux">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rename_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Change the name of the auxiliary *auxname* to *new*.</span>
+<span class="w">        </span><span class="sd">""" Change the name of the auxiliary *auxname* to *new*.</span>
 
 <span class="sd">        Provided there is not already an auxiliary named *new*, the auxiliary</span>
-<span class="sd">        name will be changed in ts.aux namespace, the trajectory&#39;s</span>
+<span class="sd">        name will be changed in ts.aux namespace, the trajectory's</span>
 <span class="sd">        list of added auxiliaries, and in the auxiliary reader itself.</span>
 
 <span class="sd">        Parameters</span>
@@ -1565,11 +1565,11 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">             If the name *new* is already in use by an existing auxiliary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">new</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Auxiliary data with name </span><span class="si">{name}</span><span class="s2"> already &quot;</span>
-                             <span class="s2">&quot;exists&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">new</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Auxiliary data with name </span><span class="si">{name}</span><span class="s2"> already "</span>
+                             <span class="s2">"exists"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">new</span><span class="p">))</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">auxname</span> <span class="o">=</span> <span class="n">new</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">new</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="n">auxname</span><span class="p">])</span>
@@ -1579,7 +1579,7 @@
 <div class="viewcode-block" id="ProtoReader.get_aux_descriptions">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.get_aux_descriptions">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_aux_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get descriptions to allow reloading the specified auxiliaries.</span>
+<span class="w">        </span><span class="sd">"""Get descriptions to allow reloading the specified auxiliaries.</span>
 
 <span class="sd">        If no auxnames are provided, defaults to the full list of added</span>
 <span class="sd">        auxiliaries.</span>
@@ -1601,7 +1601,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`MDAnalysis.auxiliary.base.AuxReader.get_description`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">auxnames</span><span class="p">:</span>
             <span class="n">auxnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span>
         <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">aux</span><span class="p">]</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span> <span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="n">auxnames</span><span class="p">]</span>
@@ -1610,7 +1610,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the list of transformations&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">""" Returns the list of transformations"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span>
 
     <span class="nd">@transformations</span><span class="o">.</span><span class="n">setter</span>
@@ -1618,12 +1618,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span> <span class="o">=</span> <span class="n">transformations</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Transformations are already set&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transformations are already set"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ProtoReader.add_transformations">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_transformations">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all transformations to be applied to the trajectory.</span>
+<span class="w">        </span><span class="sd">"""Add all transformations to be applied to the trajectory.</span>
 
 <span class="sd">        This function take as list of transformations as an argument. These</span>
 <span class="sd">        transformations are functions that will be called by the Reader and given</span>
@@ -1666,19 +1666,19 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            If any transformation is not callable</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="n">transformations</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">transform</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;All transformations must be callable; &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;got object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">"All transformations must be callable; "</span>
+                    <span class="sa">f</span><span class="s2">"got object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="n">transformations</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Can&#39;t add transformations again. Please create a new &quot;</span>
-                      <span class="s2">&quot;Universe object&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Can't add transformations again. Please create a new "</span>
+                      <span class="s2">"Universe object"</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
@@ -1689,7 +1689,7 @@
         <span class="c1"># current loaded frame?</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies all the transformations given by the user &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Applies all the transformations given by the user """</span>
 
         <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -1701,7 +1701,7 @@
 <div class="viewcode-block" id="ReaderBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for trajectory readers that extends :class:`ProtoReader` with a</span>
+<span class="w">    </span><span class="sd">"""Base class for trajectory readers that extends :class:`ProtoReader` with a</span>
 <span class="sd">    :meth:`__del__` method.</span>
 
 <span class="sd">    New Readers should subclass :class:`ReaderBase` and properly implement a</span>
@@ -1727,7 +1727,7 @@
 <span class="sd">    .. versionchanged:: 1.0</span>
 <span class="sd">       Removed deprecated flags functionality, use convert_units kwarg instead</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -1739,7 +1739,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="n">ts_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'dt'</span><span class="p">,</span> <span class="s1">'time_offset'</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -1752,7 +1752,7 @@
 <div class="viewcode-block" id="ReaderBase.copy">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return independent copy of this Reader.</span>
+<span class="w">        </span><span class="sd">"""Return independent copy of this Reader.</span>
 
 <span class="sd">        New Reader will have its own file handle and can seek/iterate</span>
 <span class="sd">        independently of the original.</span>
@@ -1766,7 +1766,7 @@
 <span class="sd">           passed to the creation of the new class. Previously the only</span>
 <span class="sd">           ``n_atoms`` was passed to class copies, leading to a class created</span>
 <span class="sd">           with default parameters which may differ from the original class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
 
@@ -1795,15 +1795,15 @@
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># grab the string which describes this format</span>
-            <span class="c1"># could be either &#39;PDB&#39; or [&#39;PDB&#39;, &#39;ENT&#39;] for multiple formats</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+            <span class="c1"># could be either 'PDB' or ['PDB', 'ENT'] for multiple formats</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">'format'</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="c1"># not required however</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># does the Writer support single and multiframe writing?</span>
-            <span class="n">single</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;singleframe&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="n">multi</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">single</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'singleframe'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">multi</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'multiframe'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">single</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
@@ -1818,7 +1818,7 @@
 <div class="viewcode-block" id="WriterBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.WriterBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WriterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Writermeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for trajectory writers.</span>
+<span class="w">    </span><span class="sd">"""Base class for trajectory writers.</span>
 
 <span class="sd">    See :ref:`Trajectory API` definition in for the required attributes and</span>
 <span class="sd">    methods.</span>
@@ -1828,16 +1828,16 @@
 <span class="sd">       Deprecated :func:`write_next_timestep` has now been removed, please use</span>
 <span class="sd">       :func:`write` instead.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="WriterBase.convert_dimensions_to_unitcell">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.WriterBase.convert_dimensions_to_unitcell">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
+<span class="w">        </span><span class="sd">"""Read dimensions from timestep *ts* and return appropriate unitcell.</span>
 
 <span class="sd">        The default is to return ``[A,B,C,alpha,beta,gamma]``; if this</span>
 <span class="sd">        is not appropriate then this method has to be overriden.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># override if the native trajectory format does NOT use</span>
         <span class="c1"># [A,B,C,alpha,beta,gamma]</span>
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1853,7 +1853,7 @@
 <div class="viewcode-block" id="WriterBase.write">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.WriterBase.write">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write current timestep, using the supplied `obj`.</span>
+<span class="w">        </span><span class="sd">"""Write current timestep, using the supplied `obj`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1869,7 +1869,7 @@
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Deprecated support for Timestep argument to write has now been</span>
 <span class="sd">           removed. Use AtomGroup or Universe as an input instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
 
@@ -1878,16 +1878,16 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&lt; </span><span class="si">{0!s}</span><span class="s2"> </span><span class="si">{1!r}</span><span class="s2"> for </span><span class="si">{2:d}</span><span class="s2"> atoms &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">"&lt; </span><span class="si">{0!s}</span><span class="s2"> </span><span class="si">{1!r}</span><span class="s2"> for </span><span class="si">{2:d}</span><span class="s2"> atoms &gt;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
             <span class="c1"># no trajectory loaded yet or a Writer that does not need e.g.</span>
             <span class="c1"># self.n_atoms</span>
-            <span class="k">return</span> <span class="s2">&quot;&lt; </span><span class="si">{0!s}</span><span class="s2"> </span><span class="si">{1!r}</span><span class="s2"> &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">"&lt; </span><span class="si">{0!s}</span><span class="s2"> </span><span class="si">{1!r}</span><span class="s2"> &gt;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WriterBase.has_valid_coordinates">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.WriterBase.has_valid_coordinates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if all values are within limit values of their formats.</span>
+<span class="w">        </span><span class="sd">"""Returns ``True`` if all values are within limit values of their formats.</span>
 
 <span class="sd">        Due to rounding, the test is asymmetric (and *min* is supposed to be negative)::</span>
 
@@ -1903,9 +1903,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">criteria</span><span class="p">[</span><span class="s2">"max"</span><span class="p">])</span></div>
 </div>
 
 
@@ -1913,7 +1913,7 @@
 <div class="viewcode-block" id="SingleFrameReaderBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.SingleFrameReaderBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SingleFrameReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Readers that only have one frame.</span>
+<span class="w">    </span><span class="sd">"""Base class for Readers that only have one frame.</span>
 
 <span class="sd">    To use this base class, define the method :meth:`_read_first_frame` to</span>
 <span class="sd">    read from file `self.filename`.  This should populate the attribute</span>
@@ -1921,8 +1921,8 @@
 
 <span class="sd">    .. versionadded:: 0.10.0</span>
 <span class="sd">    .. versionchanged:: 0.11.0</span>
-<span class="sd">       Added attribute &quot;_ts_kwargs&quot; for subclasses</span>
-<span class="sd">       Keywords &quot;dt&quot; and &quot;time_offset&quot; read into _ts_kwargs</span>
+<span class="sd">       Added attribute "_ts_kwargs" for subclasses</span>
+<span class="sd">       Keywords "dt" and "time_offset" read into _ts_kwargs</span>
 <span class="sd">    .. versionchanged:: 2.2.0</span>
 <span class="sd">       Calling `__iter__` now rewinds the reader before yielding a</span>
 <span class="sd">       :class:`Timestep` object (fixing behavior that was not</span>
@@ -1930,8 +1930,8 @@
 <span class="sd">    .. versionchanged:: 2.10.0</span>
 <span class="sd">       Fixed a typo in the attribute assignment (`self.atom` → `self.atoms`),</span>
 <span class="sd">       which may affect subclasses relying on this value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_err</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> only contains a single frame&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">_err</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{0}</span><span class="s2"> only contains a single frame"</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1944,7 +1944,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
         <span class="n">ts_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'dt'</span><span class="p">,</span> <span class="s1">'time_offset'</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -1958,7 +1958,7 @@
 <div class="viewcode-block" id="SingleFrameReaderBase.copy">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.SingleFrameReaderBase.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return independent copy of this Reader.</span>
+<span class="w">        </span><span class="sd">"""Return independent copy of this Reader.</span>
 
 <span class="sd">        New Reader will have its own file handle and can seek/iterate</span>
 <span class="sd">        independently of the original.</span>
@@ -1972,7 +1972,7 @@
 <span class="sd">           passed to the creation of the new class. Previously the only</span>
 <span class="sd">           ``n_atoms`` was passed to class copies, leading to a class created</span>
 <span class="sd">           with default parameters which may differ from the original class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
 
         <span class="n">new</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -2033,7 +2033,7 @@
 <div class="viewcode-block" id="SingleFrameReaderBase.add_transformations">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.SingleFrameReaderBase.add_transformations">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
+<span class="w">        </span><span class="sd">""" Add all transformations to be applied to the trajectory.</span>
 
 <span class="sd">        This function take as list of transformations as an argument. These</span>
 <span class="sd">        transformations are functions that will be called by the Reader and given</span>
@@ -2058,7 +2058,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :mod:`MDAnalysis.transformations`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1">#Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
         <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
         <span class="c1">#multiple times when iterating over the trajectory.</span>
@@ -2070,7 +2070,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">""" Applies the transformations to the timestep."""</span>
         <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
         <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
 
@@ -2098,7 +2098,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;lib&#39;</span><span class="p">])</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">'lib'</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2114,23 +2114,23 @@
 <div class="viewcode-block" id="ConverterBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for converting to other libraries.</span>
+<span class="w">    </span><span class="sd">"""Base class for converting to other libraries.</span>
 
 <span class="sd">    .. deprecated:: 2.7.0</span>
 <span class="sd">        This class has been moved to</span>
 <span class="sd">        :class:`MDAnalysis.converters.base.ConverterBase` and will be removed</span>
 <span class="sd">        from :mod:`MDAnalysis.coordinates.base` in 3.0.0.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ConverterBase moved from coordinates.base.&quot;</span>
-                <span class="s2">&quot;ConverterBase to converters.base.ConverterBase &quot;</span>
-                <span class="s2">&quot;and will be removed from coordinates.base &quot;</span>
-                <span class="s2">&quot;in MDAnalysis release 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"ConverterBase moved from coordinates.base."</span>
+                <span class="s2">"ConverterBase to converters.base.ConverterBase "</span>
+                <span class="s2">"and will be removed from coordinates.base "</span>
+                <span class="s2">"in MDAnalysis release 3.0.0"</span><span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{cls}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"&lt;</span><span class="si">{cls}</span><span class="s2">&gt;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -2139,7 +2139,7 @@
 <div class="viewcode-block" id="StreamReaderBase">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamReaderBase</span><span class="p">(</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for readers that read a continuous stream of data.</span>
+<span class="w">    </span><span class="sd">"""Base class for readers that read a continuous stream of data.</span>
 
 <span class="sd">    This class is designed for readers that process continuous data streams,</span>
 <span class="sd">    such as live feeds from simulations. Unlike traditional trajectory readers</span>
@@ -2177,7 +2177,7 @@
 
 
 <span class="sd">    .. versionadded:: 2.10.0 </span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StreamReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -2193,7 +2193,7 @@
         <span class="c1"># and access it again during iteration, we need to store first ts in mem</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_scope</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="c1"># can&#39;t simply return the same ts again- transformations would be applied twice</span>
+            <span class="c1"># can't simply return the same ts again- transformations would be applied twice</span>
             <span class="c1"># instead, return the pre-transformed copy</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_ts</span>
 
@@ -2207,20 +2207,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Changes as stream is processed unlike other readers&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Changes as stream is processed unlike other readers"""</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: n_frames is unknown&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2">: n_frames is unknown"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> has unknown length&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2"> has unknown length"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="StreamReaderBase.next">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.next">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance to the next timestep in the streaming trajectory.</span>
+<span class="w">        </span><span class="sd">"""Advance to the next timestep in the streaming trajectory.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming readers process frames sequentially and cannot rewind</span>
 <span class="sd">        once iteration completes. Use ``for ts in trajectory`` for iteration.</span>
@@ -2234,11 +2234,11 @@
 <span class="sd">        ------</span>
 <span class="sd">        StopIteration</span>
 <span class="sd">            When the stream ends or no more frames are available</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
-            <span class="c1"># Don&#39;t rewind here like we normally would</span>
+            <span class="c1"># Don't rewind here like we normally would</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -2252,7 +2252,7 @@
 <div class="viewcode-block" id="StreamReaderBase.rewind">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.rewind">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rewinding is not supported for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Rewinding is not supported for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming readers process data continuously from streams</span>
 <span class="sd">        and cannot restart or go backward in the stream once consumed.</span>
@@ -2261,9 +2261,9 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            Always raised, as rewinding is not supported for streaming trajectories</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Stream-based readers can&#39;t be rewound&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2">: Stream-based readers can't be rewound"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
@@ -2273,7 +2273,7 @@
 <div class="viewcode-block" id="StreamReaderBase.copy">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reader copying is not supported for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Reader copying is not supported for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming readers maintain internal state and connection resources</span>
 <span class="sd">        that cannot be duplicated. Each stream connection is unique and</span>
@@ -2283,14 +2283,14 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            Always raised, as copying is not supported for streaming trajectories</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support copying&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2"> does not support copying"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare stream for iteration - can only be called once.</span>
+<span class="w">        </span><span class="sd">"""Prepare stream for iteration - can only be called once.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming readers cannot be reopened once iteration begins.</span>
 <span class="sd">        This method is called internally during iteration setup and</span>
@@ -2300,10 +2300,10 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            If the stream has already been opened for iteration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reopen_called</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Cannot reopen stream&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                <span class="s2">"</span><span class="si">{}</span><span class="s2">: Cannot reopen stream"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen_called</span> <span class="o">=</span> <span class="kc">True</span>
@@ -2311,7 +2311,7 @@
 <div class="viewcode-block" id="StreamReaderBase.timeseries">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.timeseries">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Timeseries extraction is not supported for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Timeseries extraction is not supported for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming readers cannot randomly access frames or store bulk coordinate</span>
 <span class="sd">        data in memory, which ``timeseries()`` requires. Use sequential frame</span>
@@ -2327,14 +2327,14 @@
 <span class="sd">        RuntimeError</span>
 <span class="sd">            Always raised, as timeseries extraction is not supported for </span>
 <span class="sd">            streaming trajectories</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: cannot access timeseries for streamed trajectories&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2">: cannot access timeseries for streamed trajectories"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator for slicing a streaming trajectory.</span>
+<span class="w">        </span><span class="sd">"""Return an iterator for slicing a streaming trajectory.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2363,7 +2363,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        StreamFrameIteratorSliced</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
                 <span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">step</span>
@@ -2374,13 +2374,13 @@
                 <span class="k">return</span> <span class="n">StreamFrameIteratorSliced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Streamed trajectories must be an indexed using a slice&quot;</span>
+                <span class="s2">"Streamed trajectories must be an indexed using a slice"</span>
             <span class="p">)</span>
 
 <div class="viewcode-block" id="StreamReaderBase.check_slice_indices">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.check_slice_indices">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check and validate slice indices for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Check and validate slice indices for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        Streaming trajectories have fundamental constraints that differ from </span>
 <span class="sd">        traditional trajectory files:</span>
@@ -2435,16 +2435,16 @@
 
 
 <span class="sd">        .. versionadded:: 2.10.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Cannot expect a start index from a stream, &#39;start&#39; must be None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"</span><span class="si">{}</span><span class="s2">: Cannot expect a start index from a stream, 'start' must be None"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Cannot expect a stop index from a stream, &#39;stop&#39; must be None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"</span><span class="si">{}</span><span class="s2">: Cannot expect a stop index from a stream, 'stop' must be None"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -2452,13 +2452,13 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Cannot go backwards in a stream, &#39;step&#39; must be &gt; 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s2">"</span><span class="si">{}</span><span class="s2">: Cannot go backwards in a stream, 'step' must be &gt; 0"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: &#39;step&#39; must be an integer&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"</span><span class="si">{}</span><span class="s2">: 'step' must be an integer"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
@@ -2469,7 +2469,7 @@
 <div class="viewcode-block" id="StreamReaderBase.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writer creation is not supported for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Writer creation is not supported for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        Writer creation requires trajectory metadata that streaming readers</span>
 <span class="sd">        cannot provide due to their sequential processing nature.</span>
@@ -2485,9 +2485,9 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            Always raised, as writer creation is not supported for streaming trajectories</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: cannot create Writer for streamed trajectories&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2">: cannot create Writer for streamed trajectories"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
@@ -2496,7 +2496,7 @@
 <div class="viewcode-block" id="StreamReaderBase.OtherWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamReaderBase.OtherWriter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">OtherWriter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writer creation is not supported for streaming trajectories.</span>
+<span class="w">        </span><span class="sd">"""Writer creation is not supported for streaming trajectories.</span>
 <span class="sd">        </span>
 <span class="sd">        OtherWriter initialization requires frame-based parameters and trajectory</span>
 <span class="sd">        indexing information. Streaming readers process data sequentially</span>
@@ -2513,9 +2513,9 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            Always raised, as writer creation is not supported for streaming trajectories</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: cannot create OtherWriter for streamed trajectories&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2">: cannot create OtherWriter for streamed trajectories"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
@@ -2523,18 +2523,18 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support pickling&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2"> does not support pickling"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support pickling&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2"> does not support pickling"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;&lt;</span><span class="si">{cls}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2"> with continuous stream of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">"&lt;</span><span class="si">{cls}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2"> with continuous stream of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;"</span>
+            <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                 <span class="n">fname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                 <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
@@ -2546,7 +2546,7 @@
 <div class="viewcode-block" id="StreamFrameIteratorSliced">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.StreamFrameIteratorSliced">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamFrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterator for sliced frames in a streamed trajectory.</span>
+<span class="w">    </span><span class="sd">"""Iterator for sliced frames in a streamed trajectory.</span>
 <span class="sd">    </span>
 <span class="sd">    Created when slicing a streaming trajectory with a step parameter </span>
 <span class="sd">    (e.g., ``trajectory[::n]``). Reads every nth frame from the continuous </span>
@@ -2579,7 +2579,7 @@
 
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
@@ -2587,33 +2587,33 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Calling reopen tells reader</span>
-        <span class="c1"># it can&#39;t be reopened again</span>
+        <span class="c1"># it can't be reopened again</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Burn the timesteps until we reach the desired step</span>
-            <span class="c1"># Don&#39;t use next() to avoid unnecessary transformations</span>
+            <span class="c1"># Don't use next() to avoid unnecessary transformations</span>
             <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
-            <span class="c1"># Don&#39;t rewind here like we normally would</span>
+            <span class="c1"># Don't rewind here like we normally would</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> has unknown length&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="s2">"</span><span class="si">{}</span><span class="s2"> has unknown length"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Sliced iterator does not support indexing&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Sliced iterator does not support indexing"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The step size for sliced frame iteration.</span>
+<span class="w">        </span><span class="sd">"""The step size for sliced frame iteration.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns the step interval used when iterating through frames in a </span>
 <span class="sd">        streaming trajectory. For example, a step of 2 means every second </span>
@@ -2624,7 +2624,7 @@
 <span class="sd">        int</span>
 <span class="sd">            Step size for iteration. Always a positive integer greater than 0.</span>
 <span class="sd">            </span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span></div>
 
 </pre></div>

@@ -166,7 +166,7 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Base classes for the selection writers</span>
 <span class="sd">======================================</span>
 
@@ -180,7 +180,7 @@
 
 <span class="sd">.. autofunction:: join</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
@@ -189,13 +189,13 @@
 
 <div class="viewcode-block" id="join">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.join">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a list from sequence.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create a list from sequence.</span>
 
 <span class="sd">    *string* is appended to each element but the last.</span>
 
 <span class="sd">    *func* is applied to every element before appending *string*.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">string</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span></div>
@@ -207,7 +207,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">])</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s2">"format"</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -221,7 +221,7 @@
 <div class="viewcode-block" id="SelectionWriterBase">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectionWriterBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a selection in MDAnalysis to a format usable in an external package.</span>
+<span class="w">    </span><span class="sd">"""Export a selection in MDAnalysis to a format usable in an external package.</span>
 
 <span class="sd">    The :class:`SelectionWriterBase` writes a selection string to a file</span>
 <span class="sd">    that can be used in another package such as `VMD`_, `PyMOL`_,</span>
@@ -245,31 +245,31 @@
 <span class="sd">       Remove the `wa` mode. The file is now open when the instance is created</span>
 <span class="sd">       and closed with the :meth:`close` method or when exiting the `with`</span>
 <span class="sd">       statement.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: Name of the format.</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: Extension of output files.</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: Special character to continue a line across a newline.</span>
-    <span class="n">continuation</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="c1">#: Comment format string; should contain &#39;%s&#39; or ``None`` for no comments.</span>
+    <span class="n">continuation</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="c1">#: Comment format string; should contain '%s' or ``None`` for no comments.</span>
     <span class="n">commentfmt</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="mi">8</span>
 
 <div class="viewcode-block" id="SelectionWriterBase.__init__">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up for writing to *filename*.</span>
+<span class="w">        </span><span class="sd">"""Set up for writing to *filename*.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename:</span>
 <span class="sd">            output file</span>
 <span class="sd">        mode:</span>
-<span class="sd">            create a new file (&quot;w&quot;), or append (&quot;a&quot;) to existing file [&quot;w&quot;]</span>
+<span class="sd">            create a new file ("w"), or append ("a") to existing file ["w"]</span>
 <span class="sd">        numterms:</span>
 <span class="sd">            number of individual index numbers per line for output</span>
 <span class="sd">            formats that write multiple entries in one line. If set</span>
@@ -278,11 +278,11 @@
 <span class="sd">            string that is written as a comment at the top of the file []</span>
 <span class="sd">        kwargs:</span>
 <span class="sd">            use as defaults for :meth:`write`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;mode must be one of &#39;w&#39;, &#39;a&#39;, not </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+                <span class="s2">"mode must be one of 'w', 'a', not </span><span class="si">{0!r}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -304,21 +304,21 @@
 <div class="viewcode-block" id="SelectionWriterBase.comment">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.comment">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string *s* interpolated into the comment format string.</span>
+<span class="w">        </span><span class="sd">"""Return string *s* interpolated into the comment format string.</span>
 
 <span class="sd">        If no :attr:`SelectionWriterBase.commentfmt` is defined (None) then the</span>
 <span class="sd">        empty string is returned because presumably there is no way to enter</span>
 <span class="sd">        comments into the file.</span>
 
 <span class="sd">        A newline is appended to non-empty strings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="o">%</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="o">%</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">write_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a header, depending on the file format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Write a header, depending on the file format."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preamble</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preamble</span><span class="p">))</span>
@@ -326,14 +326,14 @@
 <div class="viewcode-block" id="SelectionWriterBase.write">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.write">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection to the output file.</span>
+<span class="w">        </span><span class="sd">"""Write selection to the output file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        selection:</span>
 <span class="sd">            a :class:`MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        number:</span>
-<span class="sd">            selection will be named &quot;mdanalysis&lt;number&gt;&quot;</span>
+<span class="sd">            selection will be named "mdanalysis&lt;number&gt;"</span>
 <span class="sd">            (``None`` auto increments between writes; useful</span>
 <span class="sd">            when appending) [``None``]</span>
 <span class="sd">        name:</span>
@@ -341,7 +341,7 @@
 <span class="sd">        frame:</span>
 <span class="sd">            write selection of this frame (or the current one if</span>
 <span class="sd">            ``None`` [``None``]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>  <span class="c1"># advance to frame</span>
@@ -350,12 +350,12 @@
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># should catch cases when we are analyzing a single PDB (?)</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">otherargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">otherargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;mdanalysis</span><span class="si">{number:03d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">vars</span><span class="p">())</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">"mdanalysis</span><span class="si">{number:03d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">vars</span><span class="p">())</span>
         <span class="c1"># build whole selection in one go (cleaner way to deal with</span>
         <span class="c1"># to deal with line breaks after self.numterms entries)</span>
         <span class="c1"># selection_list must contain entries to be joined with spaces or linebreaks</span>
@@ -366,51 +366,51 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_head</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">selection_terms</span><span class="p">[</span><span class="n">iatom</span> <span class="p">:</span> <span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span><span class="p">]</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="n">step</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">" "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s2">&quot; &quot;</span>
-        <span class="p">)</span>  <span class="c1"># safe so that we don&#39;t have to put a space at the start of tail</span>
+            <span class="s2">" "</span>
+        <span class="p">)</span>  <span class="c1"># safe so that we don't have to put a space at the start of tail</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_tail</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># always terminate with newline</span></div>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># always terminate with newline</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the file</span>
+<span class="w">        </span><span class="sd">"""Close the file</span>
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SelectionWriterBase._translate">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._translate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translate atoms into a list of native selection terms.</span>
+<span class="w">        </span><span class="sd">"""Translate atoms into a list of native selection terms.</span>
 
 <span class="sd">        - build list of ALL selection terms as if this was a single line, e.g.</span>
-<span class="sd">          ``[&#39;index 12 |&#39;, &#39;index 22 |&#39;, &#39;index 33&#39;]``</span>
+<span class="sd">          ``['index 12 |', 'index 22 |', 'index 33']``</span>
 <span class="sd">        - only one term per atom!!</span>
 <span class="sd">        - terms *must* be strings</span>
 <span class="sd">        - something like::</span>
-<span class="sd">             &quot; &quot;.join(terms)</span>
+<span class="sd">             " ".join(terms)</span>
 
 <span class="sd">          must work</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="SelectionWriterBase._write_head">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_head">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initial output to open file object *out*.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initial output to open file object *out*."""</span>
         <span class="k">pass</span>  <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
 
 <div class="viewcode-block" id="SelectionWriterBase._write_tail">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_tail">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Last output to open file object *out*.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Last output to open file object *out*."""</span>
         <span class="k">pass</span>  <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
 

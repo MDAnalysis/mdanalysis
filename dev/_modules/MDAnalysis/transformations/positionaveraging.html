@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">Trajectory Coordinate Averaging --- :mod:`MDAnalysis.transformations.positionaveraging` </span>
 <span class="sd">=======================================================================================</span>
 
@@ -174,7 +174,7 @@
 
 <span class="sd">.. autoclass:: PositionAverager</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -184,7 +184,7 @@
 <div class="viewcode-block" id="PositionAverager">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/positionaveraging.html#MDAnalysis.transformations.positionaveraging.PositionAverager">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PositionAverager</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Averages the coordinates of a given timestep so that the coordinates</span>
 <span class="sd">    of the AtomGroup correspond to the average positions of the N previous</span>
 <span class="sd">    frames.</span>
@@ -284,7 +284,7 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       The transformation was changed to inherit from the base class for</span>
 <span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -330,7 +330,7 @@
         <span class="c1">#  call `u.trajectory[i]` multiple times.</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame</span>
-            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;coord_array&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"coord_array"</span><span class="p">)</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_array</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="p">):</span>
             <span class="n">test</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_array</span><span class="p">)</span>
@@ -346,8 +346,8 @@
             <span class="n">sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_array</span><span class="p">[</span><span class="n">test</span><span class="p">]))</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">sign</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">sign</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot average position for non sequential&quot;</span>
-                    <span class="s2">&quot;iterations. Averager will be reset.&quot;</span><span class="p">,</span>
+                    <span class="s2">"Cannot average position for non sequential"</span>
+                    <span class="s2">"iterations. Averager will be reset."</span><span class="p">,</span>
                     <span class="ne">Warning</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">resetarrays</span><span class="p">()</span>

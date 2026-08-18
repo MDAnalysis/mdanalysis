@@ -211,14 +211,14 @@ its own, without association of data to trajectory frames.
 This is useful, for example, for plotting. The data for a single term, a list
 of terms, or for all terms can be returned in dictionary form. “Time” is always
 returned in this dictionary to make plotting easier:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">],</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">"Temperature"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="s2">"Time"</span><span class="p">],</span> <span class="n">temp</span><span class="p">[</span><span class="s2">"Temperature"</span><span class="p">])</span>
 
-<span class="n">some_terms</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_data</span><span class="p">([</span><span class="s2">&quot;Potential&quot;</span><span class="p">,</span> <span class="s2">&quot;Kinetic En.&quot;</span><span class="p">,</span> <span class="s2">&quot;Box-X&quot;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">some_terms</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">],</span> <span class="n">some_terms</span><span class="p">[</span><span class="s2">&quot;Potential&quot;</span><span class="p">])</span>
+<span class="n">some_terms</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_data</span><span class="p">([</span><span class="s2">"Potential"</span><span class="p">,</span> <span class="s2">"Kinetic En."</span><span class="p">,</span> <span class="s2">"Box-X"</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">some_terms</span><span class="p">[</span><span class="s2">"Time"</span><span class="p">],</span> <span class="n">some_terms</span><span class="p">[</span><span class="s2">"Potential"</span><span class="p">])</span>
 
 <span class="n">all_terms</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">all_terms</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">],</span> <span class="n">all_terms</span><span class="p">[</span><span class="s2">&quot;Pressure&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">all_terms</span><span class="p">[</span><span class="s2">"Time"</span><span class="p">],</span> <span class="n">all_terms</span><span class="p">[</span><span class="s2">"Pressure"</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -238,8 +238,8 @@ entries from the EDR file they want to add, and they give it a more convenient
 name to be used in MDAnalysis (because GROMACS creates names like
 “#Surf*SurfTen” or “‘Constr. rmsd’” which may be inconvenient to use.)
 This dictionary might look like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aux_spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;surf_tension&quot;</span><span class="p">:</span> <span class="s2">&quot;#Surf*SurfTen&quot;</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aux_spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">,</span>
+            <span class="s2">"surf_tension"</span><span class="p">:</span> <span class="s2">"#Surf*SurfTen"</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>When provided as shown below, this would direct the <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a> to take
@@ -260,20 +260,20 @@ available in the EDR file is printed:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">AUX_EDR_TPR</span><span class="p">,</span> <span class="n">AUX_EDR_XTC</span><span class="p">)</span>
 <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">EDR</span><span class="o">.</span><span class="n">EDRReader</span><span class="p">(</span><span class="n">AUX_EDR</span><span class="p">)</span>
 <span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">aux</span><span class="o">.</span><span class="n">terms</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">,</span> <span class="s1">&#39;Angle&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="p">[</span><span class="s1">'Time'</span><span class="p">,</span> <span class="s1">'Bond'</span><span class="p">,</span> <span class="s1">'Angle'</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Data is associated with the trajectory, using an <cite>aux_spec</cite> dictionary to
 specify which data to add under which name. Any number of terms can be added
 using this method. The data is then accessible in the <cite>ts.aux</cite> namespace via
 both attribute and dictionary syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">({</span><span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="s2">&quot;Angle&quot;</span><span class="p">},</span> <span class="n">aux</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">({</span><span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">,</span>
+                                    <span class="s2">"angle"</span><span class="p">:</span> <span class="s2">"Angle"</span><span class="p">},</span> <span class="n">aux</span><span class="p">)</span>
 <span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="o">.</span><span class="n">epot</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">-</span><span class="mf">525164.0625</span>
 <span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="o">.</span><span class="n">Angle</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="mf">3764.52734375</span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="s2">&quot;epot&quot;</span><span class="p">]</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="s2">"epot"</span><span class="p">]</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="o">-</span><span class="mf">525164.0625</span>
 </pre></div>
 </div>
@@ -288,7 +288,7 @@ do this, the <cite>aux_spec</cite> dictionary is omitted, and the data source (t
 argument as explained above) is provided explicitly as <cite>auxdata</cite>. When adding
 data this way, the terms in <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader.terms" title="MDAnalysis.auxiliary.EDR.EDRReader.terms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">terms</span></code></a> become the names used in <cite>ts.aux</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="n">aux</span><span class="p">)</span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="s2">&quot;#Surf*SurfTen&quot;</span><span class="p">]</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="s2">"#Surf*SurfTen"</span><span class="p">]</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="o">-</span><span class="mf">1857.519287109375</span>
 </pre></div>
 </div>

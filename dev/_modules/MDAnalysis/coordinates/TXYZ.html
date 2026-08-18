@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">TXYZ file format --- :mod:`MDAnalysis.coordinates.TXYZ`</span>
 <span class="sd">=======================================================</span>
 
@@ -187,7 +187,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
@@ -201,11 +201,11 @@
 <div class="viewcode-block" id="TXYZReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TXYZ.html#MDAnalysis.coordinates.TXYZ.TXYZReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TXYZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads from a TXYZ file&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reads from a TXYZ file"""</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TXYZ&quot;</span><span class="p">,</span> <span class="s2">&quot;ARC&quot;</span><span class="p">]</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"TXYZ"</span><span class="p">,</span> <span class="s2">"ARC"</span><span class="p">]</span>
     <span class="c1"># these are assumed!</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="nd">@store_init_arguments</span>
@@ -234,16 +234,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_atoms"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;number of atoms in a frame&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""number of atoms in a frame"""</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># need to check type of n</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_frames"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_n_frames</span><span class="p">()</span>
@@ -274,7 +274,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1&#39;d in next</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1'd in next</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -306,7 +306,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;TXYZ file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">"TXYZ file already opened"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -320,7 +320,7 @@
 <div class="viewcode-block" id="TXYZReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TXYZ.html#MDAnalysis.coordinates.TXYZ.TXYZReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close arc trajectory file if it was open.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close arc trajectory file if it was open."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

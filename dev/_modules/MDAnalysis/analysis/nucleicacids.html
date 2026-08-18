@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">Updated nucleic acid analysis --- :mod:`MDAnalysis.analysis.nucleicacids`</span>
 <span class="sd">=========================================================================</span>
 
@@ -204,7 +204,7 @@
 
 <span class="sd">.. versionadded 2.2.0</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -220,16 +220,16 @@
 <span class="c1"># Deprecation: In 3.0.0 change type to just</span>
 <span class="c1"># ResidueClass = ResidueGroup</span>
 <span class="n">ResidueClass</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span> <span class="n">ResidueGroup</span><span class="p">]</span>
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;A type alias for :code:`Union[List[Residue], ResidueGroup]`</span>
+<span class="sa">r</span><span class="sd">"""A type alias for :code:`Union[List[Residue], ResidueGroup]`</span>
 
 <span class="sd">Used as an alias for methods where either class is acceptable.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 
 <div class="viewcode-block" id="NucPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NucPairDist</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atom pair distance calculation base class.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Atom pair distance calculation base class.</span>
 
 <span class="sd">    Takes two lists of :class:`~MDAnalysis.core.groups.AtomGroup` and</span>
 <span class="sd">    computes the distances between them over a trajectory. Used as a</span>
@@ -309,7 +309,7 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -317,7 +317,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"multiprocessing"</span><span class="p">,</span> <span class="s2">"dask"</span><span class="p">)</span></div>
 
 
     <span class="n">_s1</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
@@ -335,7 +335,7 @@
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection2</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Selections must be same length&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Selections must be same length"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection1</span><span class="p">)</span>
 
@@ -354,13 +354,13 @@
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">a1_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">a2_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
-        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
-        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
-        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
-        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"G"</span><span class="p">,</span>
+        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"A"</span><span class="p">,</span>
+        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"U"</span><span class="p">,</span>
+        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"T"</span><span class="p">,</span>
+        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">        A helper method for nucleic acid pair distance analyses.</span>
 <span class="sd">        Used for selecting specific atoms from two strands of nucleic acids.</span>
 
@@ -409,9 +409,9 @@
 <span class="sd">        .. versionchanged:: 2.11.0</span>
 <span class="sd">           Residue names are now matched exactly against the full resname</span>
 <span class="sd">           rather than only its first character. Users with multi-character</span>
-<span class="sd">           residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">           residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the</span>
 <span class="sd">           appropriate names via the keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">pyrimidines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_name</span><span class="p">,</span> <span class="n">t_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">]</span>
         <span class="n">purines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_name</span><span class="p">,</span> <span class="n">g_name</span><span class="p">]</span>
 
@@ -425,11 +425,11 @@
                 <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">a1_name</span><span class="p">,</span> <span class="n">a2_name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;AtomGroup in </span><span class="si">{</span><span class="n">pair</span><span class="si">}</span><span class="s2"> is not a valid nucleic acid&quot;</span>
+                    <span class="sa">f</span><span class="s2">"AtomGroup in </span><span class="si">{</span><span class="n">pair</span><span class="si">}</span><span class="s2"> is not a valid nucleic acid"</span>
                 <span class="p">)</span>
 
-            <span class="n">ag1</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">ag2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">ag1</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">"name </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">ag2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">"name </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">]):</span>
                 <span class="n">err_info</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Residue</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
@@ -438,8 +438,8 @@
 
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">err_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> returns an empty AtomGroup&quot;</span>
-                        <span class="s1">&#39;with selection string &quot;name </span><span class="si">{a2}</span><span class="s1">&quot;&#39;</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">err_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> returns an empty AtomGroup"</span>
+                        <span class="s1">'with selection string "name </span><span class="si">{a2}</span><span class="s1">"'</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
 
@@ -460,13 +460,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dist</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;pair_distances&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;distances&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">"pair_distances"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">"distances"</span><span class="p">]</span>
         <span class="c1"># TODO: remove pair_distances in 3.0.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;distances&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
+                <span class="s2">"distances"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -475,7 +475,7 @@
 <div class="viewcode-block" id="WatsonCrickDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.WatsonCrickDist">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WatsonCrickDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    Watson-Crick base pair distance for selected</span>
 <span class="sd">    residues over a trajectory.</span>
 
@@ -513,17 +513,17 @@
 <span class="sd">           :class:`~MDAnalysis.core.groups.ResidueGroup`.</span>
 
 <span class="sd">    n1_name: str (optional)</span>
-<span class="sd">        Name of Nitrogen 1 of nucleic acids, by default assigned to &quot;N1&quot;</span>
+<span class="sd">        Name of Nitrogen 1 of nucleic acids, by default assigned to "N1"</span>
 <span class="sd">    n3_name: str (optional)</span>
-<span class="sd">        Name of Nitrogen 3 of nucleic acids, by default assigned to &quot;N3&quot;</span>
+<span class="sd">        Name of Nitrogen 3 of nucleic acids, by default assigned to "N3"</span>
 <span class="sd">    g_name: str (optional)</span>
-<span class="sd">        Name of Guanine in topology, by default assigned to &quot;G&quot;</span>
+<span class="sd">        Name of Guanine in topology, by default assigned to "G"</span>
 <span class="sd">    a_name: str (optional)</span>
-<span class="sd">        Name of Adenine in topology, by default assigned to &quot;A&quot;</span>
+<span class="sd">        Name of Adenine in topology, by default assigned to "A"</span>
 <span class="sd">    u_name: str (optional)</span>
-<span class="sd">        Name of Uracil in topology, by default assigned to &quot;U&quot;</span>
+<span class="sd">        Name of Uracil in topology, by default assigned to "U"</span>
 <span class="sd">    t_name: str (optional)</span>
-<span class="sd">        Name of Thymine in topology, by default assigned to &quot;T&quot;</span>
+<span class="sd">        Name of Thymine in topology, by default assigned to "T"</span>
 <span class="sd">    c_name: str (optional)</span>
 <span class="sd">        Name of Cytosine in topology, by default assigned to C</span>
 <span class="sd">    **kwargs: dict</span>
@@ -595,21 +595,21 @@
 <span class="sd">    .. versionchanged:: 2.11.0</span>
 <span class="sd">       Residue names are now matched exactly against the full resname</span>
 <span class="sd">       rather than only its first character. Users with multi-character</span>
-<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the</span>
 <span class="sd">       appropriate names via the keyword arguments.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">,</span>
-        <span class="n">n1_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N1&quot;</span><span class="p">,</span>
-        <span class="n">n3_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N3&quot;</span><span class="p">,</span>
-        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
-        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
-        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
-        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
-        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">n1_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"N1"</span><span class="p">,</span>
+        <span class="n">n3_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"N3"</span><span class="p">,</span>
+        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"G"</span><span class="p">,</span>
+        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"A"</span><span class="p">,</span>
+        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"U"</span><span class="p">,</span>
+        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"T"</span><span class="p">,</span>
+        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -619,13 +619,13 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strand</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># Checking if a list is given</span>
                 <span class="c1"># verify list is only Residues</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="n">Residue</span><span class="p">)</span> <span class="k">for</span> <span class="n">resid</span> <span class="ow">in</span> <span class="n">strand</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">strand</span><span class="si">}</span><span class="s2"> contains non-Residue elements&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">strand</span><span class="si">}</span><span class="s2"> contains non-Residue elements"</span><span class="p">)</span>
 
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                     <span class="ne">DeprecationWarning</span><span class="p">(</span>
                         <span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;ResidueGroup should be used for </span><span class="si">{</span><span class="n">strand</span><span class="si">}</span><span class="s2"> instead&quot;</span>
-                            <span class="s2">&quot;of giving a Residue list&quot;</span>
+                            <span class="sa">f</span><span class="s2">"ResidueGroup should be used for </span><span class="si">{</span><span class="n">strand</span><span class="si">}</span><span class="s2"> instead"</span>
+                            <span class="s2">"of giving a Residue list"</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
@@ -660,7 +660,7 @@
 <div class="viewcode-block" id="MinorPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.MinorPairDist">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MinorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minor-Pair basepair distance for selected residues over a trajectory.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Minor-Pair basepair distance for selected residues over a trajectory.</span>
 
 <span class="sd">    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and</span>
 <span class="sd">    calculates the Minor-groove hydrogen bond length between the</span>
@@ -676,25 +676,25 @@
 <span class="sd">        Second list of bases</span>
 <span class="sd">    o2_name: str (optional)</span>
 <span class="sd">        Name of Oxygen 2 of nucleic acids;</span>
-<span class="sd">        by default assigned to &quot;O2&quot;;</span>
+<span class="sd">        by default assigned to "O2";</span>
 <span class="sd">    c2_name: str (optional)</span>
 <span class="sd">        Name of Carbon 2 of nucleic acids;</span>
-<span class="sd">        by default assigned to &quot;C2&quot;;</span>
+<span class="sd">        by default assigned to "C2";</span>
 <span class="sd">    g_name: str (optional)</span>
 <span class="sd">        Name of Guanine in topology;</span>
-<span class="sd">        by default assigned to &quot;G&quot;;</span>
+<span class="sd">        by default assigned to "G";</span>
 <span class="sd">    a_name: str (optional)</span>
 <span class="sd">        Name of Adenine in topology</span>
-<span class="sd">        by default assigned to &quot;A&quot;;</span>
+<span class="sd">        by default assigned to "A";</span>
 <span class="sd">    u_name: str (optional)</span>
 <span class="sd">        Name of Uracil in topology;</span>
-<span class="sd">        by default assigned to &quot;U&quot;;</span>
+<span class="sd">        by default assigned to "U";</span>
 <span class="sd">    t_name: str (optional)</span>
 <span class="sd">        Name of Thymine in topology;</span>
-<span class="sd">        by default assigned to &quot;T&quot;;</span>
+<span class="sd">        by default assigned to "T";</span>
 <span class="sd">    c_name: str (optional)</span>
 <span class="sd">        Name of Cytosine in topology;</span>
-<span class="sd">        by default assigned to &quot;C&quot;;</span>
+<span class="sd">        by default assigned to "C";</span>
 <span class="sd">    **kwargs:</span>
 <span class="sd">        keyword arguments for</span>
 <span class="sd">        :class:`~MDAnalysis.analysis.base.AnalysisBase`</span>
@@ -724,21 +724,21 @@
 <span class="sd">    .. versionchanged:: 2.11.0</span>
 <span class="sd">       Residue names are now matched exactly against the full resname</span>
 <span class="sd">       rather than only its first character. Users with multi-character</span>
-<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the</span>
 <span class="sd">       appropriate names via the keyword arguments.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
-        <span class="n">o2_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;O2&quot;</span><span class="p">,</span>
-        <span class="n">c2_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span>
-        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
-        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
-        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
-        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
-        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">o2_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"O2"</span><span class="p">,</span>
+        <span class="n">c2_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C2"</span><span class="p">,</span>
+        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"G"</span><span class="p">,</span>
+        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"A"</span><span class="p">,</span>
+        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"U"</span><span class="p">,</span>
+        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"T"</span><span class="p">,</span>
+        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -765,7 +765,7 @@
 <div class="viewcode-block" id="MajorPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.MajorPairDist">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MajorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minor-Pair base pair distance for</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Minor-Pair base pair distance for</span>
 <span class="sd">    selected residues over a trajectory.</span>
 
 <span class="sd">    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and</span>
@@ -782,25 +782,25 @@
 <span class="sd">        Second list of bases</span>
 <span class="sd">    o6_name: str (optional)</span>
 <span class="sd">        Name of Oxygen 6 of nucleic acids;</span>
-<span class="sd">        by default assigned to &quot;O6&quot;</span>
+<span class="sd">        by default assigned to "O6"</span>
 <span class="sd">    n4_name: str (optional)</span>
 <span class="sd">        Name of Nitrogen 4 of nucleic acids;</span>
-<span class="sd">        by default assigned to &quot;N4&quot;</span>
+<span class="sd">        by default assigned to "N4"</span>
 <span class="sd">    g_name: str (optional)</span>
 <span class="sd">        Name of Guanine in topology;</span>
-<span class="sd">        by default assigned to &quot;G&quot;</span>
+<span class="sd">        by default assigned to "G"</span>
 <span class="sd">    a_name: str (optional)</span>
 <span class="sd">        Name of Adenine in topology;</span>
-<span class="sd">        by default assigned to &quot;A&quot;</span>
+<span class="sd">        by default assigned to "A"</span>
 <span class="sd">    u_name: str (optional)</span>
 <span class="sd">        Name of Uracil in topology;</span>
-<span class="sd">        by default assigned to &quot;U&quot;</span>
+<span class="sd">        by default assigned to "U"</span>
 <span class="sd">    t_name: str (optional)</span>
 <span class="sd">        Name of Thymine in topology;</span>
-<span class="sd">        by default assigned to &quot;T&quot;</span>
+<span class="sd">        by default assigned to "T"</span>
 <span class="sd">    c_name: str (optional)</span>
 <span class="sd">        Name of Cytosine in topology;</span>
-<span class="sd">        by default assigned to &quot;C&quot;</span>
+<span class="sd">        by default assigned to "C"</span>
 <span class="sd">    **kwargs:</span>
 <span class="sd">        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`</span>
 
@@ -831,21 +831,21 @@
 <span class="sd">    .. versionchanged:: 2.11.0</span>
 <span class="sd">       Residue names are now matched exactly against the full resname</span>
 <span class="sd">       rather than only its first character. Users with multi-character</span>
-<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the</span>
 <span class="sd">       appropriate names via the keyword arguments.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
-        <span class="n">n4_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N4&quot;</span><span class="p">,</span>
-        <span class="n">o6_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;O6&quot;</span><span class="p">,</span>
-        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
-        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
-        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
-        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
-        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">n4_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"N4"</span><span class="p">,</span>
+        <span class="n">o6_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"O6"</span><span class="p">,</span>
+        <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"G"</span><span class="p">,</span>
+        <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"A"</span><span class="p">,</span>
+        <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"U"</span><span class="p">,</span>
+        <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"T"</span><span class="p">,</span>
+        <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 

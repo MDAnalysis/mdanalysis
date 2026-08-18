@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Mathematical helper functions --- :mod:`MDAnalysis.lib.mdamath`</span>
 <span class="sd">===============================================================</span>
 
@@ -199,7 +199,7 @@
 <span class="sd">.. versionchanged: 1.0.0</span>
 <span class="sd">   Unused function :func:`_angle()` has now been removed.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
@@ -219,7 +219,7 @@
 <div class="viewcode-block" id="norm">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.norm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the norm of a vector v.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate the norm of a vector v.</span>
 
 <span class="sd">    .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}</span>
 
@@ -237,7 +237,7 @@
 <span class="sd">    float</span>
 <span class="sd">        norm of the vector</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span></div>
 
 
@@ -245,7 +245,7 @@
 <div class="viewcode-block" id="normal">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.normal">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">normal</span><span class="p">(</span><span class="n">vec1</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">vec2</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the unit vector normal to two vectors.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Returns the unit vector normal to two vectors.</span>
 
 <span class="sd">    .. math::</span>
 
@@ -255,7 +255,7 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># TODO: enable typing when https://github.com/python/mypy/issues/11347 done</span>
     <span class="n">normal</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
@@ -269,7 +269,7 @@
 <div class="viewcode-block" id="pdot">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.pdot">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pdot</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pairwise dot product.</span>
+<span class="w">    </span><span class="sd">"""Pairwise dot product.</span>
 
 <span class="sd">    ``a`` must be the same shape as ``b``.</span>
 
@@ -281,15 +281,15 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    :class:`numpy.ndarray` of shape (N,)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;i"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="pnorm">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.pnorm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pnorm</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Euclidean norm of each vector in a matrix</span>
+<span class="w">    </span><span class="sd">"""Euclidean norm of each vector in a matrix</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -298,7 +298,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    :class:`numpy.ndarray` of shape (N,)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">pdot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span></div>
 
 
@@ -306,14 +306,14 @@
 <div class="viewcode-block" id="angle">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.angle">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">angle</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the angle between two vectors in radians</span>
+<span class="w">    </span><span class="sd">"""Returns the angle between two vectors in radians</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed rounding-off code to use `np.clip()`. Values lower than</span>
 <span class="sd">       -1.0 now return `np.pi` instead of `-np.pi`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
     <span class="c1"># catch roundoffs that lead to nan otherwise</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -326,7 +326,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">stp</span><span class="p">(</span>
     <span class="n">vec1</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">vec2</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">vec3</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Takes the scalar triple product of three vectors.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Takes the scalar triple product of three vectors.</span>
 
 <span class="sd">    Returns the volume *V* of the parallel epiped spanned by the three</span>
 <span class="sd">    vectors</span>
@@ -337,7 +337,7 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># TODO: enable typing when https://github.com/python/mypy/issues/11347 done</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>  <span class="c1"># type: ignore</span></div>
 
@@ -346,14 +346,14 @@
 <div class="viewcode-block" id="dihedral">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.dihedral">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">bc</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">cd</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the dihedral angle in radians between vectors connecting A,B,C,D.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.</span>
 
 <span class="sd">    The dihedral measures the rotation around bc::</span>
 
 <span class="sd">         ab</span>
 <span class="sd">       A----&gt;B</span>
 <span class="sd">              \ bc</span>
-<span class="sd">              _\&#39;</span>
+<span class="sd">              _\'</span>
 <span class="sd">                C----&gt;D</span>
 <span class="sd">                  cd</span>
 
@@ -362,7 +362,7 @@
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">normal</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">),</span> <span class="n">normal</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">stp</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="n">x</span></div>
 
@@ -371,7 +371,7 @@
 <div class="viewcode-block" id="sarrus_det">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.sarrus_det">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sarrus_det</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the determinant of a 3x3 matrix according to the</span>
+<span class="w">    </span><span class="sd">"""Computes the determinant of a 3x3 matrix according to the</span>
 <span class="sd">    `rule of Sarrus`_.</span>
 
 <span class="sd">    If an array of 3x3 matrices is supplied, determinants are computed per</span>
@@ -403,14 +403,14 @@
 
 
 <span class="sd">    .. versionadded:: 0.20.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">ndim</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ndim</span>
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Invalid matrix shape: must be (3, 3) or (..., 3, 3), &quot;</span>
-            <span class="s2">&quot;got </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+            <span class="s2">"Invalid matrix shape: must be (3, 3) or (..., 3, 3), "</span>
+            <span class="s2">"got </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_sarrus_det_single</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -423,7 +423,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">triclinic_box</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the three triclinic box vectors to</span>
+<span class="w">    </span><span class="sd">"""Convert the three triclinic box vectors to</span>
 <span class="sd">    ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 
 <span class="sd">    If the resulting box is invalid, i.e., any box length is zero or negative,</span>
@@ -466,14 +466,14 @@
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Calculations are performed in double precision and invalid box vectors</span>
 <span class="sd">       result in an all-zero box.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">lx</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">ly</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">lz</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ly</span> <span class="o">*</span> <span class="n">lz</span><span class="p">)))</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">lx</span> <span class="o">*</span> <span class="n">lz</span><span class="p">)))</span>
         <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">lx</span> <span class="o">*</span> <span class="n">ly</span><span class="p">)))</span>
@@ -491,7 +491,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">triclinic_vectors</span><span class="p">(</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix</span>
+<span class="w">    </span><span class="sd">"""Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix</span>
 <span class="sd">    representation.</span>
 
 <span class="sd">    Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist.</span>
@@ -536,7 +536,7 @@
 <span class="sd">       * Calculations are performed in double precision and zero vectors are</span>
 <span class="sd">         also returned for invalid boxes.</span>
 <span class="sd">       * Added optional output dtype parameter.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">dim</span>
     <span class="c1"># Only positive edge lengths and angles in (0, 180) are allowed:</span>
@@ -579,7 +579,7 @@
         <span class="c1"># The discriminant of the above square root is only negative or zero for</span>
         <span class="c1"># triplets of box angles that lead to an invalid box (i.e., the sum of</span>
         <span class="c1"># any two angles is less than or equal to the third).</span>
-        <span class="c1"># We don&#39;t need to explicitly test for np.nan here since checking for a</span>
+        <span class="c1"># We don't need to explicitly test for np.nan here since checking for a</span>
         <span class="c1"># positive value already covers that.</span>
         <span class="k">if</span> <span class="n">box_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="c1"># all good, convert to correct dtype:</span>
@@ -594,7 +594,7 @@
 <div class="viewcode-block" id="box_volume">
 <a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.box_volume">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">box_volume</span><span class="p">(</span><span class="n">dimensions</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the volume of the unitcell described by `dimensions`.</span>
+<span class="w">    </span><span class="sd">"""Return the volume of the unitcell described by `dimensions`.</span>
 
 <span class="sd">    The volume is computed as the product of the box matrix trace, with the</span>
 <span class="sd">    matrix obtained from :func:`triclinic_vectors`.</span>
@@ -618,7 +618,7 @@
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">        Calculations are performed in double precision and zero is returned</span>
 <span class="sd">        for invalid dimensions.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">dim</span>
     <span class="k">if</span> <span class="n">alpha</span> <span class="o">==</span> <span class="n">beta</span> <span class="o">==</span> <span class="n">gamma</span> <span class="o">==</span> <span class="mf">90.0</span> <span class="ow">and</span> <span class="n">lx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ly</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">lz</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

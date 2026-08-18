@@ -230,14 +230,14 @@ unit only if it is recognized by <a class="reference external" href="https://use
 <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a>), pass the topology
 and trajectory files to <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"topology.tpr"</span><span class="p">,</span> <span class="s2">"trajectory.h5md"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It is also possible to pass an open <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> file stream
 into the reader:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
-<span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-     <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">"trajectory.h5md"</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+     <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"topology.tpr"</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -250,23 +250,23 @@ See issue <a class="reference external" href="https://github.com/MDAnalysis/mdan
 <h2><span class="section-number">7.9.3. </span>Example: Writing an H5MD file<a class="headerlink" href="#example-writing-an-h5md-file" title="Link to this heading"></a></h2>
 <p>To write to an H5MD file from a trajectory loaded with MDAnalysis, do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">&quot;output.h5md&quot;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"topology.tpr"</span><span class="p">,</span> <span class="s2">"trajectory.h5md"</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">"output.h5md"</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
         <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To write an H5MD file with contiguous datasets, you must specify the
 number of frames to be written and set <code class="docutils literal notranslate"><span class="pre">chunks=False</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">&quot;output_contigous.h5md&quot;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">"output_contigous.h5md"</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
                 <span class="n">n_frames</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
         <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The writer also supports writing directly from an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">)</span>
-<span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;alpha_carbons.h5md&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein and name CA"</span><span class="p">)</span>
+<span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"alpha_carbons.h5md"</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">'all'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -279,8 +279,8 @@ parallel HDF5, pass <cite>driver</cite> and <cite>comm</cite> arguments to
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span>
-                 <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;mpio&quot;</span><span class="p">,</span> <span class="n">comm</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"topology.tpr"</span><span class="p">,</span> <span class="s2">"trajectory.h5md"</span><span class="p">,</span>
+                 <span class="n">driver</span><span class="o">=</span><span class="s2">"mpio"</span><span class="p">,</span> <span class="n">comm</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -366,7 +366,7 @@ H5MD root
  \-- (h5md)
     +-- version &lt;int&gt;
     \-- author
-        +-- name &lt;str&gt;, author&#39;s name
+        +-- name &lt;str&gt;, author's name
         +-- email &lt;str&gt;, optional email address
     \-- creator
         +-- name &lt;str&gt;, file that created .h5md file
@@ -498,7 +498,7 @@ by default. To use a custom chunk shape, you must specify the
 <cite>chunks</cite> argument. If you would like to copy an existing chunk
 format from a dataset (positions, velocities, or forces), do
 the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chunks</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="s1">&#39;position/value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">chunks</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chunks</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="s1">'position/value'</span><span class="p">]</span><span class="o">.</span><span class="n">chunks</span>
 </pre></div>
 </div>
 <p>Note that the writer will set the same layout for all particle groups.</p>
@@ -533,7 +533,7 @@ stored in the current timestep in the <code class="docutils literal notranslate"
 <em>aux_spec</em>; e.g. to add additional pull force data stored in
 pull-force.xvg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">'pull'</span><span class="p">,</span> <span class="s1">'pull-force.xvg'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The representative value for the current timestep may then be accessed
@@ -542,14 +542,14 @@ as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.
 <a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
 <p>All data that is present in the (energy) file can be added by omitting
 <cite>aux_spec</cite> like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>aux_spec</em> is expected to be a dictionary that maps the desired
 attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
 added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span> <span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adding this data can be useful, for example, to filter trajectory
@@ -1646,14 +1646,14 @@ unpickle, the original file still has to be accessible with its filename.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory/position/value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">'particles/trajectory/position/value'</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>can also be used as context manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory/position/value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">'particles/trajectory/position/value'</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="admonition note">

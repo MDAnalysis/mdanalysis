@@ -206,7 +206,7 @@ root-mean-square distance analysis in the following way:</p>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 
 <span class="c1"># (2) instantiate analysis</span>
-<span class="n">rmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">'name CA'</span><span class="p">)</span>
 
 <span class="c1"># (3) the run() method can select frames in different ways</span>
 <span class="c1"># run on all frames (with progressbar)</span>
@@ -228,8 +228,8 @@ root-mean-square distance analysis in the following way:</p>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time (ps)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSD (Å)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"time (ps)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"RMSD (Å)"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -254,11 +254,11 @@ you have your <code class="xref py py-meth docutils literal notranslate"><span c
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">'serial'</span><span class="p">,</span> <span class="s1">'multiprocessing'</span><span class="p">,</span> <span class="s1">'dask'</span><span class="p">,)</span>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-      <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;timeseries&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+      <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">'timeseries'</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="results.html#module-MDAnalysis.analysis.results" title="MDAnalysis.analysis.results"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results</span></code></a> for more on aggregating results.</p>
@@ -428,11 +428,11 @@ Only exists after calling <a class="reference internal" href="#MDAnalysis.analys
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 
-<span class="n">na</span> <span class="o">=</span> <span class="n">NewAnalysis</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">),</span> <span class="mi">35</span><span class="p">)</span>
+<span class="n">na</span> <span class="o">=</span> <span class="n">NewAnalysis</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name CA'</span><span class="p">),</span> <span class="mi">35</span><span class="p">)</span>
 <span class="n">na</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span><span class="p">)</span>
 <span class="c1"># results can also be accessed by key</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;example_result&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">"example_result"</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="versionchanged">

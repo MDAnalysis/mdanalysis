@@ -195,10 +195,10 @@ topology files. Used, for instance, by the <a class="reference external" href="h
 <section id="example-for-working-with-mol2-files">
 <h2><span class="section-number">7.14.1. </span>Example for working with mol2 files<a class="headerlink" href="#example-for-working-with-mol2-files" title="Link to this heading"></a></h2>
 <p>To open a mol2, remove all hydrogens and save as a new file, use the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;Molecule.mol2&quot;</span><span class="p">)</span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;not name H*&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">"Molecule.mol2"</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"not name H*"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">gr</span><span class="p">))</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Molecule_noh.mol2&quot;</span><span class="p">)</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Molecule_noh.mol2"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -257,8 +257,8 @@ If you’re trying to convert, for example, a PDB file to MOL you should
 use other tools, like <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a>.</p>
 <p>Here is an example how to use <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a> to convert a PDB to MOL:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromPDBFile</span><span class="p">(</span><span class="s2">&quot;molecule.pdb&quot;</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolFile</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;molecule.mol&quot;</span> <span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromPDBFile</span><span class="p">(</span><span class="s2">"molecule.pdb"</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolFile</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">"molecule.mol"</span> <span class="p">)</span>
 </pre></div>
 </div>
 <p>MOL2 writer is currently not available for rdkit master. It requires SYBYL

@@ -212,7 +212,7 @@ HELANAL - A program to characterise helix geometry in proteins.
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">helix_analysis</span> <span class="k">as</span> <span class="n">hel</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">helanal</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">HELANAL</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA and resnum 161-187&#39;</span><span class="p">)</span>
+<span class="n">helanal</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">HELANAL</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">'name CA and resnum 161-187'</span><span class="p">)</span>
 <span class="n">helanal</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -222,8 +222,8 @@ HELANAL - A program to characterise helix geometry in proteins.
 </div>
 <p>Alternatively, you can analyse several helices at once by passing
 in multiple selection strings:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">helanal2</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">HELANAL</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;name CA and resnum 100-160&#39;</span><span class="p">,</span>
-                                  <span class="s1">&#39;name CA and resnum 200-230&#39;</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">helanal2</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">HELANAL</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="s1">'name CA and resnum 100-160'</span><span class="p">,</span>
+                                  <span class="s1">'name CA and resnum 200-230'</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.helix_analysis.helix_analysis" title="MDAnalysis.analysis.helix_analysis.helix_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">helix_analysis()</span></code></a> function will carry out helix analysis on

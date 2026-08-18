@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water Bridge analysis --- :mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`</span>
+<span class="sa">r</span><span class="sd">"""Water Bridge analysis --- :mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`</span>
 <span class="sd">==========================================================================================</span>
 
 <span class="sd">:Author: Zhiyi Wu</span>
@@ -274,9 +274,9 @@
 <span class="sd">:attr:`WaterBridgeAnalysis.results.timeseries` is generated::</span>
 
 <span class="sd">    def network2timeseries(network, timeseries):</span>
-<span class="sd">        &#39;&#39;&#39;Traverse the network in a depth-first fashion.</span>
+<span class="sd">        '''Traverse the network in a depth-first fashion.</span>
 <span class="sd">        expand_timeseries will expand the compact representation to the</span>
-<span class="sd">        familiar timeseries representation.&#39;&#39;&#39;</span>
+<span class="sd">        familiar timeseries representation.'''</span>
 
 <span class="sd">        if network is None:</span>
 <span class="sd">            return</span>
@@ -306,7 +306,7 @@
 <span class="sd">    ]</span>
 
 <span class="sd">Using the :meth:`WaterBridgeAnalysis.generate_table` method one can reformat</span>
-<span class="sd">the results as a flat &quot;normalised&quot; table that is easier to import into a</span>
+<span class="sd">the results as a flat "normalised" table that is easier to import into a</span>
 <span class="sd">database or dataframe for further processing.</span>
 
 <span class="sd">Detection of water bridges</span>
@@ -331,7 +331,7 @@
 
 <span class="sd">Hydrogen atoms bonded to a donor are searched based on its distance to the</span>
 <span class="sd">donor. The algorithm searches for all hydrogens</span>
-<span class="sd">(name &quot;H*&quot; or name &quot;[123]H&quot; or type &quot;H&quot;) in the same residue as the donor atom</span>
+<span class="sd">(name "H*" or name "[123]H" or type "H") in the same residue as the donor atom</span>
 <span class="sd">within a cut-off distance of 1.2 Å.</span>
 
 <span class="sd">.. _Default atom names for water bridge analysis:</span>
@@ -390,16 +390,16 @@
 <span class="sd">atom names in the `donors` and `acceptors` keywords to</span>
 <span class="sd">:class:`WaterBridgeAnalysis`. If the lists are entirely inappropriate</span>
 <span class="sd">(e.g. when analysing simulations done with a force field that uses very</span>
-<span class="sd">different atom names) then one should either use the value &quot;other&quot; for</span>
+<span class="sd">different atom names) then one should either use the value "other" for</span>
 <span class="sd">`forcefield` to set no default values or derive a new class and set the</span>
 <span class="sd">default list oneself::</span>
 
 <span class="sd"> class WaterBridgeAnalysis_OtherFF(WaterBridgeAnalysis):</span>
-<span class="sd">       DEFAULT_DONORS = {&quot;OtherFF&quot;: tuple(set([...]))}</span>
-<span class="sd">       DEFAULT_ACCEPTORS = {&quot;OtherFF&quot;: tuple(set([...]))}</span>
+<span class="sd">       DEFAULT_DONORS = {"OtherFF": tuple(set([...]))}</span>
+<span class="sd">       DEFAULT_ACCEPTORS = {"OtherFF": tuple(set([...]))}</span>
 
 <span class="sd">Then simply use the new class instead of the parent class and call it with</span>
-<span class="sd">```forcefield` = &quot;OtherFF&quot;``. Please also consider contributing the list of</span>
+<span class="sd">```forcefield` = "OtherFF"``. Please also consider contributing the list of</span>
 <span class="sd">heavy atom names to MDAnalysis.</span>
 
 
@@ -416,14 +416,14 @@
 <span class="sd">  import MDAnalysis</span>
 <span class="sd">  from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis</span>
 
-<span class="sd">  u = MDAnalysis.Universe(&#39;topology&#39;, &#39;trajectory&#39;)</span>
-<span class="sd">  w = WaterBridgeAnalysis(u, &#39;resname ARG&#39;, &#39;resname ASP&#39;)</span>
+<span class="sd">  u = MDAnalysis.Universe('topology', 'trajectory')</span>
+<span class="sd">  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP')</span>
 <span class="sd">  w.run()</span>
 
 <span class="sd">The maximum number of bridging waters detected can be changed using the order</span>
 <span class="sd">keyword. ::</span>
 
-<span class="sd">  w = WaterBridgeAnalysis(u, &#39;resname ARG&#39;, &#39;resname ASP&#39;, order=3)</span>
+<span class="sd">  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP', order=3)</span>
 
 <span class="sd">Thus, a maximum of three bridging waters will be detected.</span>
 
@@ -449,14 +449,14 @@
 
 <span class="sd">  [ # frame 1</span>
 <span class="sd">    # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3</span>
-<span class="sd">   [[0,2,(&#39;ARG&#39;,1,  &#39;O&#39;),(&#39;SOL&#39;,2,&#39;HW1&#39;),  3.0,180],</span>
-<span class="sd">    [3,4,(&#39;SOL&#39;,2,&#39;HW2&#39;),(&#39;ASP&#39;,3,&#39;OD1&#39;),  3.0,180],</span>
+<span class="sd">   [[0,2,('ARG',1,  'O'),('SOL',2,'HW1'),  3.0,180],</span>
+<span class="sd">    [3,4,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],</span>
 <span class="sd">   ],</span>
 <span class="sd">    # frame 2</span>
 <span class="sd">    # Another water bridge SOL2 links O from ARG1 to the other oxygen of the</span>
 <span class="sd">    # carboxylic group OD2 of ASP3</span>
-<span class="sd">   [[0,2,(&#39;ARG&#39;,1,  &#39;O&#39;),(&#39;SOL&#39;,2,&#39;HW1&#39;),  3.0,180],</span>
-<span class="sd">    [3,5,(&#39;SOL&#39;,2,&#39;HW2&#39;),(&#39;ASP&#39;,3,&#39;OD2&#39;),  3.0,180],</span>
+<span class="sd">   [[0,2,('ARG',1,  'O'),('SOL',2,'HW1'),  3.0,180],</span>
+<span class="sd">    [3,5,('SOL',2,'HW2'),('ASP',3,'OD2'),  3.0,180],</span>
 <span class="sd">   ],</span>
 <span class="sd">  ]</span>
 
@@ -473,8 +473,8 @@
 
 <span class="sd">Returns ::</span>
 
-<span class="sd">  [(0, 3, &#39;ARG&#39;, 1, &#39;O&#39;, &#39;ASP&#39;, 3, &#39;OD1&#39;, 0.5),</span>
-<span class="sd">   (0, 4, &#39;ARG&#39;, 1, &#39;O&#39;, &#39;ASP&#39;, 3, &#39;OD2&#39;, 0.5),]</span>
+<span class="sd">  [(0, 3, 'ARG', 1, 'O', 'ASP', 3, 'OD1', 0.5),</span>
+<span class="sd">   (0, 4, 'ARG', 1, 'O', 'ASP', 3, 'OD2', 0.5),]</span>
 
 <span class="sd">You might think that the OD1 and OD2 are the same oxygen and the aspartate has</span>
 <span class="sd">just flipped and thus, they should be counted as the same type of water bridge.</span>
@@ -502,7 +502,7 @@
 <span class="sd">up and returned. ::</span>
 
 <span class="sd">  def analysis(current, output, u):</span>
-<span class="sd">      r&#39;&#39;&#39;This function defines how the type of water bridge should be</span>
+<span class="sd">      r'''This function defines how the type of water bridge should be</span>
 <span class="sd">      specified.</span>
 
 <span class="sd">        Parameters</span>
@@ -515,7 +515,7 @@
 <span class="sd">            of the water bridge and the value is the weight of this type of</span>
 <span class="sd">            water bridge.</span>
 <span class="sd">        u : MDAnalysis.universe</span>
-<span class="sd">            The current Universe for looking up atoms.&#39;&#39;&#39;</span>
+<span class="sd">            The current Universe for looking up atoms.'''</span>
 
 <span class="sd">      # decompose the first hydrogen bond.</span>
 <span class="sd">      sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =</span>
@@ -532,8 +532,8 @@
 <span class="sd">      sele2.name)</span>
 <span class="sd">      # if the residue name is ASP and the atom name is OD2 or OD1,</span>
 <span class="sd">      # the atom name is changed to OD</span>
-<span class="sd">      if s2_resname == &#39;ASP&#39; and (s2_name == &#39;OD1&#39; or s2_name == &#39;OD2&#39;):</span>
-<span class="sd">          s2_name = &#39;OD&#39;</span>
+<span class="sd">      if s2_resname == 'ASP' and (s2_name == 'OD1' or s2_name == 'OD2'):</span>
+<span class="sd">          s2_name = 'OD'</span>
 <span class="sd">      # setting up the key which defines this type of water bridge.</span>
 <span class="sd">      key = (s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)</span>
 <span class="sd">      # The number of this type of water bridge is incremented by 1.</span>
@@ -543,13 +543,13 @@
 
 <span class="sd">Returns ::</span>
 
-<span class="sd">  [((&#39;ARG&#39;, 1, &#39;O&#39;, &#39;ASP&#39;, 3, &#39;OD&#39;), 1.0),]</span>
+<span class="sd">  [(('ARG', 1, 'O', 'ASP', 3, 'OD'), 1.0),]</span>
 
 <span class="sd">Note that the result is arranged in the format of</span>
 <span class="sd">``(key, the proportion of time)``. When no custom analysis function is supplied</span>
 <span class="sd">, the key is expanded and is formatted as ::</span>
 
-<span class="sd">  [(&#39;ARG&#39;, 1, &#39;O&#39;, &#39;ASP&#39;, 3, &#39;OD&#39;, 1.0),]</span>
+<span class="sd">  [('ARG', 1, 'O', 'ASP', 3, 'OD', 1.0),]</span>
 
 <span class="sd">Some people might only interested in contacts between residues and pay no</span>
 <span class="sd">attention to the details regarding the atom name. However, since multiple water</span>
@@ -561,7 +561,7 @@
 <span class="sd">:meth:`~WaterBridgeAnalysis.count_by_type`. ::</span>
 
 <span class="sd">  def analysis(current, output, u):</span>
-<span class="sd">      &#39;&#39;&#39;This function defines how the type of water bridge should be specified</span>
+<span class="sd">      '''This function defines how the type of water bridge should be specified</span>
 <span class="sd">      .</span>
 
 <span class="sd">        Parameters</span>
@@ -575,7 +575,7 @@
 <span class="sd">            water bridge.</span>
 <span class="sd">        u : MDAnalysis.universe</span>
 <span class="sd">            The current Universe for looking up atoms.</span>
-<span class="sd">      &#39;&#39;&#39;</span>
+<span class="sd">      '''</span>
 
 <span class="sd">      # decompose the first hydrogen bond.</span>
 <span class="sd">      sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =</span>
@@ -600,15 +600,15 @@
 
 <span class="sd">Returns ::</span>
 
-<span class="sd">  [((&#39;ARG&#39;, 1, &#39;ASP&#39;, 3), 1.0),]</span>
+<span class="sd">  [(('ARG', 1, 'ASP', 3), 1.0),]</span>
 
 <span class="sd">On the other hand, other people may insist that the first order and</span>
-<span class="sd">second-order water bridges shouldn&#39;t be mixed together, which can also be</span>
+<span class="sd">second-order water bridges shouldn't be mixed together, which can also be</span>
 <span class="sd">achieved by supplying an analysis function to</span>
 <span class="sd">:meth:`~WaterBridgeAnalysis.count_by_type`.  ::</span>
 
 <span class="sd">  def analysis(current, output, u):</span>
-<span class="sd">      &#39;&#39;&#39;This function defines how the type of water bridge should be specified</span>
+<span class="sd">      '''This function defines how the type of water bridge should be specified</span>
 <span class="sd">      .</span>
 
 <span class="sd">        Parameters</span>
@@ -622,7 +622,7 @@
 <span class="sd">            water bridge.</span>
 <span class="sd">        u : MDAnalysis.universe</span>
 <span class="sd">            The current Universe for looking up atoms.</span>
-<span class="sd">      &#39;&#39;&#39;</span>
+<span class="sd">      '''</span>
 
 <span class="sd">      # decompose the first hydrogen bond.</span>
 <span class="sd">      sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =</span>
@@ -649,14 +649,14 @@
 <span class="sd">The extra number 1 precede the 1.0 indicate that this is a first order water</span>
 <span class="sd">bridge ::</span>
 
-<span class="sd">  [((&#39;ARG&#39;, 1, &#39;ASP&#39;, 3, 1), 1.0),]</span>
+<span class="sd">  [(('ARG', 1, 'ASP', 3, 1), 1.0),]</span>
 
 <span class="sd">Some people might not be interested in the interactions related to arginine.</span>
 <span class="sd">The undesirable interactions can be discarded by supplying an analysis function</span>
 <span class="sd">to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::</span>
 
 <span class="sd">  def analysis(current, output, u):</span>
-<span class="sd">      &#39;&#39;&#39;This function defines how the type of water bridge should be</span>
+<span class="sd">      '''This function defines how the type of water bridge should be</span>
 <span class="sd">      specified.</span>
 
 <span class="sd">        Parameters</span>
@@ -670,7 +670,7 @@
 <span class="sd">            water bridge.</span>
 <span class="sd">        u : MDAnalysis.universe</span>
 <span class="sd">            The current Universe for looking up atoms.</span>
-<span class="sd">      &#39;&#39;&#39;</span>
+<span class="sd">      '''</span>
 
 <span class="sd">      # decompose the first hydrogen bond.</span>
 <span class="sd">      sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =</span>
@@ -685,7 +685,7 @@
 <span class="sd">      sele1.name)</span>
 <span class="sd">      (s2_resname, s2_resid, s2_name) = (sele2.resname, sele2.resid,</span>
 <span class="sd">      sele2.name)</span>
-<span class="sd">      if not s1_resname == &#39;ARG&#39;:</span>
+<span class="sd">      if not s1_resname == 'ARG':</span>
 <span class="sd">          key = (s1_resname, s1_resid, s2_resname, s2_resid)</span>
 <span class="sd">          output[key] += 1</span>
 
@@ -737,7 +737,7 @@
 <span class="sd">The analysis function can be written as::</span>
 
 <span class="sd">  def analysis(current, output, u, **kwargs):</span>
-<span class="sd">      &#39;&#39;&#39;This function defines how the counting of water bridge should be</span>
+<span class="sd">      '''This function defines how the counting of water bridge should be</span>
 <span class="sd">      specified.</span>
 
 <span class="sd">        Parameters</span>
@@ -751,7 +751,7 @@
 <span class="sd">            water  bridge.</span>
 <span class="sd">        u : MDAnalysis.universe</span>
 <span class="sd">            The current Universe for looking up atoms.</span>
-<span class="sd">      &#39;&#39;&#39;</span>
+<span class="sd">      '''</span>
 
 <span class="sd">      # decompose the first hydrogen bond.</span>
 <span class="sd">      sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =</span>
@@ -768,7 +768,7 @@
 <span class="sd">      (sele2.resname, sele2.resid, sele2.name)</span>
 
 <span class="sd">      # only the residue name is ASP and the atom name is OD1,</span>
-<span class="sd">      if s2_resname == &#39;ASP&#39; and s2_name == &#39;OD1&#39;:</span>
+<span class="sd">      if s2_resname == 'ASP' and s2_name == 'OD1':</span>
 <span class="sd">          # only if the order of water bridge is less than 2</span>
 <span class="sd">          if len(current) -1 &lt; 2:</span>
 <span class="sd">              # extract all water molecules involved in the water bridge</span>
@@ -848,7 +848,7 @@
 <span class="sd">      .. deprecated:: 2.0.0</span>
 <span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use</span>
 <span class="sd">         :attr:`results.timeseries` instead.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
@@ -861,13 +861,13 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.WaterBridgeAnalysis&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.WaterBridgeAnalysis"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="WaterBridgeAnalysis">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WaterBridgeAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a water bridge analysis</span>
+<span class="w">    </span><span class="sd">"""Perform a water bridge analysis</span>
 
 <span class="sd">    The analysis of the trajectory is performed with the</span>
 <span class="sd">    :meth:`WaterBridgeAnalysis.run` method. The result is stored in</span>
@@ -876,7 +876,7 @@
 
 <span class="sd">    .. versionadded:: 0.17.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># use tuple(set()) here so that one can just copy&amp;paste names from the</span>
     <span class="c1"># table; set() takes care for removing duplicates. At the end the</span>
@@ -886,58 +886,58 @@
     <span class="c1">#: (see :ref:`Default atom names for water bridge analysis`);</span>
     <span class="c1">#: use the keyword `donors` to add a list of additional donor names.</span>
     <span class="n">DEFAULT_DONORS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;CHARMM27&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="s2">"CHARMM27"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;N&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OH2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OW&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NE&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NH1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NH2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ND2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;SG&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NE2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ND1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NZ&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OG&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OG1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NE1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OH&quot;</span><span class="p">,</span>
+                <span class="s2">"N"</span><span class="p">,</span>
+                <span class="s2">"OH2"</span><span class="p">,</span>
+                <span class="s2">"OW"</span><span class="p">,</span>
+                <span class="s2">"NE"</span><span class="p">,</span>
+                <span class="s2">"NH1"</span><span class="p">,</span>
+                <span class="s2">"NH2"</span><span class="p">,</span>
+                <span class="s2">"ND2"</span><span class="p">,</span>
+                <span class="s2">"SG"</span><span class="p">,</span>
+                <span class="s2">"NE2"</span><span class="p">,</span>
+                <span class="s2">"ND1"</span><span class="p">,</span>
+                <span class="s2">"NZ"</span><span class="p">,</span>
+                <span class="s2">"OG"</span><span class="p">,</span>
+                <span class="s2">"OG1"</span><span class="p">,</span>
+                <span class="s2">"NE1"</span><span class="p">,</span>
+                <span class="s2">"OH"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">),</span>
-        <span class="s2">&quot;GLYCAM06&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">({</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;NT&quot;</span><span class="p">,</span> <span class="s2">&quot;N3&quot;</span><span class="p">,</span> <span class="s2">&quot;OH&quot;</span><span class="p">,</span> <span class="s2">&quot;OW&quot;</span><span class="p">}),</span>
-        <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([])),</span>
+        <span class="s2">"GLYCAM06"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">({</span><span class="s2">"N"</span><span class="p">,</span> <span class="s2">"NT"</span><span class="p">,</span> <span class="s2">"N3"</span><span class="p">,</span> <span class="s2">"OH"</span><span class="p">,</span> <span class="s2">"OW"</span><span class="p">}),</span>
+        <span class="s2">"other"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([])),</span>
     <span class="p">}</span>
 
     <span class="c1">#: default atom names that are treated as hydrogen *acceptors*</span>
     <span class="c1">#: (see :ref:`Default atom names for water bridge analysis`);</span>
     <span class="c1">#: use the keyword `acceptors` to add a list of additional acceptor names.</span>
     <span class="n">DEFAULT_ACCEPTORS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;CHARMM27&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="s2">"CHARMM27"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;O&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OC1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OC2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OH2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OW&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OD1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OD2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;SG&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OE1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OE1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OE2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ND1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NE2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;SD&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OG&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OG1&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;OH&quot;</span><span class="p">,</span>
+                <span class="s2">"O"</span><span class="p">,</span>
+                <span class="s2">"OC1"</span><span class="p">,</span>
+                <span class="s2">"OC2"</span><span class="p">,</span>
+                <span class="s2">"OH2"</span><span class="p">,</span>
+                <span class="s2">"OW"</span><span class="p">,</span>
+                <span class="s2">"OD1"</span><span class="p">,</span>
+                <span class="s2">"OD2"</span><span class="p">,</span>
+                <span class="s2">"SG"</span><span class="p">,</span>
+                <span class="s2">"OE1"</span><span class="p">,</span>
+                <span class="s2">"OE1"</span><span class="p">,</span>
+                <span class="s2">"OE2"</span><span class="p">,</span>
+                <span class="s2">"ND1"</span><span class="p">,</span>
+                <span class="s2">"NE2"</span><span class="p">,</span>
+                <span class="s2">"SD"</span><span class="p">,</span>
+                <span class="s2">"OG"</span><span class="p">,</span>
+                <span class="s2">"OG1"</span><span class="p">,</span>
+                <span class="s2">"OH"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">),</span>
-        <span class="s2">&quot;GLYCAM06&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="p">{</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;NT&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O2&quot;</span><span class="p">,</span> <span class="s2">&quot;OH&quot;</span><span class="p">,</span> <span class="s2">&quot;OS&quot;</span><span class="p">,</span> <span class="s2">&quot;OW&quot;</span><span class="p">,</span> <span class="s2">&quot;OY&quot;</span><span class="p">,</span> <span class="s2">&quot;SM&quot;</span><span class="p">}</span>
+        <span class="s2">"GLYCAM06"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">"N"</span><span class="p">,</span> <span class="s2">"NT"</span><span class="p">,</span> <span class="s2">"O"</span><span class="p">,</span> <span class="s2">"O2"</span><span class="p">,</span> <span class="s2">"OH"</span><span class="p">,</span> <span class="s2">"OS"</span><span class="p">,</span> <span class="s2">"OW"</span><span class="p">,</span> <span class="s2">"OY"</span><span class="p">,</span> <span class="s2">"SM"</span><span class="p">}</span>
         <span class="p">),</span>
-        <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([])),</span>
+        <span class="s2">"other"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([])),</span>
     <span class="p">}</span>
 
     <span class="c1">#: A :class:`collections.defaultdict` of covalent radii of common donors</span>
@@ -952,26 +952,26 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
-        <span class="n">selection1</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
-        <span class="n">selection2</span><span class="o">=</span><span class="s2">&quot;not resname SOL&quot;</span><span class="p">,</span>
-        <span class="n">water_selection</span><span class="o">=</span><span class="s2">&quot;resname SOL&quot;</span><span class="p">,</span>
+        <span class="n">selection1</span><span class="o">=</span><span class="s2">"protein"</span><span class="p">,</span>
+        <span class="n">selection2</span><span class="o">=</span><span class="s2">"not resname SOL"</span><span class="p">,</span>
+        <span class="n">water_selection</span><span class="o">=</span><span class="s2">"resname SOL"</span><span class="p">,</span>
         <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">selection1_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">selection1_type</span><span class="o">=</span><span class="s2">"both"</span><span class="p">,</span>
         <span class="n">update_selection</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">update_water_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">filter_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">distance_type</span><span class="o">=</span><span class="s2">&quot;hydrogen&quot;</span><span class="p">,</span>
+        <span class="n">distance_type</span><span class="o">=</span><span class="s2">"hydrogen"</span><span class="p">,</span>
         <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
         <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span>
-        <span class="n">forcefield</span><span class="o">=</span><span class="s2">&quot;CHARMM27&quot;</span><span class="p">,</span>
+        <span class="n">forcefield</span><span class="o">=</span><span class="s2">"CHARMM27"</span><span class="p">,</span>
         <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;sele1_sele2&quot;</span><span class="p">,</span>
+        <span class="n">output_format</span><span class="o">=</span><span class="s2">"sele1_sele2"</span><span class="p">,</span>
         <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the calculation of water bridges between two selections in a</span>
+<span class="w">        </span><span class="sd">"""Set up the calculation of water bridges between two selections in a</span>
 <span class="sd">        universe.</span>
 
 <span class="sd">        The timeseries is accessible as the attribute</span>
@@ -989,15 +989,15 @@
 <span class="sd">        universe : Universe</span>
 <span class="sd">            Universe object</span>
 <span class="sd">        selection1 : str (optional)</span>
-<span class="sd">            Selection string for first selection [&#39;protein&#39;]</span>
+<span class="sd">            Selection string for first selection ['protein']</span>
 <span class="sd">        selection2 : str (optional)</span>
-<span class="sd">            Selection string for second selection [&#39;not resname SOL&#39;]</span>
+<span class="sd">            Selection string for second selection ['not resname SOL']</span>
 <span class="sd">            This string selects everything except water where water is assumed</span>
 <span class="sd">            to have a residue name as SOL.</span>
 <span class="sd">        water_selection : str (optional)</span>
-<span class="sd">            Selection string for bridging water selection [&#39;resname SOL&#39;]</span>
+<span class="sd">            Selection string for bridging water selection ['resname SOL']</span>
 <span class="sd">            The default selection assumes that the water molecules have residue</span>
-<span class="sd">            name &quot;SOL&quot;. Change it to the appropriate selection for your</span>
+<span class="sd">            name "SOL". Change it to the appropriate selection for your</span>
 <span class="sd">            specific force field.</span>
 
 <span class="sd">            However, in theory, this selection can be anything which forms</span>
@@ -1012,13 +1012,13 @@
 <span class="sd">            to compute the 20th order water bridge between domain A and domain</span>
 <span class="sd">            B or you just want to know the third order water bridge between two</span>
 <span class="sd">            residues.</span>
-<span class="sd">        selection1_type : {&quot;donor&quot;, &quot;acceptor&quot;, &quot;both&quot;} (optional)</span>
-<span class="sd">            Selection 1 can be &#39;donor&#39;, &#39;acceptor&#39; or &#39;both&#39;. Note that the</span>
+<span class="sd">        selection1_type : {"donor", "acceptor", "both"} (optional)</span>
+<span class="sd">            Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the</span>
 <span class="sd">            value for `selection1_type` automatically determines how</span>
 <span class="sd">            `selection2` handles donors and acceptors: If `selection1` contains</span>
-<span class="sd">            &#39;both&#39; then `selection2` will also contain &#39;both&#39;. If `selection1`</span>
-<span class="sd">            is set to &#39;donor&#39; then `selection2` is &#39;acceptor&#39; (and vice versa).</span>
-<span class="sd">            [&#39;both&#39;].</span>
+<span class="sd">            'both' then `selection2` will also contain 'both'. If `selection1`</span>
+<span class="sd">            is set to 'donor' then `selection2` is 'acceptor' (and vice versa).</span>
+<span class="sd">            ['both'].</span>
 <span class="sd">        update_selection : bool (optional)</span>
 <span class="sd">            Update selection 1 and 2 at each frame. Setting to ``True`` if the</span>
 <span class="sd">            selection is not static. Selections are filtered first to speed up</span>
@@ -1052,29 +1052,29 @@
 <span class="sd">            180º.  A hydrogen bond is only recorded if the D-H-A angle is</span>
 <span class="sd">            &gt;=  `angle`. The default of 120º also finds fairly non-specific</span>
 <span class="sd">            hydrogen interactions and possibly better value is 150º. [120.0]</span>
-<span class="sd">        forcefield : {&quot;CHARMM27&quot;, &quot;GLYCAM06&quot;, &quot;other&quot;} (optional)</span>
+<span class="sd">        forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)</span>
 <span class="sd">            Name of the forcefield used. Switches between different</span>
 <span class="sd">            :attr:`~DEFAULT_DONORS` and</span>
 <span class="sd">            :attr:`~DEFAULT_ACCEPTORS` values.</span>
-<span class="sd">            [&quot;CHARMM27&quot;]</span>
+<span class="sd">            ["CHARMM27"]</span>
 <span class="sd">        donors : sequence (optional)</span>
 <span class="sd">            Extra H donor atom types (in addition to those in :attr:`~DEFAULT_DONORS`).</span>
 <span class="sd">            This shall be the name of the heavy atom that is bonded to the hydrogen.</span>
-<span class="sd">            For example, the oxygen (&#39;O&#39;) in the hydroxyl group. Must be a sequence.</span>
+<span class="sd">            For example, the oxygen ('O') in the hydroxyl group. Must be a sequence.</span>
 <span class="sd">        acceptors : sequence (optional)</span>
 <span class="sd">            Extra H acceptor atom types (in addition to those in</span>
 <span class="sd">            :attr:`~DEFAULT_ACCEPTORS`), must be a</span>
 <span class="sd">            sequence.</span>
-<span class="sd">        distance_type : {&quot;hydrogen&quot;, &quot;heavy&quot;} (optional)</span>
+<span class="sd">        distance_type : {"hydrogen", "heavy"} (optional)</span>
 <span class="sd">            Measure hydrogen bond lengths between donor and acceptor heavy</span>
-<span class="sd">            atoms (&quot;heavy&quot;) or between donor hydrogen and acceptor heavy</span>
-<span class="sd">            atom (&quot;hydrogen&quot;). If using &quot;heavy&quot; then one should set the</span>
-<span class="sd">            *distance* cutoff to a higher value such as 3.5 Å. [&quot;hydrogen&quot;]</span>
-<span class="sd">        output_format: {&quot;sele1_sele2&quot;, &quot;donor_acceptor&quot;} (optional)</span>
+<span class="sd">            atoms ("heavy") or between donor hydrogen and acceptor heavy</span>
+<span class="sd">            atom ("hydrogen"). If using "heavy" then one should set the</span>
+<span class="sd">            *distance* cutoff to a higher value such as 3.5 Å. ["hydrogen"]</span>
+<span class="sd">        output_format: {"sele1_sele2", "donor_acceptor"} (optional)</span>
 <span class="sd">            Setting the output format for timeseries and table. If set to</span>
-<span class="sd">            &quot;sele1_sele2&quot;, for each hydrogen bond, the one close to selection 1</span>
-<span class="sd">            will be placed before selection 2. If set to &quot;donor_acceptor&quot;, the</span>
-<span class="sd">            donor will be placed before acceptor. &quot;sele1_sele2&quot;]</span>
+<span class="sd">            "sele1_sele2", for each hydrogen bond, the one close to selection 1</span>
+<span class="sd">            will be placed before selection 2. If set to "donor_acceptor", the</span>
+<span class="sd">            donor will be placed before acceptor. "sele1_sele2"]</span>
 <span class="sd">        debug : bool (optional)</span>
 <span class="sd">            If set to ``True`` enables per-frame debug logging. This is</span>
 <span class="sd">            disabled by default because it generates a very large amount of</span>
@@ -1103,7 +1103,7 @@
 <span class="sd">           :class:`~MDAnalysis.analysis.base.AnalysisBase`.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">WaterBridgeAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
@@ -1119,19 +1119,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="o">=</span> <span class="n">selection1_type</span>
-        <span class="k">if</span> <span class="s2">&quot;selection2_type&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`selection2_type` is not a keyword argument.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"selection2_type"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"`selection2_type` is not a keyword argument."</span><span class="p">)</span>
 
         <span class="c1"># if the selection 1 and selection 2 are the same</span>
         <span class="k">if</span> <span class="n">selection1</span> <span class="o">==</span> <span class="n">selection2</span><span class="p">:</span>
             <span class="c1"># eliminate the duplication</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="o">=</span> <span class="s2">&quot;donor&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="o">=</span> <span class="s2">"donor"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selection</span> <span class="o">=</span> <span class="n">update_selection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="o">=</span> <span class="n">filter_first</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>
-        <span class="k">if</span> <span class="n">distance_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;hydrogen&quot;</span><span class="p">,</span> <span class="s2">&quot;heavy&quot;</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">distance_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"hydrogen"</span><span class="p">,</span> <span class="s2">"heavy"</span><span class="p">}:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Only &#39;hydrogen&#39; and &#39;heavy&#39; are allowed for option `distance_type&#39; (</span><span class="si">{</span><span class="n">distance_type</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="sa">f</span><span class="s2">"Only 'hydrogen' and 'heavy' are allowed for option `distance_type' (</span><span class="si">{</span><span class="n">distance_type</span><span class="si">}</span><span class="s2">)."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">=</span> <span class="n">distance_type</span>
         <span class="c1"># will give the default behavior</span>
@@ -1150,10 +1150,10 @@
             <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ACCEPTORS</span><span class="p">[</span><span class="n">forcefield</span><span class="p">])</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">acceptors</span><span class="p">)</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"both"</span><span class="p">,</span> <span class="s2">"donor"</span><span class="p">,</span> <span class="s2">"acceptor"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;WaterBridgeAnalysis: &quot;</span>
-                <span class="s2">&quot;Invalid selection type </span><span class="si">{0!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span><span class="p">)</span>
+                <span class="s2">"WaterBridgeAnalysis: "</span>
+                <span class="s2">"Invalid selection type </span><span class="si">{0!s}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># final result accessed as self.results.network</span>
@@ -1164,30 +1164,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_parameters</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log important parameters to the logfile.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Log important parameters to the logfile."""</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: selection = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="s2">"WaterBridgeAnalysis: selection = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_selection</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: water selection = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="s2">"WaterBridgeAnalysis: water selection = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_water_selection</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: criterion: donor </span><span class="si">%s</span><span class="s2"> atom and &quot;</span>
-            <span class="s2">&quot;acceptor atom distance &lt;= </span><span class="si">%.3f</span><span class="s2"> A&quot;</span><span class="p">,</span>
+            <span class="s2">"WaterBridgeAnalysis: criterion: donor </span><span class="si">%s</span><span class="s2"> atom and "</span>
+            <span class="s2">"acceptor atom distance &lt;= </span><span class="si">%.3f</span><span class="s2"> A"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: criterion: &quot;</span> <span class="s2">&quot;angle D-H-A &gt;= </span><span class="si">%.3f</span><span class="s2"> degrees&quot;</span><span class="p">,</span>
+            <span class="s2">"WaterBridgeAnalysis: criterion: "</span> <span class="s2">"angle D-H-A &gt;= </span><span class="si">%.3f</span><span class="s2"> degrees"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: force field </span><span class="si">%s</span><span class="s2"> to guess donor and </span><span class="se">\</span>
-<span class="s2">        acceptor names&quot;</span><span class="p">,</span>
+            <span class="s2">"WaterBridgeAnalysis: force field </span><span class="si">%s</span><span class="s2"> to guess donor and </span><span class="se">\</span>
+<span class="s2">        acceptor names"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">forcefield</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -1212,7 +1212,7 @@
         <span class="n">hydrogen_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residue_dict</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">resname</span><span class="p">][</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">hydrogen_names</span><span class="p">:</span>
             <span class="n">hydrogens</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                <span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hydrogen_names</span><span class="p">))</span>
+                <span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hydrogen_names</span><span class="p">))</span>
             <span class="p">)</span><span class="o">.</span><span class="n">ix</span>
             <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">:</span>
                 <span class="n">h_donors</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_ix</span>
@@ -1234,8 +1234,8 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Size of selection 1 before filtering:&quot;</span>
-                <span class="s2">&quot; </span><span class="si">{}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">))</span>
+                <span class="s2">"Size of selection 1 before filtering:"</span>
+                <span class="s2">" </span><span class="si">{}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="n">ns_selection_1</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span>
@@ -1244,12 +1244,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection_distance</span>
             <span class="p">)</span><span class="o">.</span><span class="n">ix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-            <span class="s2">&quot;Size of selection 1: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">))</span>
+            <span class="s2">"Size of selection 1: </span><span class="si">{0}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">))</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;Selection 1 &quot;</span><span class="si">{0}</span><span class="s1">&quot; did not select any atoms.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s1">'Selection 1 "</span><span class="si">{0}</span><span class="s1">" did not select any atoms.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -1257,8 +1257,8 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Size of selection 2 before filtering:&quot;</span>
-                <span class="s2">&quot; </span><span class="si">{}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
+                <span class="s2">"Size of selection 2 before filtering:"</span>
+                <span class="s2">" </span><span class="si">{}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="n">ns_selection_2</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span>
@@ -1267,21 +1267,21 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection_distance</span>
             <span class="p">)</span><span class="o">.</span><span class="n">ix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-            <span class="s2">&quot;Size of selection 2: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
+            <span class="s2">"Size of selection 2: </span><span class="si">{0}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;Selection 2 &quot;</span><span class="si">{0}</span><span class="s1">&quot; did not select any atoms.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s1">'Selection 2 "</span><span class="si">{0}</span><span class="s1">" did not select any atoms.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"donor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">atom_ix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">:</span>
@@ -1289,38 +1289,38 @@
                     <span class="n">atom_ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 1 donors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">))</span>
+                <span class="s2">"Selection 1 donors: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 1 donor hydrogens: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Selection 1 donor hydrogens: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_h_donors</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"acceptor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 1 acceptors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">))</span>
+                <span class="s2">"Selection 1 acceptors: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">))</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"donor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 2 acceptors: </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">))</span>
+                <span class="s2">"Selection 2 acceptors: </span><span class="si">{0:d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">))</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"acceptor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">atom_ix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">:</span>
@@ -1328,10 +1328,10 @@
                     <span class="n">atom_ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 2 donors: </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">))</span>
+                <span class="s2">"Selection 2 donors: </span><span class="si">{0:d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Selection 2 donor hydrogens: </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Selection 2 donor hydrogens: </span><span class="si">{0:d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_h_donors</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -1344,8 +1344,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_water</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)</span><span class="o">.</span><span class="n">ix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-            <span class="s2">&quot;Size of water selection before filtering:&quot;</span>
-            <span class="s2">&quot; </span><span class="si">{}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">))</span>
+            <span class="s2">"Size of water selection before filtering:"</span>
+            <span class="s2">" </span><span class="si">{}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">))</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span><span class="p">:</span>
             <span class="n">filtered_s1</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span>
@@ -1359,19 +1359,19 @@
                 <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-            <span class="s2">&quot;Size of water selection: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">))</span>
+            <span class="s2">"Size of water selection: </span><span class="si">{0}</span><span class="s2"> atoms"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">))</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Water selection &#39;</span><span class="si">{0}</span><span class="s2">&#39; did not select any atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Water selection '</span><span class="si">{0}</span><span class="s2">' did not select any atoms."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">atom_ix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">:</span>
@@ -1379,24 +1379,24 @@
                     <span class="n">atom_ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Water donors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">))</span>
+                <span class="s2">"Water donors: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Water donor hydrogens: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">))</span>
+                <span class="s2">"Water donor hydrogens: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+                <span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
                 <span class="o">.</span><span class="n">ix</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
-                <span class="s2">&quot;Water acceptors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">))</span>
+                <span class="s2">"Water acceptors: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">))</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_bonded_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find hydrogens bonded within cutoff to `atom`.</span>
+<span class="w">        </span><span class="sd">"""Find hydrogens bonded within cutoff to `atom`.</span>
 
-<span class="sd">        Hydrogens are detected by either name (&quot;H*&quot;, &quot;[123]H*&quot;) or type (&quot;H&quot;);</span>
+<span class="sd">        Hydrogens are detected by either name ("H*", "[123]H*") or type ("H");</span>
 <span class="sd">        this is not fool-proof as the atom type is not always a character but</span>
 <span class="sd">        the name pattern should catch most typical occurrences.</span>
 
@@ -1419,11 +1419,11 @@
 <span class="sd">            list of hydrogens (can be a</span>
 <span class="sd">            :class:`~MDAnalysis.core.groups.AtomGroup`)</span>
 <span class="sd">            or empty list ``[]`` if none were found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                <span class="s2">&quot;(name H* 1H* 2H* 3H* or type H) and around </span><span class="si">{0:f}</span><span class="s2"> name </span><span class="si">{1!s}</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_cov</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="s2">"(name H* 1H* 2H* 3H* or type H) and around </span><span class="si">{0:f}</span><span class="s2"> name </span><span class="si">{1!s}</span><span class="s2">"</span>
+                <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_cov</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -1451,28 +1451,28 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_water_selection</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;WaterBridgeAnalysis: &quot;</span> <span class="s2">&quot;no atoms found in the selection.&quot;</span>
+                <span class="s2">"WaterBridgeAnalysis: "</span> <span class="s2">"no atoms found in the selection."</span>
             <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WaterBridgeAnalysis: initial checks passed.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"WaterBridgeAnalysis: initial checks passed."</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WaterBridgeAnalysis: starting&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WaterBridgeAnalysis: donors    </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WaterBridgeAnalysis: acceptors </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"WaterBridgeAnalysis: starting"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"WaterBridgeAnalysis: donors    </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"WaterBridgeAnalysis: acceptors </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;WaterBridgeAnalysis: water bridge </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span>
+            <span class="s2">"WaterBridgeAnalysis: water bridge </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Toggling debug to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Toggling debug to </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;WaterBridgeAnalysis: For full step-by-step &quot;</span>
-                <span class="s2">&quot;debugging output use debug=True&quot;</span>
+                <span class="s2">"WaterBridgeAnalysis: For full step-by-step "</span>
+                <span class="s2">"debugging output use debug=True"</span>
             <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Starting analysis &quot;</span> <span class="s2">&quot;(frame index start=</span><span class="si">%d</span><span class="s2"> stop=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="s2">"Starting analysis "</span> <span class="s2">"(frame index start=</span><span class="si">%d</span><span class="s2"> stop=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">)"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
@@ -1481,7 +1481,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_donor2acceptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">h_donors</span><span class="p">,</span> <span class="n">acceptor</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">donors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">acceptor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s2">&quot;heavy&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s2">"heavy"</span><span class="p">:</span>
             <span class="n">donors_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">h_donors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">donors_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -1494,7 +1494,7 @@
             <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
             <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">==</span> <span class="s2">&quot;hydrogen&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">==</span> <span class="s2">"hydrogen"</span><span class="p">:</span>
             <span class="n">tmp_distances</span> <span class="o">=</span> <span class="n">distances</span>
             <span class="n">tmp_donors</span> <span class="o">=</span> <span class="p">[</span><span class="n">h_donors</span><span class="p">[</span><span class="n">donors_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span>
             <span class="n">tmp_hydrogens</span> <span class="o">=</span> <span class="p">[</span><span class="n">donors_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span>
@@ -1558,9 +1558,9 @@
         <span class="n">next_round_water</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
         <span class="n">selection_2</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"donor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
             <span class="c1"># check for direct hbond from s1 to s2</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 Donors &lt;-&gt; Selection 2 Acceptors&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Selection 1 Donors &lt;-&gt; Selection 2 Acceptors"</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span>
             <span class="p">)</span>
@@ -1580,7 +1580,7 @@
                 <span class="p">)</span>
                 <span class="n">selection_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a_resname</span><span class="p">,</span> <span class="n">a_resid</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 Donors &lt;-&gt; Water Acceptors&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Selection 1 Donors &lt;-&gt; Water Acceptors"</span><span class="p">)</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span>
                 <span class="p">)</span>
@@ -1598,7 +1598,7 @@
                         <span class="p">(</span><span class="n">h_index</span><span class="p">,</span> <span class="n">d_index</span><span class="p">,</span> <span class="n">a_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
                     <span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water Donors &lt;-&gt; Selection 2 Acceptors&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Water Donors &lt;-&gt; Selection 2 Acceptors"</span><span class="p">)</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">,</span>
@@ -1619,8 +1619,8 @@
                     <span class="p">)</span>
                     <span class="n">selection_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a_resname</span><span class="p">,</span> <span class="n">a_resid</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 2 Donors &lt;-&gt; Selection 1 Acceptors&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"acceptor"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Selection 2 Donors &lt;-&gt; Selection 1 Acceptors"</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span>
             <span class="p">)</span>
@@ -1641,7 +1641,7 @@
                 <span class="n">selection_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">h_resname</span><span class="p">,</span> <span class="n">h_resid</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 2 Donors &lt;-&gt; Water Acceptors&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Selection 2 Donors &lt;-&gt; Water Acceptors"</span><span class="p">)</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_h_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span>
                 <span class="p">)</span>
@@ -1660,7 +1660,7 @@
                     <span class="p">)</span>
                     <span class="n">selection_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">h_resname</span><span class="p">,</span> <span class="n">h_resid</span><span class="p">))</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 Acceptors &lt;-&gt; Water Donors&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Selection 1 Acceptors &lt;-&gt; Water Donors"</span><span class="p">)</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">,</span>
@@ -1681,7 +1681,7 @@
                     <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water donor &lt;-&gt; Water Acceptors&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">"Water donor &lt;-&gt; Water Acceptors"</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donor2acceptor</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_water_h_donors</span><span class="p">,</span>
@@ -1709,11 +1709,11 @@
         <span class="c1"># formed by the class dict.</span>
         <span class="c1"># Suppose we have a water bridge connection ARG1 to ASP3 via the two</span>
         <span class="c1"># hydrogen bonds.</span>
-        <span class="c1">#     [0,1,(&#39;ARG&#39;,1,&#39;O&#39;),  (&#39;SOL&#39;,2,&#39;HW1&#39;),  3.0,180],</span>
-        <span class="c1">#     [2,3,(&#39;SOL&#39;,2,&#39;HW2&#39;),(&#39;ASP&#39;,3,&#39;OD1&#39;),  3.0,180],</span>
+        <span class="c1">#     [0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],</span>
+        <span class="c1">#     [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],</span>
         <span class="c1"># The resulting network will be</span>
-        <span class="c1"># {(0,1,(&#39;ARG&#39;,1,&#39;O&#39;),  (&#39;SOL&#39;,2,&#39;HW1&#39;),  3.0,180):</span>
-        <span class="c1"># {(2,3,(&#39;SOL&#39;,2,&#39;HW2&#39;),(&#39;ASP&#39;,3,&#39;OD1&#39;),  3.0,180): None}}</span>
+        <span class="c1"># {(0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180):</span>
+        <span class="c1"># {(2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180): None}}</span>
         <span class="c1"># Where the key of the a dict will be all the hydrogen bonds starting</span>
         <span class="c1"># from this nodes.</span>
         <span class="c1"># The corresponding value of a certain key will be a dictionary whose</span>
@@ -1722,25 +1722,25 @@
         <span class="c1"># If the value of a certain key is None, which means it is reaching</span>
         <span class="c1"># selection 2.</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">),</span> <span class="s2">&quot;water&quot;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">),</span> <span class="s2">"water"</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)}</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">add_route</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">route</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"start"</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># exclude the the selection which goes back to itself</span>
                 <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">route</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">route</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="mi">2</span><span class="p">]):</span>
                     <span class="k">return</span>
 
                 <span class="c1"># selection 2 to water</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;water&quot;</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"water"</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="c1"># water to water</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;water&quot;</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">route</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;water&quot;</span><span class="p">][</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">"water"</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">route</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"water"</span><span class="p">][</span>
                         <span class="n">route</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="p">]</span>
                 <span class="c1"># selection 1 to water</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">route</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;water&quot;</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"start"</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">route</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"water"</span><span class="p">][</span><span class="n">route</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">traverse_water_network</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">route</span><span class="p">,</span> <span class="n">maxdepth</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
@@ -1756,7 +1756,7 @@
                         <span class="n">new_route</span> <span class="o">=</span> <span class="n">route</span><span class="p">[:]</span>
                         <span class="n">new_route</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_node</span><span class="p">)</span>
                         <span class="n">new_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_timeseries</span><span class="p">(</span>
-                            <span class="n">new_node</span><span class="p">,</span> <span class="s2">&quot;sele1_sele2&quot;</span>
+                            <span class="n">new_node</span><span class="p">,</span> <span class="s2">"sele1_sele2"</span>
                         <span class="p">)[</span><span class="mi">3</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
                         <span class="n">traverse_water_network</span><span class="p">(</span>
                             <span class="n">graph</span><span class="p">,</span> <span class="n">new_node</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">new_route</span><span class="p">,</span> <span class="n">maxdepth</span><span class="p">,</span> <span class="n">result</span>
@@ -1766,12 +1766,12 @@
             <span class="n">route</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">s1</span><span class="p">,</span>
             <span class="p">]</span>
-            <span class="n">next_mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_timeseries</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="s2">&quot;sele1_sele2&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">next_mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_timeseries</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="s2">"sele1_sele2"</span><span class="p">)[</span><span class="mi">3</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">traverse_water_network</span><span class="p">(</span>
                 <span class="n">water_pool</span><span class="p">,</span> <span class="n">next_mol</span><span class="p">,</span> <span class="n">selection_2</span><span class="p">,</span> <span class="n">route</span><span class="p">[:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">result</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"start"</span><span class="p">])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_traverse_water_network</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1782,7 +1782,7 @@
         <span class="n">link_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This function recursively traverses the water network</span>
 <span class="sd">        self.results.network and finds the hydrogen bonds which connect the</span>
 <span class="sd">        current atom to the next atom. The newly found hydrogen bond will be</span>
@@ -1800,7 +1800,7 @@
 <span class="sd">        :param link_func: The new hydrogen bonds will be appended to current.</span>
 <span class="sd">        :param kwargs: the keywords which are passed into the analysis_func.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">link_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># If no link_func is provided, the default link_func will be used</span>
             <span class="n">link_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full_link</span>
@@ -1827,14 +1827,14 @@
                     <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_expand_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Expand the index into (resname, resid, name).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_expand_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Expand the compact data format into the old timeseries form.</span>
 <span class="sd">        The old is defined as the format for release up to 0.19.2.</span>
 <span class="sd">        As is discussed in Issue #2177, the internal storage of the hydrogen</span>
@@ -1843,7 +1843,7 @@
 <span class="sd">        format will be chosen.</span>
 <span class="sd">        if `output_format` is not specified, the value will be taken from</span>
 <span class="sd">        :attr:`output_format`.</span>
-<span class="sd">        If `output_format` is &#39;sele1_sele2&#39;, the output will be the old water</span>
+<span class="sd">        If `output_format` is 'sele1_sele2', the output will be the old water</span>
 <span class="sd">        bridge analysis format::</span>
 
 <span class="sd">          # donor from selection 1 to acceptor in selection 2</span>
@@ -1851,24 +1851,24 @@
 <span class="sd">           (sele1_resname, sele1_resid, sele1_name),</span>
 <span class="sd">           (sele2_resname, sele2_resid, sele2_name), dist, angle]</span>
 
-<span class="sd">        If `output_format` is &#39;donor_acceptor&#39;, the output will be the old</span>
+<span class="sd">        If `output_format` is 'donor_acceptor', the output will be the old</span>
 <span class="sd">        hydrogen bond analysis format::</span>
 
 <span class="sd">          # From donor to acceptor</span>
 <span class="sd">          [donor_index, acceptor_index,</span>
 <span class="sd">           (donor_resname, donor_resid, donor_name),</span>
 <span class="sd">           (acceptor_resname, acceptor_resid, acceptor_name), dist, angle]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output_format</span> <span class="o">=</span> <span class="n">output_format</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span>
         <span class="c1"># Expand the compact entry into atom1, which is the first index in the</span>
         <span class="c1"># output and atom2, which is the second</span>
         <span class="c1"># entry.</span>
         <span class="n">atom1</span><span class="p">,</span> <span class="n">heavy_atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">heavy_atom2</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">entry</span>
-        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;sele1_sele2&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">"sele1_sele2"</span><span class="p">:</span>
             <span class="c1"># If the output format is the sele1_sele2, no change will be</span>
             <span class="c1"># executed</span>
             <span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span> <span class="o">=</span> <span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span>
-        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;donor_acceptor&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">"donor_acceptor"</span><span class="p">:</span>
             <span class="c1"># If the output format is donor_acceptor, use heavy atom position</span>
             <span class="c1"># to check which is donor and which is</span>
             <span class="c1"># acceptor</span>
@@ -1881,8 +1881,8 @@
                 <span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span> <span class="o">=</span> <span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="s2">&quot;Only &#39;sele1_sele2&#39; or &#39;donor_acceptor&#39; are allowed as output &quot;</span>
-                <span class="s2">&quot;format&quot;</span>
+                <span class="s2">"Only 'sele1_sele2' or 'donor_acceptor' are allowed as output "</span>
+                <span class="s2">"format"</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span>
@@ -1895,13 +1895,13 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Time series of water bridges.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Time series of water bridges.</span>
 
 <span class="sd">        The output is generated per frame as is explained in</span>
 <span class="sd">        :ref:`wb_Analysis_Timeseries`. The format of output can be changed via</span>
-<span class="sd">        the output_format selection. If ``output_format=&quot;sele1_sele2&quot;``, the</span>
+<span class="sd">        the output_format selection. If ``output_format="sele1_sele2"``, the</span>
 <span class="sd">        hydrogen bond forms a directional link from selection 1 to selection 2.</span>
-<span class="sd">        If ``output_format=&quot;donor_acceptor&quot;``, for each hydrogen bond, the</span>
+<span class="sd">        If ``output_format="donor_acceptor"``, for each hydrogen bond, the</span>
 <span class="sd">        donor is always written before the acceptor.</span>
 
 <span class="sd">        Note</span>
@@ -1915,7 +1915,7 @@
 <span class="sd">           (resname string, resid, name_string).</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output_format</span> <span class="o">=</span> <span class="n">output_format</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">analysis</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1941,30 +1941,30 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `set_network` method was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.network` instead&quot;</span>
+            <span class="s2">"The `set_network` method was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.network` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_full_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        A function used in _traverse_water_network to add the new hydrogen</span>
 <span class="sd">        bond to the existing bonds.</span>
 <span class="sd">        :param output: The existing hydrogen bonds from selection 1</span>
 <span class="sd">        :param node: The new hydrogen bond</span>
 <span class="sd">        :return: The hydrogen bonds from selection 1 with the new hydrogen</span>
 <span class="sd">        bond added</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:]</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_compact_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        A function used in _traverse_water_network to add the new hydrogen</span>
 <span class="sd">        bond to the existing bonds. In this form no new list is created and</span>
 <span class="sd">        thus, one bridge will only appear once.</span>
@@ -1972,15 +1972,15 @@
 <span class="sd">        :param node: The new hydrogen bond</span>
 <span class="sd">        :return: The hydrogen bonds from selection 1 with the new hydrogen</span>
 <span class="sd">        bond added</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_count_by_type_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Generates the key for count_by_type analysis.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">s1_index</span><span class="p">,</span> <span class="n">to_index</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">to_residue</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_expand_timeseries</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -2005,7 +2005,7 @@
 <div class="viewcode-block" id="WaterBridgeAnalysis.count_by_type">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">count_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts the frequency of water bridge of a specific type.</span>
+<span class="w">        </span><span class="sd">"""Counts the frequency of water bridge of a specific type.</span>
 
 <span class="sd">        If one atom *A* from *selection 1* is linked to atom *B* from</span>
 <span class="sd">        *selection 2* through one or more bridging waters, an entity will be</span>
@@ -2026,11 +2026,11 @@
 <span class="sd">            :meth:`WaterBridgeAnalysis.run` was not executed first.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">analysis_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_by_type_analysis</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;combined&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="s2">"combined"</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
@@ -2048,7 +2048,7 @@
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">frame_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">result_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">frame_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s2">&quot;combined&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s2">"combined"</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result_dict</span><span class="p">]</span>
                 <span class="p">[</span>
                     <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="n">length</span><span class="p">)</span>
@@ -2087,7 +2087,7 @@
 <div class="viewcode-block" id="WaterBridgeAnalysis.count_by_time">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_time">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">count_by_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts the number of water bridges per timestep.</span>
+<span class="w">        </span><span class="sd">"""Counts the number of water bridges per timestep.</span>
 
 <span class="sd">        The counting behaviour can be adjusted by supplying analysis_func.</span>
 <span class="sd">        See :ref:`wb_count_by_time` for details.</span>
@@ -2098,7 +2098,7 @@
 <span class="sd">             Returns a time series ``N(t)`` where ``N`` is the total</span>
 <span class="sd">             number of observed water bridges at time ``t``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">analysis_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_by_time_analysis</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
@@ -2140,12 +2140,12 @@
             <span class="n">s2_resid</span><span class="p">,</span>
             <span class="n">s2_name</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">output</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"time"</span><span class="p">))</span>
 
 <div class="viewcode-block" id="WaterBridgeAnalysis.timesteps_by_type">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.timesteps_by_type">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">timesteps_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Frames during which each water bridges existed, sorted by each water</span>
+<span class="w">        </span><span class="sd">"""Frames during which each water bridges existed, sorted by each water</span>
 <span class="sd">        bridges.</span>
 
 <span class="sd">        Processes :attr:`WaterBridgeAnalysis.results.network` and returns a</span>
@@ -2161,11 +2161,11 @@
 <span class="sd">        -------</span>
 <span class="sd">        data : list</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">analysis_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps_by_type_analysis</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;combined&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="s2">"combined"</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -2187,7 +2187,7 @@
             <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">time_list</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">time_list</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s2">&quot;combined&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s2">"combined"</span><span class="p">:</span>
                         <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                         <span class="n">key</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
                         <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -2201,11 +2201,11 @@
 <div class="viewcode-block" id="WaterBridgeAnalysis.generate_table">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a normalised table of the results.</span>
+<span class="w">        </span><span class="sd">"""Generate a normalised table of the results.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        output_format : {&#39;sele1_sele2&#39;, &#39;donor_acceptor&#39;}</span>
+<span class="sd">        output_format : {'sele1_sele2', 'donor_acceptor'}</span>
 <span class="sd">            The output format of the `table` can be changed a fashion similar</span>
 <span class="sd">            to :attr:`WaterBridgeAnalysis.results.timeseries` by changing the</span>
 <span class="sd">            labels of the columns of the participating atoms.</span>
@@ -2213,7 +2213,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        table : numpy.rec.recarray</span>
-<span class="sd">            A &quot;tidy&quot; table with one hydrogen bond per row, labeled according to</span>
+<span class="sd">            A "tidy" table with one hydrogen bond per row, labeled according to</span>
 <span class="sd">            `output_format` and containing information of atom_1, atom_2,</span>
 <span class="sd">            distance, and angle.</span>
 
@@ -2223,10 +2223,10 @@
 <span class="sd">        .. deprecated:: 2.0.0</span>
 <span class="sd">           In release 3.0.0, :meth:`generate_table()` will _only_ return the</span>
 <span class="sd">           table and no longer store it in :attr:`table`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">output_format</span> <span class="o">=</span> <span class="n">output_format</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="p">[]:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No data computed, do run() first.&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">"No data computed, do run() first."</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">MissingDataWarning</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -2242,36 +2242,36 @@
 
         <span class="n">num_records</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">hframe</span><span class="p">)</span> <span class="k">for</span> <span class="n">hframe</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">])</span>
         <span class="c1"># build empty output table</span>
-        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;sele1_sele2&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">"sele1_sele2"</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele1_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele2_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele1_resnm&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele1_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele1_atom&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele2_resnm&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele2_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;sele2_atom&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"time"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele1_index"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele2_index"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele1_resnm"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele1_resid"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele1_atom"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele2_resnm"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele2_resid"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"sele2_atom"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"distance"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
             <span class="p">]</span>
-        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;donor_acceptor&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">"donor_acceptor"</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;donor_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;acceptor_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;donor_resnm&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;donor_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;donor_atom&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;acceptor_resnm&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;acceptor_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;acceptor_atom&quot;</span><span class="p">,</span> <span class="s2">&quot;|U4&quot;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"time"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"donor_index"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"acceptor_index"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"donor_resnm"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"donor_resid"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"donor_atom"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"acceptor_resnm"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"acceptor_resid"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"acceptor_atom"</span><span class="p">,</span> <span class="s2">"|U4"</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"distance"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
             <span class="p">]</span>
 
-        <span class="c1"># according to Lukas&#39; notes below, using a recarray at this stage is</span>
+        <span class="c1"># according to Lukas' notes below, using a recarray at this stage is</span>
         <span class="c1"># ineffective and speedups of ~x10 can be achieved by filling a</span>
         <span class="c1"># standard array, like this:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_records</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -2295,10 +2295,10 @@
                 <span class="n">cursor</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">assert</span> <span class="p">(</span>
             <span class="n">cursor</span> <span class="o">==</span> <span class="n">num_records</span>
-        <span class="p">),</span> <span class="s2">&quot;Internal Error: Not all wb records stored&quot;</span>
+        <span class="p">),</span> <span class="s2">"Internal Error: Not all wb records stored"</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;WBridge: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s2"> entries.&quot;</span><span class="p">,</span>
+            <span class="s2">"WBridge: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s2"> entries."</span><span class="p">,</span>
             <span class="nb">vars</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span>
@@ -2312,9 +2312,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `network` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.network` instead&quot;</span>
+            <span class="s2">"The `network` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.network` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span>
@@ -2322,9 +2322,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
-            <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.timeseries` instead&quot;</span>
+            <span class="s2">"The `timeseries` attribute was deprecated in MDAnalysis "</span>
+            <span class="s2">"2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.timeseries` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span></div>

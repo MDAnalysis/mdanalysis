@@ -1120,7 +1120,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 <p>To align the long axis of a channel (the first principal axis, i.e.
 <em>axis</em> = 0) with the z-axis:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principal_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"aligned.pdb"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1723,14 +1723,14 @@ ignored and a Python string is returned.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">Bio.SeqIO</span>
 
 <span class="c1"># get the sequence record of a protein component of a Universe</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">record</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myseq1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;myprotein&quot;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">record</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"myseq1"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"myprotein"</span><span class="p">)</span>
 
-<span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">&quot;single.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+<span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">"single.fasta"</span><span class="p">,</span> <span class="s2">"fasta"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A FASTA file with multiple entries can be written with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="s2">&quot;multi.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="s2">"multi.fasta"</span><span class="p">,</span> <span class="s2">"fasta"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

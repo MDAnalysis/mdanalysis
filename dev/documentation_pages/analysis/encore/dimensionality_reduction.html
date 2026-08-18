@@ -252,8 +252,8 @@ matplotlib:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coordinates</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">reduce_dimensionality</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-<span class="go">                color=[[&quot;red&quot;, &quot;blue&quot;][m-1] for m</span>
-<span class="go">                in details[&quot;ensemble_membership&quot;]])</span>
+<span class="go">                color=[["red", "blue"][m-1] for m</span>
+<span class="go">                in details["ensemble_membership"]])</span>
 </pre></div>
 </div>
 <p>Note how we extracted information about which conformation belonged to

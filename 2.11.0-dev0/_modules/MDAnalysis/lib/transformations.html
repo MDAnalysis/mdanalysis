@@ -162,7 +162,7 @@
 <span class="c1">#   contributors may be used to endorse or promote products derived</span>
 <span class="c1">#   from this software without specific prior written permission.</span>
 <span class="c1">#</span>
-<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"</span>
 <span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
 <span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
 <span class="c1"># ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</span>
@@ -174,7 +174,7 @@
 <span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
 <span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Homogeneous Transformation Matrices and Quaternions --- :mod:`MDAnalysis.lib.transformations`</span>
 <span class="sd">==============================================================================================</span>
 
@@ -210,15 +210,15 @@
 
 <span class="sd">Matrices (M) can be inverted using ``numpy.linalg.inv(M)``, concatenated using</span>
 <span class="sd">``numpy.dot(M0, M1)``, or used to transform homogeneous coordinates (v) using</span>
-<span class="sd">``numpy.dot(M, v)`` for shape ``(4, *)`` &quot;point of arrays&quot;, respectively</span>
-<span class="sd">``numpy.dot(v, M.T)`` for shape ``(*, 4)`` &quot;array of points&quot;.</span>
+<span class="sd">``numpy.dot(M, v)`` for shape ``(4, *)`` "point of arrays", respectively</span>
+<span class="sd">``numpy.dot(v, M.T)`` for shape ``(*, 4)`` "array of points".</span>
 
 <span class="sd">Use the transpose of transformation matrices for OpenGL ``glMultMatrixd()``.</span>
 
 <span class="sd">Calculations are carried out with ``numpy.float64`` precision.</span>
 
 <span class="sd">Vector, point, quaternion, and matrix function arguments are expected to be</span>
-<span class="sd">&quot;array like&quot;, i.e. tuple, list, or numpy arrays.</span>
+<span class="sd">"array like", i.e. tuple, list, or numpy arrays.</span>
 
 <span class="sd">Return types are numpy arrays unless specified otherwise.</span>
 
@@ -229,16 +229,16 @@
 <span class="sd">A triple of Euler angles can be applied/interpreted in 24 ways, which can</span>
 <span class="sd">be specified using a 4 character string or encoded 4-tuple:</span>
 
-<span class="sd">  - *Axes 4-string*: e.g. &#39;sxyz&#39; or &#39;ryxy&#39;</span>
+<span class="sd">  - *Axes 4-string*: e.g. 'sxyz' or 'ryxy'</span>
 
-<span class="sd">    - first character : rotations are applied to &#39;s&#39;tatic or &#39;r&#39;otating frame</span>
-<span class="sd">    - remaining characters : successive rotation axis &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;</span>
+<span class="sd">    - first character : rotations are applied to 's'tatic or 'r'otating frame</span>
+<span class="sd">    - remaining characters : successive rotation axis 'x', 'y', or 'z'</span>
 
 <span class="sd">  - *Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)</span>
 
-<span class="sd">    - inner axis: code of axis (&#39;x&#39;:0, &#39;y&#39;:1, &#39;z&#39;:2) of rightmost matrix.</span>
-<span class="sd">    - parity : even (0) if inner axis &#39;x&#39; is followed by &#39;y&#39;, &#39;y&#39; is followed</span>
-<span class="sd">      by &#39;z&#39;, or &#39;z&#39; is followed by &#39;x&#39;. Otherwise odd (1).</span>
+<span class="sd">    - inner axis: code of axis ('x':0, 'y':1, 'z':2) of rightmost matrix.</span>
+<span class="sd">    - parity : even (0) if inner axis 'x' is followed by 'y', 'y' is followed</span>
+<span class="sd">      by 'z', or 'z' is followed by 'x'. Otherwise odd (1).</span>
 <span class="sd">    - repetition : first and last axis are same (1) or different (0).</span>
 <span class="sd">    - frame : rotations are applied to static (0) or rotating (1) frame.</span>
 
@@ -258,14 +258,14 @@
 <span class="sd">&gt;&gt;&gt; Ry = rotation_matrix(beta, yaxis)</span>
 <span class="sd">&gt;&gt;&gt; Rz = rotation_matrix(gamma, zaxis)</span>
 <span class="sd">&gt;&gt;&gt; R = concatenate_matrices(Rx, Ry, Rz)</span>
-<span class="sd">&gt;&gt;&gt; euler = euler_from_matrix(R, &#39;rxyz&#39;)</span>
+<span class="sd">&gt;&gt;&gt; euler = euler_from_matrix(R, 'rxyz')</span>
 <span class="sd">&gt;&gt;&gt; np.allclose([alpha, beta, gamma], euler)</span>
 <span class="sd">True</span>
-<span class="sd">&gt;&gt;&gt; Re = euler_matrix(alpha, beta, gamma, &#39;rxyz&#39;)</span>
+<span class="sd">&gt;&gt;&gt; Re = euler_matrix(alpha, beta, gamma, 'rxyz')</span>
 <span class="sd">&gt;&gt;&gt; is_same_transform(R, Re)</span>
 <span class="sd">True</span>
-<span class="sd">&gt;&gt;&gt; al, be, ga = euler_from_matrix(Re, &#39;rxyz&#39;)</span>
-<span class="sd">&gt;&gt;&gt; is_same_transform(Re, euler_matrix(al, be, ga, &#39;rxyz&#39;))</span>
+<span class="sd">&gt;&gt;&gt; al, be, ga = euler_from_matrix(Re, 'rxyz')</span>
+<span class="sd">&gt;&gt;&gt; is_same_transform(Re, euler_matrix(al, be, ga, 'rxyz'))</span>
 <span class="sd">True</span>
 <span class="sd">&gt;&gt;&gt; qx = quaternion_about_axis(alpha, xaxis)</span>
 <span class="sd">&gt;&gt;&gt; qy = quaternion_about_axis(beta, yaxis)</span>
@@ -287,7 +287,7 @@
 <span class="sd">True</span>
 <span class="sd">&gt;&gt;&gt; np.allclose(shear, (0, math.tan(beta), 0))</span>
 <span class="sd">True</span>
-<span class="sd">&gt;&gt;&gt; is_same_transform(R, euler_matrix(axes=&#39;sxyz&#39;, *angles))</span>
+<span class="sd">&gt;&gt;&gt; is_same_transform(R, euler_matrix(axes='sxyz', *angles))</span>
 <span class="sd">True</span>
 <span class="sd">&gt;&gt;&gt; M1 = compose_matrix(scale, shear, angles, trans, persp)</span>
 <span class="sd">&gt;&gt;&gt; is_same_transform(M, M1)</span>
@@ -303,7 +303,7 @@
 <span class="sd">.. versionchanged:: 0.11.0</span>
 <span class="sd">   Transformations library moved from MDAnalysis.core.transformations to</span>
 <span class="sd">   MDAnalysis.lib.transformations</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -319,7 +319,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">identity_matrix</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return 4x4 identity/unit matrix.</span>
+<span class="w">    </span><span class="sd">"""Return 4x4 identity/unit matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import identity_matrix</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -331,12 +331,12 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(I, np.identity(4, dtype=np.float64))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">translation_matrix</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to translate by direction vector.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to translate by direction vector.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import translation_matrix</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -344,7 +344,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(v, translation_matrix(v)[:3, 3])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">M</span>
@@ -353,7 +353,7 @@
 <div class="viewcode-block" id="translation_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.translation_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">translation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return translation vector from translation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return translation vector from translation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (translation_matrix,</span>
 <span class="sd">    ...     translation_from_matrix)</span>
@@ -363,13 +363,13 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(v0, v1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">reflection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to mirror at plane defined by point and normal vector.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to mirror at plane defined by point and normal vector.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import reflection_matrix</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -388,7 +388,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(v2, np.dot(R, v3))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">normal</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">normal</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
@@ -399,7 +399,7 @@
 <div class="viewcode-block" id="reflection_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.reflection_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reflection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return mirror plane point and normal vector from reflection matrix.</span>
+<span class="w">    </span><span class="sd">"""Return mirror plane point and normal vector from reflection matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (reflection_matrix,</span>
 <span class="sd">    ...     reflection_from_matrix, is_same_transform)</span>
@@ -412,19 +412,19 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(M0, M1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># normal: unit eigenvector corresponding to eigenvalue -1</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no unit eigenvector corresponding to eigenvalue -1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no unit eigenvector corresponding to eigenvalue -1"</span><span class="p">)</span>
     <span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="c1"># point: any unit eigenvector corresponding to eigenvalue 1</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no unit eigenvector corresponding to eigenvalue 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no unit eigenvector corresponding to eigenvalue 1"</span><span class="p">)</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="n">point</span> <span class="o">/=</span> <span class="n">point</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span></div>
@@ -432,7 +432,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to rotate about axis defined by point and direction.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to rotate about axis defined by point and direction.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (rotation_matrix,</span>
 <span class="sd">    ...     is_same_transform)</span>
@@ -459,7 +459,7 @@
 <span class="sd">    ...                                                direc, point)))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">sina</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
     <span class="n">cosa</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">direction</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
@@ -494,7 +494,7 @@
 <div class="viewcode-block" id="rotation_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotation_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return rotation angle and axis from rotation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return rotation angle and axis from rotation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (rotation_matrix,</span>
 <span class="sd">    ...     is_same_transform, rotation_from_matrix)</span>
@@ -509,20 +509,20 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(R0, R1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">R33</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="c1"># direction: unit eigenvector of R33 corresponding to eigenvalue of 1</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">R33</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no unit eigenvector corresponding to eigenvalue 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no unit eigenvector corresponding to eigenvalue 1"</span><span class="p">)</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">W</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="c1"># point: unit eigenvector of R33 corresponding to eigenvalue of 1</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no unit eigenvector corresponding to eigenvalue 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no unit eigenvector corresponding to eigenvalue 1"</span><span class="p">)</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Q</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="n">point</span> <span class="o">/=</span> <span class="n">point</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="c1"># rotation angle depending on direction</span>
@@ -545,7 +545,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to scale by factor around origin in direction.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to scale by factor around origin in direction.</span>
 
 <span class="sd">    Use factor -1 for point symmetry.</span>
 
@@ -563,7 +563,7 @@
 <span class="sd">    &gt;&gt;&gt; S = scale_matrix(factor, origin)</span>
 <span class="sd">    &gt;&gt;&gt; S = scale_matrix(factor, origin, direct)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">direction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># uniform scaling</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -592,7 +592,7 @@
 <div class="viewcode-block" id="scale_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.scale_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scale_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return scaling factor, origin and direction from scaling matrix.</span>
+<span class="w">    </span><span class="sd">"""Return scaling factor, origin and direction from scaling matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (scale_matrix,</span>
 <span class="sd">    ...      scale_from_matrix, is_same_transform)</span>
@@ -612,7 +612,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(S0, S1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">M33</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">M33</span><span class="p">)</span> <span class="o">-</span> <span class="mf">2.0</span>
@@ -630,7 +630,7 @@
     <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no eigenvector corresponding to eigenvalue 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no eigenvector corresponding to eigenvalue 1"</span><span class="p">)</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="n">origin</span> <span class="o">/=</span> <span class="n">origin</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span></div>
@@ -640,7 +640,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">projection_matrix</span><span class="p">(</span>
     <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to project onto plane defined by point and normal.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to project onto plane defined by point and normal.</span>
 
 <span class="sd">    Using either perspective point, projection direction, or none of both.</span>
 
@@ -672,7 +672,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(v1[0], 3.0-v1[1])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">no_copy_shim</span><span class="p">)</span>
     <span class="n">normal</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">normal</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
@@ -707,7 +707,7 @@
 <div class="viewcode-block" id="projection_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.projection_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">projection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return projection plane and perspective point from projection matrix.</span>
+<span class="w">    </span><span class="sd">"""Return projection plane and perspective point from projection matrix.</span>
 
 <span class="sd">    Return values are same as arguments for projection_matrix function:</span>
 <span class="sd">    point, normal, direction, perspective, and pseudo.</span>
@@ -740,7 +740,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(P0, P1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">M33</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
@@ -753,7 +753,7 @@
         <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M33</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no eigenvector corresponding to eigenvalue 0&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no eigenvector corresponding to eigenvalue 0"</span><span class="p">)</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
         <span class="n">direction</span> <span class="o">/=</span> <span class="n">vector_norm</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
         <span class="c1"># normal: unit eigenvector of M33.T corresponding to eigenvalue 0</span>
@@ -772,7 +772,7 @@
         <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;no eigenvector not corresponding to eigenvalue 0&quot;</span>
+                <span class="s2">"no eigenvector not corresponding to eigenvalue 0"</span>
             <span class="p">)</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
         <span class="n">point</span> <span class="o">/=</span> <span class="n">point</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
@@ -785,7 +785,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">clip_matrix</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">near</span><span class="p">,</span> <span class="n">far</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to obtain normalized device coordinates from frustrum.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to obtain normalized device coordinates from frustrum.</span>
 
 <span class="sd">    The frustrum bounds are axis-aligned along x (left, right),</span>
 <span class="sd">    y (bottom, top) and z (near, far).</span>
@@ -819,12 +819,12 @@
 <span class="sd">    &gt;&gt;&gt; v / v[3]</span>
 <span class="sd">    array([ 1.,  1., -1.,  1.])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">left</span> <span class="o">&gt;=</span> <span class="n">right</span> <span class="ow">or</span> <span class="n">bottom</span> <span class="o">&gt;=</span> <span class="n">top</span> <span class="ow">or</span> <span class="n">near</span> <span class="o">&gt;=</span> <span class="n">far</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid frustrum&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid frustrum"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">perspective</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">near</span> <span class="o">&lt;=</span> <span class="n">_EPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid frustrum: near &lt;= 0&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid frustrum: near &lt;= 0"</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">near</span>
         <span class="n">M</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">(</span><span class="o">-</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="n">right</span> <span class="o">+</span> <span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
@@ -843,14 +843,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to shear by angle along direction vector on shear plane.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to shear by angle along direction vector on shear plane.</span>
 
 <span class="sd">    The shear plane is defined by a point and normal vector. The direction</span>
-<span class="sd">    vector must be orthogonal to the plane&#39;s normal vector.</span>
+<span class="sd">    vector must be orthogonal to the plane's normal vector.</span>
 
-<span class="sd">    A point P is transformed by the shear matrix into P&quot; such that</span>
-<span class="sd">    the vector P-P&quot; is parallel to the direction vector and its extent is</span>
-<span class="sd">    given by the angle of P-P&#39;-P&quot;, where P&#39; is the orthogonal projection</span>
+<span class="sd">    A point P is transformed by the shear matrix into P" such that</span>
+<span class="sd">    the vector P-P" is parallel to the direction vector and its extent is</span>
+<span class="sd">    given by the angle of P-P'-P", where P' is the orthogonal projection</span>
 <span class="sd">    of P onto the shear plane.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import shear_matrix</span>
@@ -864,11 +864,11 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(1.0, np.linalg.det(S))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">normal</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">normal</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">direction</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">direction</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;direction and normal vectors are not orthogonal&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"direction and normal vectors are not orthogonal"</span><span class="p">)</span>
     <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="n">angle</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
@@ -879,7 +879,7 @@
 <div class="viewcode-block" id="shear_from_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.shear_from_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">shear_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return shear angle, direction and plane from shear matrix.</span>
+<span class="w">    </span><span class="sd">"""Return shear angle, direction and plane from shear matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (shear_matrix,</span>
 <span class="sd">    ...     shear_from_matrix, is_same_transform)</span>
@@ -895,7 +895,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(S0, S1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">M33</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="c1"># normal: cross independent eigenvectors corresponding to the eigenvalue 1</span>
@@ -903,7 +903,7 @@
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;no two linear independent eigenvectors found </span><span class="si">{0!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="s2">"no two linear independent eigenvectors found </span><span class="si">{0!s}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
     <span class="n">lenorm</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
@@ -923,7 +923,7 @@
     <span class="n">l</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no eigenvector corresponding to eigenvalue 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no eigenvector corresponding to eigenvalue 1"</span><span class="p">)</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="n">point</span> <span class="o">/=</span> <span class="n">point</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span></div>
@@ -933,7 +933,7 @@
 <div class="viewcode-block" id="decompose_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.decompose_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">decompose_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return sequence of transformations from transformation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return sequence of transformations from transformation matrix.</span>
 
 <span class="sd">    matrix : array_like</span>
 <span class="sd">        Non-degenerative homogeneous transformation matrix</span>
@@ -965,16 +965,16 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(R0, R1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=unsubscriptable-object</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">_EPS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;M[3, 3] is zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"M[3, 3] is zero"</span><span class="p">)</span>
     <span class="n">M</span> <span class="o">/=</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">P</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix is singular&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"matrix is singular"</span><span class="p">)</span>
 
     <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">shear</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -1027,7 +1027,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">compose_matrix</span><span class="p">(</span>
     <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return transformation matrix from sequence of transformations.</span>
+<span class="w">    </span><span class="sd">"""Return transformation matrix from sequence of transformations.</span>
 
 <span class="sd">    This is the inverse of the decompose_matrix function.</span>
 
@@ -1053,7 +1053,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(M0, M1)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">perspective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
@@ -1064,7 +1064,7 @@
         <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">translate</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;sxyz&quot;</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">"sxyz"</span><span class="p">)</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">shear</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
@@ -1084,7 +1084,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">orthogonalization_matrix</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return orthogonalization matrix for crystallographic cell coordinates.</span>
+<span class="w">    </span><span class="sd">"""Return orthogonalization matrix for crystallographic cell coordinates.</span>
 
 <span class="sd">    Angles are expected in degrees.</span>
 
@@ -1099,7 +1099,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.sum(O), 43.063229)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">lengths</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
     <span class="n">sina</span><span class="p">,</span> <span class="n">sinb</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
@@ -1117,7 +1117,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">superimposition_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">usesvd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to transform given vector set into second vector set.</span>
+<span class="w">    </span><span class="sd">"""Return matrix to transform given vector set into second vector set.</span>
 
 <span class="sd">    `v0` and `v1` are shape `(3, *)` or `(4, *)` arrays of at least 3 vectors.</span>
 
@@ -1167,12 +1167,12 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(v1, np.dot(M, v[:, :, 0]))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">no_copy_shim</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">no_copy_shim</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">v1</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;vector sets are of wrong shape or type&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"vector sets are of wrong shape or type"</span><span class="p">)</span>
 
     <span class="c1"># move centroids to origin</span>
     <span class="n">t0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1194,9 +1194,9 @@
         <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># compute symmetric matrix N</span>
-        <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
-        <span class="n">xy</span><span class="p">,</span> <span class="n">yz</span><span class="p">,</span> <span class="n">zx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">xz</span><span class="p">,</span> <span class="n">yx</span><span class="p">,</span> <span class="n">zy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;i"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+        <span class="n">xy</span><span class="p">,</span> <span class="n">yz</span><span class="p">,</span> <span class="n">zx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;i"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">xz</span><span class="p">,</span> <span class="n">yx</span><span class="p">,</span> <span class="n">zy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;i"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">N</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">(</span><span class="n">xx</span> <span class="o">+</span> <span class="n">yy</span> <span class="o">+</span> <span class="n">zz</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="p">(</span><span class="n">yz</span> <span class="o">-</span> <span class="n">zy</span><span class="p">,</span> <span class="n">xx</span> <span class="o">-</span> <span class="n">yy</span> <span class="o">-</span> <span class="n">zz</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
@@ -1213,7 +1213,7 @@
     <span class="c1"># scale: ratio of rms deviations from centroid</span>
     <span class="k">if</span> <span class="n">scaling</span><span class="p">:</span>
         <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v0</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;"</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,ij-&gt;"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v0</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="c1"># translation</span>
@@ -1224,17 +1224,17 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">euler_matrix</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;sxyz&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from Euler angles and axis sequence.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euler_matrix</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">"sxyz"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return homogeneous rotation matrix from Euler angles and axis sequence.</span>
 
-<span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
+<span class="sd">    ai, aj, ak : Euler's roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (euler_matrix,</span>
 <span class="sd">    ... _AXES2TUPLE, _TUPLE2AXES)</span>
 <span class="sd">    &gt;&gt;&gt; import math</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; R = euler_matrix(1, 2, 3, &#39;syxz&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; R = euler_matrix(1, 2, 3, 'syxz')</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.sum(R[0]), -1.34786452)</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; R = euler_matrix(1, 2, 3, (0, 1, 0, 1))</span>
@@ -1246,7 +1246,7 @@
 <span class="sd">    &gt;&gt;&gt; for axes in _TUPLE2AXES.keys():</span>
 <span class="sd">    ...    R = euler_matrix(ai, aj, ak, axes)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">firstaxis</span><span class="p">,</span> <span class="n">parity</span><span class="p">,</span> <span class="n">repetition</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">_AXES2TUPLE</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
@@ -1291,8 +1291,8 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">euler_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;sxyz&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Euler angles from rotation matrix for specified axis sequence.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euler_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">"sxyz"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return Euler angles from rotation matrix for specified axis sequence.</span>
 
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
@@ -1302,18 +1302,18 @@
 <span class="sd">    ... euler_from_matrix, _AXES2TUPLE)</span>
 <span class="sd">    &gt;&gt;&gt; import math</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; R0 = euler_matrix(1, 2, 3, &#39;syxz&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; al, be, ga = euler_from_matrix(R0, &#39;syxz&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; R1 = euler_matrix(al, be, ga, &#39;syxz&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; R0 = euler_matrix(1, 2, 3, 'syxz')</span>
+<span class="sd">    &gt;&gt;&gt; al, be, ga = euler_from_matrix(R0, 'syxz')</span>
+<span class="sd">    &gt;&gt;&gt; R1 = euler_matrix(al, be, ga, 'syxz')</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(R0, R1)</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; angles = (4.0*math.pi) * (np.random.random(3) - 0.5)</span>
 <span class="sd">    &gt;&gt;&gt; for axes in _AXES2TUPLE.keys():</span>
 <span class="sd">    ...    R0 = euler_matrix(axes=axes, *angles)</span>
 <span class="sd">    ...    R1 = euler_matrix(axes=axes, *euler_from_matrix(R0, axes))</span>
-<span class="sd">    ...    if not np.allclose(R0, R1): print(axes, &quot;failed&quot;)</span>
+<span class="sd">    ...    if not np.allclose(R0, R1): print(axes, "failed")</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">firstaxis</span><span class="p">,</span> <span class="n">parity</span><span class="p">,</span> <span class="n">repetition</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">_AXES2TUPLE</span><span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
@@ -1355,8 +1355,8 @@
 
 <div class="viewcode-block" id="euler_from_quaternion">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.euler_from_quaternion">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;sxyz&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Euler angles from quaternion for specified axis sequence.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">"sxyz"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return Euler angles from quaternion for specified axis sequence.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import euler_from_quaternion</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -1364,23 +1364,23 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(angles, [0.123, 0, 0])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">quaternion</span><span class="p">),</span> <span class="n">axes</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">quaternion_from_euler</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;sxyz&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion from Euler angles and axis sequence.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">quaternion_from_euler</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">"sxyz"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return quaternion from Euler angles and axis sequence.</span>
 
-<span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
+<span class="sd">    ai, aj, ak : Euler's roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_from_euler</span>
-<span class="sd">    &gt;&gt;&gt; q = quaternion_from_euler(1, 2, 3, &#39;ryxz&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; q = quaternion_from_euler(1, 2, 3, 'ryxz')</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [0.435953, 0.310622, -0.718287, 0.444435])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">firstaxis</span><span class="p">,</span> <span class="n">parity</span><span class="p">,</span> <span class="n">repetition</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">_AXES2TUPLE</span><span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
@@ -1428,7 +1428,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_about_axis</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion for rotation about axis.</span>
+<span class="w">    </span><span class="sd">"""Return quaternion for rotation about axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_about_axis</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -1436,7 +1436,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">quaternion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">quaternion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">quaternion</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -1449,7 +1449,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_matrix</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return homogeneous rotation matrix from quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (identity_matrix,</span>
 <span class="sd">    ...     quaternion_matrix, rotation_matrix)</span>
@@ -1464,7 +1464,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, np.diag([1, -1, -1, 1]))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">quaternion</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">nq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">nq</span> <span class="o">&lt;</span> <span class="n">_EPS</span><span class="p">:</span>
@@ -1498,7 +1498,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">isprecise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion from rotation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return quaternion from rotation matrix.</span>
 
 <span class="sd">    If isprecise=True, the input matrix is assumed to be a precise rotation</span>
 <span class="sd">    matrix and a faster algorithm is used.</span>
@@ -1532,7 +1532,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(R, quaternion_matrix(q))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">no_copy_shim</span><span class="p">)[:</span><span class="mi">4</span><span class="p">,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">isprecise</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -1584,7 +1584,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_multiply</span><span class="p">(</span><span class="n">quaternion1</span><span class="p">,</span> <span class="n">quaternion0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return multiplication of two quaternions.</span>
+<span class="w">    </span><span class="sd">"""Return multiplication of two quaternions.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_multiply</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -1592,7 +1592,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [28, -44, -14, 48])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">w0</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span> <span class="o">=</span> <span class="n">quaternion0</span>
     <span class="n">w1</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span> <span class="o">=</span> <span class="n">quaternion1</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -1607,7 +1607,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_conjugate</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return conjugate of quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return conjugate of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
 <span class="sd">    ...     quaternion_conjugate)</span>
@@ -1617,7 +1617,7 @@
 <span class="sd">    &gt;&gt;&gt; q1[0] == q0[0] and all(q1[1:] == -q0[1:])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">(</span><span class="n">quaternion</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">quaternion</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">quaternion</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">quaternion</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
@@ -1625,7 +1625,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_inverse</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return inverse of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
 <span class="sd">    ...     quaternion_inverse)</span>
@@ -1635,20 +1635,20 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(quaternion_multiply(q0, q1), [1, 0, 0, 0])</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">quaternion_conjugate</span><span class="p">(</span><span class="n">quaternion</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">quaternion</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="quaternion_real">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_real">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_real</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return real part of quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return real part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_real</span>
 <span class="sd">    &gt;&gt;&gt; quaternion_real([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    3.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">quaternion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
@@ -1656,19 +1656,19 @@
 <div class="viewcode-block" id="quaternion_imag">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_imag">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_imag</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return imaginary part of quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return imaginary part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_imag</span>
 <span class="sd">    &gt;&gt;&gt; quaternion_imag([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    [0.0, 1.0, 2.0]</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">quaternion</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">quaternion_slerp</span><span class="p">(</span><span class="n">quat0</span><span class="p">,</span> <span class="n">quat1</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shortestpath</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Return spherical linear interpolation between two quaternions.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
 <span class="sd">    ...     quaternion_slerp)</span>
@@ -1688,7 +1688,7 @@
 <span class="sd">    ... np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">q0</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">quat0</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="n">unit_vector</span><span class="p">(</span><span class="n">quat1</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">fraction</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -1713,7 +1713,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">random_quaternion</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return uniform random unit quaternion.</span>
+<span class="w">    </span><span class="sd">"""Return uniform random unit quaternion.</span>
 
 <span class="sd">    rand: array like or None</span>
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
@@ -1729,7 +1729,7 @@
 <span class="sd">    &gt;&gt;&gt; len(q.shape), q.shape[0]==4</span>
 <span class="sd">    (1, True)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">rand</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1751,7 +1751,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">random_rotation_matrix</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return uniform random rotation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return uniform random rotation matrix.</span>
 
 <span class="sd">    rnd: array like</span>
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
@@ -1763,14 +1763,14 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.dot(R.T, R), np.identity(4))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">random_quaternion</span><span class="p">(</span><span class="n">rand</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="Arcball">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Arcball</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Virtual Trackball Control.</span>
+<span class="w">    </span><span class="sd">"""Virtual Trackball Control.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import Arcball</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -1793,14 +1793,14 @@
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; ball.next()</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize virtual trackball control.</span>
+<span class="w">        </span><span class="sd">"""Initialize virtual trackball control.</span>
 
 <span class="sd">        initial : quaternion or rotation matrix</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1818,21 +1818,21 @@
                 <span class="n">initial</span> <span class="o">/=</span> <span class="n">vector_norm</span><span class="p">(</span><span class="n">initial</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span> <span class="o">=</span> <span class="n">initial</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;initial not a quaternion or matrix&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"initial not a quaternion or matrix"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span>
 
 <div class="viewcode-block" id="Arcball.place">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.place">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Place Arcball, e.g. when window size changes.</span>
+<span class="w">        </span><span class="sd">"""Place Arcball, e.g. when window size changes.</span>
 
 <span class="sd">        center : sequence[2]</span>
 <span class="sd">            Window coordinates of trackball center.</span>
 <span class="sd">        radius : float</span>
 <span class="sd">            Radius of trackball in window coordinates.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
@@ -1841,7 +1841,7 @@
 <div class="viewcode-block" id="Arcball.setaxes">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setaxes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set axes to constrain rotations.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set axes to constrain rotations."""</span>
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1851,21 +1851,21 @@
 <div class="viewcode-block" id="Arcball.setconstrain">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setconstrain">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constrain</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set state of constrain to axis mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set state of constrain to axis mode."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span> <span class="o">=</span> <span class="n">constrain</span> <span class="ow">is</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="Arcball.getconstrain">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.getconstrain">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">getconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return state of constrain to axis mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return state of constrain to axis mode."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span></div>
 
 
 <div class="viewcode-block" id="Arcball.down">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.down">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set initial cursor window coordinates and pick constrain-axis.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set initial cursor window coordinates and pick constrain-axis."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vdown</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span>
 
@@ -1879,7 +1879,7 @@
 <div class="viewcode-block" id="Arcball.drag">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.drag">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">drag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update current cursor window coordinates.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update current cursor window coordinates."""</span>
         <span class="n">vnow</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1898,7 +1898,7 @@
 <div class="viewcode-block" id="Arcball.next">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.next">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acceleration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Continue rotation in direction of last drag.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Continue rotation in direction of last drag."""</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">quaternion_slerp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">acceleration</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="n">q</span></div>
 
@@ -1906,14 +1906,14 @@
 <div class="viewcode-block" id="Arcball.matrix">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.matrix">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return homogeneous rotation matrix."""</span>
         <span class="k">return</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">)</span></div>
 </div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return unit sphere coordinates from window coordinates.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return unit sphere coordinates from window coordinates."""</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">(</span>
             <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">radius</span><span class="p">,</span>
@@ -1931,7 +1931,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">arcball_constrain_to_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return sphere point perpendicular to axis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return sphere point perpendicular to axis."""</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">-=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>  <span class="c1"># on plane</span>
@@ -1949,7 +1949,7 @@
 <div class="viewcode-block" id="arcball_nearest_axis">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">arcball_nearest_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return axis, which arc is nearest to point.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return axis, which arc is nearest to point."""</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">nearest</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mx</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
@@ -1971,14 +1971,14 @@
 <span class="c1"># map axes strings to/from tuples of inner axis, parity, repetition, frame</span>
 <span class="c1"># fmt: off</span>
 <span class="n">_AXES2TUPLE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;sxyz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;sxyx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;sxzy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;sxzx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;syzx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;syzy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;syxz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;syxy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;szxy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;szxz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;szyx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;szyz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;rzyx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;rxyx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;ryzx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="s2">&quot;rxzx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;rxzy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;ryzy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="s2">&quot;rzxy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;ryxy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;ryxz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="s2">&quot;rzxz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;rxyz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;rzyz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"sxyz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"sxyx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"sxzy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"sxzx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"syzx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"syzy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"syxz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"syxy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"szxy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"szxz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"szyx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"szyz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"rzyx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"rxyx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"ryzx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"rxzx"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"rxzy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"ryzy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"rzxy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"ryxy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"ryxz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"rzxz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"rxyz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"rzyz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
 <span class="p">}</span>
 <span class="c1"># fmt: on</span>
 
@@ -1986,7 +1986,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">vector_norm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return length, i.e. eucledian norm, of ndarray along axis.</span>
+<span class="w">    </span><span class="sd">"""Return length, i.e. eucledian norm, of ndarray along axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import vector_norm</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -2011,7 +2011,7 @@
 <span class="sd">    &gt;&gt;&gt; vector_norm([1.0])</span>
 <span class="sd">    1.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -2027,7 +2027,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">unit_vector</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ndarray normalized by length, i.e. eucledian norm, along axis.</span>
+<span class="w">    </span><span class="sd">"""Return ndarray normalized by length, i.e. eucledian norm, along axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import unit_vector</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -2053,7 +2053,7 @@
 <span class="sd">    &gt;&gt;&gt; list(unit_vector([1.0]))</span>
 <span class="sd">    [1.0]</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -2073,7 +2073,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">random_vector</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return array of random doubles in the half-open interval [0.0, 1.0).</span>
+<span class="w">    </span><span class="sd">"""Return array of random doubles in the half-open interval [0.0, 1.0).</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import random_vector</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -2085,12 +2085,12 @@
 <span class="sd">    &gt;&gt;&gt; np.any(v0 == v1)</span>
 <span class="sd">    False</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">inverse_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of square transformation matrix.</span>
+<span class="w">    </span><span class="sd">"""Return inverse of square transformation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_rotation_matrix,</span>
 <span class="sd">    ...     inverse_matrix)</span>
@@ -2104,14 +2104,14 @@
 <span class="sd">    ...     M1 = inverse_matrix(M0)</span>
 <span class="sd">    ...     if not np.allclose(M1, np.linalg.inv(M0)): print(size)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="concatenate_matrices">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.concatenate_matrices">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">concatenate_matrices</span><span class="p">(</span><span class="o">*</span><span class="n">matrices</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return concatenation of series of transformation matrices.</span>
+<span class="w">    </span><span class="sd">"""Return concatenation of series of transformation matrices.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import concatenate_matrices</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -2121,7 +2121,7 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.dot(M, M.T), concatenate_matrices(M, M.T))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
@@ -2130,7 +2130,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">is_same_transform</span><span class="p">(</span><span class="n">matrix0</span><span class="p">,</span> <span class="n">matrix1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two matrices perform same transformation.</span>
+<span class="w">    </span><span class="sd">"""Return True if two matrices perform same transformation.</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (is_same_transform,</span>
 <span class="sd">    ...     random_rotation_matrix)</span>
@@ -2140,7 +2140,7 @@
 <span class="sd">    &gt;&gt;&gt; is_same_transform(np.identity(4), random_rotation_matrix())</span>
 <span class="sd">    False</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">matrix0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">matrix0</span> <span class="o">/=</span> <span class="n">matrix0</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
     <span class="n">matrix1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2148,22 +2148,22 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">matrix0</span><span class="p">,</span> <span class="n">matrix1</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;_py_&quot;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Try import all public attributes from module into global namespace.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"_py_"</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="s2">"_"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Try import all public attributes from module into global namespace.</span>
 
 <span class="sd">    Existing attributes with name clashes are renamed with prefix.</span>
 <span class="sd">    Attributes starting with underscore are ignored by default.</span>
 
 <span class="sd">    Return True on successful import.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">warn</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;failed to import module &quot;</span> <span class="o">+</span> <span class="n">module_name</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"failed to import module "</span> <span class="o">+</span> <span class="n">module_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
@@ -2173,7 +2173,7 @@
                 <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
                     <span class="nb">globals</span><span class="p">()[</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">attr</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="n">warn</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;no Python implementation of &quot;</span> <span class="o">+</span> <span class="n">attr</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"no Python implementation of "</span> <span class="o">+</span> <span class="n">attr</span><span class="p">)</span>
             <span class="nb">globals</span><span class="p">()[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -2184,7 +2184,7 @@
 <div class="viewcode-block" id="rotaxis">
 <a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotaxis">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotaxis</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the rotation axis to rotate vector a into b.</span>
+<span class="w">    </span><span class="sd">"""Return the rotation axis to rotate vector a into b.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2201,7 +2201,7 @@
 <span class="sd">    ----</span>
 <span class="sd">    If a == b this will always return [1, 0, 0]</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
@@ -2209,10 +2209,10 @@
 
 
 
-<span class="n">_import_module</span><span class="p">(</span><span class="s2">&quot;_transformations&quot;</span><span class="p">)</span>
+<span class="n">_import_module</span><span class="p">(</span><span class="s2">"_transformations"</span><span class="p">)</span>
 
 <span class="c1"># Documentation in HTML format can be generated with Epydoc</span>
-<span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;restructuredtext en&quot;</span>
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">"restructuredtext en"</span>
 </pre></div>
 
            </div>

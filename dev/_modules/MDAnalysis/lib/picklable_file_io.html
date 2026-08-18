@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Picklable read-only I/O classes --- :mod:`MDAnalysis.lib.picklable_file_io`</span>
 <span class="sd">===========================================================================</span>
 
@@ -194,7 +194,7 @@
 
 
 <span class="sd">.. versionadded:: 2.0.0</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
@@ -205,7 +205,7 @@
 <div class="viewcode-block" id="FileIOPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">FileIO</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File object (read-only) that can be pickled.</span>
+<span class="w">    </span><span class="sd">"""File object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by :func:`open`,</span>
 <span class="sd">    namely :class:`io.FileIO`) that, unlike standard Python file objects,</span>
@@ -226,10 +226,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
 <span class="sd">    mode : str</span>
-<span class="sd">        only reading (&#39;r&#39;) mode works. It exists to be consistent</span>
+<span class="sd">        only reading ('r') mode works. It exists to be consistent</span>
 <span class="sd">        with a wider API.</span>
 
 <span class="sd">    Example</span>
@@ -251,30 +251,30 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"r"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">"name_val"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"r"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">"tell_val"</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">!=</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">!=</span> <span class="s2">"r"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Can only pickle files that were opened &quot;</span>
-                <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+                <span class="s2">"Can only pickle files that were opened "</span>
+                <span class="s2">"in read mode, not </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">),</span>
-            <span class="p">{</span><span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()},</span>
+            <span class="p">{</span><span class="s2">"name_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"tell_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()},</span>
         <span class="p">)</span></div>
 
 
@@ -282,7 +282,7 @@
 <div class="viewcode-block" id="BufferIOPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BufferIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A picklable buffer object for read-only FileIO object.</span>
+<span class="w">    </span><span class="sd">"""A picklable buffer object for read-only FileIO object.</span>
 
 <span class="sd">    This class provides a buffered :class:`io.BufferedReader`</span>
 <span class="sd">    that can be pickled.</span>
@@ -296,7 +296,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ::</span>
 
-<span class="sd">        file = FileIOPicklable(&#39;filename&#39;)</span>
+<span class="sd">        file = FileIOPicklable('filename')</span>
 <span class="sd">        buffer_wrapped = BufferIOPicklable(file)</span>
 
 <span class="sd">    See Also</span>
@@ -306,29 +306,29 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="vm">__class__</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;raw_class&quot;</span><span class="p">]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
+        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">"raw_class"</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">"name_val"</span><span class="p">]</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">"tell_val"</span><span class="p">])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
-        <span class="c1"># don&#39;t ask, for Python 3.12+ see:</span>
+        <span class="c1"># don't ask, for Python 3.12+ see:</span>
         <span class="c1"># https://github.com/python/cpython/pull/104370</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,),</span>
             <span class="p">{</span>
-                <span class="s2">&quot;raw_class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
-                <span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span>
+                <span class="s2">"raw_class"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
+                <span class="s2">"name_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">"tell_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span>
             <span class="p">},</span>
         <span class="p">)</span></div>
 
@@ -337,7 +337,7 @@
 <div class="viewcode-block" id="TextIOPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Character and line based picklable file-like object.</span>
+<span class="w">    </span><span class="sd">"""Character and line based picklable file-like object.</span>
 
 <span class="sd">    This class provides a file-like :class:`io.TextIOWrapper` object that can</span>
 <span class="sd">    be pickled. Note that this only works in read mode.</span>
@@ -350,7 +350,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ::</span>
 
-<span class="sd">        file = FileIOPicklable(&#39;filename&#39;)</span>
+<span class="sd">        file = FileIOPicklable('filename')</span>
 <span class="sd">        text_wrapped = TextIOPicklable(file)</span>
 
 <span class="sd">    See Also</span>
@@ -366,16 +366,16 @@
 <span class="sd">       After deserialization, the current position is no longer reset</span>
 <span class="sd">       so `universe.trajectory[i]` is not needed to seek to the</span>
 <span class="sd">       original position.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="vm">__class__</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;raw_class&quot;</span><span class="p">]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
-        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
+        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"raw_class"</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"name_val"</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"tell_val"</span><span class="p">]</span>
         <span class="c1"># raw_class is used for further expansion this functionality to</span>
         <span class="c1"># Gzip files, which also requires a text wrapper.</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -398,9 +398,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="fm">__new__</span><span class="p">,</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,),</span>
             <span class="p">{</span>
-                <span class="s2">&quot;raw_class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
-                <span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="n">curr_loc</span><span class="p">,</span>
+                <span class="s2">"raw_class"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
+                <span class="s2">"name_val"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"tell_val"</span><span class="p">:</span> <span class="n">curr_loc</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span></div>
 
@@ -409,7 +409,7 @@
 <div class="viewcode-block" id="BZ2Picklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BZ2Picklable</span><span class="p">(</span><span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File object (read-only) for bzip2 (de)compression that can be pickled.</span>
+<span class="w">    </span><span class="sd">"""File object (read-only) for bzip2 (de)compression that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by :func:`bz2.open`,</span>
 <span class="sd">    namely :class:`bz2.BZ2File`) that, unlike standard Python file objects,</span>
@@ -430,10 +430,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
 <span class="sd">    mode : str</span>
-<span class="sd">        can only be &#39;r&#39;, &#39;rb&#39; to make pickle work.</span>
+<span class="sd">        can only be 'r', 'rb' to make pickle work.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -456,23 +456,23 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"r"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Can only pickle files that were opened &quot;</span>
-                <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="p">)</span>
+                <span class="s2">"Can only pickle files that were opened "</span>
+                <span class="s2">"in read mode, not </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"name_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"tell_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
-        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"name_val"</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"tell_val"</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
@@ -484,7 +484,7 @@
 <div class="viewcode-block" id="GzipPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GzipPicklable</span><span class="p">(</span><span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gzip file object (read-only) that can be pickled.</span>
+<span class="w">    </span><span class="sd">"""Gzip file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by :func:`gzip.open`,</span>
 <span class="sd">    namely :class:`gzip.GzipFile`) that, unlike standard Python file objects,</span>
@@ -505,10 +505,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
 <span class="sd">    mode : str</span>
-<span class="sd">        can only be &#39;r&#39;, &#39;rb&#39; to make pickle work.</span>
+<span class="sd">        can only be 'r', 'rb' to make pickle work.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -531,23 +531,23 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"r"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Can only pickle files that were opened &quot;</span>
-                <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="p">)</span>
+                <span class="s2">"Can only pickle files that were opened "</span>
+                <span class="s2">"in read mode, not </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"name_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"tell_val"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
-        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"name_val"</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">"tell_val"</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
@@ -558,13 +558,13 @@
 
 <div class="viewcode-block" id="pickle_open">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.pickle_open">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open file and return a stream with pickle function implemented.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rt"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Open file and return a stream with pickle function implemented.</span>
 
 <span class="sd">    This function returns a FileIOPicklable object wrapped in a</span>
-<span class="sd">    BufferIOPicklable class when given the &quot;rb&quot; reading mode,</span>
-<span class="sd">    or a FileIOPicklable object wrapped in a TextIOPicklable class with the &quot;r&quot;</span>
-<span class="sd">    or &quot;rt&quot; reading mode. It can be used as a context manager, and replace the</span>
+<span class="sd">    BufferIOPicklable class when given the "rb" reading mode,</span>
+<span class="sd">    or a FileIOPicklable object wrapped in a TextIOPicklable class with the "r"</span>
+<span class="sd">    or "rt" reading mode. It can be used as a context manager, and replace the</span>
 <span class="sd">    built-in :func:`open` function in read mode that only returns an</span>
 <span class="sd">    unpicklable file object.</span>
 <span class="sd">    In order to serialize a :class:`MDAnalysis.core.Universe`, this function</span>
@@ -580,18 +580,18 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
-<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
-<span class="sd">        &#39;r&#39;:  open for reading in text mode;</span>
-<span class="sd">        &#39;rt&#39;: read in text mode (default);</span>
-<span class="sd">        &#39;rb&#39;: read in binary mode;</span>
+<span class="sd">    mode: {'r', 'rt', 'rb'} (optional)</span>
+<span class="sd">        'r':  open for reading in text mode;</span>
+<span class="sd">        'rt': read in text mode (default);</span>
+<span class="sd">        'rb': read in binary mode;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    stream-like object: BufferIOPicklable or TextIOPicklable</span>
-<span class="sd">        when mode is &#39;r&#39; or &#39;rt&#39;, returns TextIOPicklable;</span>
-<span class="sd">        when mode is &#39;rb&#39;, returns BufferIOPicklable</span>
+<span class="sd">        when mode is 'r' or 'rt', returns TextIOPicklable;</span>
+<span class="sd">        when mode is 'rb', returns BufferIOPicklable</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -602,12 +602,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    open as context manager::</span>
 
-<span class="sd">        with pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">        with pickle_open('filename') as f:</span>
 <span class="sd">            line = f.readline()</span>
 
 <span class="sd">    open as function::</span>
 
-<span class="sd">        f = pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        f = pickle_open('filename')</span>
 <span class="sd">        line = f.readline()</span>
 <span class="sd">        f.close()</span>
 
@@ -618,29 +618,29 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">}:</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"r"</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span> <span class="s2">&quot;files can be pickled.&quot;</span>
+            <span class="s2">"Only read mode ('r', 'rt', 'rb') "</span> <span class="s2">"files can be pickled."</span>
         <span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">raw</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;rb&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"rb"</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">BufferIOPicklable</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">}:</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"r"</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">}:</span>
         <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="bz2_pickle_open">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.bz2_pickle_open">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">bz2_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a bzip2-compressed file in binary or text mode</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bz2_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Open a bzip2-compressed file in binary or text mode</span>
 <span class="sd">    with pickle function implemented.</span>
 
-<span class="sd">    This function returns a BZ2Picklable object when given the &quot;rb&quot; or &quot;r&quot;</span>
+<span class="sd">    This function returns a BZ2Picklable object when given the "rb" or "r"</span>
 <span class="sd">    reading mode, or a BZ2Picklable object wrapped in a TextIOPicklable class</span>
-<span class="sd">    with the &quot;rt&quot; reading mode.</span>
+<span class="sd">    with the "rt" reading mode.</span>
 <span class="sd">    It can be used as a context manager, and replace the built-in</span>
 <span class="sd">    :func:`bz2.open` function in read mode that only returns an</span>
 <span class="sd">    unpicklable file object.</span>
@@ -653,18 +653,18 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
-<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
-<span class="sd">        &#39;r&#39;:  open for reading in binary mode;</span>
-<span class="sd">        &#39;rt&#39;: read in text mode;</span>
-<span class="sd">        &#39;rb&#39;: read in binary mode; (default)</span>
+<span class="sd">    mode: {'r', 'rt', 'rb'} (optional)</span>
+<span class="sd">        'r':  open for reading in binary mode;</span>
+<span class="sd">        'rt': read in text mode;</span>
+<span class="sd">        'rb': read in binary mode; (default)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    stream-like object: BZ2Picklable or TextIOPicklable</span>
-<span class="sd">        when mode is &#39;rt&#39;, returns TextIOPicklable;</span>
-<span class="sd">        when mode is &#39;r&#39; or &#39;rb&#39;, returns BZ2Picklable</span>
+<span class="sd">        when mode is 'rt', returns TextIOPicklable;</span>
+<span class="sd">        when mode is 'r' or 'rb', returns BZ2Picklable</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -675,12 +675,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    open as context manager::</span>
 
-<span class="sd">        with bz2_pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">        with bz2_pickle_open('filename') as f:</span>
 <span class="sd">            line = f.readline()</span>
 
 <span class="sd">    open as function::</span>
 
-<span class="sd">        f = bz2_pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        f = bz2_pickle_open('filename')</span>
 <span class="sd">        line = f.readline()</span>
 <span class="sd">        f.close()</span>
 
@@ -694,14 +694,14 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">}:</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"r"</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span> <span class="s2">&quot;files can be pickled.&quot;</span>
+            <span class="s2">"Only read mode ('r', 'rt', 'rb') "</span> <span class="s2">"files can be pickled."</span>
         <span class="p">)</span>
-    <span class="n">bz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">bz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"t"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
     <span class="n">binary_file</span> <span class="o">=</span> <span class="n">BZ2Picklable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bz_mode</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;t&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">"t"</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">binary_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">binary_file</span></div>
@@ -710,13 +710,13 @@
 
 <div class="viewcode-block" id="gzip_pickle_open">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.gzip_pickle_open">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">gzip_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a gzip-compressed file in binary or text mode</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gzip_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Open a gzip-compressed file in binary or text mode</span>
 <span class="sd">    with pickle function implemented.</span>
 
-<span class="sd">    This function returns a GzipPicklable object when given the &quot;rb&quot; or &quot;r&quot;</span>
+<span class="sd">    This function returns a GzipPicklable object when given the "rb" or "r"</span>
 <span class="sd">    reading mode, or a GzipPicklable object wrapped in a TextIOPicklable class</span>
-<span class="sd">    with the &quot;rt&quot; reading mode.</span>
+<span class="sd">    with the "rt" reading mode.</span>
 <span class="sd">    It can be used as a context manager, and replace the built-in</span>
 <span class="sd">    :func:`gzip.open` function in read mode that only returns an</span>
 <span class="sd">    unpicklable file object.</span>
@@ -729,18 +729,18 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        either a text or byte string giving the name (and the path</span>
-<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        if the file isn't in the current working directory) of the file to</span>
 <span class="sd">        be opened.</span>
-<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
-<span class="sd">        &#39;r&#39;:  open for reading in binary mode;</span>
-<span class="sd">        &#39;rt&#39;: read in text mode;</span>
-<span class="sd">        &#39;rb&#39;: read in binary mode; (default)</span>
+<span class="sd">    mode: {'r', 'rt', 'rb'} (optional)</span>
+<span class="sd">        'r':  open for reading in binary mode;</span>
+<span class="sd">        'rt': read in text mode;</span>
+<span class="sd">        'rb': read in binary mode; (default)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    stream-like object: GzipPicklable or TextIOPicklable</span>
-<span class="sd">        when mode is &#39;rt&#39;, returns TextIOPicklable;</span>
-<span class="sd">        when mode is &#39;r&#39; or &#39;rb&#39;, returns GzipPicklable</span>
+<span class="sd">        when mode is 'rt', returns TextIOPicklable;</span>
+<span class="sd">        when mode is 'r' or 'rb', returns GzipPicklable</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -751,12 +751,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    open as context manager::</span>
 
-<span class="sd">        with gzip_pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">        with gzip_pickle_open('filename') as f:</span>
 <span class="sd">            line = f.readline()</span>
 
 <span class="sd">    open as function::</span>
 
-<span class="sd">        f = gzip_pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        f = gzip_pickle_open('filename')</span>
 <span class="sd">        line = f.readline()</span>
 <span class="sd">        f.close()</span>
 
@@ -770,14 +770,14 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">}:</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"r"</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span> <span class="s2">&quot;files can be pickled.&quot;</span>
+            <span class="s2">"Only read mode ('r', 'rt', 'rb') "</span> <span class="s2">"files can be pickled."</span>
         <span class="p">)</span>
-    <span class="n">gz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">gz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"t"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
     <span class="n">binary_file</span> <span class="o">=</span> <span class="n">GzipPicklable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">gz_mode</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;t&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">"t"</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">binary_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">binary_file</span></div>

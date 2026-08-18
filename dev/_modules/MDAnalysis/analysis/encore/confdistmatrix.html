@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Distance Matrix calculation --- :mod:`MDAnalysis.analysis.ensemble.confdistmatrix`</span>
 <span class="sd">==================================================================================</span>
 
@@ -182,7 +182,7 @@
 <span class="sd">   MDAKit `mdaencore &lt;https://mdanalysis.org/mdaencore/&gt;`_ and will be removed</span>
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">getpass</span><span class="w"> </span><span class="kn">import</span> <span class="n">getuser</span>
@@ -205,16 +205,16 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">conformational_distance_matrix</span><span class="p">(</span>
     <span class="n">ensemble</span><span class="p">,</span>
     <span class="n">conf_dist_function</span><span class="p">,</span>
-    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">superimposition_select</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+    <span class="n">superimposition_select</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
     <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">pairwise_align</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"mass"</span><span class="p">,</span>
     <span class="n">metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">max_nbytes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Run the conformational distance matrix calculation.</span>
 <span class="sd">    args and kwargs are passed to conf_dist_function.</span>
 
@@ -235,7 +235,7 @@
 <span class="sd">        Whether to perform pairwise alignment between conformations.</span>
 <span class="sd">        Default is True (do the superimposition)</span>
 <span class="sd">    weights : str/array_like, optional</span>
-<span class="sd">       weights to be used for fit. Can be either &#39;mass&#39; or an array_like</span>
+<span class="sd">       weights to be used for fit. Can be either 'mass' or an array_like</span>
 <span class="sd">    metadata : bool, optional</span>
 <span class="sd">        Whether to build a metadata dataset for the calculated matrix.</span>
 <span class="sd">        Default is True.</span>
@@ -253,12 +253,12 @@
 <span class="sd">    conf_dist_matrix : encore.utils.TriangularMatrix object</span>
 <span class="sd">        Conformational distance matrix in triangular representation.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># framesn: number of frames</span>
     <span class="n">framesn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
         <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-            <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
         <span class="p">)</span>
     <span class="p">)</span>
 
@@ -274,25 +274,25 @@
                     <span class="n">framesn</span><span class="p">,</span>
                     <span class="n">pairwise_align</span><span class="p">,</span>
                     <span class="n">select</span><span class="p">,</span>
-                    <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+                    <span class="n">weights</span> <span class="o">==</span> <span class="s2">"mass"</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">],</span>
             <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                <span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;topology file&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;number of frames&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;pairwise superimposition&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;superimposition subset&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;mass-weighted&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"host"</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"user"</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"date"</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"topology file"</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"number of frames"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"pairwise superimposition"</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"superimposition subset"</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"mass-weighted"</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
             <span class="p">],</span>
         <span class="p">)</span>
 
     <span class="c1"># Prepare alignment subset coordinates as necessary</span>
 
     <span class="n">rmsd_coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pairwise_align</span><span class="p">:</span>
@@ -302,14 +302,14 @@
             <span class="n">subset_select</span> <span class="o">=</span> <span class="n">select</span>
 
         <span class="n">fitting_coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-            <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">subset_select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">subset_select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fitting_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="p">(</span>
         <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
-        <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span>
+        <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">"mass"</span>
     <span class="p">):</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pairwise_align</span><span class="p">:</span>
@@ -336,10 +336,10 @@
         <span class="k">if</span> <span class="n">pairwise_align</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;used pairwise alignment with custom &quot;</span>
-                    <span class="s2">&quot;weights. Please provide 2 tuple with &quot;</span>
-                    <span class="s2">&quot;weights for &#39;select&#39; and &quot;</span>
-                    <span class="s2">&quot;&#39;superimposition_select&#39;&quot;</span>
+                    <span class="s2">"used pairwise alignment with custom "</span>
+                    <span class="s2">"weights. Please provide 2 tuple with "</span>
+                    <span class="s2">"weights for 'select' and "</span>
+                    <span class="s2">"'superimposition_select'"</span>
                 <span class="p">)</span>
             <span class="n">subset_weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -350,13 +350,13 @@
     <span class="n">matsize</span> <span class="o">=</span> <span class="n">framesn</span> <span class="o">*</span> <span class="p">(</span><span class="n">framesn</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">distmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">matsize</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="c1"># Initialize workers. Simple worker doesn&#39;t perform fitting,</span>
+    <span class="c1"># Initialize workers. Simple worker doesn't perform fitting,</span>
     <span class="c1"># fitter worker does.</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="n">trm_indices</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">framesn</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">framesn</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">Parallel</span><span class="p">(</span>
         <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-        <span class="n">require</span><span class="o">=</span><span class="s2">&quot;sharedmem&quot;</span><span class="p">,</span>
+        <span class="n">require</span><span class="o">=</span><span class="s2">"sharedmem"</span><span class="p">,</span>
         <span class="n">max_nbytes</span><span class="o">=</span><span class="n">max_nbytes</span><span class="p">,</span>
     <span class="p">)(</span>
         <span class="n">delayed</span><span class="p">(</span><span class="n">conf_dist_function</span><span class="p">)(</span>
@@ -387,7 +387,7 @@
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    RMSD Matrix calculator</span>
 
 <span class="sd">    Parameters</span>
@@ -417,7 +417,7 @@
 <span class="sd">    fit_weights : numpy.array. optional</span>
 <span class="sd">        Array of atomic weights, having the same order as the</span>
 <span class="sd">        fit_coords array</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">tasks</span>
 
     <span class="k">if</span> <span class="n">fit_coords</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fit_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -452,8 +452,8 @@
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;Both fit_coords and fit_weights must be specified &quot;</span>
-            <span class="s2">&quot;if one of them is given&quot;</span>
+            <span class="s2">"Both fit_coords and fit_weights must be specified "</span>
+            <span class="s2">"if one of them is given"</span>
         <span class="p">)</span></div>
 
 
@@ -462,19 +462,19 @@
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/confdistmatrix.html#MDAnalysis.analysis.encore.confdistmatrix.get_distance_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_distance_matrix</span><span class="p">(</span>
     <span class="n">ensemble</span><span class="p">,</span>
-    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">"name CA"</span><span class="p">,</span>
     <span class="n">load_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">save_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">superimpose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">superimposition_subset</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">superimposition_subset</span><span class="o">=</span><span class="s2">"name CA"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"mass"</span><span class="p">,</span>
     <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">max_nbytes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">*</span><span class="n">conf_dist_args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">conf_dist_kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Retrieves or calculates the conformational distance (RMSD)</span>
 <span class="sd">    matrix. The distance matrix is calculated between all the frames of all</span>
 <span class="sd">    the :class:`~MDAnalysis.core.universe.Universe` objects given as input.</span>
@@ -494,7 +494,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    ensemble : Universe</span>
 <span class="sd">    select : str</span>
-<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is "name CA"</span>
 <span class="sd">    load_matrix : str, optional</span>
 <span class="sd">        Load similarity/dissimilarity matrix from numpy binary file instead</span>
 <span class="sd">        of calculating it (default is None). A filename is required.</span>
@@ -506,9 +506,9 @@
 <span class="sd">        (default is True).</span>
 <span class="sd">    superimposition_subset : str, optional</span>
 <span class="sd">        Group for superimposition using MDAnalysis selection syntax</span>
-<span class="sd">        (default is CA atoms: &quot;name CA&quot;)</span>
+<span class="sd">        (default is CA atoms: "name CA")</span>
 <span class="sd">    weights : str/array_like, optional</span>
-<span class="sd">        weights to be used for fit. Can be either &#39;mass&#39; or an array_like</span>
+<span class="sd">        weights to be used for fit. Can be either 'mass' or an array_like</span>
 <span class="sd">    n_jobs : int, optional</span>
 <span class="sd">        Maximum number of cores to be used (default is 1). If -1 use all cores.</span>
 <span class="sd">    max_nbytes : str, optional</span>
@@ -522,23 +522,23 @@
 
 <span class="sd">    confdistmatrix : encore.utils.TriangularMatrix</span>
 <span class="sd">        Conformational distance matrix. .</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Load the matrix if required</span>
     <span class="k">if</span> <span class="n">load_matrix</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;        Loading similarity matrix from: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">load_matrix</span><span class="p">)</span>
+            <span class="s2">"        Loading similarity matrix from: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">load_matrix</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">confdistmatrix</span> <span class="o">=</span> <span class="n">TriangularMatrix</span><span class="p">(</span>
             <span class="n">size</span><span class="o">=</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
             <span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">loadfile</span><span class="o">=</span><span class="n">load_matrix</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;        Done!&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"        Done!"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">confdistmatrix</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;        </span><span class="si">{0}</span><span class="s2"> : </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"        </span><span class="si">{0}</span><span class="s2"> : </span><span class="si">{1}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">confdistmatrix</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -547,12 +547,12 @@
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="n">confdistmatrix</span><span class="o">.</span><span class="n">size</span>
             <span class="o">==</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
             <span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;ERROR: The size of the loaded matrix and of the ensemble&quot;</span>
-                <span class="s2">&quot; do not match&quot;</span>
+                <span class="s2">"ERROR: The size of the loaded matrix and of the ensemble"</span>
+                <span class="s2">" do not match"</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -564,26 +564,26 @@
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
-            <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span>
+            <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">"mass"</span>
         <span class="p">):</span>
-            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">&quot;Mass&quot;</span>
+            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">"Mass"</span>
         <span class="k">elif</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">"None"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">&quot;Custom&quot;</span>
+            <span class="n">weight_type</span> <span class="o">=</span> <span class="s2">"Custom"</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;        Perform pairwise alignment: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">superimpose</span><span class="p">))</span>
+            <span class="s2">"        Perform pairwise alignment: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">superimpose</span><span class="p">))</span>
         <span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;        weighted alignment and RMSD: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight_type</span><span class="p">)</span>
+            <span class="s2">"        weighted alignment and RMSD: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight_type</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">superimpose</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;        Atoms subset for alignment: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"        Atoms subset for alignment: </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">superimposition_subset</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Calculating similarity matrix . . .&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"    Calculating similarity matrix . . ."</span><span class="p">)</span>
 
         <span class="c1"># Use superimposition subset, if necessary. If the pairwise alignment</span>
         <span class="c1"># is not required, it will not be performed anyway.</span>
@@ -598,7 +598,7 @@
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Done!&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"    Done!"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">save_matrix</span><span class="p">:</span>
             <span class="n">confdistmatrix</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">save_matrix</span><span class="p">)</span>

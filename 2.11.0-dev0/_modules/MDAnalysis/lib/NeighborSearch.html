@@ -164,13 +164,13 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`</span>
 <span class="sd">===============================================================================</span>
 
 <span class="sd">This module contains classes that allow neighbor searches directly with</span>
 <span class="sd">`AtomGroup` objects from `MDAnalysis`.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">capped_distance</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_int_1d</span>
@@ -182,17 +182,17 @@
 <div class="viewcode-block" id="AtomNeighborSearch">
 <a class="viewcode-back" href="../../../documentation_pages/lib/NeighborSearch.html#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AtomNeighborSearch</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class can be used to find all atoms/residues/segments within the</span>
+<span class="w">    </span><span class="sd">"""This class can be used to find all atoms/residues/segments within the</span>
 <span class="sd">    radius of a given query position.</span>
 
 <span class="sd">    For the neighbor search, this class is a wrapper around</span>
 <span class="sd">    :class:`~MDAnalysis.lib.distances.capped_distance`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">atom_group</span><span class="p">:</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -203,7 +203,7 @@
 <span class="sd">          :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when</span>
 <span class="sd">          periodic boundary conditions should be taken into account for</span>
 <span class="sd">          the calculation of contacts.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span> <span class="o">=</span> <span class="n">atom_group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_box</span> <span class="o">=</span> <span class="n">box</span>
@@ -211,9 +211,9 @@
 <div class="viewcode-block" id="AtomNeighborSearch.search">
 <a class="viewcode-back" href="../../../documentation_pages/lib/NeighborSearch.html#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch.search">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"A"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return all atoms/residues/segments that are within *radius* of the</span>
 <span class="sd">        atoms in *atoms*.</span>
 
@@ -230,18 +230,18 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        AtomGroup : :class:`~MDAnalysis.core.groups.AtomGroup`</span>
-<span class="sd">          When ``level=&#39;A&#39;``, AtomGroup is being returned.</span>
+<span class="sd">          When ``level='A'``, AtomGroup is being returned.</span>
 <span class="sd">        ResidueGroup : :class:`~MDAnalysis.core.groups.ResidueGroup`</span>
-<span class="sd">          When ``level=&#39;R&#39;``, ResidueGroup is being returned.</span>
+<span class="sd">          When ``level='R'``, ResidueGroup is being returned.</span>
 <span class="sd">        SegmentGroup : :class:`~MDAnalysis.core.groups.SegmentGroup`</span>
-<span class="sd">          When ``level=&#39;S&#39;``, SegmentGroup is being returned.</span>
+<span class="sd">          When ``level='S'``, SegmentGroup is being returned.</span>
 
 
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Now returns :class:`AtomGroup` (when empty this is now an empty</span>
 <span class="sd">           :class:`AtomGroup` instead of an empty list), :class:`ResidueGroup`,</span>
 <span class="sd">           or a :class:`SegmentGroup`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">unique_idx</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># For atom groups, take the positions attribute</span>
@@ -265,7 +265,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_index2level</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert list of atom_indices in a AtomGroup to either the</span>
+<span class="w">        </span><span class="sd">"""Convert list of atom_indices in a AtomGroup to either the</span>
 <span class="sd">        Atoms or segments/residues containing these atoms.</span>
 
 <span class="sd">        Parameters</span>
@@ -275,17 +275,17 @@
 <span class="sd">        level : str</span>
 <span class="sd">          char (A, R, S). Return atoms(A), residues(R) or segments(S) within</span>
 <span class="sd">          *radius* of *atoms*.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">"A"</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atomgroup</span>
-        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">"R"</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
-        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">"S"</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">segments</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: level not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+                <span class="s2">"</span><span class="si">{0}</span><span class="s2">: level not implemented"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
             <span class="p">)</span></div>
 
 </pre></div>

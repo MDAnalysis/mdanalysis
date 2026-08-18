@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`</span>
+<span class="sd">"""RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`</span>
 <span class="sd">================================================================</span>
 
 <span class="sd">Read coordinates data from an `RDKit &lt;https://www.rdkit.org/docs/&gt;`__</span>
@@ -181,13 +181,13 @@
 
 <span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
 <span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">    &gt;&gt;&gt; mol = Chem.MolFromMol2File(&quot;docking_poses.mol2&quot;, removeHs=False)</span>
+<span class="sd">    &gt;&gt;&gt; mol = Chem.MolFromMol2File("docking_poses.mol2", removeHs=False)</span>
 <span class="sd">    &gt;&gt;&gt; u = mda.Universe(mol)</span>
 <span class="sd">    &gt;&gt;&gt; u</span>
 <span class="sd">    &lt;Universe with 42 atoms&gt;</span>
 <span class="sd">    &gt;&gt;&gt; u.trajectory</span>
 <span class="sd">    &lt;RDKitReader with 10 frames of 42 atoms&gt;</span>
-<span class="sd">    &gt;&gt;&gt; u.atoms.convert_to(&quot;RDKIT&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; u.atoms.convert_to("RDKIT")</span>
 <span class="sd">    &lt;rdkit.Chem.rdchem.Mol object at 0x7fcebb958148&gt;</span>
 
 
@@ -206,7 +206,7 @@
 <span class="sd">:mod:`~MDAnalysis.converters.RDKitInferring` module) or even your own function</span>
 <span class="sd">to modify the RDKit molecule::</span>
 
-<span class="sd">    &gt;&gt;&gt; template = Chem.MolFromSmiles(&quot;CC(=O)Oc1ccccc1C(=O)O&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")</span>
 <span class="sd">    &gt;&gt;&gt; inferrer = mda.converters.RDKitInferring.TemplateInferrer(</span>
 <span class="sd">    ...     template=template</span>
 <span class="sd">    ... )</span>
@@ -234,7 +234,7 @@
 <span class="sd">.. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/</span>
 <span class="sd">.. _`Issue #3339`: https://github.com/MDAnalysis/mdanalysis/issues/3339</span>
 <span class="sd">.. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -255,15 +255,15 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
 
 <span class="n">RDATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;altLocs&quot;</span><span class="p">:</span> <span class="s2">&quot;AltLoc&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;chainIDs&quot;</span><span class="p">:</span> <span class="s2">&quot;ChainId&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;icodes&quot;</span><span class="p">:</span> <span class="s2">&quot;InsertionCode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;names&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;occupancies&quot;</span><span class="p">:</span> <span class="s2">&quot;Occupancy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;resnames&quot;</span><span class="p">:</span> <span class="s2">&quot;ResidueName&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;resids&quot;</span><span class="p">:</span> <span class="s2">&quot;ResidueNumber&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;segindices&quot;</span><span class="p">:</span> <span class="s2">&quot;SegmentNumber&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tempfactors&quot;</span><span class="p">:</span> <span class="s2">&quot;TempFactor&quot;</span><span class="p">,</span>
+    <span class="s2">"altLocs"</span><span class="p">:</span> <span class="s2">"AltLoc"</span><span class="p">,</span>
+    <span class="s2">"chainIDs"</span><span class="p">:</span> <span class="s2">"ChainId"</span><span class="p">,</span>
+    <span class="s2">"icodes"</span><span class="p">:</span> <span class="s2">"InsertionCode"</span><span class="p">,</span>
+    <span class="s2">"names"</span><span class="p">:</span> <span class="s2">"Name"</span><span class="p">,</span>
+    <span class="s2">"occupancies"</span><span class="p">:</span> <span class="s2">"Occupancy"</span><span class="p">,</span>
+    <span class="s2">"resnames"</span><span class="p">:</span> <span class="s2">"ResidueName"</span><span class="p">,</span>
+    <span class="s2">"resids"</span><span class="p">:</span> <span class="s2">"ResidueNumber"</span><span class="p">,</span>
+    <span class="s2">"segindices"</span><span class="p">:</span> <span class="s2">"SegmentNumber"</span><span class="p">,</span>
+    <span class="s2">"tempfactors"</span><span class="p">:</span> <span class="s2">"TempFactor"</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">DEFAULT_INFERER</span> <span class="o">=</span> <span class="n">MDAnalysisInferrer</span><span class="p">()</span>
 <span class="c1"># only here for backwards compatibility</span>
@@ -278,28 +278,28 @@
 <div class="viewcode-block" id="RDKitReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RDKitReader</span><span class="p">(</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for RDKit.</span>
+<span class="w">    </span><span class="sd">"""Coordinate reader for RDKit.</span>
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;RDKIT&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"RDKIT"</span>
 
     <span class="c1"># Structure.coordinates always in Angstrom</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this reader read *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="c1"># if we can&#39;t import rdkit, it&#39;s probably not rdkit</span>
+            <span class="c1"># if we can't import rdkit, it's probably not rdkit</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read coordinates from an RDKit molecule.</span>
+<span class="w">        </span><span class="sd">"""Read coordinates from an RDKit molecule.</span>
 <span class="sd">        Each conformer in the original RDKit molecule will be read as a frame</span>
 <span class="sd">        in the resulting universe.</span>
 
@@ -307,24 +307,24 @@
 <span class="sd">        ----------</span>
 <span class="sd">        filename : rdkit.Chem.rdchem.Mol</span>
 <span class="sd">            RDKit molecule</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()</span>
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">GetPositions</span><span class="p">()</span> <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">GetConformers</span><span class="p">()],</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No coordinates found in the RDKit molecule&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"No coordinates found in the RDKit molecule"</span><span class="p">)</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">coordinates</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">RDKitReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RDKitReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="RDKitConverter">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RDKitConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
+<span class="w">    </span><span class="sd">"""Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">    :class:`~MDAnalysis.core.universe.Universe` to RDKit</span>
 <span class="sd">    :class:`~rdkit.Chem.rdchem.Mol`</span>
 
@@ -333,7 +333,7 @@
 <span class="sd">    ways:</span>
 
 <span class="sd">    * in an :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo` object available</span>
-<span class="sd">      through the :meth:`~rdkit.Chem.rdchem.Atom.GetMonomerInfo` method if it&#39;s</span>
+<span class="sd">      through the :meth:`~rdkit.Chem.rdchem.Atom.GetMonomerInfo` method if it's</span>
 <span class="sd">      an attribute that is typically found in a PDB file,</span>
 <span class="sd">    * directly as an atom property available through the</span>
 <span class="sd">      :meth:`~rdkit.Chem.rdchem.Atom.GetProp` methods for the others.</span>
@@ -350,7 +350,7 @@
 <span class="sd">    | icodes                | atom.GetMonomerInfo().GetInsertionCode()  |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | names                 | atom.GetMonomerInfo().GetName()           |</span>
-<span class="sd">    |                       | atom.GetProp(&quot;_MDAnalysis_name&quot;)          |</span>
+<span class="sd">    |                       | atom.GetProp("_MDAnalysis_name")          |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | occupancies           | atom.GetMonomerInfo().GetOccupancy()      |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
@@ -362,13 +362,13 @@
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
-<span class="sd">    | charges               | atom.GetDoubleProp(&quot;_MDAnalysis_charge&quot;)  |</span>
+<span class="sd">    | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
-<span class="sd">    | indices               | atom.GetIntProp(&quot;_MDAnalysis_index&quot;)      |</span>
+<span class="sd">    | indices               | atom.GetIntProp("_MDAnalysis_index")      |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
-<span class="sd">    | segids                | atom.GetProp(&quot;_MDAnalysis_segid&quot;)         |</span>
+<span class="sd">    | segids                | atom.GetProp("_MDAnalysis_segid")         |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
-<span class="sd">    | types                 | atom.GetProp(&quot;_MDAnalysis_type&quot;)          |</span>
+<span class="sd">    | types                 | atom.GetProp("_MDAnalysis_type")          |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 
 <span class="sd">    Example</span>
@@ -379,20 +379,20 @@
 <span class="sd">        &gt;&gt;&gt; import MDAnalysis as mda</span>
 <span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PDB_full</span>
 <span class="sd">        &gt;&gt;&gt; u = mda.Universe(PDB_full)</span>
-<span class="sd">        &gt;&gt;&gt; mol = u.select_atoms(&#39;resname DMS&#39;).convert_to(&#39;RDKIT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; mol = u.select_atoms('resname DMS').convert_to('RDKIT')</span>
 <span class="sd">        &gt;&gt;&gt; mol.GetAtomWithIdx(0).GetMonomerInfo().GetResidueName()</span>
-<span class="sd">        &#39;DMS&#39;</span>
+<span class="sd">        'DMS'</span>
 
 <span class="sd">    To create a molecule for each frame of a trajectory::</span>
 
 <span class="sd">        from MDAnalysisTests.datafiles import PSF, DCD</span>
 <span class="sd">        from rdkit.Chem.Descriptors3D import Asphericity</span>
 
-<span class="sd">        u = mda.Universe(PSF, DCD, to_guess=[&#39;elements&#39;])</span>
-<span class="sd">        ag = u.select_atoms(&quot;resid 1-10&quot;)</span>
+<span class="sd">        u = mda.Universe(PSF, DCD, to_guess=['elements'])</span>
+<span class="sd">        ag = u.select_atoms("resid 1-10")</span>
 
 <span class="sd">        for ts in u.trajectory:</span>
-<span class="sd">            mol = ag.convert_to(&quot;RDKIT&quot;)</span>
+<span class="sd">            mol = ag.convert_to("RDKIT")</span>
 <span class="sd">            x = Asphericity(mol)</span>
 
 
@@ -413,7 +413,7 @@
 
 <span class="sd">        &gt;&gt;&gt; from rdkit import Chem</span>
 <span class="sd">        &gt;&gt;&gt; from rdkit.Chem.AllChem import AssignBondOrdersFromTemplate</span>
-<span class="sd">        &gt;&gt;&gt; template = Chem.MolFromSmiles(&quot;NC(Cc1ccccc1)C(=O)O&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; template = Chem.MolFromSmiles("NC(Cc1ccccc1)C(=O)O")</span>
 <span class="sd">        &gt;&gt;&gt; def infer_from_template(mol: Chem.Mol) -&gt; Chem.Mol:</span>
 <span class="sd">        ...     return AssignBondOrdersFromTemplate(template, mol)</span>
 <span class="sd">        &gt;&gt;&gt; mol = u.atoms.convert_to.rdkit(inferrer=infer_from_template)</span>
@@ -428,8 +428,8 @@
 <span class="sd">    only stores the 2 most recent AtomGroups that were converted, and is</span>
 <span class="sd">    sensitive to the arguments that were passed to the converter. The number of</span>
 <span class="sd">    objects cached can be changed with the function</span>
-<span class="sd">    :func:`set_converter_cache_size`. However, ``ag.convert_to(&quot;RDKIT&quot;)``</span>
-<span class="sd">    followed by ``ag.convert_to(&quot;RDKIT&quot;, implicit_hydrogens=False)`` will not</span>
+<span class="sd">    :func:`set_converter_cache_size`. However, ``ag.convert_to("RDKIT")``</span>
+<span class="sd">    followed by ``ag.convert_to("RDKIT", implicit_hydrogens=False)`` will not</span>
 <span class="sd">    use the cache since the arguments given are different. You can pass a</span>
 <span class="sd">    ``cache=False`` argument to the converter to bypass the caching system.</span>
 
@@ -455,7 +455,7 @@
 <span class="sd">        now follow the same order as in the AtomGroup. The output of</span>
 <span class="sd">        ``atom.GetMonomerInfo().GetName()`` now follows the guidelines for PDB</span>
 <span class="sd">        files while the original name is still available through</span>
-<span class="sd">        ``atom.GetProp(&quot;_MDAnalysis_name&quot;)``</span>
+<span class="sd">        ``atom.GetProp("_MDAnalysis_name")``</span>
 
 <span class="sd">    .. versionchanged:: 2.10.0</span>
 <span class="sd">        Added ``inferrer`` to specify a callable that can transform the</span>
@@ -466,10 +466,10 @@
 <span class="sd">        :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer`) and</span>
 <span class="sd">        deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">lib</span> <span class="o">=</span> <span class="s2">&quot;RDKIT&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="n">lib</span> <span class="o">=</span> <span class="s2">"RDKIT"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
 <div class="viewcode-block" id="RDKitConverter.convert">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.convert">[docs]</a>
@@ -482,7 +482,7 @@
         <span class="n">inferrer</span><span class="o">=</span><span class="n">DEFAULT_INFERER</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to</span>
+<span class="w">        </span><span class="sd">"""Write selection at current trajectory frame to</span>
 <span class="sd">        :class:`~rdkit.Chem.rdchem.Mol`.</span>
 
 <span class="sd">        Parameters</span>
@@ -490,7 +490,7 @@
 <span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">            :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">        cache : bool</span>
-<span class="sd">            Use a cached copy of the molecule&#39;s topology when available. To be</span>
+<span class="sd">            Use a cached copy of the molecule's topology when available. To be</span>
 <span class="sd">            used, the cached molecule and the new one have to be made from the</span>
 <span class="sd">            same AtomGroup selection and with the same arguments passed</span>
 <span class="sd">            to the converter</span>
@@ -514,39 +514,39 @@
 
 <span class="sd">            .. deprecated:: 2.10.0</span>
 <span class="sd">                Use ``inferrer=MDAnalysisInferrer(max_iter=...)`` instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;RDKit is required for the RDKitConverter but &quot;</span>
-                <span class="s2">&quot;it&#39;s not installed. Try installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;`conda install -c conda-forge rdkit` or `pip install rdkit`&quot;</span>
+                <span class="s2">"RDKit is required for the RDKitConverter but "</span>
+                <span class="s2">"it's not installed. Try installing it with </span><span class="se">\n</span><span class="s2">"</span>
+                <span class="s2">"`conda install -c conda-forge rdkit` or `pip install rdkit`"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># make sure to use atoms (Issue 46)</span>
             <span class="n">ag</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No `atoms` attribute in object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">!r}</span><span class="s2">, &quot;</span>
-                <span class="s2">&quot;please use a valid AtomGroup or Universe&quot;</span>
+                <span class="sa">f</span><span class="s2">"No `atoms` attribute in object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">!r}</span><span class="s2">, "</span>
+                <span class="s2">"please use a valid AtomGroup or Universe"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">max_iter</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_iter&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">max_iter</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"max_iter"</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Using `max_iter` is deprecated, use &quot;</span>
-                <span class="s2">&quot;`inferrer=MDAnalysisInferrer(max_iter=...)` instead&quot;</span><span class="p">,</span>
+                <span class="s2">"Using `max_iter` is deprecated, use "</span>
+                <span class="s2">"`inferrer=MDAnalysisInferrer(max_iter=...)` instead"</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inferrer</span><span class="p">,</span> <span class="n">MDAnalysisInferrer</span><span class="p">):</span>
                 <span class="n">inferrer</span> <span class="o">=</span> <span class="n">MDAnalysisInferrer</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">NoImplicit</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NoImplicit&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">NoImplicit</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"NoImplicit"</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Using `NoImplicit` is deprecated, use `implicit_hydrogens` &quot;</span>
-                <span class="s2">&quot; instead. To disable bond order and formal charge inferring, &quot;</span>
-                <span class="s2">&quot;use `inferrer=None`&quot;</span><span class="p">,</span>
+                <span class="s2">"Using `NoImplicit` is deprecated, use `implicit_hydrogens` "</span>
+                <span class="s2">" instead. To disable bond order and formal charge inferring, "</span>
+                <span class="s2">"use `inferrer=None`"</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">implicit_hydrogens</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">NoImplicit</span>
@@ -567,14 +567,14 @@
             <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup_to_mol</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
         <span class="c1"># add a conformer for the current Timestep</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;positions&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">"positions"</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
                 <span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span>
             <span class="p">):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;NaN or empty coordinates detected in coordinates, &quot;</span>
-                    <span class="s2">&quot;the output molecule will not have 3D coordinates &quot;</span>
-                    <span class="s2">&quot;assigned&quot;</span>
+                    <span class="s2">"NaN or empty coordinates detected in coordinates, "</span>
+                    <span class="s2">"the output molecule will not have 3D coordinates "</span>
+                    <span class="s2">"assigned"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># assign coordinates</span>
@@ -601,7 +601,7 @@
     <span class="n">inferrer</span><span class="o">=</span><span class="n">DEFAULT_INFERER</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an AtomGroup to an RDKit molecule without coordinates.</span>
+<span class="w">    </span><span class="sd">"""Converts an AtomGroup to an RDKit molecule without coordinates.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -636,37 +636,37 @@
 <span class="sd">        Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.</span>
 <span class="sd">        Deprecated ``max_iter``, replaced by</span>
 <span class="sd">        ``inferrer=MDAnalysisInferrer(max_iter=...)``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span>
     <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;The `elements` attribute is required for the RDKitConverter &quot;</span>
-            <span class="s2">&quot;but is not present in this AtomGroup. Please refer to the &quot;</span>
-            <span class="s2">&quot;documentation to guess elements from other attributes or &quot;</span>
-            <span class="s2">&quot;type `help(MDAnalysis.topology.guessers)`&quot;</span>
+            <span class="s2">"The `elements` attribute is required for the RDKitConverter "</span>
+            <span class="s2">"but is not present in this AtomGroup. Please refer to the "</span>
+            <span class="s2">"documentation to guess elements from other attributes or "</span>
+            <span class="s2">"type `help(MDAnalysis.topology.guessers)`"</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">"H"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;No hydrogen atom found in the topology. &quot;</span>
-                <span class="s2">&quot;Forcing to continue the conversion.&quot;</span>
+                <span class="s2">"No hydrogen atom found in the topology. "</span>
+                <span class="s2">"Forcing to continue the conversion."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">inferrer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;No hydrogen atom could be found in the topology, but the &quot;</span>
-                <span class="s2">&quot;converter requires all hydrogens to be explicit. You can use &quot;</span>
-                <span class="s2">&quot;the parameter ``inferrer=None`` when using the converter &quot;</span>
-                <span class="s2">&quot;to disable inferring bond orders and charges. You can also &quot;</span>
-                <span class="s2">&quot;use ``force=True`` to ignore this error.&quot;</span>
+                <span class="s2">"No hydrogen atom could be found in the topology, but the "</span>
+                <span class="s2">"converter requires all hydrogens to be explicit. You can use "</span>
+                <span class="s2">"the parameter ``inferrer=None`` when using the converter "</span>
+                <span class="s2">"to disable inferring bond orders and charges. You can also "</span>
+                <span class="s2">"use ``force=True`` to ignore this error."</span>
             <span class="p">)</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">NoImplicit</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;NoImplicit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">NoImplicit</span> <span class="o">:=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"NoImplicit"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;Using `NoImplicit` is deprecated, use `implicit_hydrogens` &quot;</span>
-            <span class="s2">&quot;instead. To disable bond order and formal charge inferring, use &quot;</span>
-            <span class="s2">&quot;`inferrer=None`&quot;</span><span class="p">,</span>
+            <span class="s2">"Using `NoImplicit` is deprecated, use `implicit_hydrogens` "</span>
+            <span class="s2">"instead. To disable bond order and formal charge inferring, use "</span>
+            <span class="s2">"`inferrer=None`"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">implicit_hydrogens</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">NoImplicit</span>
@@ -674,18 +674,18 @@
         <span class="k">if</span> <span class="n">implicit_hydrogens</span><span class="p">:</span>
             <span class="n">inferrer</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found unexpected arguments: </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found unexpected arguments: </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 
     <span class="c1"># attributes accepted in PDBResidueInfo object</span>
     <span class="n">pdb_attrs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">RDATTRIBUTES</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
             <span class="n">pdb_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-    <span class="n">resnames</span> <span class="o">=</span> <span class="n">pdb_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resnames&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">resnames</span> <span class="o">=</span> <span class="n">pdb_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"resnames"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">resnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">get_resname</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
 
     <span class="k">else</span><span class="p">:</span>
 
@@ -693,7 +693,7 @@
             <span class="k">return</span> <span class="n">resnames</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
     <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;charges&quot;</span><span class="p">,</span> <span class="s2">&quot;segids&quot;</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="s2">&quot;names&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"charges"</span><span class="p">,</span> <span class="s2">"segids"</span><span class="p">,</span> <span class="s2">"types"</span><span class="p">,</span> <span class="s2">"names"</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
             <span class="n">other_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
@@ -714,9 +714,9 @@
         <span class="n">rdatom</span><span class="o">.</span><span class="n">SetMonomerInfo</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
         <span class="c1"># other properties</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">other_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_MDAnalysis_</span><span class="si">{</span><span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">singular</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"_MDAnalysis_</span><span class="si">{</span><span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">singular</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="s2">"_MDAnalysis_index"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="c1"># add atom</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">AddAtom</span><span class="p">(</span><span class="n">rdatom</span><span class="p">)</span>
         <span class="n">atom_mapper</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
@@ -725,8 +725,8 @@
         <span class="n">ag</span><span class="o">.</span><span class="n">bonds</span>
     <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;No `bonds` attribute in this AtomGroup. Guessing bonds based &quot;</span>
-            <span class="s2">&quot;on atoms coordinates&quot;</span>
+            <span class="s2">"No `bonds` attribute in this AtomGroup. Guessing bonds based "</span>
+            <span class="s2">"on atoms coordinates"</span>
         <span class="p">)</span>
         <span class="n">ag</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">()</span>
 
@@ -748,7 +748,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">set_converter_cache_size</span><span class="p">(</span><span class="n">maxsize</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the maximum cache size of the RDKit converter</span>
+<span class="w">    </span><span class="sd">"""Set the maximum cache size of the RDKit converter</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -756,13 +756,13 @@
 <span class="sd">        If int, the cache will only keep the ``maxsize`` most recent</span>
 <span class="sd">        conversions in memory. Using ``maxsize=None`` will remove all limits</span>
 <span class="sd">        to the cache size, i.e. everything is cached.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">global</span> <span class="n">atomgroup_to_mol</span>  <span class="c1"># pylint: disable=global-statement</span>
     <span class="n">atomgroup_to_mol</span> <span class="o">=</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">maxsize</span><span class="p">)(</span><span class="n">atomgroup_to_mol</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an MDAnalysis atom attribute into the RDKit equivalent and</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Converts an MDAnalysis atom attribute into the RDKit equivalent and</span>
 <span class="sd">    stores it into an RDKit :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo`.</span>
 
 <span class="sd">    Parameters</span>
@@ -775,17 +775,17 @@
 <span class="sd">        MonomerInfo object that will store the relevant atom attributes</span>
 <span class="sd">    resname : str</span>
 <span class="sd">        Residue name of the atom, if available</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
         <span class="c1"># convert numpy types to python standard types</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;names&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">"names"</span><span class="p">:</span>
         <span class="c1"># RDKit needs the name to be properly formatted for a PDB file</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">_deduce_PDB_atom_name</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
 
     <span class="c1"># set attribute value in RDKit MonomerInfo</span>
     <span class="n">rdattr</span> <span class="o">=</span> <span class="n">RDATTRIBUTES</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-    <span class="nb">getattr</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set</span><span class="si">{</span><span class="n">rdattr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
+    <span class="nb">getattr</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Set</span><span class="si">{</span><span class="n">rdattr</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_set_str_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -830,7 +830,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Saves any attribute and value into an RDKit atom property&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Saves any attribute and value into an RDKit atom property"""</span>
     <span class="n">_atom_property_dispatcher</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">_ignore_prop</span><span class="p">)(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre></div>
 

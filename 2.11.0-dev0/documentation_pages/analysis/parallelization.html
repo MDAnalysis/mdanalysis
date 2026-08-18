@@ -191,9 +191,9 @@ that are generally available), and then just enable them by providing
 method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">my_run</span> <span class="o">=</span> <span class="n">SomeClass</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">SomeClass</span><span class="o">.</span><span class="n">get_supported_backends</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">SomeClass</span><span class="o">.</span><span class="n">get_supported_backends</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="s1">'serial'</span><span class="p">,</span> <span class="s1">'multiprocessing'</span><span class="p">,</span> <span class="s1">'dask'</span><span class="p">)</span>
 
-<span class="n">my_run</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">my_run</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">'multiprocessing'</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For some classes, such as <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.RMSF</span></code></a> (in its current implementation),
@@ -323,7 +323,7 @@ exactly that: given a list of the <code class="docutils literal notranslate"><sp
 it applies a specific aggregation function to every attribute, and stores it as
 a same attribute of the returned object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsGroup</span><span class="p">,</span> <span class="n">Results</span>
-<span class="n">group</span> <span class="o">=</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">float_mean</span><span class="p">})</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">'mass'</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">float_mean</span><span class="p">})</span>
 <span class="n">obj1</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">obj2</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">group</span><span class="o">.</span><span class="n">merge</span><span class="p">([</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">])</span> <span class="o">==</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
@@ -397,12 +397,12 @@ parallelization to the <a class="reference internal" href="rms.html#MDAnalysis.a
 <span class="k">class</span><span class="w"> </span><span class="nc">RMSD</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">'serial'</span><span class="p">,</span> <span class="s1">'multiprocessing'</span><span class="p">,</span> <span class="s1">'dask'</span><span class="p">,)</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">'rmsd'</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>That’s it! The first two methods are boilerplate –
@@ -437,16 +437,16 @@ when a new class instance is created:</p>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendBase</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ThreadsBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">starting_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Useless backend&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">starting_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Useless backend"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">=</span> <span class="n">n_workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">starting_message</span> <span class="o">=</span> <span class="n">starting_message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;warning: this backend is useless&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">'warning: this backend is useless'</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s1">&#39;error: self.n_workers is not an integer&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s1">'error: self.n_workers is not an integer'</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">computations</span><span class="p">):</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>

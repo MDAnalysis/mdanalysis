@@ -188,14 +188,14 @@
 <p>The basic approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">GNMAnalysis</span></code></a> and then run
 the analysis:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">gnm</span><span class="o">.</span><span class="n">GNMAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">gnm</span><span class="o">.</span><span class="n">GNMAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="s2">"output.txt"</span><span class="p">)</span>
 
 <span class="n">C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">output</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">C</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;eigenvalues.dat&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outputfile</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"eigenvalues.dat"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">outputfile</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-        <span class="n">outputfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">item</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">outputfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">item</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The results are found in <code class="xref py py-attr docutils literal notranslate"><span class="pre">GNMAnalysis.results</span></code>, which can be

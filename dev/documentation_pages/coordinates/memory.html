@@ -271,7 +271,7 @@ extracted from a DCD
 <span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 
 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
-<span class="n">universe2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">)</span>
+<span class="n">universe2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'afc'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric" id="create-in-memory-trajectory-with-analysisfromfunction">Creating an in-memory trajectory with
@@ -290,7 +290,7 @@ same functionality for any supported trajectory format:</p>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 
 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">AnalysisFromFunction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ag</span><span class="p">:</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                                   <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;timeseries&#39;</span><span class="p">]</span>
+                                   <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">'timeseries'</span><span class="p">]</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -312,10 +312,10 @@ only the protein is created:</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisFromFunction</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
 
 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">AnalysisFromFunction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ag</span><span class="p">:</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                                   <span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;timeseries&#39;</span><span class="p">]</span>
+                                   <span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">'timeseries'</span><span class="p">]</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>            <span class="c1"># create the protein-only Universe</span>
 <span class="n">u2</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">)</span>
 </pre></div>
@@ -325,7 +325,7 @@ the in-memory trajectory is loaded from these coordinates. In
 principle, this could have all be done in one line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span>
          <span class="n">AnalysisFromFunction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ag</span><span class="p">:</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                              <span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;timeseries&#39;</span><span class="p">],</span>
+                              <span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">'timeseries'</span><span class="p">],</span>
          <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -430,7 +430,7 @@ stored in the current timestep in the <code class="docutils literal notranslate"
 <em>aux_spec</em>; e.g. to add additional pull force data stored in
 pull-force.xvg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">'pull'</span><span class="p">,</span> <span class="s1">'pull-force.xvg'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The representative value for the current timestep may then be accessed
@@ -439,14 +439,14 @@ as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.
 <a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
 <p>All data that is present in the (energy) file can be added by omitting
 <cite>aux_spec</cite> like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>aux_spec</em> is expected to be a dictionary that maps the desired
 attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
 added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span> <span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adding this data can be useful, for example, to filter trajectory

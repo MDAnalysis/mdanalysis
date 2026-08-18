@@ -166,7 +166,7 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">PyMOL selections</span>
 <span class="sd">=================</span>
 
@@ -183,30 +183,30 @@
 
 <span class="sd">.. autoclass:: SelectionWriter</span>
 <span class="sd">   :inherited-members:</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 
 
 <div class="viewcode-block" id="SelectionWriter">
 <a class="viewcode-back" href="../../../documentation_pages/selections/pymol.html#MDAnalysis.selections.pymol.SelectionWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectionWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SelectionWriterBase</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PyMol&quot;</span><span class="p">,</span> <span class="s2">&quot;pml&quot;</span><span class="p">]</span>
-    <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;pml&quot;</span>
-    <span class="n">continuation</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>  <span class="c1"># quoted backslash!</span>
-    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s2">&quot;# </span><span class="si">%s</span><span class="s2">&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PyMol"</span><span class="p">,</span> <span class="s2">"pml"</span><span class="p">]</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="s2">"pml"</span>
+    <span class="n">continuation</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\\</span><span class="s2">"</span>  <span class="c1"># quoted backslash!</span>
+    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s2">"# </span><span class="si">%s</span><span class="s2">"</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="mi">6</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># PyMol index is 1-based</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">_index</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;index </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s2">"index </span><span class="si">{0:d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot; |&quot;</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">" |"</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">(</span><span class="s2">&quot;MDAnalysis PyMol selection&quot;</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">(</span><span class="s2">"MDAnalysis PyMol selection"</span><span class="p">))</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s2">&quot;select </span><span class="si">{name!s}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">"select </span><span class="si">{name!s}</span><span class="s2">, "</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">)</span></div>
 
 </pre></div>

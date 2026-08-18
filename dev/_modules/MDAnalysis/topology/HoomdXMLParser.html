@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">HOOMD XML topology parser</span>
 <span class="sd">=========================</span>
 
@@ -188,7 +188,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -214,7 +214,7 @@
 <div class="viewcode-block" id="HoomdXMLParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/HoomdXMLParser.html#MDAnalysis.topology.HoomdXMLParser.HoomdXMLParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HoomdXMLParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a Hoomd XML file to create a Topology</span>
+<span class="w">    </span><span class="sd">"""Parses a Hoomd XML file to create a Topology</span>
 
 <span class="sd">    Reads the following Attributes:</span>
 <span class="sd">     - Atomtypes</span>
@@ -225,19 +225,19 @@
 <span class="sd">     - Radii</span>
 <span class="sd">     - Masses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XML&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"XML"</span>
 
 <div class="viewcode-block" id="HoomdXMLParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/HoomdXMLParser.html#MDAnalysis.topology.HoomdXMLParser.HoomdXMLParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse Hoomd XML file</span>
+<span class="w">        </span><span class="sd">"""Parse Hoomd XML file</span>
 
 <span class="sd">        Hoomd XML format does not contain a node for names. The parser will</span>
-<span class="sd">        look for a name node anyway, and if it doesn&#39;t find one, it will use</span>
-<span class="sd">        the atom types as names. If the Hoomd XML file doesn&#39;t contain a type</span>
-<span class="sd">        node (it should), then all atom types will be \&#39;none\&#39;. Similar to the</span>
+<span class="sd">        look for a name node anyway, and if it doesn't find one, it will use</span>
+<span class="sd">        the atom types as names. If the Hoomd XML file doesn't contain a type</span>
+<span class="sd">        node (it should), then all atom types will be \'none\'. Similar to the</span>
 <span class="sd">        names, the parser will try to read atom type, mass, and charge from the XML</span>
 <span class="sd">        file, but it will use placeholder values if they are not present.</span>
 
@@ -246,25 +246,25 @@
 
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
-        <span class="n">configuration</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;configuration&quot;</span><span class="p">)</span>
-        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;natoms&quot;</span><span class="p">))</span>
+        <span class="n">configuration</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"configuration"</span><span class="p">)</span>
+        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"natoms"</span><span class="p">))</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="n">atype</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
-        <span class="n">atypes</span> <span class="o">=</span> <span class="n">atype</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">atype</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span>
+        <span class="n">atypes</span> <span class="o">=</span> <span class="n">atype</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atypes</span><span class="p">)</span> <span class="o">!=</span> <span class="n">natoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Number of types does not equal natoms.&quot;</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Number of types does not equal natoms."</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"types"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;diameter&quot;</span><span class="p">,</span> <span class="n">Radii</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="n">Masses</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="n">Charges</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"diameter"</span><span class="p">,</span> <span class="n">Radii</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"mass"</span><span class="p">,</span> <span class="n">Masses</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"charge"</span><span class="p">,</span> <span class="n">Charges</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrname</span><span class="p">)</span>
@@ -277,33 +277,33 @@
             <span class="n">attrname</span><span class="p">,</span>
             <span class="n">attr</span><span class="p">,</span>
         <span class="p">)</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;bond&quot;</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">Angles</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;dihedral&quot;</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;improper&quot;</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"bond"</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="n">Angles</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"dihedral"</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"improper"</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrname</span><span class="p">)</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
-                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="p">]</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">attrs</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;mass&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">))</span>
-        <span class="k">if</span> <span class="s2">&quot;charge&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s2">"mass"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"mass"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s2">"charge"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"charge"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 

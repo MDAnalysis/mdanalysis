@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">XDR based trajectory files --- :mod:`MDAnalysis.coordinates.XDR`</span>
 <span class="sd">================================================================</span>
 
@@ -186,7 +186,7 @@
 
 <span class="sd">Both formats have in common that they do not allow</span>
 <span class="sd">native random frame access. Therefore, we first scan the whole trajectory to</span>
-<span class="sd">build an index of frames in the file (&quot;offsets&quot;) as a look-up for seeking to</span>
+<span class="sd">build an index of frames in the file ("offsets") as a look-up for seeking to</span>
 <span class="sd">frames. This process is initially slow so we save the offsets to a hidden file</span>
 <span class="sd">next to the trajectory (if possible) and then read the offset file when the</span>
 <span class="sd">trajectory is opened the next time, as described under :ref:`Offsets&lt;offsets-label&gt;`.</span>
@@ -204,7 +204,7 @@
 
 <span class="sd">.. autofunction:: read_numpy_offsets</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -219,8 +219,8 @@
 
 <div class="viewcode-block" id="offsets_filename">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.offsets_filename">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">offsets_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s2">&quot;npz&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return offset or its lock filename for XDR files.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">offsets_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s2">"npz"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return offset or its lock filename for XDR files.</span>
 <span class="sd">    For this the filename is appended</span>
 <span class="sd">    with `_offsets.{ending}`.</span>
 
@@ -235,16 +235,16 @@
 <span class="sd">    -------</span>
 <span class="sd">    offset_filename : str</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">tail</span><span class="si">}</span><span class="s2">_offsets.</span><span class="si">{</span><span class="n">ending</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="n">tail</span><span class="si">}</span><span class="s2">_offsets.</span><span class="si">{</span><span class="n">ending</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="read_numpy_offsets">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.read_numpy_offsets">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_numpy_offsets</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;read offsets into dictionary.</span>
+<span class="w">    </span><span class="sd">"""read offsets into dictionary.</span>
 
 <span class="sd">    This assume offsets have been saved using numpy</span>
 
@@ -258,13 +258,13 @@
 <span class="sd">    offsets : dict</span>
 <span class="sd">        dictionary of offsets information</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="c1">#  `ValueError` is encountered when the offset file is corrupted.</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load offsets file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to load offsets file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
@@ -272,7 +272,7 @@
 <div class="viewcode-block" id="XDRBaseReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XDRBaseReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for libmdaxdr file formats xtc and trr</span>
+<span class="w">    </span><span class="sd">"""Base class for libmdaxdr file formats xtc and trr</span>
 
 <span class="sd">    This class handles integration of XDR based formats into MDAnalysis. The</span>
 <span class="sd">    XTC and TRR classes only implement :meth:`_write_next_frame` and</span>
@@ -308,7 +308,7 @@
 <span class="sd">    .. versionchanged:: 2.9.0</span>
 <span class="sd">       Changed fasteners.InterProcessLock() to filelock.FileLock</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -320,7 +320,7 @@
         <span class="n">dt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str</span>
@@ -340,7 +340,7 @@
 <span class="sd">        **kwargs : dict</span>
 <span class="sd">            General reader arguments.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XDRBaseReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="n">convert_units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
@@ -362,7 +362,7 @@
             <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">xdr_frame</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">frame</span><span class="o">.</span><span class="n">time</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">[</span><span class="s2">"dt"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="mi">0</span>
@@ -389,14 +389,14 @@
 <div class="viewcode-block" id="XDRBaseReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""close reader"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="XDRBaseReader._load_offsets">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader._load_offsets">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;load frame offsets from file or recalculate if necessary</span>
+<span class="w">        </span><span class="sd">"""load frame offsets from file or recalculate if necessary</span>
 
 <span class="sd">        Frame offsets are cached in an offsets file, which is stored as a</span>
 <span class="sd">        hidden file in the same directory as the trajectory. If the file does</span>
@@ -421,7 +421,7 @@
 <span class="sd">        To prevent the competition of generating the same offset file from</span>
 <span class="sd">        multiple processes, a :attr:`filelock.FileLock` is used, which is</span>
 <span class="sd">        implemented via a lock file (in the same directory as the offset file</span>
-<span class="sd">        and ending in &quot;.lock&quot;). This lock file is *not* automatically deleted</span>
+<span class="sd">        and ending in ".lock"). This lock file is *not* automatically deleted</span>
 <span class="sd">        because doing so could lead to race conditions.</span>
 
 <span class="sd">        Once this method completes, the</span>
@@ -434,9 +434,9 @@
 <span class="sd">           - :meth:`_read_offsets`</span>
 <span class="sd">           - :func:`read_numpy_offsets`</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="n">lock_name</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s2">&quot;lock&quot;</span><span class="p">)</span>
+        <span class="n">lock_name</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s2">"lock"</span><span class="p">)</span>
 
         <span class="c1">#  check if the location of the lock is writable.</span>
         <span class="n">lock</span> <span class="o">=</span> <span class="n">filelock</span><span class="o">.</span><span class="n">FileLock</span><span class="p">(</span><span class="n">lock_name</span><span class="p">)</span>
@@ -446,8 +446,8 @@
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">PermissionError</span><span class="p">)</span> <span class="ow">or</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EROFS</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Cannot write lock/offset file in same location as &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Using slow offset calculation.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Cannot write lock/offset file in same location as "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Using slow offset calculation."</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">return</span>
@@ -468,10 +468,10 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">read_numpy_offsets</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Reading offsets from </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> failed, &quot;</span>
-                    <span class="s2">&quot;reading offsets from trajectory instead.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;Consider setting &#39;refresh_offsets=True&#39; &quot;</span>
-                    <span class="s2">&quot;when loading your Universe.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Reading offsets from </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> failed, "</span>
+                    <span class="s2">"reading offsets from trajectory instead.</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="s2">"Consider setting 'refresh_offsets=True' "</span>
+                    <span class="s2">"when loading your Universe."</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span>
@@ -479,27 +479,27 @@
             <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">size_ok</span> <span class="o">=</span> <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ctime&quot;</span><span class="p">]</span>
-                <span class="n">size_ok</span> <span class="o">=</span> <span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span>
-                <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span>
+                <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">"ctime"</span><span class="p">]</span>
+                <span class="n">size_ok</span> <span class="o">=</span> <span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">"size"</span><span class="p">]</span>
+                <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">"n_atoms"</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="c1"># we tripped over some old offset formated file</span>
                 <span class="k">pass</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ctime_ok</span> <span class="ow">and</span> <span class="n">size_ok</span> <span class="ow">and</span> <span class="n">n_atoms_ok</span><span class="p">):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;Reload offsets from trajectory</span><span class="se">\n</span><span class="s2"> &quot;</span>
-                    <span class="s2">&quot;ctime or size or n_atoms did not match&quot;</span>
+                    <span class="s2">"Reload offsets from trajectory</span><span class="se">\n</span><span class="s2"> "</span>
+                    <span class="s2">"ctime or size or n_atoms did not match"</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"offsets"</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="XDRBaseReader._read_offsets">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader._read_offsets">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;read frame offsets from trajectory</span>
+<span class="w">        </span><span class="sd">"""read frame offsets from trajectory</span>
 
 <span class="sd">        Scan the trajectory for frames and build an index that relates frame</span>
 <span class="sd">        number to the position in the file, thus enabling direct seeking to</span>
@@ -509,14 +509,14 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        store : bool</span>
-<span class="sd">            Save the frame index (&quot;offsets&quot;) to a file with name generated from</span>
+<span class="sd">            Save the frame index ("offsets") to a file with name generated from</span>
 <span class="sd">            the trajectory name (:attr:`filename`) with function</span>
 <span class="sd">            :func:`offsets_filename`. The offsets file also contains, ctime,</span>
 <span class="sd">            file size, number of frames, and number of atoms of the trajectory.</span>
 <span class="sd">            The file format is a compressed numpy array (:func:`numpy.savez`).</span>
 
 <span class="sd">            If saving the file fails for any reasons, only a warning is issued.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">offsets</span>
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
@@ -531,23 +531,23 @@
                     <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t save offsets because: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Couldn't save offsets because: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;number of frames in trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""number of frames in trajectory"""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="p">)</span>
 
 <div class="viewcode-block" id="XDRBaseReader._reopen">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader._reopen">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;reopen trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""reopen trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span>
         <span class="c1"># only restore in case we actually had offsets</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span></div>
@@ -556,13 +556,13 @@
 <div class="viewcode-block" id="XDRBaseReader._read_frame">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader._read_frame">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;read frame i&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""read frame i"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">timestep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;seek failed, recalculating offsets and retrying&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"seek failed, recalculating offsets and retrying"</span><span class="p">)</span>
             <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">calc_offsets</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -574,7 +574,7 @@
 <div class="viewcode-block" id="XDRBaseReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return writer for trajectory format&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return writer for trajectory format"""</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -583,12 +583,12 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">XDRBaseWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for libmdaxdr file formats xtc and trr&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for libmdaxdr file formats xtc and trr"""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str</span>
@@ -603,15 +603,15 @@
 <span class="sd">            else, the time for a frame is `dt` * frame</span>
 <span class="sd">        **kwargs : dict</span>
 <span class="sd">            General writer arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">dt</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;close trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""close trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

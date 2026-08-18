@@ -169,52 +169,52 @@
 <span class="c1"># Copyright (c) 2011 Zhuyi Xue</span>
 <span class="c1"># Released under the  Lesser GNU Public Licence, v2.1+</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Class definitions for the TPRParser</span>
 <span class="sd">===================================</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...guesser.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">Z2SYMB</span>
 
 <span class="n">TpxHeader</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s2">&quot;TpxHeader&quot;</span><span class="p">,</span>
+    <span class="s2">"TpxHeader"</span><span class="p">,</span>
     <span class="p">[</span>
-        <span class="s2">&quot;ver_str&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;precision&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;fver&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;fgen&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;file_tag&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;natoms&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ngtc&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;fep_state&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;lamb&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bIr&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bTop&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bX&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bV&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bF&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bBox&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sizeOfTprBody&quot;</span><span class="p">,</span>
+        <span class="s2">"ver_str"</span><span class="p">,</span>
+        <span class="s2">"precision"</span><span class="p">,</span>
+        <span class="s2">"fver"</span><span class="p">,</span>
+        <span class="s2">"fgen"</span><span class="p">,</span>
+        <span class="s2">"file_tag"</span><span class="p">,</span>
+        <span class="s2">"natoms"</span><span class="p">,</span>
+        <span class="s2">"ngtc"</span><span class="p">,</span>
+        <span class="s2">"fep_state"</span><span class="p">,</span>
+        <span class="s2">"lamb"</span><span class="p">,</span>
+        <span class="s2">"bIr"</span><span class="p">,</span>
+        <span class="s2">"bTop"</span><span class="p">,</span>
+        <span class="s2">"bX"</span><span class="p">,</span>
+        <span class="s2">"bV"</span><span class="p">,</span>
+        <span class="s2">"bF"</span><span class="p">,</span>
+        <span class="s2">"bBox"</span><span class="p">,</span>
+        <span class="s2">"sizeOfTprBody"</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">)</span>
-<span class="n">Box</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Box&quot;</span><span class="p">,</span> <span class="s2">&quot;size rel v&quot;</span><span class="p">)</span>
-<span class="n">Mtop</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Mtop&quot;</span><span class="p">,</span> <span class="s2">&quot;nmoltype moltypes nmolblock&quot;</span><span class="p">)</span>
-<span class="n">Params</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Params&quot;</span><span class="p">,</span> <span class="s2">&quot;atnr ntypes functype reppow fudgeQQ&quot;</span><span class="p">)</span>
+<span class="n">Box</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Box"</span><span class="p">,</span> <span class="s2">"size rel v"</span><span class="p">)</span>
+<span class="n">Mtop</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Mtop"</span><span class="p">,</span> <span class="s2">"nmoltype moltypes nmolblock"</span><span class="p">)</span>
+<span class="n">Params</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Params"</span><span class="p">,</span> <span class="s2">"atnr ntypes functype reppow fudgeQQ"</span><span class="p">)</span>
 <span class="n">Atom</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s2">&quot;Atom&quot;</span><span class="p">,</span>
-    <span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;mB&quot;</span><span class="p">,</span> <span class="s2">&quot;qB&quot;</span><span class="p">,</span> <span class="s2">&quot;tp&quot;</span><span class="p">,</span> <span class="s2">&quot;typeB&quot;</span><span class="p">,</span> <span class="s2">&quot;ptype&quot;</span><span class="p">,</span> <span class="s2">&quot;resind&quot;</span><span class="p">,</span> <span class="s2">&quot;atomnumber&quot;</span><span class="p">],</span>
+    <span class="s2">"Atom"</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">"m"</span><span class="p">,</span> <span class="s2">"q"</span><span class="p">,</span> <span class="s2">"mB"</span><span class="p">,</span> <span class="s2">"qB"</span><span class="p">,</span> <span class="s2">"tp"</span><span class="p">,</span> <span class="s2">"typeB"</span><span class="p">,</span> <span class="s2">"ptype"</span><span class="p">,</span> <span class="s2">"resind"</span><span class="p">,</span> <span class="s2">"atomnumber"</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">Atoms</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;atoms nr nres type typeB atomnames resnames&quot;</span><span class="p">)</span>
-<span class="n">Ilist</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Ilist&quot;</span><span class="p">,</span> <span class="s2">&quot;nr ik, iatoms&quot;</span><span class="p">)</span>
+<span class="n">Atoms</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Atoms"</span><span class="p">,</span> <span class="s2">"atoms nr nres type typeB atomnames resnames"</span><span class="p">)</span>
+<span class="n">Ilist</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Ilist"</span><span class="p">,</span> <span class="s2">"nr ik, iatoms"</span><span class="p">)</span>
 <span class="n">Molblock</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s2">&quot;Molblock&quot;</span><span class="p">,</span>
+    <span class="s2">"Molblock"</span><span class="p">,</span>
     <span class="p">[</span>
-        <span class="s2">&quot;molb_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;molb_nmol&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;molb_natoms_mol&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;molb_nposres_xA&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;molb_nposres_xB&quot;</span><span class="p">,</span>
+        <span class="s2">"molb_type"</span><span class="p">,</span>
+        <span class="s2">"molb_nmol"</span><span class="p">,</span>
+        <span class="s2">"molb_natoms_mol"</span><span class="p">,</span>
+        <span class="s2">"molb_nposres_xA"</span><span class="p">,</span>
+        <span class="s2">"molb_nposres_xB"</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">)</span>
 
@@ -244,9 +244,9 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Molecule: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;20s</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;#atoms: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;10d</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;#residues: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_residues</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;10d</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Molecule: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;20s</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"#atoms: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;10d</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"#residues: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_residues</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;10d</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="MoleculeKind.number_of_atoms">
@@ -320,26 +320,26 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">element_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        The symbol of the atom element.</span>
 
 <span class="sd">        The symbol corresponding to the atomic number. If the atomic number</span>
 <span class="sd">        is not recognized, which happens if a particle is not really an</span>
 <span class="sd">        atom (e.g a coarse-grained particle), an empty string is returned.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Z2SYMB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomic_number</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Z2SYMB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomic_number</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;&lt; AtomKind: &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">5s</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;resid </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;resname </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="si">:</span><span class="s2">4s</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;mass </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="si">:</span><span class="s2">8.4f</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;charge </span><span class="si">{</span><span class="mi">6</span><span class="si">:</span><span class="s2">12.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="s2">&quot;&gt;&quot;</span>
+            <span class="sa">f</span><span class="s2">"&lt; AtomKind: "</span>
+            <span class="sa">f</span><span class="s2">"id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"name </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">5s</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"resid </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"resname </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="si">:</span><span class="s2">4s</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"mass </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="si">:</span><span class="s2">8.4f</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"charge </span><span class="si">{</span><span class="mi">6</span><span class="si">:</span><span class="s2">12.3f</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="s2">"&gt;"</span>
         <span class="p">)</span></div>
 
 
@@ -348,7 +348,7 @@
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InteractionKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">long_name</span><span class="p">,</span> <span class="n">natoms</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;natoms: number of atoms involved in this type of interaction&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""natoms: number of atoms involved in this type of interaction"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="n">long_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">=</span> <span class="n">natoms</span>

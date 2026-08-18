@@ -162,7 +162,7 @@
 <p>Once you have the <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe()</span></code></a> object, you can
 select atoms (using a syntax very similar to <a class="reference external" href="https://www.charmm.org/charmm/documentation/by-version/c45b1/select.html">CHARMM’s atom selection
 syntax</a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid KALP&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid KALP"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> method of a
@@ -174,7 +174,7 @@ defined for AtomGroups on them. Selections always return an
 index in the topology (this is to ensure that there are not any duplicates,
 which can happen with complicated selections).</p>
 <p>One can group subselections using parentheses:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and not (name H* or type OW)&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid DMPC and not (name H* or type OW)"</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 3420 atoms&gt;</span>
 </pre></div>
 </div>
@@ -186,17 +186,17 @@ packages with the help of <a class="reference internal" href="selections_modules
 <p>By default, atoms are sorted by index in the output AtomGroup.
 For example, the below code will return the first, second, and
 sixth atom in <code class="docutils literal notranslate"><span class="pre">ag</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name N"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name N"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 <span class="go">False</span>
 </pre></div>
 </div>
 <p>You can turn off sorting behavior with the <code class="docutils literal notranslate"><span class="pre">sorted</span></code> keyword:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name N"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name N"</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
@@ -259,7 +259,7 @@ suitable <a class="reference internal" href="core/topologyattrs.html#MDAnalysis.
 already corresponds to <code class="docutils literal notranslate"><span class="pre">Universe.atoms</span></code>, it is returned unchanged.</p>
 <p>Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag_all</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag_all</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"all"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">[5, 10, 5, 9, 8, 11]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag_all</span><span class="o">.</span><span class="n">ix</span>
@@ -536,7 +536,7 @@ every time the trajectory frame changes (this happens lazily, only when the
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> object is accessed so that
 there is no redundant updating going on):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># A dynamic selection of corner atoms:</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">ag_updating</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ag_updating</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5"</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ag_updating</span>
 <span class="o">&lt;</span><span class="n">UpdatingAtomGroup</span> <span class="k">with</span> <span class="mi">9</span> <span class="n">atoms</span><span class="o">&gt;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
@@ -551,7 +551,7 @@ make updating selections depend on
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a>, instances.
 Likewise, making an updating selection from an already updating group will
 cause later updates to also reflect the updating of the base group:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chained_ag_updating</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1:1000&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chained_ag_updating</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resid 1:1000"</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">chained_ag_updating</span>
 <span class="go">&lt;UpdatingAtomGroup with 3 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
@@ -563,7 +563,7 @@ cause later updates to also reflect the updating of the base group:</p>
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> will return a static
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, which will no longer update
 across frames:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static_ag</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1:1000&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static_ag</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resid 1:1000"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">static_ag</span>
 <span class="go">&lt;UpdatingAtomGroup with 3 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
@@ -583,26 +583,26 @@ then one has to concatenate multiple AtomGroups, which does not sort
 them.</p>
 <p>The most straightforward way to concatentate two AtomGroups is by using the
 <code class="docutils literal notranslate"><span class="pre">+</span></code> operator:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid DMPC and resid 3 and name P"</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid DMPC and resid 2 and name P"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">))</span>
-<span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
-<span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
+<span class="go">[&lt; Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'&gt;,</span>
+<span class="go">&lt; Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'&gt;]</span>
 </pre></div>
 </div>
 <p>A shortcut is to provide <em>two or more</em> selections to
 <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>, which then
 does the concatenation automatically:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s2">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)))</span>
-<span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
-<span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid DMPC and resid 3 and name P"</span><span class="p">,</span> <span class="s2">"segid DMPC and resid 2 and name P"</span><span class="p">)))</span>
+<span class="go">[&lt; Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'&gt;,</span>
+<span class="go">&lt; Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'&gt;]</span>
 </pre></div>
 </div>
 <p>Just for comparison to show that a single selection string does not
 work as one might expect:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># WRONG!</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and (resid 3 or resid 2) and name P&quot;</span><span class="p">)))</span>
-<span class="p">[</span><span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">452</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;P&#39;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">&#39;180&#39;</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">&#39;DMPC&#39;</span><span class="p">,</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;DMPC&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">570</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;P&#39;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">&#39;180&#39;</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">&#39;DMPC&#39;</span><span class="p">,</span> <span class="mi">3</span> <span class="ow">and</span> <span class="s1">&#39;DMPC&#39;</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"segid DMPC and (resid 3 or resid 2) and name P"</span><span class="p">)))</span>
+<span class="p">[</span><span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">452</span><span class="p">:</span> <span class="n">name</span> <span class="s1">'P'</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">'180'</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">'DMPC'</span><span class="p">,</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">'DMPC'</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">570</span><span class="p">:</span> <span class="n">name</span> <span class="s1">'P'</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">'180'</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">'DMPC'</span><span class="p">,</span> <span class="mi">3</span> <span class="ow">and</span> <span class="s1">'DMPC'</span><span class="o">&gt;</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>

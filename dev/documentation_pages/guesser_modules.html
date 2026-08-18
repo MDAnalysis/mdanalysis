@@ -178,9 +178,9 @@ Please see the <a class="reference internal" href="guesser_modules/default_guess
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">))</span>  <span class="c1"># returns False</span>
-<span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="c1"># print [&#39;N&#39; &#39;H&#39; &#39;H&#39; ... &#39;NA&#39; &#39;NA&#39; &#39;NA&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">'elements'</span><span class="p">))</span>  <span class="c1"># returns False</span>
+<span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">'elements'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="c1"># print ['N' 'H' 'H' ... 'NA' 'NA' 'NA']</span>
 </pre></div>
 </div>
 <p>In the above example, we passed <code class="docutils literal notranslate"><span class="pre">elements</span></code> as the attribute we want to guess
@@ -191,9 +191,9 @@ To override all the attribute values, you can pass the attribute to the <code cl
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRM12</span>
 
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM12</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">())</span> <span class="c1"># types [&#39;HW&#39;, &#39;OW&#39;, ..]</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM12</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">'default'</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">())</span> <span class="c1"># types ['HW', 'OW', ..]</span>
 
-<span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">force_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">])</span> <span class="c1"># types [&#39;H&#39;, &#39;O&#39;, ..]</span>
+<span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">force_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">'types'</span><span class="p">])</span> <span class="c1"># types ['H', 'O', ..]</span>
 </pre></div>
 </div>
 <div class="admonition note">

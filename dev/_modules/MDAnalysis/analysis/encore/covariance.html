@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Covariance calculation --- :mod:`encore.covariance`</span>
 <span class="sd">=====================================================================</span>
 
@@ -179,14 +179,14 @@
 <span class="sd">   MDAKit `mdaencore &lt;https://mdanalysis.org/mdaencore/&gt;`_ and will be removed</span>
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="ml_covariance_estimator">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.ml_covariance_estimator">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ml_covariance_estimator</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Standard maximum likelihood estimator of the covariance matrix.</span>
 
 <span class="sd">    Parameters</span>
@@ -204,7 +204,7 @@
 <span class="sd">    cov_mat : numpy.array</span>
 <span class="sd">        Estimate of  covariance matrix</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">reference_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -230,7 +230,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">shrinkage_covariance_estimator</span><span class="p">(</span>
     <span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shrinkage_parameter</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Shrinkage estimator of the covariance matrix using the method described in</span>
 
 <span class="sd">    Improved Estimation of the Covariance Matrix of Stock Returns With an</span>
@@ -258,7 +258,7 @@
 
 <span class="sd">    cov_mat : nump.array</span>
 <span class="sd">        Covariance matrix</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">coordinates</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -266,7 +266,7 @@
 
     <span class="n">mean_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># Use provided coordinates as &quot;mean&quot; if provided</span>
+    <span class="c1"># Use provided coordinates as "mean" if provided</span>
     <span class="k">if</span> <span class="n">reference_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">mean_x</span> <span class="o">=</span> <span class="n">reference_coordinates</span>
 
@@ -293,7 +293,7 @@
     <span class="k">if</span> <span class="n">shrinkage_parameter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="c1"># Frobenius norm</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sample</span> <span class="o">-</span> <span class="n">prior</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s2">&quot;fro&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sample</span> <span class="o">-</span> <span class="n">prior</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s2">"fro"</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 
         <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
@@ -337,12 +337,12 @@
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.covariance_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">covariance_matrix</span><span class="p">(</span>
     <span class="n">ensemble</span><span class="p">,</span>
-    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">"name CA"</span><span class="p">,</span>
     <span class="n">estimator</span><span class="o">=</span><span class="n">shrinkage_covariance_estimator</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"mass"</span><span class="p">,</span>
     <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates (optionally mass weighted) covariance matrix</span>
 
 <span class="sd">    Parameters</span>
@@ -353,11 +353,11 @@
 <span class="sd">        Atom selection string in the MDAnalysis format.</span>
 <span class="sd">    estimator : function (optional)</span>
 <span class="sd">        Function that estimates the covariance matrix. It requires at least</span>
-<span class="sd">        a &quot;coordinates&quot; numpy array (of shape (N,M,3), where N is the number</span>
+<span class="sd">        a "coordinates" numpy array (of shape (N,M,3), where N is the number</span>
 <span class="sd">        of frames and M the number of atoms). See ml_covariance_estimator and</span>
 <span class="sd">        shrinkage_covariance_estimator for reference.</span>
 <span class="sd">    weights : str/array_like (optional)</span>
-<span class="sd">        specify weights. If ``&#39;mass&#39;`` then chose masses of ensemble atoms, if ``None`` chose uniform weights</span>
+<span class="sd">        specify weights. If ``'mass'`` then chose masses of ensemble atoms, if ``None`` chose uniform weights</span>
 <span class="sd">    reference : MDAnalysis.Universe object (optional)</span>
 <span class="sd">        Use the distances to a specific reference structure rather than the</span>
 <span class="sd">        distance to the mean.</span>
@@ -367,10 +367,10 @@
 <span class="sd">    cov_mat : numpy.array</span>
 <span class="sd">        Covariance matrix</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Extract coordinates from ensemble</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span>
     <span class="p">)</span>
 
     <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
@@ -393,7 +393,7 @@
         <span class="c1"># Calculate mass-weighted covariance matrix</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
-            <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span>
+            <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">"mass"</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
                 <span class="n">weights</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span>
@@ -406,8 +406,8 @@
                 <span class="n">req_len</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span>
             <span class="k">if</span> <span class="n">req_len</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;number of weights is unequal to number of &quot;</span>
-                    <span class="s2">&quot;atoms in ensemble&quot;</span>
+                    <span class="s2">"number of weights is unequal to number of "</span>
+                    <span class="s2">"atoms in ensemble"</span>
                 <span class="p">)</span>
 
         <span class="c1"># broadcast to a (len(weights), 3) array</span>

@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;DL Poly format Topology Readers --- :mod:`MDAnalysis.topology.DLPolyParser`</span>
+<span class="sd">"""DL Poly format Topology Readers --- :mod:`MDAnalysis.topology.DLPolyParser`</span>
 <span class="sd">==============================================================================</span>
 
 <span class="sd">Read DL Poly_ format topology files</span>
@@ -189,7 +189,7 @@
 <span class="sd">.. autoclass:: HistoryParser</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span>
@@ -207,15 +207,15 @@
 <div class="viewcode-block" id="ConfigParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/DLPolyParser.html#MDAnalysis.topology.DLPolyParser.ConfigParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DL_Poly CONFIG file parser</span>
+<span class="w">    </span><span class="sd">"""DL_Poly CONFIG file parser</span>
 
 <span class="sd">    .. versionadded:: 0.10.1</span>
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">       Removed type and mass guessing (attributes guessing takes place now</span>
 <span class="sd">       through universe.guess_TopologyAttrs() API).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CONFIG&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"CONFIG"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
@@ -263,7 +263,7 @@
             <span class="n">Atomids</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span>
             <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
             <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
+            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
         <span class="p">]</span>
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 
@@ -274,12 +274,12 @@
 <div class="viewcode-block" id="HistoryParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/DLPolyParser.html#MDAnalysis.topology.DLPolyParser.HistoryParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HistoryParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DL_Poly History file parser</span>
+<span class="w">    </span><span class="sd">"""DL_Poly History file parser</span>
 
 <span class="sd">    .. versionadded:: 0.10.1</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;HISTORY&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"HISTORY"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
@@ -292,10 +292,10 @@
             <span class="n">line</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">5</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;End of file reached when reading HISTORY.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">"End of file reached when reading HISTORY."</span><span class="p">)</span>
 
-            <span class="k">while</span> <span class="n">line</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;timestep&quot;</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">line</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"timestep"</span><span class="p">):</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -328,7 +328,7 @@
             <span class="n">Atomids</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span>
             <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
             <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
+            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
         <span class="p">]</span>
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 

@@ -213,26 +213,26 @@ in MDAnalysis.</p>
 <span class="c1"># crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
 <span class="c1"># OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
 <span class="c1"># problem before using this for real work.</span>
-<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">&quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
-<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">&quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">"(resname ARG LYS) and (name NH* NZ)"</span>
+<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">"(resname ASP GLU) and (name OE* OD*)"</span>
 <span class="c1"># reference groups (first frame of the trajectory, but you could also use a</span>
 <span class="c1"># separate PDB, eg crystal structure)</span>
 <span class="n">acidic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">)</span>
 <span class="n">basic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_basic</span><span class="p">)</span>
-<span class="c1"># set up analysis of native contacts (&quot;salt bridges&quot;); salt bridges have a</span>
+<span class="c1"># set up analysis of native contacts ("salt bridges"); salt bridges have a</span>
 <span class="c1"># distance &lt;6 A</span>
 <span class="n">ca1</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
                         <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span>
-<span class="c1"># iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
+<span class="c1"># iterate through trajectory and perform analysis of "native contacts" Q</span>
 <span class="n">ca1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="c1"># print number of averave contacts</span>
 <span class="n">average_contacts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;average contacts = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'average contacts = </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
 <span class="c1"># plot time series q(t)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;fraction of native contacts&#39;</span><span class="p">,</span>
-       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Native Contacts, average = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">'frame'</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">'fraction of native contacts'</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s1">'Native Contacts, average = </span><span class="si">{:.2f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -256,17 +256,17 @@ conformation and plot the trajectory projected on q1-q2
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">contacts</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">q1q2</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">q1q2</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">'name CA'</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">q1q2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figaspect</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q1&#39;</span><span class="p">)</span>
+           <span class="n">label</span><span class="o">=</span><span class="s1">'q1'</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span>
-           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q2&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+           <span class="n">label</span><span class="o">=</span><span class="s1">'q2'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-           <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;.-&#39;</span><span class="p">)</span>
+           <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">'.-'</span><span class="p">)</span>
 <span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -293,8 +293,8 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
 <span class="c1"># OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
 <span class="c1"># problem before using this for real work.</span>
-<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">&quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
-<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">&quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">"(resname ARG LYS) and (name NH* NZ)"</span>
+<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">"(resname ASP GLU) and (name OE* OD*)"</span>
 
 <span class="c1"># reference groups (first frame of the trajectory, but you could also use a</span>
 <span class="c1"># separate PDB, eg crystal structure)</span>
@@ -303,7 +303,7 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 
 <span class="n">nc</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
                        <span class="n">method</span><span class="o">=</span><span class="n">is_any_closer</span><span class="p">,</span>
-                       <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dist&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">})</span>
+                       <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">'dist'</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">})</span>
 <span class="n">nc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="n">bound</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
@@ -311,8 +311,8 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">bound</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;is Bound&#39;</span><span class="p">,</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">bound</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">'frame'</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">'is Bound'</span><span class="p">,</span>
        <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
 
 <span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>

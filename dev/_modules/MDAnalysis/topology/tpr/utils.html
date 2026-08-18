@@ -169,7 +169,7 @@
 <span class="c1"># Copyright (c) 2011 Zhuyi Xue</span>
 <span class="c1"># Released under the  Lesser GNU Public Licence, v2.1+</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Utilities for the TPRParser</span>
 <span class="sd">===========================</span>
 
@@ -188,7 +188,7 @@
 <span class="sd">Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.</span>
 
 <span class="sd">The module also contains the :func:`do_inputrec` to read the TPR header with.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mda_xdrlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">xdrlib</span>
@@ -221,9 +221,9 @@
 <div class="viewcode-block" id="TPXUnpacker">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TPXUnpacker</span><span class="p">(</span><span class="n">xdrlib</span><span class="o">.</span><span class="n">Unpacker</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extend the standard XDR unpacker for the specificity of TPX files.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -231,7 +231,7 @@
 
     <span class="c1"># The parent class uses a dunder attribute to store the</span>
     <span class="c1"># cursor position. This property makes it easier to manipulate</span>
-    <span class="c1"># this attribute that is otherwise &quot;protected&quot;.</span>
+    <span class="c1"># this attribute that is otherwise "protected".</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
@@ -251,13 +251,13 @@
 <div class="viewcode-block" id="TPXUnpacker.unpack_int64">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_int64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;&gt;q&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">"&gt;q"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TPXUnpacker.unpack_uint64">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_uint64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;&gt;Q&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">"&gt;Q"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TPXUnpacker.unpack_ushort">
@@ -271,13 +271,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TPX files prior to gromacs 2020 (tpx version &lt; 119) use unsigned ints</span>
         <span class="c1"># (4 bytes) instead of unsigned chars.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;&gt;I&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">"&gt;I"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TPXUnpacker.do_string">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Emulate gmx_fio_do_string</span>
 
 <span class="sd">        gmx_fio_do_string reads a string from a XDR file. On the contrary to the</span>
@@ -285,7 +285,7 @@
 <span class="sd">        integer before reading the actual string.</span>
 
 <span class="sd">        See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_string</span><span class="p">()</span></div>
 </div>
@@ -295,13 +295,13 @@
 <div class="viewcode-block" id="TPXUnpacker2020">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TPXUnpacker2020</span><span class="p">(</span><span class="n">TPXUnpacker</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Unpacker for TPX files from and later than gromacs 2020.</span>
 
 <span class="sd">    A new implementation of the serializer (InMemorySerializer), introduced in</span>
 <span class="sd">    gromacs 2020, changes le meaning of some types in the file body (the header</span>
 <span class="sd">    keep using the previous implementation of the serializer).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="TPXUnpacker2020.from_unpacker">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">[docs]</a>
@@ -309,13 +309,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">from_unpacker</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">unpacker</span><span class="p">):</span>
         <span class="n">new_unpacker</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">unpacker</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">())</span>
         <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">unpacker</span><span class="p">,</span> <span class="s2">&quot;unpack_real&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">unpacker</span><span class="p">,</span> <span class="s2">"unpack_real"</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">==</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_float</span><span class="p">:</span>
                 <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_float</span>
             <span class="k">elif</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">==</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_double</span><span class="p">:</span>
                 <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_double</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized precision&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Unrecognized precision"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_unpacker</span></div>
 
 
@@ -323,7 +323,7 @@
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_fstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Size of fstring cannot be negative.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Size of fstring cannot be negative."</span><span class="p">)</span>
         <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
         <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">n</span>
         <span class="k">if</span> <span class="n">end_position</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">):</span>
@@ -337,7 +337,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># The InMemorySerializer implements ushort according to the XDR standard</span>
         <span class="c1"># on the contrary to the IO serializer.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;&gt;H&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"&gt;H"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TPXUnpacker2020.unpack_uchar">
@@ -345,15 +345,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># The InMemorySerializer implements uchar according to the XDR standard</span>
         <span class="c1"># on the contrary to the IO serializer.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&gt;B&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"&gt;B"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TPXUnpacker2020.do_string">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Emulate gmx_fio_do_string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint64</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_fstring</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
 </div>
@@ -363,7 +363,7 @@
 <div class="viewcode-block" id="ndo_int">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_int">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_real in gromacs&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""mimic of gmx_fio_ndo_real in gromacs"""</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
@@ -371,7 +371,7 @@
 <div class="viewcode-block" id="ndo_real">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_real">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_real in gromacs&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""mimic of gmx_fio_ndo_real in gromacs"""</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
@@ -386,7 +386,7 @@
 <div class="viewcode-block" id="ndo_rvec">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_rvec">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""mimic of gmx_fio_ndo_rvec in gromacs"""</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="p">]</span></div>
@@ -396,7 +396,7 @@
 <div class="viewcode-block" id="ndo_ivec">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_ivec">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ndo_ivec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""mimic of gmx_fio_ndo_rvec in gromacs"""</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
@@ -406,7 +406,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">fileVersion_err</span><span class="p">(</span><span class="n">fver</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">fver</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">setting</span><span class="o">.</span><span class="n">SUPPORTED_VERSIONS</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Your tpx version is </span><span class="si">{</span><span class="n">fver</span><span class="si">}</span><span class="s2">, which this parser does not support, yet &quot;</span>
+            <span class="sa">f</span><span class="s2">"Your tpx version is </span><span class="si">{</span><span class="n">fver</span><span class="si">}</span><span class="s2">, which this parser does not support, yet "</span>
         <span class="p">)</span></div>
 
 
@@ -414,24 +414,24 @@
 <div class="viewcode-block" id="define_unpack_real">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.define_unpack_real">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">define_unpack_real</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define an unpack_real method of data based on the float precision used&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Define an unpack_real method of data based on the float precision used"""</span>
     <span class="k">if</span> <span class="n">prec</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_float</span>
     <span class="k">elif</span> <span class="n">prec</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_double</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported precision: </span><span class="si">{</span><span class="n">prec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unsupported precision: </span><span class="si">{</span><span class="n">prec</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="read_tpxheader">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.read_tpxheader">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;this function is now compatible with do_tpxheader in tpxio.cpp&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""this function is now compatible with do_tpxheader in tpxio.cpp"""</span>
     <span class="c1"># Last compatibility check with gromacs-2016</span>
     <span class="n">ver_str</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>  <span class="c1"># version string e.g. VERSION 4.0.5</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ver_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;VERSION&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input does not look like a TPR file.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ver_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">"VERSION"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Input does not look like a TPR file."</span><span class="p">)</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># e.g. 4</span>
     <span class="n">define_unpack_real</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     <span class="n">fileVersion</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># version of tpx file</span>
@@ -441,14 +441,14 @@
     <span class="c1"># the tag was, mistakenly, placed before the generation.</span>
     <span class="c1"># These versions are development versions between the 4.5 and 4.6 series.</span>
     <span class="k">if</span> <span class="mi">77</span> <span class="o">&lt;=</span> <span class="n">fileVersion</span> <span class="o">&lt;=</span> <span class="mi">79</span><span class="p">:</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># the value is 8, but haven&#39;t found the</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># the value is 8, but haven't found the</span>
         <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>
 
     <span class="n">fileGeneration</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">26</span> <span class="k">else</span> <span class="mi">0</span>
     <span class="p">)</span>  <span class="c1"># generation of tpx file, e.g. 17</span>
 
-    <span class="c1"># Versions before 77 don&#39;t have the tag, set it to TPX_TAG_RELEASE file_tag</span>
+    <span class="c1"># Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag</span>
     <span class="c1"># file_tag is used for comparing with tpx_tag. Only tpr files with a</span>
     <span class="c1"># tpx_tag from a lower or the same version of gromacs code can be parsed by</span>
     <span class="c1"># the tpxio.c</span>
@@ -469,7 +469,7 @@
 
     <span class="n">fep_state</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">79</span> <span class="k">else</span> <span class="mi">0</span>
 
-    <span class="c1"># actually, it&#39;s lambda, not sure what is it. us lamb because lambda is a</span>
+    <span class="c1"># actually, it's lambda, not sure what is it. us lamb because lambda is a</span>
     <span class="c1"># keyword in python</span>
     <span class="n">lamb</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
     <span class="n">bIr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># has input record or not</span>
@@ -560,10 +560,10 @@
         <span class="n">mb</span> <span class="o">=</span> <span class="n">do_molblock</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># segment is made to correspond to the molblock as in gromacs, the</span>
         <span class="c1"># naming is kind of arbitrary</span>
-        <span class="n">molblock</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-        <span class="n">segid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;seg_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">molblock</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">molblock</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+        <span class="n">segid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"seg_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">molblock</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">chainID</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">molblock</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span> <span class="k">if</span> <span class="n">molblock</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Protein_chain_&quot;</span> <span class="k">else</span> <span class="n">molblock</span>
+            <span class="n">molblock</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span> <span class="k">if</span> <span class="n">molblock</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Protein_chain_"</span> <span class="k">else</span> <span class="n">molblock</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_nmol</span><span class="p">):</span>
             <span class="n">mt</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span>  <span class="c1"># mt: molecule type</span>
@@ -654,7 +654,7 @@
         <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
 
     <span class="c1"># NOTE: the tpr striding code below serves the</span>
-    <span class="c1"># purpose of placing us in a suitable &quot;seek&quot; position</span>
+    <span class="c1"># purpose of placing us in a suitable "seek" position</span>
     <span class="c1"># in the binary file such that we are well placed</span>
     <span class="c1"># for reading coords and velocities if they are present</span>
     <span class="c1"># the order of operations is based on an analysis of</span>
@@ -1037,7 +1037,7 @@
             <span class="c1"># supported from GROMACS 2025.0</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown functype: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown functype: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">return</span></div>
 
 
@@ -1081,44 +1081,44 @@
             <span class="c1"># the following if..elif..else statement needs to be updated as new</span>
             <span class="c1"># type of interactions become interested</span>
             <span class="k">if</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s2">&quot;BONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;G96BONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;MORSE&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CUBICBONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CONNBONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;HARMONIC&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;FENEBONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;RESTRAINTPOT&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CONSTR&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CONSTRNC&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;TABBONDS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;TABBONDSNC&quot;</span><span class="p">,</span>
+                <span class="s2">"BONDS"</span><span class="p">,</span>
+                <span class="s2">"G96BONDS"</span><span class="p">,</span>
+                <span class="s2">"MORSE"</span><span class="p">,</span>
+                <span class="s2">"CUBICBONDS"</span><span class="p">,</span>
+                <span class="s2">"CONNBONDS"</span><span class="p">,</span>
+                <span class="s2">"HARMONIC"</span><span class="p">,</span>
+                <span class="s2">"FENEBONDS"</span><span class="p">,</span>
+                <span class="s2">"RESTRAINTPOT"</span><span class="p">,</span>
+                <span class="s2">"CONSTR"</span><span class="p">,</span>
+                <span class="s2">"CONSTRNC"</span><span class="p">,</span>
+                <span class="s2">"TABBONDS"</span><span class="p">,</span>
+                <span class="s2">"TABBONDSNC"</span><span class="p">,</span>
             <span class="p">]:</span>
                 <span class="n">bonds</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s2">&quot;ANGLES&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;G96ANGLES&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CROSS_BOND_BOND&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CROSS_BOND_ANGLE&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;UREY_BRADLEY&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;QANGLES&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;RESTRANGLES&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;TABANGLES&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;LINEAR_ANGLES&quot;</span><span class="p">,</span>
+                <span class="s2">"ANGLES"</span><span class="p">,</span>
+                <span class="s2">"G96ANGLES"</span><span class="p">,</span>
+                <span class="s2">"CROSS_BOND_BOND"</span><span class="p">,</span>
+                <span class="s2">"CROSS_BOND_ANGLE"</span><span class="p">,</span>
+                <span class="s2">"UREY_BRADLEY"</span><span class="p">,</span>
+                <span class="s2">"QANGLES"</span><span class="p">,</span>
+                <span class="s2">"RESTRANGLES"</span><span class="p">,</span>
+                <span class="s2">"TABANGLES"</span><span class="p">,</span>
+                <span class="s2">"LINEAR_ANGLES"</span><span class="p">,</span>
             <span class="p">]:</span>
                 <span class="n">angles</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s2">&quot;PDIHS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;RBDIHS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;RESTRDIHS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CBTDIHS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;FOURDIHS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;TABDIHS&quot;</span><span class="p">,</span>
+                <span class="s2">"PDIHS"</span><span class="p">,</span>
+                <span class="s2">"RBDIHS"</span><span class="p">,</span>
+                <span class="s2">"RESTRDIHS"</span><span class="p">,</span>
+                <span class="s2">"CBTDIHS"</span><span class="p">,</span>
+                <span class="s2">"FOURDIHS"</span><span class="p">,</span>
+                <span class="s2">"TABDIHS"</span><span class="p">,</span>
             <span class="p">]:</span>
                 <span class="n">dihs</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;IDIHS&quot;</span><span class="p">,</span> <span class="s2">&quot;PIDIHS&quot;</span><span class="p">]:</span>
+            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"IDIHS"</span><span class="p">,</span> <span class="s2">"PIDIHS"</span><span class="p">]:</span>
                 <span class="n">impr</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SETTLE&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"SETTLE"</span><span class="p">:</span>
                 <span class="c1"># SETTLE interactions are optimized triangular constraints for</span>
                 <span class="c1"># water molecules. They should be counted as a pair of bonds</span>
                 <span class="c1"># between the oxygen and the hydrogens. In older versions of</span>

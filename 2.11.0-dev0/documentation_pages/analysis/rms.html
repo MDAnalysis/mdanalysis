@@ -239,10 +239,10 @@ using backbone atoms</p></li>
 <span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span>
 
 <span class="n">R</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span>
-           <span class="n">select</span><span class="o">=</span><span class="s2">&quot;backbone&quot;</span><span class="p">,</span>             <span class="c1"># superimpose on whole backbone of the whole protein</span>
-           <span class="n">groupselections</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;backbone and (resid 1-29 or resid 60-121 or resid 160-214)&quot;</span><span class="p">,</span>   <span class="c1"># CORE</span>
-                            <span class="s2">&quot;backbone and resid 122-159&quot;</span><span class="p">,</span>                                   <span class="c1"># LID</span>
-                            <span class="s2">&quot;backbone and resid 30-59&quot;</span><span class="p">])</span>                                    <span class="c1"># NMP</span>
+           <span class="n">select</span><span class="o">=</span><span class="s2">"backbone"</span><span class="p">,</span>             <span class="c1"># superimpose on whole backbone of the whole protein</span>
+           <span class="n">groupselections</span><span class="o">=</span><span class="p">[</span><span class="s2">"backbone and (resid 1-29 or resid 60-121 or resid 160-214)"</span><span class="p">,</span>   <span class="c1"># CORE</span>
+                            <span class="s2">"backbone and resid 122-159"</span><span class="p">,</span>                                   <span class="c1"># LID</span>
+                            <span class="s2">"backbone and resid 30-59"</span><span class="p">])</span>                                    <span class="c1"># NMP</span>
 <span class="n">R</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -250,14 +250,14 @@ using backbone atoms</p></li>
 <span class="n">time</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CORE&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;LID&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;b--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NMP&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;time (ps)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;RMSD ($\AA$)&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">'k-'</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">'k--'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"CORE"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s1">'r--'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"LID"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="s1">'b--'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"NMP"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"best"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"time (ps)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"RMSD ($\AA$)"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"rmsd_all_CORE_LID_NMP_ref1AKE.pdf"</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="align-default" id="id7">
@@ -323,7 +323,7 @@ the number of coordinates.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span><span class="w"> </span><span class="kn">import</span> <span class="n">rmsd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'backbone'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># coordinates of first frame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># forward to last frame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># coordinates of last frame</span>
@@ -699,14 +699,14 @@ protein):</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
 
 <span class="c1"># 1) the current trajectory contains a protein split across</span>
 <span class="c1">#    periodic boundaries, so we first make the protein whole and</span>
 <span class="c1">#    center it in the box using on-the-fly transformations</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis.transformations</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">trans</span>
 
-<span class="n">not_protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not protein&#39;</span><span class="p">)</span>
+<span class="n">not_protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'not protein'</span><span class="p">)</span>
 <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">trans</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">protein</span><span class="p">),</span>
               <span class="n">trans</span><span class="o">.</span><span class="n">center_in_box</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
               <span class="n">trans</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">not_protein</span><span class="p">)]</span>
@@ -714,15 +714,15 @@ protein):</p>
 
 <span class="c1"># 2) fit to the initial frame to get a better average structure</span>
 <span class="c1">#    (the trajectory is changed in memory)</span>
-<span class="n">prealigner</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span>
+<span class="n">prealigner</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">"protein and name CA"</span><span class="p">,</span>
                              <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="c1"># 3) reference = average structure</span>
 <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">asel</span><span class="o">=</span><span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># make a reference structure (need to reshape into a 1-frame</span>
-<span class="c1"># &quot;trajectory&quot;)</span>
+<span class="c1"># "trajectory")</span>
 <span class="n">reference</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">ref_coordinates</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:],</span>
-                                        <span class="n">order</span><span class="o">=</span><span class="s2">&quot;afc&quot;</span><span class="p">)</span>
+                                        <span class="n">order</span><span class="o">=</span><span class="s2">"afc"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We created a new universe <code class="docutils literal notranslate"><span class="pre">reference</span></code> that contains a single frame
@@ -730,7 +730,7 @@ with the averaged coordinates of the protein.  Now we need to fit the
 whole trajectory to the reference by minimizing the RMSD. We use
 <a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aligner</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span>
-                          <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span>
+                          <span class="n">select</span><span class="o">=</span><span class="s2">"protein and name CA"</span><span class="p">,</span>
                           <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -739,7 +739,7 @@ whole trajectory to the reference by minimizing the RMSD. We use
 the RMSF:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span><span class="w"> </span><span class="kn">import</span> <span class="n">RMSF</span>
 
-<span class="n">calphas</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
+<span class="n">calphas</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"name CA"</span><span class="p">)</span>
 <span class="n">rmsfer</span> <span class="o">=</span> <span class="n">RMSF</span><span class="p">(</span><span class="n">calphas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>

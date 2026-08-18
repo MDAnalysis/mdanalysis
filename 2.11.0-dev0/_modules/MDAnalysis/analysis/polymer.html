@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`</span>
 <span class="sd">=======================================================</span>
 
@@ -174,7 +174,7 @@
 <span class="sd">:Copyright: Lesser GNU Public License v2.1+</span>
 
 <span class="sd">This module contains various commonly used tools in analysing polymers.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -190,9 +190,9 @@
 
 <div class="viewcode-block" id="sort_backbone">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.sort_backbone">[docs]</a>
-<span class="nd">@requires</span><span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s2">"bonds"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">sort_backbone</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rearrange a linear AtomGroup into backbone order</span>
+<span class="w">    </span><span class="sd">"""Rearrange a linear AtomGroup into backbone order</span>
 
 <span class="sd">    Requires that the backbone has bond information,</span>
 <span class="sd">    and that only backbone atoms are provided (ie no side</span>
@@ -211,7 +211,7 @@
 
 
 <span class="sd">    .. versionadded:: 0.20.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">backbone</span><span class="p">]</span>
     <span class="n">deg1_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">backbone</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">wrong_atoms</span> <span class="o">=</span> <span class="p">[</span>
@@ -220,18 +220,18 @@
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Backbone contains atoms with connectivity degree not equal to 1 or 2. &quot;</span>
-            <span class="s2">&quot;This suggests branches or isolated atoms. Problematic atoms: </span><span class="si">{}</span><span class="s2">.&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">wrong_atoms</span><span class="p">))</span>
+            <span class="s2">"Backbone contains atoms with connectivity degree not equal to 1 or 2. "</span>
+            <span class="s2">"This suggests branches or isolated atoms. Problematic atoms: </span><span class="si">{}</span><span class="s2">."</span>
+            <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">wrong_atoms</span><span class="p">))</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deg1_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Backbone connectivity invalid: &quot;</span>
-            <span class="s2">&quot;expected exactly 2 atoms with connectivity degree 1 (caps). &quot;</span>
-            <span class="s2">&quot;Cyclical structures are not supported. &quot;</span>
-            <span class="s2">&quot;Atoms with connectivity degree 1 found: </span><span class="si">{}</span><span class="s2">.&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">deg1_atoms</span><span class="p">))</span>
+            <span class="s2">"Backbone connectivity invalid: "</span>
+            <span class="s2">"expected exactly 2 atoms with connectivity degree 1 (caps). "</span>
+            <span class="s2">"Cyclical structures are not supported. "</span>
+            <span class="s2">"Atoms with connectivity degree 1 found: </span><span class="si">{}</span><span class="s2">."</span>
+            <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">deg1_atoms</span><span class="p">))</span>
         <span class="p">)</span>
 
     <span class="c1"># arbitrarily choose one of the capping atoms to be the startpoint</span>
@@ -255,7 +255,7 @@
 <div class="viewcode-block" id="PersistenceLength">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PersistenceLength</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the persistence length for polymer chains</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate the persistence length for polymer chains</span>
 
 <span class="sd">    The persistence length is the length at which two points on the polymer</span>
 <span class="sd">    chain become decorrelated.  This is determined by first measuring the</span>
@@ -355,7 +355,7 @@
 <span class="sd">        chains = u.atoms.fragments</span>
 
 <span class="sd">        # select only the backbone atoms for each chain</span>
-<span class="sd">        backbones = [chain.select_atoms(&#39;not name O* H*&#39;) for chain in chains]</span>
+<span class="sd">        backbones = [chain.select_atoms('not name O* H*') for chain in chains]</span>
 
 <span class="sd">        # sort the chains, removing any non-backbone atoms</span>
 <span class="sd">        sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]</span>
@@ -364,7 +364,7 @@
 <span class="sd">        # Run the analysis, this will average over all polymer chains</span>
 <span class="sd">        # and all timesteps in trajectory</span>
 <span class="sd">        persistence_length = persistence_length.run()</span>
-<span class="sd">        print(f&#39;The persistence length is: {persistence_length.results.lp}&#39;)</span>
+<span class="sd">        print(f'The persistence length is: {persistence_length.results.lp}')</span>
 
 <span class="sd">        # always check the visualisation of this:</span>
 <span class="sd">        persistence_length.plot()</span>
@@ -382,7 +382,7 @@
 <span class="sd">    .. versionchanged:: 2.10.0</span>
 <span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
 <span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -390,7 +390,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"multiprocessing"</span><span class="p">,</span> <span class="s2">"dask"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -403,7 +403,7 @@
         <span class="n">lens</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">]</span>
         <span class="n">chainlength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">l</span> <span class="o">==</span> <span class="n">chainlength</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lens</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all AtomGroups were the same size&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Not all AtomGroups were the same size"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">=</span> <span class="n">chainlength</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -412,8 +412,8 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># could optimise this by writing a &quot;self dot array&quot;</span>
-        <span class="c1"># we&#39;re only using the upper triangle of np.inner</span>
+        <span class="c1"># could optimise this by writing a "self dot array"</span>
+        <span class="c1"># we're only using the upper triangle of np.inner</span>
         <span class="c1"># function would accept a bunch of coordinates and spit out the</span>
         <span class="c1"># decorrel for that</span>
 
@@ -432,16 +432,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;raw_bond_autocorr&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
+                <span class="s2">"raw_bond_autocorr"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">lb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `lb` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+            <span class="s2">"The `lb` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.variance` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span>
@@ -449,9 +449,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">lp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `lp` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+            <span class="s2">"The `lp` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.variance` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span>
@@ -459,9 +459,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `fit` attribute was deprecated in &quot;</span>
-            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+            <span class="s2">"The `fit` attribute was deprecated in "</span>
+            <span class="s2">"MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "</span>
+            <span class="s2">"Please use `results.variance` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span>
@@ -476,7 +476,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_perform_fit</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calc_bond_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;calculate average bond length&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""calculate average bond length"""</span>
         <span class="n">bs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span>
@@ -485,11 +485,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_perform_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the results to an exponential decay&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Fit the results to an exponential decay"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Use the run method first&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">"Use the run method first"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">)</span>
         <span class="p">)</span>
@@ -503,7 +503,7 @@
 <div class="viewcode-block" id="PersistenceLength.plot">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visualize the results and fit</span>
+<span class="w">        </span><span class="sd">"""Visualize the results and fit</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -513,7 +513,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ax : the axis that the graph was plotted on</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -521,15 +521,15 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">,</span>
-            <span class="s2">&quot;ro&quot;</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
+            <span class="s2">"ro"</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">"Result"</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Fit&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$C(x)$&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Fit"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"x"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$C(x)$"</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">40</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"best"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
 </div>
@@ -539,7 +539,7 @@
 <div class="viewcode-block" id="fit_exponential_decay">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.fit_exponential_decay">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">fit_exponential_decay</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit a function to an exponential decay</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Fit a function to an exponential decay</span>
 
 <span class="sd">    .. math::  y = \exp\left(- \frac{x}{a}\right)</span>
 
@@ -557,7 +557,7 @@
 <span class="sd">    -----</span>
 <span class="sd">    This function assumes that data starts at 1.0 and decays to 0.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">expfunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span>

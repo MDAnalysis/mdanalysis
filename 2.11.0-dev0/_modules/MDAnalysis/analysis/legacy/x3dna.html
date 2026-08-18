@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Generation and Analysis of X3DNA helicoidal parameter profiles --- :mod:`MDAnalysis.analysis.legacy.x3dna`</span>
 <span class="sd">==========================================================================================================</span>
 
@@ -204,7 +204,7 @@
 <span class="sd">   from MDAnalysis.tests.datafiles import PDB_X3DNA</span>
 
 <span class="sd">   # set path to your x3dna binary in bashrc file</span>
-<span class="sd">   H = X3DNA(PDB_X3DNA, executable=&quot;x3dna_ensemble analyze -b 355d.bps -p pdbfile&quot;)</span>
+<span class="sd">   H = X3DNA(PDB_X3DNA, executable="x3dna_ensemble analyze -b 355d.bps -p pdbfile")</span>
 <span class="sd">   H.run()</span>
 <span class="sd">   H.collect()</span>
 <span class="sd">   H.plot()</span>
@@ -259,7 +259,7 @@
 
 <span class="sd">.. autoexception:: ApplicationError</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -278,24 +278,24 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApplicationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">which</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.x3dna&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.x3dna"</span><span class="p">)</span>
 
 
 <span class="nd">@deprecate</span><span class="p">(</span>
-    <span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span>
-    <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+    <span class="n">release</span><span class="o">=</span><span class="s2">"2.7.0"</span><span class="p">,</span>
+    <span class="n">remove</span><span class="o">=</span><span class="s2">"3.0.0"</span><span class="p">,</span>
     <span class="n">message</span><span class="o">=</span><span class="p">(</span>
-        <span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span>
-        <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
+        <span class="s2">"X3DNA module is deprecated and will be removed in"</span>
+        <span class="s2">"MDAnalysis 3.0.0, see #3788"</span>
     <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">mean_std_from_x3dnaPickle</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get mean and standard deviation of helicoidal parameters from a saved `profile`.</span>
+<span class="w">    </span><span class="sd">"""Get mean and standard deviation of helicoidal parameters from a saved `profile`.</span>
 
 <span class="sd">    The `profile` should have been saved with :meth:`BaseX3DNA.save`. Then</span>
 <span class="sd">    load it with ::</span>
 
-<span class="sd">      profile = cPickle.load(open(&quot;x3dna.pickle&quot;))</span>
+<span class="sd">      profile = cPickle.load(open("x3dna.pickle"))</span>
 <span class="sd">      h_mean, h_std = mean_std_from_x3dnaPickle(profile)</span>
 
 <span class="sd">    Arguments</span>
@@ -314,9 +314,9 @@
 
 <span class="sd">    .. deprecated:: 2.7.0</span>
 <span class="sd">        X3DNA will be removed in 3.0.0.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788&quot;</span><span class="p">,</span>
+        <span class="s2">"X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788"</span><span class="p">,</span>
         <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -431,7 +431,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseX3DNA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseclass for X3DNA_ analysis, providing plotting and utility functions.</span>
+<span class="w">    </span><span class="sd">"""Baseclass for X3DNA_ analysis, providing plotting and utility functions.</span>
 
 <span class="sd">    When methods return helicoidal basepair parameter as lists, then the order</span>
 <span class="sd">    is always</span>
@@ -460,25 +460,25 @@
 
 <span class="sd">    .. _X3DNA: http://x3dna.org</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;x3dna.pickle&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`profiles` as a Python pickle file *filename*.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">"x3dna.pickle"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Save :attr:`profiles` as a Python pickle file *filename*.</span>
 
 <span class="sd">        Load profiles dictionary with ::</span>
 
 <span class="sd">           import cPickle</span>
 <span class="sd">           profiles = cPickle.load(open(filename))</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">cPickle</span>
 
         <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">),</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">),</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the mean and standard deviation of base parameters.</span>
+<span class="w">        </span><span class="sd">"""Returns the mean and standard deviation of base parameters.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -487,7 +487,7 @@
 <span class="sd">            for the helicoidal parameters. The order for both lists is ``[shear,</span>
 <span class="sd">            stretch, stagger, buckle, propeller, opening, shift, slide, rise, tilt,</span>
 <span class="sd">            roll, twist]``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># fmt: off</span>
         <span class="n">bp_shear</span><span class="p">,</span> <span class="n">bp_stretch</span><span class="p">,</span> <span class="n">bp_stagger</span><span class="p">,</span> <span class="n">bp_rise</span><span class="p">,</span> <span class="n">bp_shift</span><span class="p">,</span> <span class="n">bp_slide</span><span class="p">,</span> <span class="n">bp_buckle</span><span class="p">,</span> <span class="n">bp_prop</span><span class="p">,</span> <span class="n">bp_open</span><span class="p">,</span> <span class="n">bp_tilt</span><span class="p">,</span> <span class="n">bp_roll</span><span class="p">,</span>\
@@ -550,7 +550,7 @@
         <span class="k">return</span> <span class="n">na_avg</span><span class="p">,</span> <span class="n">na_std</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the mean value for the base parameters.</span>
+<span class="w">        </span><span class="sd">"""Returns the mean value for the base parameters.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -559,7 +559,7 @@
 <span class="sd">            order is ``[shear, stretch, stagger, buckle, propeller, opening,</span>
 <span class="sd">            shift, slide, rise, tilt, roll, twist]``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># fmt: off</span>
         <span class="n">bp_shear</span><span class="p">,</span> <span class="n">bp_stretch</span><span class="p">,</span> <span class="n">bp_stagger</span><span class="p">,</span> <span class="n">bp_rise</span><span class="p">,</span> <span class="n">bp_shift</span><span class="p">,</span> <span class="n">bp_slide</span><span class="p">,</span> <span class="n">bp_buckle</span><span class="p">,</span> <span class="n">bp_prop</span><span class="p">,</span> <span class="n">bp_open</span><span class="p">,</span> <span class="n">bp_tilt</span><span class="p">,</span> <span class="n">bp_roll</span><span class="p">,</span>\
             <span class="n">bp_twist</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -606,7 +606,7 @@
         <span class="k">return</span> <span class="n">na_avg</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the standard deviation for the base parameters.</span>
+<span class="w">        </span><span class="sd">"""Returns the standard deviation for the base parameters.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -615,7 +615,7 @@
 <span class="sd">            parameters. The order is ``[shear, stretch, stagger, buckle,</span>
 <span class="sd">            propeller, opening, shift, slide, rise, tilt, roll, twist]``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># fmt: off</span>
         <span class="n">bp_shear</span><span class="p">,</span> <span class="n">bp_stretch</span><span class="p">,</span> <span class="n">bp_stagger</span><span class="p">,</span> <span class="n">bp_rise</span><span class="p">,</span> <span class="n">bp_shift</span><span class="p">,</span> <span class="n">bp_slide</span><span class="p">,</span> <span class="n">bp_buckle</span><span class="p">,</span> <span class="n">bp_prop</span><span class="p">,</span> <span class="n">bp_open</span><span class="p">,</span> <span class="n">bp_tilt</span><span class="p">,</span> <span class="n">bp_roll</span><span class="p">,</span>\
             <span class="n">bp_twist</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -662,47 +662,47 @@
         <span class="k">return</span> <span class="n">na_std</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot time-averaged base parameters for each basse pair in a 1D graph.</span>
+<span class="w">        </span><span class="sd">"""Plot time-averaged base parameters for each basse pair in a 1D graph.</span>
 
 <span class="sd">        One plot is produced for each parameter. It shows the the mean and</span>
 <span class="sd">        standard deviation for each individual base pair. Each plot is saved to</span>
-<span class="sd">        PNG file with name &quot;&lt;parameter_name&gt;.png&quot;.</span>
+<span class="sd">        PNG file with name "&lt;parameter_name&gt;.png".</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ax : matplotlib.pyplot.Axes (optional)</span>
 <span class="sd">             Provide `ax` to have all plots plotted in the same axes.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">na_avg</span><span class="p">,</span> <span class="n">na_std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_std</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">na_avg</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ax&quot;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">))</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"ax"</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">))</span>
             <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">na_avg</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">na_avg</span><span class="p">[:,</span> <span class="n">k</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">na_std</span><span class="p">[:,</span> <span class="n">k</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;-o&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">na_avg</span><span class="p">[:,</span> <span class="n">k</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">na_std</span><span class="p">[:,</span> <span class="n">k</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">"-o"</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">na_avg</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Nucleic Acid Number&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Nucleic Acid Number"</span><span class="p">)</span>
             <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s2">&quot;Shear&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Stretch&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Stagger&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Rise&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Shift&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Slide&quot;</span><span class="p">,</span>
+                <span class="s2">"Shear"</span><span class="p">,</span>
+                <span class="s2">"Stretch"</span><span class="p">,</span>
+                <span class="s2">"Stagger"</span><span class="p">,</span>
+                <span class="s2">"Rise"</span><span class="p">,</span>
+                <span class="s2">"Shift"</span><span class="p">,</span>
+                <span class="s2">"Slide"</span><span class="p">,</span>
             <span class="p">]:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">{!s}</span><span class="s2"> ($\AA$)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"</span><span class="si">{!s}</span><span class="s2"> ($\AA$)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s}</span><span class="s2"> (deg)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">param</span><span class="p">)))</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">param</span><span class="p">)))</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"</span><span class="si">{0!s}</span><span class="s2"> (deg)"</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">param</span><span class="p">)))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"</span><span class="si">{0!s}</span><span class="s2">.png"</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">param</span><span class="p">)))</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">sorted_profiles_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator over profiles sorted by frame/order parameter.</span>
+<span class="w">        </span><span class="sd">"""Return an iterator over profiles sorted by frame/order parameter.</span>
 
 <span class="sd">        The iterator produces tuples ``(q, profile)``. Typically, `q` is the</span>
 <span class="sd">        frame number.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">):</span>
@@ -714,7 +714,7 @@
 <div class="viewcode-block" id="X3DNA">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">X3DNA</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run X3DNA_ on a single frame or a DCD trajectory.</span>
+<span class="w">    </span><span class="sd">"""Run X3DNA_ on a single frame or a DCD trajectory.</span>
 
 <span class="sd">    Only a subset of all X3DNA control parameters is supported and can be set</span>
 <span class="sd">    with keyword arguments. For further details on X3DNA_ see the `X3DNA docs`_.</span>
@@ -754,18 +754,18 @@
 <span class="sd">        X3DNA will be removed in 3.0.0.</span>
 
 <span class="sd">    .. _`X3DNA docs`: http://forum.x3dna.org/</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nd">@deprecate</span><span class="p">(</span>
-        <span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span>
-        <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+        <span class="n">release</span><span class="o">=</span><span class="s2">"2.7.0"</span><span class="p">,</span>
+        <span class="n">remove</span><span class="o">=</span><span class="s2">"3.0.0"</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span>
-            <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
+            <span class="s2">"X3DNA module is deprecated and will be removed in"</span>
+            <span class="s2">"MDAnalysis 3.0.0, see #3788"</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up parameters to run X3DNA_ on PDB *filename*.</span>
+<span class="w">        </span><span class="sd">"""Set up parameters to run X3DNA_ on PDB *filename*.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -786,64 +786,64 @@
 <span class="sd">               parameters will be analyzed.  If ``False`` then stacked *base</span>
 <span class="sd">               pair* parameters will be analyzed.</span>
 <span class="sd">        logfile : str (optional)</span>
-<span class="sd">               Write output from X3DNA to `logfile` (default: &quot;bp_step.par&quot;)</span>
+<span class="sd">               Write output from X3DNA to `logfile` (default: "bp_step.par")</span>
 
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :class:`X3DNAtraj`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># list of temporary files, to be cleaned up on __del__</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tempfiles</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;auxiliary.par&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;bestpairs.pdb&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;bp_order.dat&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;bp_helical.par&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;cf_7methods.par&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;col_chains.scr&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;col_helices.scr&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;hel_regions.pdb&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ref_frames.dat&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;hstacking.pdb&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;stacking.pdb&quot;</span><span class="p">,</span>
+            <span class="s2">"auxiliary.par"</span><span class="p">,</span>
+            <span class="s2">"bestpairs.pdb"</span><span class="p">,</span>
+            <span class="s2">"bp_order.dat"</span><span class="p">,</span>
+            <span class="s2">"bp_helical.par"</span><span class="p">,</span>
+            <span class="s2">"cf_7methods.par"</span><span class="p">,</span>
+            <span class="s2">"col_chains.scr"</span><span class="p">,</span>
+            <span class="s2">"col_helices.scr"</span><span class="p">,</span>
+            <span class="s2">"hel_regions.pdb"</span><span class="p">,</span>
+            <span class="s2">"ref_frames.dat"</span><span class="p">,</span>
+            <span class="s2">"hstacking.pdb"</span><span class="p">,</span>
+            <span class="s2">"stacking.pdb"</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tempdirs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting up X3DNA analysis for </span><span class="si">%(filename)r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Setting up X3DNA analysis for </span><span class="si">%(filename)r</span><span class="s2">"</span><span class="p">,</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="c1"># guess executables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exe</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">x3dna_exe_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;executable&quot;</span><span class="p">,</span> <span class="s2">&quot;xdna_ensemble&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">&quot;xdna_ensemble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="n">x3dna_exe_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">&quot;xdna_ensemble&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;X3DNA binary </span><span class="si">{x3dna_exe_name!r}</span><span class="s2"> not found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">x3dna_exe_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"executable"</span><span class="p">,</span> <span class="s2">"xdna_ensemble"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"x3dna_param"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">"xdna_ensemble"</span><span class="p">]</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="n">x3dna_exe_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">"xdna_ensemble"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"X3DNA binary </span><span class="si">{x3dna_exe_name!r}</span><span class="s2"> not found."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="o">**</span><span class="nb">vars</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">%(x3dna_exe_name)r</span><span class="s2"> must be on the PATH or provided as keyword argument &#39;executable&#39;.&quot;</span><span class="p">,</span>
+                <span class="s2">"</span><span class="si">%(x3dna_exe_name)r</span><span class="s2"> must be on the PATH or provided as keyword argument 'executable'."</span><span class="p">,</span>
                 <span class="nb">vars</span><span class="p">(),</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
-        <span class="n">x3dnapath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">&quot;xdna_ensemble&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;logfile&quot;</span><span class="p">,</span> <span class="s2">&quot;bp_step.par&quot;</span><span class="p">)</span>
+        <span class="n">x3dnapath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">"xdna_ensemble"</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"logfile"</span><span class="p">,</span> <span class="s2">"bp_step.par"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;x3dna_ensemble analyze -b 355d.bps --one %(filename)r &quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">"""x3dna_ensemble analyze -b 355d.bps --one %(filename)r """</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;find_pair -s %(filename)r stdout |analyze stdin &quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">"""find_pair -s %(filename)r stdout |analyze stdin """</span>
             <span class="p">)</span>
 
         <span class="c1"># sanity checks</span>
         <span class="k">for</span> <span class="n">program</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">which</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="s2">&quot;Executable </span><span class="si">%(program)r</span><span class="s2"> not found, should have been </span><span class="si">%(path)r</span><span class="s2">.&quot;</span><span class="p">,</span>
+                    <span class="s2">"Executable </span><span class="si">%(program)r</span><span class="s2"> not found, should have been </span><span class="si">%(path)r</span><span class="s2">."</span><span class="p">,</span>
                     <span class="nb">vars</span><span class="p">(),</span>
                 <span class="p">)</span>
         <span class="c1"># results</span>
@@ -852,45 +852,45 @@
 <div class="viewcode-block" id="X3DNA.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the input file.&quot;&quot;&quot;</span>
-        <span class="n">inpname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inpfile&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">outname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;outfile&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Run X3DNA on the input file."""</span>
+        <span class="n">inpname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"inpfile"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">outname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"outfile"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
 
         <span class="n">x3dnaargs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">x3dnaargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span><span class="p">)</span>
+        <span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"x3dna_param"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span><span class="p">)</span>
 
         <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">%</span> <span class="n">x3dnaargs</span>
         <span class="k">if</span> <span class="n">inpname</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inpname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inpname</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote X3DNA input file </span><span class="si">%r</span><span class="s2"> for inspection&quot;</span><span class="p">,</span> <span class="n">inpname</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Wrote X3DNA input file </span><span class="si">%r</span><span class="s2"> for inspection"</span><span class="p">,</span> <span class="n">inpname</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Starting X3DNA on </span><span class="si">%(filename)r</span><span class="s2"> (trajectory: </span><span class="si">%(dcd)r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">x3dnaargs</span>
+            <span class="s2">"Starting X3DNA on </span><span class="si">%(filename)r</span><span class="s2"> (trajectory: </span><span class="si">%(dcd)r</span><span class="s2">)"</span><span class="p">,</span> <span class="n">x3dnaargs</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">&quot;xdna_ensemble&quot;</span><span class="p">])</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s2">"xdna_ensemble"</span><span class="p">])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
             <span class="n">x3dna</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">inp</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
             <span class="c1"># X3DNA is not very good at setting returncodes so check ourselves</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;*** ERROR ***&quot;</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"*** ERROR ***"</span><span class="p">,</span> <span class="s2">"ERROR"</span><span class="p">)):</span>
                     <span class="n">x3dna</span><span class="o">.</span><span class="n">returncode</span> <span class="o">=</span> <span class="mi">255</span>
                     <span class="k">break</span>
         <span class="k">if</span> <span class="n">x3dna</span><span class="o">.</span><span class="n">bit_length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>
-                <span class="s2">&quot;X3DNA Failure (</span><span class="si">%d</span><span class="s2">). Check output </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"X3DNA Failure (</span><span class="si">%d</span><span class="s2">). Check output </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
                 <span class="n">x3dna</span><span class="o">.</span><span class="n">bit_length</span><span class="p">,</span>
                 <span class="n">outname</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;X3DNA finished: output file </span><span class="si">%(outname)r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"X3DNA finished: output file </span><span class="si">%(outname)r</span><span class="s2">"</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="X3DNA.collect">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.collect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the output from a X3DNA run into numpy recarrays.</span>
+<span class="w">        </span><span class="sd">"""Parse the output from a X3DNA run into numpy recarrays.</span>
 
 <span class="sd">        Can deal with outputs containing multiple frames.</span>
 
@@ -898,7 +898,7 @@
 <span class="sd">        indexed by the frame number. Each entry is a</span>
 <span class="sd">        :class:`np.recarray`.</span>
 
-<span class="sd">        If the keyword `outdir` is supplied (e.g. &quot;.&quot;) then each profile is</span>
+<span class="sd">        If the keyword `outdir` is supplied (e.g. ".") then each profile is</span>
 <span class="sd">        saved to a gzipped data file.</span>
 
 <span class="sd">        Parameters</span>
@@ -909,36 +909,36 @@
 <span class="sd">              save output data under `outdir`/`run` if set to any other</span>
 <span class="sd">              value but ``None`` [``None``]</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1">#        Shear    Stretch   Stagger   Buckle   Prop-Tw   Opening     Shift     Slide     Rise      Tilt        Roll      Twist</span>
         <span class="c1"># 0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.</span>
         <span class="c1">#            11          22          33          44</span>
         <span class="c1"># T-A     -0.033    -0.176     0.158   -12.177    -8.979     1.440     0.000     0.000     0.000     0.000     0.000     0.000</span>
         <span class="c1"># C-G     -0.529     0.122    -0.002    -7.983   -10.083    -0.091    -0.911     1.375     3.213    -0.766    -4.065    41.492</span>
         <span class="c1"># only parse bp_step.par</span>
-        <span class="n">x3dna_output</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;x3dnaout&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
+        <span class="n">x3dna_output</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"x3dnaout"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
 
-        <span class="n">run</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># id number</span>
-        <span class="n">outdir</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;outdir&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span>
+        <span class="n">run</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"run"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># id number</span>
+        <span class="n">outdir</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"outdir"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Collecting X3DNA profiles for run with id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Collecting X3DNA profiles for run with id </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># length of trajectory --- is this really needed?? No... just for info</span>
-        <span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"*"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 
             <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="s2">&quot;Glob pattern </span><span class="si">%r</span><span class="s2"> did not find any files.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+                    <span class="s2">"Glob pattern </span><span class="si">%r</span><span class="s2"> did not find any files."</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Glob pattern </span><span class="si">{0!r}</span><span class="s2"> did not find any files.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"Glob pattern </span><span class="si">{0!r}</span><span class="s2"> did not find any files."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> input files based on glob pattern </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"Found </span><span class="si">%d</span><span class="s2"> input files based on glob pattern </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span>
                 <span class="n">length</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
             <span class="p">)</span>
@@ -947,21 +947,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Run </span><span class="si">%s</span><span class="s2">: Reading </span><span class="si">%d</span><span class="s2"> X3DNA profiles from </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">"Run </span><span class="si">%s</span><span class="s2">: Reading </span><span class="si">%d</span><span class="s2"> X3DNA profiles from </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">run</span><span class="p">,</span>
             <span class="n">length</span><span class="p">,</span>
             <span class="n">x3dna_output</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">x3dna_profile_no</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">x3dna_output</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">x3dna</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">x3dna_output</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">x3dna</span><span class="p">:</span>
             <span class="n">read_data</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">x3dna</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>  <span class="c1"># preserve columns (FORTRAN output...)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#        Shear&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#        Shear"</span><span class="p">):</span>
                         <span class="n">read_data</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Started reading data&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Started reading data"</span><span class="p">)</span>
                         <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                         <span class="n">x3dna_profile_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
                             <span class="mi">1</span>
@@ -988,12 +988,12 @@
                                 <span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                             <span class="k">except</span><span class="p">:</span>
                                 <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-                                    <span class="s2">&quot;Run </span><span class="si">%d</span><span class="s2">: Problem parsing line </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="s2">"Run </span><span class="si">%d</span><span class="s2">: Problem parsing line </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
                                     <span class="n">run</span><span class="p">,</span>
                                     <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
                                 <span class="p">)</span>
                                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                                    <span class="s2">&quot;Check input file </span><span class="si">%r</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">x3dna_output</span>
+                                    <span class="s2">"Check input file </span><span class="si">%r</span><span class="s2">."</span><span class="p">,</span> <span class="n">x3dna_output</span>
                                 <span class="p">)</span>
                                 <span class="k">raise</span>
                             <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1017,9 +1017,9 @@
                             <span class="c1"># end of records (empty line)</span>
                             <span class="n">read_data</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#      Shift&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#      Shift"</span><span class="p">):</span>
                         <span class="n">read_data</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Started reading data&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Started reading data"</span><span class="p">)</span>
                         <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                         <span class="n">x3dna_profile_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
                             <span class="mi">1</span>
@@ -1040,12 +1040,12 @@
                                 <span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                             <span class="k">except</span><span class="p">:</span>
                                 <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-                                    <span class="s2">&quot;Run </span><span class="si">%d</span><span class="s2">: Problem parsing line </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="s2">"Run </span><span class="si">%d</span><span class="s2">: Problem parsing line </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
                                     <span class="n">run</span><span class="p">,</span>
                                     <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
                                 <span class="p">)</span>
                                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                                    <span class="s2">&quot;Check input file </span><span class="si">%r</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">x3dna_output</span>
+                                    <span class="s2">"Check input file </span><span class="si">%r</span><span class="s2">."</span><span class="p">,</span> <span class="n">x3dna_output</span>
                                 <span class="p">)</span>
                                 <span class="k">raise</span>
                             <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1065,50 +1065,50 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">frame_x3dna_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span>
                     <span class="n">records</span><span class="p">,</span>
-                    <span class="n">formats</span><span class="o">=</span><span class="s2">&quot;f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8&quot;</span><span class="p">,</span>
-                    <span class="n">names</span><span class="o">=</span><span class="s2">&quot;Shear,Stretch,Stagger,Buckle,Propeller,Opening,&quot;</span>
-                    <span class="s2">&quot;Shift,Slide,Rise,Tilt,Roll,Twist&quot;</span><span class="p">,</span>
+                    <span class="n">formats</span><span class="o">=</span><span class="s2">"f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8"</span><span class="p">,</span>
+                    <span class="n">names</span><span class="o">=</span><span class="s2">"Shear,Stretch,Stagger,Buckle,Propeller,Opening,"</span>
+                    <span class="s2">"Shift,Slide,Rise,Tilt,Roll,Twist"</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">frame_x3dna_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span>
                     <span class="n">records</span><span class="p">,</span>
-                    <span class="n">formats</span><span class="o">=</span><span class="s2">&quot;f8,f8,f8,f8,f8,f8&quot;</span><span class="p">,</span>
-                    <span class="n">names</span><span class="o">=</span><span class="s2">&quot;Shift,Slide,Rise,Tilt,Roll,Twist&quot;</span><span class="p">,</span>
+                    <span class="n">formats</span><span class="o">=</span><span class="s2">"f8,f8,f8,f8,f8,f8"</span><span class="p">,</span>
+                    <span class="n">names</span><span class="o">=</span><span class="s2">"Shift,Slide,Rise,Tilt,Roll,Twist"</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="c1"># store the profile</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">x3dna_profile_no</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_x3dna_output</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;Collected X3DNA profile for frame </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%d</span><span class="s2"> datapoints)&quot;</span><span class="p">,</span>
+                <span class="s2">"Collected X3DNA profile for frame </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%d</span><span class="s2"> datapoints)"</span><span class="p">,</span>
                 <span class="n">x3dna_profile_no</span><span class="p">,</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">frame_x3dna_output</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="c1"># save a profile for each frame (for debugging and scripted processing)</span>
             <span class="c1"># a tmp folder for each trajectory</span>
             <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rundir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;run_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">run</span><span class="p">))</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;rm -f tmp*.out&quot;</span><span class="p">)</span>
+                <span class="n">rundir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">"run_"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">run</span><span class="p">))</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm -f tmp*.out"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">rundir</span><span class="p">):</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">rundir</span><span class="p">)</span>
                 <span class="n">frame_x3dna_txt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">rundir</span><span class="p">,</span>
-                    <span class="s2">&quot;bp_step_</span><span class="si">{0!s}</span><span class="s2">_</span><span class="si">{1:04d}</span><span class="s2">.dat.gz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"bp_step_</span><span class="si">{0!s}</span><span class="s2">_</span><span class="si">{1:04d}</span><span class="s2">.dat.gz"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">run</span><span class="p">,</span> <span class="n">x3dna_profile_no</span>
                     <span class="p">),</span>
                 <span class="p">)</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">frame_x3dna_txt</span><span class="p">,</span> <span class="n">frame_x3dna_output</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s2">&quot;Finished with frame </span><span class="si">%d</span><span class="s2">, saved as </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">"Finished with frame </span><span class="si">%d</span><span class="s2">, saved as </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
                     <span class="n">x3dna_profile_no</span><span class="p">,</span>
                     <span class="n">frame_x3dna_txt</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="c1"># if we get here then we haven&#39;t found anything interesting</span>
+                <span class="c1"># if we get here then we haven't found anything interesting</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span> <span class="o">==</span> <span class="n">length</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;Collected X3DNA profiles for </span><span class="si">%d</span><span class="s2"> frames&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+                <span class="s2">"Collected X3DNA profiles for </span><span class="si">%d</span><span class="s2"> frames"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Missing data: Found </span><span class="si">%d</span><span class="s2"> X3DNA profiles from </span><span class="si">%d</span><span class="s2"> frames.&quot;</span><span class="p">,</span>
+                <span class="s2">"Missing data: Found </span><span class="si">%d</span><span class="s2"> X3DNA profiles from </span><span class="si">%d</span><span class="s2"> frames."</span><span class="p">,</span>
                 <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">),</span>
                 <span class="n">length</span><span class="p">,</span>
             <span class="p">)</span></div>
@@ -1128,7 +1128,7 @@
 <div class="viewcode-block" id="X3DNAtraj">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">X3DNAtraj</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze all frames in a trajectory.</span>
+<span class="w">    </span><span class="sd">"""Analyze all frames in a trajectory.</span>
 
 <span class="sd">    The :class:`X3DNA` class provides a direct interface to X3DNA. X3DNA itself</span>
 <span class="sd">    has limited support for analysing trajectories but cannot deal with all the</span>
@@ -1139,18 +1139,18 @@
 
 <span class="sd">    .. deprecated:: 2.7.0</span>
 <span class="sd">        X3DNA will be removed in 3.0.0.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nd">@deprecate</span><span class="p">(</span>
-        <span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span>
-        <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+        <span class="n">release</span><span class="o">=</span><span class="s2">"2.7.0"</span><span class="p">,</span>
+        <span class="n">remove</span><span class="o">=</span><span class="s2">"3.0.0"</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span>
-            <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
+            <span class="s2">"X3DNA module is deprecated and will be removed in"</span>
+            <span class="s2">"MDAnalysis 3.0.0, see #3788"</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the class.</span>
+<span class="w">        </span><span class="sd">"""Set up the class.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1161,7 +1161,7 @@
 <span class="sd">               individual file. (Use the `start`, `stop`, and `step` keywords</span>
 <span class="sd">               to slice the trajectory.)</span>
 <span class="sd">        selection : str (optional)</span>
-<span class="sd">               MDAnalysis selection string (default: &quot;nucleic&quot;) to select the</span>
+<span class="sd">               MDAnalysis selection string (default: "nucleic") to select the</span>
 <span class="sd">               atoms that should be analyzed.</span>
 <span class="sd">        start : int (optional)</span>
 <span class="sd">        stop : int (optional)</span>
@@ -1182,14 +1182,14 @@
 <span class="sd">        --------</span>
 <span class="sd">        :class:`X3DNA`</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="s2">&quot;nucleic&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"selection"</span><span class="p">,</span> <span class="s2">"nucleic"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"x3dna_param"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"start"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"stop"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"step"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
@@ -1198,16 +1198,16 @@
 <div class="viewcode-block" id="X3DNAtraj.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the whole trajectory and collect profiles.</span>
+<span class="w">        </span><span class="sd">"""Run X3DNA on the whole trajectory and collect profiles.</span>
 
 <span class="sd">        Keyword arguments `start`, `stop`, and `step` can be used to only</span>
 <span class="sd">        analyse part of the trajectory. The defaults are the values provided to</span>
 <span class="sd">        the class constructor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
-        <span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"start"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"stop"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"step"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">x3dna_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"x3dna_param"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span><span class="p">)</span>
         <span class="n">x3dna_kw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">x3dna_kw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1215,11 +1215,11 @@
 
         <span class="n">nucleic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;X3DNA analysis frame </span><span class="si">%4d</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-            <span class="n">fd</span><span class="p">,</span> <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.pdb&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"X3DNA analysis frame </span><span class="si">%4d</span><span class="s2"> "</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">fd</span><span class="p">,</span> <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">".pdb"</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
             <span class="n">nucleic</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;find_pair </span><span class="si">{0!s}</span><span class="s2"> 355d.bps&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"find_pair </span><span class="si">{0!s}</span><span class="s2"> 355d.bps"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">nucleic</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
                 <span class="n">x3dna_profiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_x3dna</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">x3dna_kw</span><span class="p">)</span>
@@ -1229,7 +1229,7 @@
                 <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                     <span class="k">pass</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x3dna_profiles</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Got </span><span class="si">{0}</span><span class="s2"> profiles (</span><span class="si">{1}</span><span class="s2">) --- should be 1 (time step </span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">"Got </span><span class="si">{0}</span><span class="s2"> profiles (</span><span class="si">{1}</span><span class="s2">) --- should be 1 (time step </span><span class="si">{2}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">len</span><span class="p">(</span><span class="n">x3dna_profiles</span><span class="p">),</span> <span class="n">x3dna_profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">ts</span>
                 <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
@@ -1241,8 +1241,8 @@
 <div class="viewcode-block" id="X3DNAtraj.run_x3dna">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run_x3dna">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_x3dna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on a single PDB file `pdbfile`.&quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span>
+<span class="w">        </span><span class="sd">"""Run X3DNA on a single PDB file `pdbfile`."""</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"x3dna_param"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">H</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">H</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>

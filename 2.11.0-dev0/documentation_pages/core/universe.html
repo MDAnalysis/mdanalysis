@@ -165,7 +165,7 @@ and a trajectory together. Almost all code in MDAnalysis starts with a
 <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
 <p>Normally, a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> is created from files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.psf&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.dcd&quot;</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">"topology.psf"</span><span class="p">,</span> <span class="s2">"trajectory.dcd"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In order to construct new simulation system it is also convenient to
@@ -483,9 +483,9 @@ specified</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">newres</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resid</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">,</span> <span class="n">resnum</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newres</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resid</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">'GLY'</span><span class="p">,</span> <span class="n">resnum</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">newres</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY and resid 42 and resnum 0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'resname GLY and resid 42 and resnum 0'</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 3 atoms&gt;</span>
 </pre></div>
 </div>
@@ -531,7 +531,7 @@ or zero values.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">'tempfactors'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">tempfactors</span>
 <span class="go">array([0., 0., 0., ..., 0., 0., 0.])</span>
 </pre></div>
@@ -594,10 +594,10 @@ they <em>must</em> be from the same Universe.</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">GRO</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
-<span class="n">ow_hw1</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name HW1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
-<span class="n">ow_hw2</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name HW2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
-<span class="n">ow_mw</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name MW&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'resname SOL'</span><span class="p">)</span>
+<span class="n">ow_hw1</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW or name HW1'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'residue'</span><span class="p">)</span>
+<span class="n">ow_hw2</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW or name HW2'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'residue'</span><span class="p">)</span>
+<span class="n">ow_mw</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'name OW or name MW'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'residue'</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="n">ow_hw1</span> <span class="o">+</span> <span class="n">ow_hw2</span> <span class="o">+</span> <span class="n">ow_mw</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -700,12 +700,12 @@ topology attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">'tempfactors'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">'tempfactors'</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="s1">'tempfactors'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">'tempfactors'</span><span class="p">)</span>
 <span class="go">False</span>
 </pre></div>
 </div>
@@ -845,7 +845,7 @@ positions for the atoms and a mass attribute:</p>
                        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
                        <span class="n">trajectory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
       <span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">'masses'</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -891,7 +891,7 @@ the input SMILES string; coordinates are included if
 <p class="rubric">Examples</p>
 <p>To create a Universe with 10 conformers of ethanol:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllChem</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">'CCO'</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
 <span class="go">&lt;Universe with 9 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
@@ -899,7 +899,7 @@ the input SMILES string; coordinates are included if
 </pre></div>
 </div>
 <p>To use a different conformer generation algorithm, like ETKDGv3:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">'CCO'</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
 <span class="gp">... </span>     <span class="n">params</span><span class="o">=</span><span class="n">AllChem</span><span class="o">.</span><span class="n">ETKDGv3</span><span class="p">()))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
 <span class="go">&lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
@@ -945,7 +945,7 @@ Errors will always be raised if an attribute is in the
 </dl>
 <p class="rubric">Examples</p>
 <p>To guess <code class="docutils literal notranslate"><span class="pre">masses</span></code> and <code class="docutils literal notranslate"><span class="pre">types</span></code> attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;masses&#39;</span><span class="p">,</span> <span class="s1">&#39;types&#39;</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">'default'</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">'masses'</span><span class="p">,</span> <span class="s1">'types'</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -1083,10 +1083,10 @@ Finally, the corresponding new <cite>ResidueGroup</cite> and <cite>SegmentGroup<
 created by the updated topology.</p>
 <p class="rubric">Examples</p>
 <p>To set custom segment IDs for the segments of the Universe:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">atomwise_segids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">atomwise_segids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">]</span>
 <span class="n">u</span><span class="o">.</span><span class="n">set_groups</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="o">=</span><span class="n">atomwise_segids</span><span class="p">)</span>
 
-<span class="c1"># Now the Universe has two segments with segIDs &#39;A&#39; and &#39;B&#39;</span>
+<span class="c1"># Now the Universe has two segments with segIDs 'A' and 'B'</span>
 <span class="n">u</span><span class="o">.</span><span class="n">segments</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="o">&lt;</span><span class="n">SegmentGroup</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">segments</span><span class="o">&gt;</span>
 </pre></div>
@@ -1170,11 +1170,11 @@ three different PDB files. They are loaded into separate <a class="reference int
 objects (where they could be further manipulated, e.g. renumbered,
 relabeled, rotated, …) The <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> command is used to combine all
 of them together:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;protein.pdb&quot;</span><span class="p">)</span>
-<span class="n">u2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;ligand.pdb&quot;</span><span class="p">)</span>
-<span class="n">u3</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;solvent.pdb&quot;</span><span class="p">)</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">(</span><span class="n">u1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">),</span> <span class="n">u2</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u3</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;system.pdb&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">"protein.pdb"</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">"ligand.pdb"</span><span class="p">)</span>
+<span class="n">u3</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">"solvent.pdb"</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">(</span><span class="n">u1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">),</span> <span class="n">u2</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u3</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"system.pdb"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The complete system is then written out to a new PDB file.</p>

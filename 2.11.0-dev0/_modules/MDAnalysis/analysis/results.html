@@ -141,7 +141,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for MDAnalysis.analysis.results</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Analysis results and their aggregation --- :mod:`MDAnalysis.analysis.results`</span>
+<span></span><span class="sd">"""Analysis results and their aggregation --- :mod:`MDAnalysis.analysis.results`</span>
 <span class="sd">================================================================================</span>
 
 <span class="sd">Module introduces two classes, :class:`Results` and :class:`ResultsGroup`,</span>
@@ -161,7 +161,7 @@
 <span class="sd">    from MDAnalysis.analysis.results import Results</span>
 <span class="sd">    r = Results()</span>
 <span class="sd">    r.array = [1, 2, 3, 4]</span>
-<span class="sd">    assert r[&#39;array&#39;] == r.array == [1, 2, 3, 4]</span>
+<span class="sd">    assert r['array'] == r.array == [1, 2, 3, 4]</span>
 
 
 <span class="sd">The :class:`ResultsGroup` can merge multiple :class:`Results` objects.</span>
@@ -182,15 +182,15 @@
 
 <span class="sd">    group = ResultsGroup(</span>
 <span class="sd">        lookup = {</span>
-<span class="sd">            &#39;masses&#39;: ResultsGroup.flatten_sequence,</span>
-<span class="sd">            &#39;vectors&#39;: ResultsGroup.ndarray_vstack</span>
+<span class="sd">            'masses': ResultsGroup.flatten_sequence,</span>
+<span class="sd">            'vectors': ResultsGroup.ndarray_vstack</span>
 <span class="sd">            }</span>
 <span class="sd">        )</span>
 
 <span class="sd">    r = group.merge([r1, r2])</span>
 <span class="sd">    assert r.masses == list((*r1.masses, *r2.masses))</span>
 <span class="sd">    assert (r.vectors == np.vstack([r1.vectors, r2.vectors])).all()</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserDict</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -200,10 +200,10 @@
 <div class="viewcode-block" id="Results">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.Results">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Results</span><span class="p">(</span><span class="n">UserDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Container object for storing results.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Container object for storing results.</span>
 
 <span class="sd">    :class:`Results` are dictionaries that provide two ways by which values</span>
-<span class="sd">    can be accessed: by dictionary key ``results[&quot;value_key&quot;]`` or by object</span>
+<span class="sd">    can be accessed: by dictionary key ``results["value_key"]`` or by object</span>
 <span class="sd">    attribute, ``results.value_key``. :class:`Results` stores all results</span>
 <span class="sd">    obtained from an analysis after calling :meth:`~AnalysisBase.run()`.</span>
 
@@ -226,15 +226,15 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.base import Results</span>
 <span class="sd">    &gt;&gt;&gt; results = Results(a=1, b=2)</span>
-<span class="sd">    &gt;&gt;&gt; results[&#39;b&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; results['b']</span>
 <span class="sd">    2</span>
 <span class="sd">    &gt;&gt;&gt; results.b</span>
 <span class="sd">    2</span>
 <span class="sd">    &gt;&gt;&gt; results.a = 3</span>
-<span class="sd">    &gt;&gt;&gt; results[&#39;a&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; results['a']</span>
 <span class="sd">    3</span>
 <span class="sd">    &gt;&gt;&gt; results.c = [1, 2, 3, 4]</span>
-<span class="sd">    &gt;&gt;&gt; results[&#39;c&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; results['c']</span>
 <span class="sd">    [1, 2, 3, 4]</span>
 
 
@@ -242,21 +242,21 @@
 
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">        Moved :class:`Results` to :mod:`MDAnalysis.analysis.results`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is a protected dictionary attribute&quot;</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' is a protected dictionary attribute"</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a valid attribute&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' is not a valid attribute"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;data&#39; is a protected dictionary attribute&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">"data"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'data' is a protected dictionary attribute"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
@@ -264,7 +264,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">"data"</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
@@ -274,7 +274,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;Results&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">"'Results' object has no attribute '</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">'"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
@@ -282,7 +282,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;Results&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">"'Results' object has no attribute '</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">'"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -296,10 +296,10 @@
 <div class="viewcode-block" id="ResultsGroup">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ResultsGroup</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Management and aggregation of results stored in :class:`Results` instances.</span>
 
-<span class="sd">    A :class:`ResultsGroup` is an optional description for :class:`Result` &quot;dictionaries&quot;</span>
+<span class="sd">    A :class:`ResultsGroup` is an optional description for :class:`Result` "dictionaries"</span>
 <span class="sd">    that are used in analysis classes based on :class:`AnalysisBase`. For each *key* in a</span>
 <span class="sd">    :class:`Result` it describes how multiple pieces of the data held under the key are</span>
 <span class="sd">    to be aggregated. This approach is necessary when parts of a trajectory are analyzed</span>
@@ -317,22 +317,22 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        from MDAnalysis.analysis.results import ResultsGroup, Results</span>
-<span class="sd">        group = ResultsGroup(lookup={&#39;mass&#39;: ResultsGroup.float_mean})</span>
+<span class="sd">        group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})</span>
 <span class="sd">        obj1 = Results(mass=1)</span>
 <span class="sd">        obj2 = Results(mass=3)</span>
-<span class="sd">        assert {&#39;mass&#39;: 2.0} == group.merge([obj1, obj2])</span>
+<span class="sd">        assert {'mass': 2.0} == group.merge([obj1, obj2])</span>
 
 
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        # you can also set `None` for those attributes that you want to skip</span>
-<span class="sd">        lookup = {&#39;mass&#39;: ResultsGroup.float_mean, &#39;trajectory&#39;: None}</span>
+<span class="sd">        lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}</span>
 <span class="sd">        group = ResultsGroup(lookup)</span>
 <span class="sd">        objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]</span>
-<span class="sd">        assert group.merge(objects, require_all_aggregators=False) == {&#39;mass&#39;: 2.0}</span>
+<span class="sd">        assert group.merge(objects, require_all_aggregators=False) == {'mass': 2.0}</span>
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lookup</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lookup</span> <span class="o">=</span> <span class="n">lookup</span>
@@ -342,7 +342,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Results</span><span class="p">],</span> <span class="n">require_all_aggregators</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Results</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge multiple Results into a single Results instance.</span>
+<span class="w">        </span><span class="sd">"""Merge multiple Results into a single Results instance.</span>
 
 <span class="sd">        Merge multiple :class:`Results` instances into a single one, using the</span>
 <span class="sd">        `lookup` dictionary to determine the appropriate aggregator functions for</span>
@@ -356,7 +356,7 @@
 <span class="sd">        require_all_aggregators : bool, optional</span>
 <span class="sd">            if True, raise an exception when no aggregation function for a</span>
 <span class="sd">            particular argument is found. Allows to skip aggregation for the</span>
-<span class="sd">            parameters that aren&#39;t needed in the final object --</span>
+<span class="sd">            parameters that aren't needed in the final object --</span>
 <span class="sd">            see :class:`ResultsGroup`.</span>
 
 <span class="sd">        Returns</span>
@@ -368,7 +368,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            if no aggregation function for a key is found and ``require_all_aggregators=True``</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">merged_results</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">merged_results</span>
@@ -380,7 +380,7 @@
                 <span class="n">results_of_t</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">]</span>
                 <span class="n">merged_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">agg_function</span><span class="p">(</span><span class="n">results_of_t</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">require_all_aggregators</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No aggregation function for </span><span class="si">{</span><span class="n">key</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No aggregation function for </span><span class="si">{</span><span class="n">key</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">merged_results</span></div>
 
 
@@ -388,7 +388,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.flatten_sequence">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">flatten_sequence</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flatten a list of lists into a list</span>
+<span class="w">        </span><span class="sd">"""Flatten a list of lists into a list</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -399,7 +399,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            flattened list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">arrs</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span></div>
 
 
@@ -407,7 +407,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.ndarray_sum">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ndarray_sum</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;sums an ndarray along ``axis=0``</span>
+<span class="w">        </span><span class="sd">"""sums an ndarray along ``axis=0``</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -418,7 +418,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray</span>
 <span class="sd">            sum of input arrays</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
 
@@ -426,7 +426,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.ndarray_mean">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ndarray_mean</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;calculates mean of input ndarrays along ``axis=0``</span>
+<span class="w">        </span><span class="sd">"""calculates mean of input ndarrays along ``axis=0``</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -437,7 +437,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray</span>
 <span class="sd">            mean of input arrays</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
 
@@ -445,7 +445,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.float_mean">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">float_mean</span><span class="p">(</span><span class="n">floats</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;calculates mean of input float values</span>
+<span class="w">        </span><span class="sd">"""calculates mean of input float values</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -456,7 +456,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            mean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">floats</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
 
 
@@ -464,7 +464,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.ndarray_hstack">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ndarray_hstack</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Performs horizontal stack of input arrays</span>
+<span class="w">        </span><span class="sd">"""Performs horizontal stack of input arrays</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -475,7 +475,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray</span>
 <span class="sd">            result of stacking</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span></div>
 
 
@@ -483,7 +483,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/results.html#MDAnalysis.analysis.results.ResultsGroup.ndarray_vstack">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ndarray_vstack</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Performs vertical stack of input arrays</span>
+<span class="w">        </span><span class="sd">"""Performs vertical stack of input arrays</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -494,7 +494,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray</span>
 <span class="sd">            result of stacking</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span></div>
 </div>
 

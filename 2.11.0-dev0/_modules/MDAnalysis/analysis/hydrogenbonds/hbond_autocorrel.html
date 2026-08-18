@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`</span>
 <span class="sd">===========================================================================================</span>
 
@@ -233,11 +233,11 @@
 <span class="sd">  from MDAnalysis.analysis import hydrogenbonds</span>
 <span class="sd">  from MDAnalysis.tests.datafiles import waterPSF, waterDCD</span>
 <span class="sd">  u = mda.Universe(waterPSF, waterDCD)</span>
-<span class="sd">  hydrogens = u.select_atoms(&#39;name H*&#39;)</span>
+<span class="sd">  hydrogens = u.select_atoms('name H*')</span>
 <span class="sd">  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)</span>
 
 
-<span class="sd">Note that this requires the Universe to have bond information.  If this isn&#39;t</span>
+<span class="sd">Note that this requires the Universe to have bond information.  If this isn't</span>
 <span class="sd">present in the topology file, the</span>
 <span class="sd">:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used</span>
 <span class="sd">as so</span>
@@ -249,11 +249,11 @@
 <span class="sd">  # we could load the Universe with guess_bonds=True</span>
 <span class="sd">  # but this would guess **all** bonds</span>
 <span class="sd">  u = mda.Universe(GRO)</span>
-<span class="sd">  water = u.select_atoms(&#39;resname SOL and not type DUMMY&#39;)</span>
+<span class="sd">  water = u.select_atoms('resname SOL and not type DUMMY')</span>
 <span class="sd">  # guess bonds only within our water atoms</span>
 <span class="sd">  # this adds the bond information directly to the Universe</span>
 <span class="sd">  water.guess_bonds()</span>
-<span class="sd">  hydrogens = water.select_atoms(&#39;type H&#39;)</span>
+<span class="sd">  hydrogens = water.select_atoms('type H')</span>
 <span class="sd">  # this is now possible as we guessed the bonds</span>
 <span class="sd">  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)</span>
 
@@ -315,25 +315,25 @@
 <span class="sd">  # load system</span>
 <span class="sd">  u = mda.Universe(TRZ_psf, TRZ)</span>
 <span class="sd">  # select atoms of interest into AtomGroups</span>
-<span class="sd">  H = u.select_atoms(&#39;name Hn&#39;)</span>
-<span class="sd">  N = u.select_atoms(&#39;name N&#39;)</span>
-<span class="sd">  O = u.select_atoms(&#39;name O&#39;)</span>
+<span class="sd">  H = u.select_atoms('name Hn')</span>
+<span class="sd">  N = u.select_atoms('name N')</span>
+<span class="sd">  O = u.select_atoms('name O')</span>
 <span class="sd">  # create analysis object</span>
 <span class="sd">  hb_ac = hydrogenbonds.HydrogenBondAutoCorrel(u,</span>
 <span class="sd">              acceptors=O, hydrogens=H, donors=N,</span>
-<span class="sd">              bond_type=&#39;continuous&#39;,</span>
+<span class="sd">              bond_type='continuous',</span>
 <span class="sd">              sample_time=2.0, nsamples=1000, nruns=20)</span>
 <span class="sd">  # call run to gather results</span>
 <span class="sd">  hb_ac.run()</span>
 <span class="sd">  # attempt to fit results to exponential equation</span>
 <span class="sd">  hb_ac.solve()</span>
 <span class="sd">  # grab results from inside object</span>
-<span class="sd">  tau = hb_ac.solution[&#39;tau&#39;]</span>
-<span class="sd">  time = hb_ac.solution[&#39;time&#39;]</span>
-<span class="sd">  results = hb_ac.solution[&#39;results&#39;]</span>
-<span class="sd">  estimate = hb_ac.solution[&#39;estimate&#39;]</span>
+<span class="sd">  tau = hb_ac.solution['tau']</span>
+<span class="sd">  time = hb_ac.solution['time']</span>
+<span class="sd">  results = hb_ac.solution['results']</span>
+<span class="sd">  estimate = hb_ac.solution['estimate']</span>
 <span class="sd">  # plot to check!</span>
-<span class="sd">  plt.plot(time, results, &#39;ro&#39;)</span>
+<span class="sd">  plt.plot(time, results, 'ro')</span>
 <span class="sd">  plt.plot(time, estimate)</span>
 <span class="sd">  plt.show()</span>
 
@@ -346,7 +346,7 @@
 <span class="sd">.. autoclass:: HydrogenBondAutoCorrel</span>
 <span class="sd">   :members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -359,18 +359,18 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1063/1.4922445&quot;</span><span class="p">),</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bonding autocorrelation time&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel&quot;</span><span class="p">,</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1063/1.4922445"</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Hydrogen bonding autocorrelation time"</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">del</span> <span class="n">Doi</span>
 
 
 <div class="viewcode-block" id="find_hydrogen_donors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a>
-<span class="nd">@requires</span><span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s2">"bonds"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the donor atom for each hydrogen</span>
+<span class="w">    </span><span class="sd">"""Returns the donor atom for each hydrogen</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -384,7 +384,7 @@
 
 
 <span class="sd">    .. versionadded:: 0.20.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span></div>
 
 
@@ -392,7 +392,7 @@
 <div class="viewcode-block" id="HydrogenBondAutoCorrel">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system.</span>
+<span class="w">    </span><span class="sd">"""Perform a time autocorrelation of the hydrogen bonds in the system.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -410,7 +410,7 @@
 <span class="sd">        group, once for each hydrogen.</span>
 <span class="sd">    bond_type : str</span>
 <span class="sd">        Which definition of hydrogen bond lifetime to consider, either</span>
-<span class="sd">        &#39;continuous&#39; or &#39;intermittent&#39;.</span>
+<span class="sd">        'continuous' or 'intermittent'.</span>
 <span class="sd">    exclusions : ndarray, optional</span>
 <span class="sd">        Indices of Hydrogen-Acceptor pairs to be excluded.</span>
 <span class="sd">        With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances</span>
@@ -433,9 +433,9 @@
 
 <span class="sd">    ..versionchanged: 1.0.0</span>
 <span class="sd">      ``save_results()`` method was removed. You can instead use ``np.savez()``</span>
-<span class="sd">      on :attr:`HydrogenBondAutoCorrel.solution[&#39;time&#39;]` and</span>
-<span class="sd">      :attr:`HydrogenBondAutoCorrel.solution[&#39;results&#39;]` instead.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">      on :attr:`HydrogenBondAutoCorrel.solution['time']` and</span>
+<span class="sd">      :attr:`HydrogenBondAutoCorrel.solution['results']` instead.</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -454,8 +454,8 @@
         <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 
-        <span class="c1"># warnings.warn(&quot;This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis &quot;</span>
-        <span class="c1">#              &quot;which has .autocorrelation function&quot;,</span>
+        <span class="c1"># warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "</span>
+        <span class="c1">#              "which has .autocorrelation function",</span>
         <span class="c1">#              category=DeprecationWarning)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
@@ -463,21 +463,21 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory must support slicing&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trajectory must support slicing"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">hydrogens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">acceptors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">donors</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Donors and Hydrogen groups must be identical &quot;</span>
-                <span class="s2">&quot;length.  Try using `find_hydrogen_donors`.&quot;</span>
+                <span class="s2">"Donors and Hydrogen groups must be identical "</span>
+                <span class="s2">"length.  Try using `find_hydrogen_donors`."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">exclusions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;&#39;exclusion&#39; must be two arrays of identical length&quot;</span>
+                    <span class="s2">"'exclusion' must be two arrays of identical length"</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -486,9 +486,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">=</span> <span class="n">bond_type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span> <span class="s2">&quot;intermittent&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"continuous"</span><span class="p">,</span> <span class="s2">"intermittent"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;bond_type must be either &#39;continuous&#39; or &#39;intermittent&#39;&quot;</span>
+                <span class="s2">"bond_type must be either 'continuous' or 'intermittent'"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle_crit</span><span class="p">)</span>
@@ -501,25 +501,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span> <span class="o">=</span> <span class="n">time_cut</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Raw results</span>
-            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Time axis of raw results</span>
-            <span class="s2">&quot;fit&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># coefficients for fit</span>
-            <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># integral of exponential fit</span>
-            <span class="s2">&quot;estimate&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># y values of fit against time</span>
+            <span class="s2">"results"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Raw results</span>
+            <span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Time axis of raw results</span>
+            <span class="s2">"fit"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># coefficients for fit</span>
+            <span class="s2">"tau"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># integral of exponential fit</span>
+            <span class="s2">"estimate"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># y values of fit against time</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_slice_traj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_time</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up start and end points in the trajectory for the</span>
+<span class="w">        </span><span class="sd">"""Set up start and end points in the trajectory for the</span>
 <span class="sd">        different passes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>  <span class="c1"># frame step size in time</span>
         <span class="n">req_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_time</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>  <span class="c1"># the number of frames required</span>
 
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">req_frames</span> <span class="o">&gt;</span> <span class="n">n_frames</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Number of required frames (</span><span class="si">{}</span><span class="s2">) greater than the&quot;</span>
-                <span class="s2">&quot; number of frames in trajectory (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Number of required frames (</span><span class="si">{}</span><span class="s2">) greater than the"</span>
+                <span class="s2">" number of frames in trajectory (</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">req_frames</span><span class="p">,</span> <span class="n">n_frames</span>
                 <span class="p">),</span>
                 <span class="ne">RuntimeWarning</span><span class="p">,</span>
@@ -529,8 +529,8 @@
         <span class="k">if</span> <span class="n">numruns</span> <span class="o">&gt;</span> <span class="n">n_frames</span><span class="p">:</span>
             <span class="n">numruns</span> <span class="o">=</span> <span class="n">n_frames</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Number of runs (</span><span class="si">{}</span><span class="s2">) greater than the number of&quot;</span>
-                <span class="s2">&quot; frames in trajectory (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">),</span>
+                <span class="s2">"Number of runs (</span><span class="si">{}</span><span class="s2">) greater than the number of"</span>
+                <span class="s2">" frames in trajectory (</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">),</span>
                 <span class="ne">RuntimeWarning</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -541,7 +541,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">=</span> <span class="n">req_frames</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># If nsamples &gt; req_frames</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Desired number of sample points too high, using </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Desired number of sample points too high, using </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">req_frames</span>
                 <span class="p">),</span>
                 <span class="ne">RuntimeWarning</span><span class="p">,</span>
@@ -551,15 +551,15 @@
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all the required passes</span>
+<span class="w">        </span><span class="sd">"""Run all the required passes</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        force : bool, optional</span>
 <span class="sd">            Will overwrite previous results if they exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if results exist, don&#39;t waste any time</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="c1"># if results exist, don't waste any time</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">main_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span>
@@ -572,10 +572,10 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span>
             <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">)),</span>
             <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Performing run&quot;</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s2">"Performing run"</span><span class="p">,</span>
         <span class="p">):</span>
 
-            <span class="c1"># needed else trj seek thinks a np.int64 isn&#39;t an int?</span>
+            <span class="c1"># needed else trj seek thinks a np.int64 isn't an int?</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_run</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">))</span>
 
             <span class="n">nresults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
@@ -588,16 +588,16 @@
 
         <span class="n">main_results</span> <span class="o">/=</span> <span class="n">counter</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">main_results</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_results</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_results</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a single pass of the trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Perform a single pass of the trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
 
         <span class="c1"># Calculate partners at t=0</span>
@@ -652,17 +652,17 @@
             <span class="n">winners</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span><span class="p">)</span>
             <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">winners</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">&quot;continuous&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">"continuous"</span><span class="p">:</span>
                 <span class="c1"># Remove losers for continuous definition</span>
                 <span class="n">hidx</span> <span class="o">=</span> <span class="n">hidx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
                 <span class="n">aidx</span> <span class="o">=</span> <span class="n">aidx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">&quot;intermittent&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">"intermittent"</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span><span class="p">:</span>
                     <span class="c1"># Add to counter of where losers are</span>
                     <span class="n">count</span><span class="p">[</span><span class="o">~</span><span class="n">winners</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
                     <span class="n">count</span><span class="p">[</span><span class="n">winners</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Reset timer for winners</span>
 
-                    <span class="c1"># Remove if you&#39;ve lost too many times</span>
+                    <span class="c1"># Remove if you've lost too many times</span>
                     <span class="c1"># New arrays contain everything but removals</span>
                     <span class="n">hidx</span> <span class="o">=</span> <span class="n">hidx</span><span class="p">[</span><span class="n">count</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span><span class="p">]</span>
                     <span class="n">aidx</span> <span class="o">=</span> <span class="n">aidx</span><span class="p">[</span><span class="n">count</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span><span class="p">]</span>
@@ -680,7 +680,7 @@
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.solve">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit results to an multi exponential decay and integrate to find</span>
+<span class="w">        </span><span class="sd">"""Fit results to an multi exponential decay and integrate to find</span>
 <span class="sd">        characteristic time</span>
 
 <span class="sd">        Parameters</span>
@@ -711,28 +711,28 @@
 <span class="sd">         - *mesg*</span>
 <span class="sd">         - *ier*</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Results have not been generated use, the run method first&quot;</span>
+                <span class="s2">"Results have not been generated use, the run method first"</span>
             <span class="p">)</span>
 
         <span class="c1"># Prevents an odd bug with leastsq where it expects</span>
         <span class="c1"># double precision data sometimes...</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">within_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns True/False if boundary conditions are met or not.</span>
-<span class="sd">            Uses length of p to detect whether it&#39;s handling continuous /</span>
+<span class="w">            </span><span class="sd">"""Returns True/False if boundary conditions are met or not.</span>
+<span class="sd">            Uses length of p to detect whether it's handling continuous /</span>
 <span class="sd">            intermittent</span>
 
 <span class="sd">            Boundary conditions are:</span>
 <span class="sd">             0 &lt; A_x &lt; 1</span>
 <span class="sd">             sum(A_x) &lt; 1</span>
 <span class="sd">             0 &lt; tau_x</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span> <span class="o">=</span> <span class="n">p</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
@@ -750,22 +750,22 @@
                 <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">err</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Custom residual function, returns real residual if all</span>
+<span class="w">            </span><span class="sd">"""Custom residual function, returns real residual if all</span>
 <span class="sd">            boundaries are met, else returns a large number to trick the</span>
 <span class="sd">            leastsq algorithm</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="k">if</span> <span class="n">within_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Sum of two exponential functions&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Sum of two exponential functions"""</span>
             <span class="n">A2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">A1</span>
             <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Sum of three exponential functions&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Sum of three exponential functions"""</span>
             <span class="n">A3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span>
@@ -773,7 +773,7 @@
                 <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau3</span><span class="p">)</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">&quot;continuous&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">==</span> <span class="s2">"continuous"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span> <span class="o">=</span> <span class="n">double</span>
 
             <span class="k">if</span> <span class="n">p_guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -782,10 +782,10 @@
                 <span class="n">p</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">infodict</span><span class="p">,</span> <span class="n">mesg</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">leastsq</span><span class="p">(</span>
                     <span class="n">err</span><span class="p">,</span> <span class="n">p_guess</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">results</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"fit"</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">A2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">A1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">tau1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">tau2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"tau"</span><span class="p">]</span> <span class="o">=</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">tau1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">tau2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span> <span class="o">=</span> <span class="n">triple</span>
 
@@ -801,28 +801,28 @@
             <span class="n">p</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">infodict</span><span class="p">,</span> <span class="n">mesg</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">leastsq</span><span class="p">(</span>
                 <span class="n">err</span><span class="p">,</span> <span class="n">p_guess</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">results</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"fit"</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">A3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">A1</span> <span class="o">-</span> <span class="n">A2</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">tau1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">tau2</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">tau3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"tau"</span><span class="p">]</span> <span class="o">=</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">tau1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">tau2</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">tau3</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;infodict&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">infodict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;mesg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesg</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;ier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"infodict"</span><span class="p">]</span> <span class="o">=</span> <span class="n">infodict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"mesg"</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"ier"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ier</span>
 
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># solution found if ier is one of these values</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;estimate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="o">*</span><span class="n">p</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"estimate"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="o">*</span><span class="n">p</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Solution to results not found&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span></div>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Solution to results not found"</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;&lt;MDAnalysis HydrogenBondAutoCorrel analysis measuring the &quot;</span>
-            <span class="s2">&quot;</span><span class="si">{btype}</span><span class="s2"> lifetime of </span><span class="si">{n}</span><span class="s2"> different hydrogens&gt;&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+            <span class="s2">"&lt;MDAnalysis HydrogenBondAutoCorrel analysis measuring the "</span>
+            <span class="s2">"</span><span class="si">{btype}</span><span class="s2"> lifetime of </span><span class="si">{n}</span><span class="s2"> different hydrogens&gt;"</span>
+            <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
         <span class="p">)</span></div>
 
 </pre></div>

@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;OpenMM structure I/O --- :mod:`MDAnalysis.converters.OpenMM`</span>
+<span class="sd">"""OpenMM structure I/O --- :mod:`MDAnalysis.converters.OpenMM`</span>
 <span class="sd">================================================================</span>
 
 
@@ -204,7 +204,7 @@
 <span class="sd">   :members:</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -215,24 +215,24 @@
 <div class="viewcode-block" id="OpenMMSimulationReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMM.OpenMMSimulationReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OpenMMSimulationReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for OpenMM Simulation objects</span>
+<span class="w">    </span><span class="sd">"""Reader for OpenMM Simulation objects</span>
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMSIMULATION&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"OPENMMSIMULATION"</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;nm/ps&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="s2">&quot;kJ/(mol*nm)&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="s2">&quot;kJ/mol&quot;</span><span class="p">,</span>
+        <span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span>
+        <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nm"</span><span class="p">,</span>
+        <span class="s2">"velocity"</span><span class="p">:</span> <span class="s2">"nm/ps"</span><span class="p">,</span>
+        <span class="s2">"force"</span><span class="p">:</span> <span class="s2">"kJ/(mol*nm)"</span><span class="p">,</span>
+        <span class="s2">"energy"</span><span class="p">:</span> <span class="s2">"kJ/mol"</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this reader read *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">openmm.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -261,7 +261,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_mda_timestep_from_omm_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct Timestep object from OpenMM context&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Construct Timestep object from OpenMM context"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">openmm.unit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -275,11 +275,11 @@
 
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getTime</span><span class="p">()</span><span class="o">.</span><span class="n">_value</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;potential_energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getTime</span><span class="p">()</span><span class="o">.</span><span class="n">_value</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"potential_energy"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">state</span><span class="o">.</span><span class="n">getPotentialEnergy</span><span class="p">()</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">mole</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span>
         <span class="p">)</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;kinetic_energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"kinetic_energy"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">state</span><span class="o">.</span><span class="n">getKineticEnergy</span><span class="p">()</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">mole</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span>
         <span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">(</span>
@@ -297,19 +297,19 @@
 <div class="viewcode-block" id="OpenMMAppReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMM.OpenMMAppReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OpenMMAppReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for OpenMM Application layer objects</span>
+<span class="w">    </span><span class="sd">"""Reader for OpenMM Application layer objects</span>
 
 <span class="sd">    See also `the object definition in the OpenMM Application layer &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation&gt;`_</span>
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMAPP&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"OPENMMAPP"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nm"</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Can this reader read *thing*?"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -336,7 +336,7 @@
                 <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_mda_timestep_from_omm_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct Timestep object from OpenMM Application object&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Construct Timestep object from OpenMM Application object"""</span>
 
         <span class="n">omm_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">omm_object</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">getNumAtoms</span><span class="p">()</span>
@@ -355,10 +355,10 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_box_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure box angles correspond to first quadrant</span>
+<span class="w">    </span><span class="sd">"""Ensure box angles correspond to first quadrant</span>
 
 <span class="sd">    See `discussion on unitcell angles &lt;https://github.com/MDAnalysis/mdanalysis/pull/2917/files#r620558575&gt;`_</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">inverted</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">-</span> <span class="n">angles</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">angles</span><span class="p">,</span> <span class="n">inverted</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>

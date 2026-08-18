@@ -163,20 +163,20 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">"""\</span>
 <span class="sd">Transformations Base Class --- :mod:`MDAnalysis.transformations.base`</span>
 <span class="sd">=====================================================================</span>
 
 <span class="sd">.. autoclass:: TransformationBase</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">threadpoolctl</span><span class="w"> </span><span class="kn">import</span> <span class="n">threadpool_limits</span>
 
 
 <div class="viewcode-block" id="TransformationBase">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/base.html#MDAnalysis.transformations.base.TransformationBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TransformationBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for defining on-the-fly transformations</span>
+<span class="w">    </span><span class="sd">"""Base class for defining on-the-fly transformations</span>
 
 <span class="sd">    The class is designed as a template for creating on-the-fly</span>
 <span class="sd">    Transformation classes. This class will</span>
@@ -235,10 +235,10 @@
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">       Add the base class for all transformations to limit threads and</span>
 <span class="sd">       check if it can be used in parallel analysis.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        max_threads: int, optional</span>
@@ -248,25 +248,25 @@
 <span class="sd">           A check for if this can be used in split-apply-combine parallel</span>
 <span class="sd">           analysis approach.</span>
 <span class="sd">           Default is ``True``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_threads</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;max_threads&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parallelizable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;parallelizable&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_threads</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"max_threads"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallelizable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"parallelizable"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function that makes transformation can be called as a function</span>
+<span class="w">        </span><span class="sd">"""The function that makes transformation can be called as a function</span>
 
 <span class="sd">        The thread limit works as a context manager with given `max_threads`</span>
 <span class="sd">        wrapping the real :func:`_transform` function</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="n">threadpool_limits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_threads</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform the given `Timestep`</span>
+<span class="w">        </span><span class="sd">"""Transform the given `Timestep`</span>
 
 <span class="sd">        It deals with the transformation of a single `Timestep`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Only implemented in child classes&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Only implemented in child classes"</span><span class="p">)</span></div>
 
 </pre></div>
 

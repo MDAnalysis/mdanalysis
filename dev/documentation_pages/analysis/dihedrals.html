@@ -229,7 +229,7 @@ the backbone <span class="math notranslate nohighlight">\(phi\)</span> and <span
 <cite>atomgroups</cite>, this class only needs a list of residues or atoms from those
 residues. The previous example can repeated with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 5-10&quot;</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resid 5-10"</span><span class="p">)</span>
 
 <span class="n">R</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
@@ -237,7 +237,7 @@ residues. The previous example can repeated with:</p>
 <p>Then it can be plotted using the built-in plotting method <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="MDAnalysis.analysis.dihedrals.Ramachandran.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Ramachandran.plot()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figaspect</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">R</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">R</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -515,14 +515,14 @@ subset of protein atoms</p></li>
 <p class="rubric">Example</p>
 <p>For standard proteins, the default arguments will suffice to run a
 Ramachandran analysis:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'protein'</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>For proteins with non-standard residues, or for calculating dihedral
 angles for other linear polymers, you can switch off the protein checking
 and provide your own atom names in place of the typical peptide backbone
 atoms:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;CX&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;NT&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">'CX'</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">'NT'</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">'S'</span><span class="p">,</span>
                  <span class="n">check_protein</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>

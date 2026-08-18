@@ -177,17 +177,17 @@
 <div class="viewcode-block" id="TriangularMatrix">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TriangularMatrix</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Triangular matrix class. This class is designed to provide a</span>
+<span class="w">    </span><span class="sd">"""Triangular matrix class. This class is designed to provide a</span>
 <span class="sd">    memory-efficient representation of a triangular matrix that still behaves</span>
 <span class="sd">    as a square symmetric one. The class wraps a numpy.array object,</span>
 <span class="sd">    in which data are memorized in row-major order. It also has few additional</span>
 <span class="sd">    facilities to conveniently load/write a matrix from/to file. It can be</span>
 <span class="sd">    accessed using the [] and () operators, similarly to a normal numpy array.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loadfile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class constructor.</span>
+<span class="w">        </span><span class="sd">"""Class constructor.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -204,7 +204,7 @@
 <span class="sd">            be determined by the matrix file itself (i.e. metadata will be</span>
 <span class="sd">            ignored); size has to be provided though.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -240,7 +240,7 @@
 <div class="viewcode-block" id="TriangularMatrix.as_array">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">as_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return standard numpy array equivalent&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return standard numpy array equivalent"""</span>
         <span class="c1"># pylint: disable=unsubscriptable-object</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
         <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">tril_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span>
@@ -251,7 +251,7 @@
 <div class="viewcode-block" id="TriangularMatrix.savez">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.savez">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">savez</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save matrix in the npz compressed numpy format. Save metadata and</span>
+<span class="w">        </span><span class="sd">"""Save matrix in the npz compressed numpy format. Save metadata and</span>
 <span class="sd">        data as well.</span>
 
 <span class="sd">        Parameters</span>
@@ -259,82 +259,82 @@
 
 <span class="sd">        fname : str</span>
 <span class="sd">            Name of the file to be saved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TriangularMatrix.loadz">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">loadz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load matrix from the npz compressed numpy format.</span>
+<span class="w">        </span><span class="sd">"""Load matrix from the npz compressed numpy format.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        fname : str</span>
 <span class="sd">            Name of the file to be loaded.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">loaded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">():</span>
-            <span class="k">if</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;number of frames&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">():</span>
+            <span class="k">if</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"number of frames"</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span>
-                <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span>
+                <span class="n">loaded</span><span class="p">[</span><span class="s2">"elements"</span><span class="p">]</span>
             <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">loaded</span><span class="p">[</span><span class="s2">"elements"</span><span class="p">]</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scalar to matrix elements.</span>
+<span class="w">        </span><span class="sd">"""Add scalar to matrix elements.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        scalar : float</span>
 <span class="sd">            Scalar to be added.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">newMatrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
         <span class="n">newMatrix</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">+</span> <span class="n">scalar</span>
         <span class="k">return</span> <span class="n">newMatrix</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scalar to matrix elements.</span>
+<span class="w">        </span><span class="sd">"""Add scalar to matrix elements.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        scalar : float</span>
 <span class="sd">            Scalar to be added.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">+=</span> <span class="n">scalar</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiply with scalar.</span>
+<span class="w">        </span><span class="sd">"""Multiply with scalar.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        scalar : float</span>
 <span class="sd">            Scalar to multiply with.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">newMatrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
         <span class="n">newMatrix</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">*</span> <span class="n">scalar</span>
         <span class="k">return</span> <span class="n">newMatrix</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiply with scalar.</span>
+<span class="w">        </span><span class="sd">"""Multiply with scalar.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        scalar : float</span>
 <span class="sd">            Scalar to multiply with.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">*=</span> <span class="n">scalar</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -348,7 +348,7 @@
 <div class="viewcode-block" id="ParallelCalculation">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ParallelCalculation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    Generic parallel calculation class. Can use arbitrary functions,</span>
 <span class="sd">    arguments to functions and kwargs to functions.</span>
 
@@ -370,10 +370,10 @@
 <span class="sd">    nruns : int</span>
 <span class="sd">        Number of runs to be performed. Must be equal to len(args) and</span>
 <span class="sd">        len(kwargs).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        n_jobs : int</span>
@@ -387,7 +387,7 @@
 <span class="sd">        kwargs : list of dicts or None</span>
 <span class="sd">            kwargs for function; see the ParallelCalculation</span>
 <span class="sd">            class description.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># args[i] should be a list of args, one for each run</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
@@ -395,7 +395,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">functions</span> <span class="o">=</span> <span class="n">function</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">,</span> <span class="s2">"__iter__"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">functions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[:]</span> <span class="o">*</span> <span class="p">(</span>
@@ -418,7 +418,7 @@
 <div class="viewcode-block" id="ParallelCalculation.worker">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Generic worker. Will run function with the prescribed args and kwargs.</span>
 
 <span class="sd">        Parameters</span>
@@ -432,10 +432,10 @@
 <span class="sd">                results queue, where results are put after each calculation is</span>
 <span class="sd">                finished</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;STOP&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">"STOP"</span><span class="p">:</span>
                 <span class="k">return</span>
 
             <span class="n">results</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
@@ -446,7 +446,7 @@
 <div class="viewcode-block" id="ParallelCalculation.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">        Run parallel calculation.</span>
 
 <span class="sd">        Returns</span>
@@ -457,7 +457,7 @@
 <span class="sd">                certain argument in the args list, and object is the result of</span>
 <span class="sd">                corresponding calculation. For instance, in (3, output), output</span>
 <span class="sd">                is the return of function(\*args[3], \*\*kwargs[3]).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">results_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">):</span>
@@ -477,7 +477,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">):</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
-                <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;STOP&quot;</span><span class="p">)</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">"STOP"</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -485,8 +485,8 @@
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-            <span class="n">results</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;STOP&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">"STOP"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="s2">"STOP"</span><span class="p">):</span>
                 <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
@@ -497,7 +497,7 @@
 <div class="viewcode-block" id="trm_indices">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">trm_indices</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generate (i,j) indeces of a triangular matrix, between elements a and b.</span>
 <span class="sd">    The matrix size is automatically determined from the number of elements.</span>
 <span class="sd">    For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)</span>
@@ -511,7 +511,7 @@
 
 <span class="sd">    b : (int i, int j) tuple</span>
 <span class="sd">        final matrix element.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">a</span>
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
@@ -530,7 +530,7 @@
 <div class="viewcode-block" id="trm_indices_nodiag">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_nodiag">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">trm_indices_nodiag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
+<span class="w">    </span><span class="sd">"""generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
 <span class="sd">    without diagonal (e.g. no elements (0,0),(1,1),...,(n,n))</span>
 
 <span class="sd">    Parameters</span>
@@ -538,7 +538,7 @@
 
 <span class="sd">    n : int</span>
 <span class="sd">        Matrix size</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
@@ -549,7 +549,7 @@
 <div class="viewcode-block" id="trm_indices_diag">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_diag">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">trm_indices_diag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
+<span class="w">    </span><span class="sd">"""generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
 <span class="sd">    with diagonal</span>
 
 <span class="sd">    Parameters</span>
@@ -557,7 +557,7 @@
 
 <span class="sd">    n : int</span>
 <span class="sd">        Matrix size</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -568,7 +568,7 @@
 <div class="viewcode-block" id="merge_universes">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.merge_universes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">merge_universes</span><span class="p">(</span><span class="n">universes</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Merge list of universes into one</span>
 
 <span class="sd">    Parameters</span>
@@ -579,7 +579,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    ----------</span>
 <span class="sd">    Universe object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">universe</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">:</span>
         <span class="n">universe</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -587,7 +587,7 @@
     <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
         <span class="n">universes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
         <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-            <span class="nb">tuple</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">]),</span>
+            <span class="nb">tuple</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">"fac"</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">]),</span>
             <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">,</span>

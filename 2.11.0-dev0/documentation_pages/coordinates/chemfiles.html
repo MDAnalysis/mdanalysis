@@ -200,7 +200,7 @@ file reading. Check the list of <a class="reference external" href="https://chem
 <a class="reference external" href="https://chemfiles.org">chemfiles</a>. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">datafiles</span> <span class="k">as</span> <span class="n">data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">TPR</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">TRR</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;CHEMFILES&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">TPR</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">TRR</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"CHEMFILES"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 <span class="go">&lt;ChemfilesReader ~/anaconda3/envs/mda3/lib/python3.8/site-packages/MDAnalysisTests/data/adk_oplsaa.trr with 10 frames of 47681 atoms&gt;</span>
 </pre></div>
@@ -210,7 +210,7 @@ is handling the I/O transparently in the background.</p>
 <p><a class="reference external" href="https://chemfiles.org">chemfiles</a> can also <em>write</em> a number of formats for which there are no Writers in
 MDAnalysis. For example, to write a mol2 file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mol2_ligand</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">&quot;ligand.mol2&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;CHEMFILES&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">"ligand.mol2"</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"CHEMFILES"</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -306,7 +306,7 @@ to be used to return to its original frame.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">ChemfilesPicklable</span><span class="p">(</span><span class="n">XYZ</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">ChemfilesPicklable</span><span class="p">(</span><span class="n">XYZ</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>

@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">CRD topology parser</span>
 <span class="sd">===================</span>
 
@@ -192,7 +192,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
@@ -212,7 +212,7 @@
 <div class="viewcode-block" id="CRDParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/CRDParser.html#MDAnalysis.topology.CRDParser.CRDParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CRDParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a CHARMM CARD coordinate file for topology information.</span>
+<span class="w">    </span><span class="sd">"""Parse a CHARMM CARD coordinate file for topology information.</span>
 
 <span class="sd">    Reads the following Attributes:</span>
 <span class="sd">     - Atomids</span>
@@ -233,14 +233,14 @@
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">       Type and mass are not longer guessed here. Until 3.0 these will still be</span>
 <span class="sd">       set by default through through universe.guess_TopologyAttrs() API.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CRD&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"CRD"</span>
 
 <div class="viewcode-block" id="CRDParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/CRDParser.html#MDAnalysis.topology.CRDParser.CRDParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the Topology object</span>
+<span class="w">        </span><span class="sd">"""Create the Topology object</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -249,11 +249,11 @@
 <span class="sd">        Todo</span>
 <span class="sd">        ----</span>
 <span class="sd">        Could use the resnum and temp factor better</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">extformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span>
-            <span class="s2">&quot;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&quot;</span>
+            <span class="s2">"2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10"</span>
         <span class="p">)</span>
-        <span class="n">stdformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">&quot;2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5&quot;</span><span class="p">)</span>
+        <span class="n">stdformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">"2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5"</span><span class="p">)</span>
 
         <span class="n">atomids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -266,14 +266,14 @@
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">crd</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">linenum</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">crd</span><span class="p">):</span>
                 <span class="c1"># reading header</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"*"</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EXT&quot;</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"EXT"</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
                     <span class="n">r</span> <span class="o">=</span> <span class="n">extformat</span>
                     <span class="k">continue</span>
                 <span class="k">elif</span> <span class="p">(</span>
                     <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span>
+                    <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"*"</span>
                 <span class="p">):</span>
                     <span class="n">r</span> <span class="o">=</span> <span class="n">stdformat</span>
                     <span class="k">continue</span>
@@ -293,8 +293,8 @@
                     <span class="p">)</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Check CRD format at line </span><span class="si">{</span><span class="n">linenum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Check CRD format at line </span><span class="si">{</span><span class="n">linenum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 

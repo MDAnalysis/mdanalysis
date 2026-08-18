@@ -211,7 +211,7 @@ separately.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB_X3DNA</span>
 
 <span class="c1"># set path to your x3dna binary in bashrc file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">PDB_X3DNA</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;x3dna_ensemble analyze -b 355d.bps -p pdbfile&quot;</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">PDB_X3DNA</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">"x3dna_ensemble analyze -b 355d.bps -p pdbfile"</span><span class="p">)</span>
 <span class="n">H</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">H</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="n">H</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>

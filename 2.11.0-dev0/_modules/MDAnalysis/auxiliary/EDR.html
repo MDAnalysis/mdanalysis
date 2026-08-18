@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`</span>
 <span class="sd">========================================================</span>
 <span class="sd">.. versionadded:: 2.4.0</span>
@@ -221,18 +221,18 @@
 <span class="sd">The :class:`.EDRReader` can be used to access the data stored in EDR files on</span>
 <span class="sd">its own, without association of data to trajectory frames.</span>
 <span class="sd">This is useful, for example, for plotting. The data for a single term, a list</span>
-<span class="sd">of terms, or for all terms can be returned in dictionary form. &quot;Time&quot; is always</span>
+<span class="sd">of terms, or for all terms can be returned in dictionary form. "Time" is always</span>
 <span class="sd">returned in this dictionary to make plotting easier::</span>
 
 
-<span class="sd">    temp = aux.get_data(&quot;Temperature&quot;)</span>
-<span class="sd">    plt.plot(temp[&quot;Time&quot;], temp[&quot;Temperature&quot;])</span>
+<span class="sd">    temp = aux.get_data("Temperature")</span>
+<span class="sd">    plt.plot(temp["Time"], temp["Temperature"])</span>
 
-<span class="sd">    some_terms = aux.get_data([&quot;Potential&quot;, &quot;Kinetic En.&quot;, &quot;Box-X&quot;])</span>
-<span class="sd">    plt.plot(some_terms[&quot;Time&quot;], some_terms[&quot;Potential&quot;])</span>
+<span class="sd">    some_terms = aux.get_data(["Potential", "Kinetic En.", "Box-X"])</span>
+<span class="sd">    plt.plot(some_terms["Time"], some_terms["Potential"])</span>
 
 <span class="sd">    all_terms = aux.get_data()</span>
-<span class="sd">    plt.plot(all_terms[&quot;Time&quot;], all_terms[&quot;Pressure&quot;])</span>
+<span class="sd">    plt.plot(all_terms["Time"], all_terms["Pressure"])</span>
 
 <span class="sd">Adding EDR data to trajectories</span>
 <span class="sd">-------------------------------</span>
@@ -249,14 +249,14 @@
 <span class="sd">The first argument is the `aux_spec` dictionary. With it, users specify which</span>
 <span class="sd">entries from the EDR file they want to add, and they give it a more convenient</span>
 <span class="sd">name to be used in MDAnalysis (because GROMACS creates names like</span>
-<span class="sd">&quot;#Surf*SurfTen&quot; or &quot;&#39;Constr. rmsd&#39;&quot; which may be inconvenient to use.)</span>
+<span class="sd">"#Surf*SurfTen" or "'Constr. rmsd'" which may be inconvenient to use.)</span>
 <span class="sd">This dictionary might look like this::</span>
 
-<span class="sd">    aux_spec = {&quot;epot&quot;: &quot;Potential&quot;,</span>
-<span class="sd">                &quot;surf_tension&quot;: &quot;#Surf*SurfTen&quot;}</span>
+<span class="sd">    aux_spec = {"epot": "Potential",</span>
+<span class="sd">                "surf_tension": "#Surf*SurfTen"}</span>
 
 <span class="sd">When provided as shown below, this would direct the :class:`.EDRReader` to take</span>
-<span class="sd">the data it finds under the &quot;Potential&quot; key in its :attr:`.data_dict`</span>
+<span class="sd">the data it finds under the "Potential" key in its :attr:`.data_dict`</span>
 <span class="sd">dictionary and attach it to the trajectory time steps under</span>
 <span class="sd">`u.trajectory.ts.aux.epot` (and the same for the surface tension).</span>
 
@@ -278,20 +278,20 @@
 <span class="sd">    In [1]: u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)</span>
 <span class="sd">    In [2]: aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)</span>
 <span class="sd">    In [3]: aux.terms</span>
-<span class="sd">    Out[3]: [&#39;Time&#39;, &#39;Bond&#39;, &#39;Angle&#39;, ...]</span>
+<span class="sd">    Out[3]: ['Time', 'Bond', 'Angle', ...]</span>
 
 <span class="sd">Data is associated with the trajectory, using an `aux_spec` dictionary to</span>
 <span class="sd">specify which data to add under which name. Any number of terms can be added</span>
 <span class="sd">using this method. The data is then accessible in the `ts.aux` namespace via</span>
 <span class="sd">both attribute and dictionary syntax::</span>
 
-<span class="sd">    In [4]: u.trajectory.add_auxiliary({&quot;epot&quot;: &quot;Potential&quot;,</span>
-<span class="sd">                                        &quot;angle&quot;: &quot;Angle&quot;}, aux)</span>
+<span class="sd">    In [4]: u.trajectory.add_auxiliary({"epot": "Potential",</span>
+<span class="sd">                                        "angle": "Angle"}, aux)</span>
 <span class="sd">    In [5]: u.trajectory.ts.aux.epot</span>
 <span class="sd">    Out[5]: -525164.0625</span>
 <span class="sd">    In [6]: u.trajectory.ts.aux.Angle</span>
 <span class="sd">    Out[6]: 3764.52734375</span>
-<span class="sd">    In [7]: u.trajectory.ts.aux[&quot;epot&quot;]</span>
+<span class="sd">    In [7]: u.trajectory.ts.aux["epot"]</span>
 <span class="sd">    Out[7]: -525164.0625</span>
 
 
@@ -307,7 +307,7 @@
 <span class="sd">data this way, the terms in :attr:`.terms` become the names used in `ts.aux`::</span>
 
 <span class="sd">    In [7]: u.trajectory.add_auxiliary(auxdata=aux)</span>
-<span class="sd">    In [8]: u.trajectory.ts.aux[&quot;#Surf*SurfTen&quot;]</span>
+<span class="sd">    In [8]: u.trajectory.ts.aux["#Surf*SurfTen"]</span>
 <span class="sd">    Out[8]: -1857.519287109375</span>
 
 
@@ -331,7 +331,7 @@
 <span class="sd">   :members:</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
@@ -354,7 +354,7 @@
 <div class="viewcode-block" id="EDRStep">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRStep">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EDRStep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxStep</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`AuxStep` class for the .edr file format.</span>
+<span class="w">    </span><span class="sd">""":class:`AuxStep` class for the .edr file format.</span>
 
 <span class="sd">    Extends the base AuxStep class to allow selection of time and</span>
 <span class="sd">    data-of-interest fields (by dictionary key) from the full set of data read</span>
@@ -364,7 +364,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    time_selector : str, optional</span>
 <span class="sd">        Name of the dictionary key that links to the time values (assumed to</span>
-<span class="sd">        be in ps). Default value is &quot;Time&quot;</span>
+<span class="sd">        be in ps). Default value is "Time"</span>
 <span class="sd">    data_selector : str | list of str | None, optional</span>
 <span class="sd">        List of dictionary keys linking to data of interest in the EDR file to</span>
 <span class="sd">        be stored in ``data``. Default value is ``None``.</span>
@@ -374,11 +374,11 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`MDAnalysis.auxiliary.base.AuxStep`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">time_selector</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">time_selector</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Time"</span><span class="p">,</span>
         <span class="n">data_selector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -387,9 +387,9 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_select_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;&#39;Time&#39; is one of the entries in the dict returned by pyedr.</span>
-<span class="sd">        The base AuxStep Class uses the time_selector &#39;Time&#39; to return the</span>
-<span class="sd">        time value of each step.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""'Time' is one of the entries in the dict returned by pyedr.</span>
+<span class="sd">        The base AuxStep Class uses the time_selector 'Time' to return the</span>
+<span class="sd">        time value of each step."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
@@ -399,8 +399,8 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a key in the data_dict dictionary.&quot;</span>
-                <span class="s2">&quot; Check the EDRReader.terms attribute&quot;</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' is not a key in the data_dict dictionary."</span>
+                <span class="s2">" Check the EDRReader.terms attribute"</span>
             <span class="p">)</span></div>
 
 
@@ -408,7 +408,7 @@
 <div class="viewcode-block" id="EDRReader">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EDRReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxReader</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Auxiliary reader to read data from an .edr file.</span>
+<span class="w">    </span><span class="sd">"""Auxiliary reader to read data from an .edr file.</span>
 
 <span class="sd">    `EDR files`_</span>
 <span class="sd">    are created by GROMACS during a simulation. They are binary files which</span>
@@ -457,15 +457,15 @@
 <span class="sd">    The file is assumed to be of a size such that reading and storing the full</span>
 <span class="sd">    contents is practical. A warning will be issued when memory usage exceeds</span>
 <span class="sd">    1 GB. This warning limit can be changed via the ``memory_limit`` kwarg.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;EDR&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"EDR"</span>
     <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">EDRStep</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYEDR</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;EDRReader: To read EDR files please install &quot;</span> <span class="s2">&quot;pyedr.&quot;</span>
+                <span class="s2">"EDRReader: To read EDR files please install "</span> <span class="s2">"pyedr."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span> <span class="o">=</span> <span class="n">pyedr</span><span class="o">.</span><span class="n">edr_to_dict</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -473,14 +473,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_convert_units</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">"Time"</span><span class="p">])</span>
         <span class="c1"># attribute to communicate found energy terms to user</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">terms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">EDRReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_convert_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called during :func:`__init__` to convert the units found in the EDR</span>
-<span class="sd">        file to MDAnalysis base units&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Called during :func:`__init__` to convert the units found in the EDR</span>
+<span class="sd">        file to MDAnalysis base units"""</span>
         <span class="n">unknown_units</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
@@ -496,8 +496,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">MDANALYSIS_BASE_UNITS</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">unknown_units</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Could not find unit type for the following &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;units: </span><span class="si">{</span><span class="n">unknown_units</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">"Could not find unit type for the following "</span>
+                <span class="sa">f</span><span class="s2">"units: </span><span class="si">{</span><span class="n">unknown_units</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -507,7 +507,7 @@
         <span class="k">return</span> <span class="n">size</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EDRStep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read next auxiliary step and update ``auxstep``.</span>
+<span class="w">        </span><span class="sd">"""Read next auxiliary step and update ``auxstep``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -518,7 +518,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        StopIteration</span>
 <span class="sd">            When end of auxiliary data set is reached.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">auxstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span>
         <span class="n">new_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">new_step</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
@@ -534,7 +534,7 @@
                 <span class="k">raise</span> <span class="ne">StopIteration</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EDRStep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move to and read i-th auxiliary step.</span>
+<span class="w">        </span><span class="sd">"""Move to and read i-th auxiliary step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -549,11 +549,11 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If step index not in valid range.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Step index </span><span class="si">{0}</span><span class="s2"> is not valid for auxiliary &quot;</span>
-                <span class="s2">&quot;(num. steps </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
+                <span class="s2">"Step index </span><span class="si">{0}</span><span class="s2"> is not valid for auxiliary "</span>
+                <span class="s2">"(num. steps </span><span class="si">{1}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
@@ -562,13 +562,13 @@
 <div class="viewcode-block" id="EDRReader.read_all_times">
 <a class="viewcode-back" href="../../../documentation_pages/auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader.read_all_times">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of time at each step.</span>
+<span class="w">        </span><span class="sd">"""Get list of time at each step.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        NumPy array of float</span>
 <span class="sd">            Time at each step.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div>
 
 
@@ -577,7 +577,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data_selector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the auxiliary data contained in the :class:`EDRReader`.</span>
+<span class="w">        </span><span class="sd">"""Returns the auxiliary data contained in the :class:`EDRReader`.</span>
 <span class="sd">        Returns either all data or data specified as `data_selector` in form</span>
 <span class="sd">        of a str or a list of any of :attr:`EDRReader.terms`. `Time` is</span>
 <span class="sd">        always returned to allow easy plotting.</span>
@@ -585,7 +585,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data_selector: str, List[str], None</span>
-<span class="sd">            Keys to be extracted from the auxiliary reader&#39;s data dictionary.</span>
+<span class="sd">            Keys to be extracted from the auxiliary reader's data dictionary.</span>
 <span class="sd">            If ``None``, returns all data found in :attr:`.data_dict`.</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -597,7 +597,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        KeyError</span>
 <span class="sd">            if an invalid data_selector key is passed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">data_selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span>
 
@@ -606,11 +606,11 @@
                 <span class="k">return</span> <span class="n">datadict</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;data selector </span><span class="si">{</span><span class="n">term</span><span class="si">}</span><span class="s2"> is invalid. Check the &quot;</span>
-                    <span class="s2">&quot;EDRReader&#39;s `terms` attribute.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"data selector </span><span class="si">{</span><span class="n">term</span><span class="si">}</span><span class="s2"> is invalid. Check the "</span>
+                    <span class="s2">"EDRReader's `terms` attribute."</span>
                 <span class="p">)</span>
 
-        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">]}</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Time"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">"Time"</span><span class="p">]}</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_selector</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">data_selector</span><span class="p">:</span>

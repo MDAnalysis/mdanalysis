@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;GSD topology parser</span>
+<span class="sd">"""GSD topology parser</span>
 <span class="sd">=========================</span>
 
 <span class="sd">.. versionadded:: 0.17.0</span>
@@ -183,7 +183,7 @@
 <span class="sd">To load a GSD HOOMD file::</span>
 
 <span class="sd">   import MDAnalysis as mda</span>
-<span class="sd">   u = mda.Universe(&quot;example.gsd&quot;)</span>
+<span class="sd">   u = mda.Universe("example.gsd")</span>
 
 
 <span class="sd">Classes</span>
@@ -193,7 +193,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -227,7 +227,7 @@
 <div class="viewcode-block" id="GSDParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/GSDParser.html#MDAnalysis.topology.GSDParser.GSDParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GSDParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a Hoomd GSD file to create a Topology</span>
+<span class="w">    </span><span class="sd">"""Parses a Hoomd GSD file to create a Topology</span>
 
 <span class="sd">    Reads the following Attributes:</span>
 <span class="sd">     - Atomtypes</span>
@@ -248,16 +248,16 @@
 <span class="sd">    the MDAnalysis.Universe will not correspond to the body index stored in the</span>
 <span class="sd">    GSD file.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;GSD&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"GSD"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_GSD</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;GSDParser: To read a Topology from a Hoomd GSD &quot;</span>
-                <span class="s2">&quot;file, please install gsd&quot;</span>
+                <span class="s2">"GSDParser: To read a Topology from a Hoomd GSD "</span>
+                <span class="s2">"file, please install gsd"</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GSDParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -265,13 +265,13 @@
 <div class="viewcode-block" id="GSDParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/GSDParser.html#MDAnalysis.topology.GSDParser.GSDParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse Hoomd GSD file</span>
+<span class="w">        </span><span class="sd">"""Parse Hoomd GSD file</span>
 
 <span class="sd">        .. versionadded:: 0.17.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">with</span> <span class="n">gsd</span><span class="o">.</span><span class="n">hoomd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">gsd</span><span class="o">.</span><span class="n">hoomd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
             <span class="c1"># Here it is assumed that the particle data does not change in the</span>
             <span class="c1"># trajectory.</span>
             <span class="n">snap</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -281,26 +281,26 @@
             <span class="n">ptypes</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">particles</span><span class="o">.</span><span class="n">types</span>
             <span class="n">atypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ptypes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">snap</span><span class="o">.</span><span class="n">particles</span><span class="o">.</span><span class="n">typeid</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atypes</span><span class="p">)</span> <span class="o">!=</span> <span class="n">natoms</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Number of types does not equal natoms.&quot;</span><span class="p">)</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Number of types does not equal natoms."</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"types"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
 
             <span class="c1"># set radii, masses, charges</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">particles</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;diameter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Radii</span><span class="p">(</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"diameter"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Radii</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"mass"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"charge"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
             <span class="c1"># set bonds, angles, dihedrals, impropers</span>
             <span class="k">for</span> <span class="p">(</span>
                 <span class="n">attrname</span><span class="p">,</span>
                 <span class="n">attr</span><span class="p">,</span>
             <span class="p">)</span> <span class="ow">in</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="n">Angles</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;impropers&quot;</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"bonds"</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"angles"</span><span class="p">,</span> <span class="n">Angles</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"dihedrals"</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"impropers"</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">snap</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
@@ -326,7 +326,7 @@
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">bodies</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">bodies</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">bodies</span><span class="p">))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">nbodies</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">atom_resindex</span><span class="o">=</span><span class="n">blist</span><span class="p">)</span>
 

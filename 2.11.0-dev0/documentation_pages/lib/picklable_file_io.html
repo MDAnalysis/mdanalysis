@@ -229,7 +229,7 @@ Note that this only works in read mode.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span>
 <span class="n">buffer_wrapped</span> <span class="o">=</span> <span class="n">BufferIOPicklable</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -254,7 +254,7 @@ be pickled. Note that this only works in read mode.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span>
 <span class="n">text_wrapped</span> <span class="o">=</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -444,12 +444,12 @@ when mode is ‘rb’, returns BufferIOPicklable</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>open as context manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>open as function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span>
 <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -502,12 +502,12 @@ when mode is ‘r’ or ‘rb’, returns BZ2Picklable</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>open as context manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">bz2_pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">bz2_pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>open as function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">bz2_pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">bz2_pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span>
 <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -560,12 +560,12 @@ when mode is ‘r’ or ‘rb’, returns GzipPicklable</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>open as context manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">gzip_pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">gzip_pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>open as function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">gzip_pickle_open</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">gzip_pickle_open</span><span class="p">(</span><span class="s1">'filename'</span><span class="p">)</span>
 <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>

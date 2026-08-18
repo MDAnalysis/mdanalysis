@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">ITP topology parser</span>
 <span class="sd">===================</span>
 
@@ -182,7 +182,7 @@
 <span class="sd">If files are included with the `#include` directive, they will also be read.</span>
 <span class="sd">If they are not in the working directory, ITPParser will look for them in the</span>
 <span class="sd">``include_dir`` directory. By default, this is set to</span>
-<span class="sd">``include_dir=&quot;/usr/local/gromacs/share/gromacs/top/&quot;``.</span>
+<span class="sd">``include_dir="/usr/local/gromacs/share/gromacs/top/"``.</span>
 <span class="sd">Variables can be defined with the `#define` directive in files, or by passing</span>
 <span class="sd">in :ref:`keyword arguments &lt;itp-define-kwargs&gt;`.</span>
 
@@ -200,12 +200,12 @@
 <span class="sd">.. note::</span>
 
 <span class="sd">    AMBER also uses topology files with the .top extension. To use ITPParser</span>
-<span class="sd">    to read GROMACS top files, pass ``topology_format=&#39;ITP&#39;``.</span>
+<span class="sd">    to read GROMACS top files, pass ``topology_format='ITP'``.</span>
 
 <span class="sd">    ::</span>
 
 <span class="sd">        import MDAnalysis as mda</span>
-<span class="sd">        u = mda.Universe(&#39;topol.top&#39;, topology_format=&#39;ITP&#39;)</span>
+<span class="sd">        u = mda.Universe('topol.top', topology_format='ITP')</span>
 
 
 <span class="sd">.. _itp-define-kwargs:</span>
@@ -269,7 +269,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
@@ -304,21 +304,21 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Chargegroups</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The charge group for each Atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""The charge group for each Atom"""</span>
 
-    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;chargegroups&quot;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;chargegroup&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">"chargegroups"</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s2">"chargegroup"</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">GmxTopIterator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Iterate over the lines of a TOP/ITP file and its included files</span>
 
 <span class="sd">    The iterator strips comments, deals with #ifdef and #ifndef conditions,</span>
 <span class="sd">    and substitutes defined variables.</span>
 
 <span class="sd">    Defined variables passed into ``__init__`` *override* anything defined in the file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="p">,</span> <span class="n">defines</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_original_defines</span> <span class="o">=</span> <span class="n">defines</span>
@@ -341,17 +341,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">file_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_file_lines</span><span class="p">(</span><span class="n">infile</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#include&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#include"</span><span class="p">):</span>
                     <span class="n">inc</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_from_file</span><span class="p">(</span><span class="n">inc</span><span class="p">):</span>
                         <span class="k">yield</span> <span class="n">line</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#define&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#define"</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#if&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#if"</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">do_if</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">infile</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#else&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#else"</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">skip_until_endif</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>  <span class="c1"># ignore #if and others</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">):</span>  <span class="c1"># ignore #if and others</span>
                     <span class="k">pass</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">:</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute_defined</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -374,42 +374,42 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">split</span><span class="p">:</span>
                 <span class="n">split</span><span class="p">[</span><span class="n">split</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">line</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">clean_file_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># ; is for comments</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># ; is for comments</span>
             <span class="k">yield</span> <span class="n">line</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">do_if</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
         <span class="n">ifdef</span><span class="p">,</span> <span class="n">variable</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ifdef</span> <span class="o">==</span> <span class="s2">&quot;#ifdef&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ifdef</span> <span class="o">==</span> <span class="s2">"#ifdef"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skip_until_else</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">ifdef</span> <span class="o">==</span> <span class="s2">&quot;#ifndef&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">ifdef</span> <span class="o">==</span> <span class="s2">"#ifndef"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skip_until_else</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">skip_until_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skip lines until #if condition ends&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Skip lines until #if condition ends"""</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_file_lines</span><span class="p">(</span><span class="n">infile</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#if&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#if"</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skip_until_endif</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#endif&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#else&quot;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#endif"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#else"</span><span class="p">):</span>
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Missing #endif in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_file</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Missing #endif in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_file</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">skip_until_endif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skip lines until #endif&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Skip lines until #endif"""</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_file_lines</span><span class="p">(</span><span class="n">infile</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#if&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#if"</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skip_until_endif</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#endif&quot;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#endif"</span><span class="p">):</span>
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Missing #endif in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_file</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Missing #endif in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_file</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">find_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -429,11 +429,11 @@
         <span class="n">include_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">include_dir</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">include_path</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">include_path</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Could not find </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Could not find </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Molecule</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Store moleculetype-specific attributes&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Store moleculetype-specific attributes"""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -452,12 +452,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">impropers</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;atoms&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_atoms</span><span class="p">,</span>
-            <span class="s2">&quot;bonds&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonds</span><span class="p">,</span>
-            <span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_angles</span><span class="p">,</span>
-            <span class="s2">&quot;dihedrals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">,</span>
-            <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_constraints</span><span class="p">,</span>
-            <span class="s2">&quot;settles&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_settles</span><span class="p">,</span>
+            <span class="s2">"atoms"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_atoms</span><span class="p">,</span>
+            <span class="s2">"bonds"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonds</span><span class="p">,</span>
+            <span class="s2">"angles"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_angles</span><span class="p">,</span>
+            <span class="s2">"dihedrals"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">,</span>
+            <span class="s2">"constraints"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_constraints</span><span class="p">,</span>
+            <span class="s2">"settles"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_settles</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">resolved_residue_attrs</span> <span class="o">=</span> <span class="kc">False</span>
@@ -485,7 +485,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>  <span class="c1"># ran out of values</span>
-                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span>
@@ -534,11 +534,11 @@
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">[(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;settles&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">[(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;settles&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">[(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"settles"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">[(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"settles"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">resolve_residue_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Figure out residue borders and assign moltypes and molnums&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Figure out residue borders and assign moltypes and molnums"""</span>
         <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
@@ -553,7 +553,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">shift_indices</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">atomid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">resid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">molnum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cgnr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get attributes ready for adding onto a larger topology.</span>
 
 <span class="sd">        Shifts atom indices, residue indices, molnums, and chargegroup numbers.</span>
@@ -569,7 +569,7 @@
 <span class="sd">        molnums: list</span>
 <span class="sd">        moltypes: list</span>
 <span class="sd">        residx: list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolved_residue_attrs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resolve_residue_attrs</span><span class="p">()</span>
 
@@ -605,7 +605,7 @@
         <span class="k">return</span> <span class="n">atom_order</span><span class="p">,</span> <span class="n">new_params</span><span class="p">,</span> <span class="n">molnums</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">moltypes</span><span class="p">,</span> <span class="n">residx</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">n_funct</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">funct_values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add defined GROMACS directive lines, only if the funct is in ``funct_values``&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add defined GROMACS directive lines, only if the funct is in ``funct_values``"""</span>
         <span class="k">if</span> <span class="n">funct_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">funct_values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -621,16 +621,16 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">index_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get indices of atom ids (list of strings)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="ITPParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/ITPParser.html#MDAnalysis.topology.ITPParser.ITPParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ITPParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read topology information from a GROMACS ITP_ or TOP_ file.</span>
+<span class="w">    </span><span class="sd">"""Read topology information from a GROMACS ITP_ or TOP_ file.</span>
 
 <span class="sd">    Creates a Topology with the following Attributes:</span>
 <span class="sd">    - ids</span>
@@ -667,19 +667,19 @@
 <span class="sd">      Added guessed elements if all elements are valid to preserve partial</span>
 <span class="sd">      mass guessing behavior</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;ITP&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"ITP"</span>
 
 <div class="viewcode-block" id="ITPParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/ITPParser.html#MDAnalysis.topology.ITPParser.ITPParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">include_dir</span><span class="o">=</span><span class="s2">&quot;/usr/local/gromacs/share/gromacs/top/&quot;</span><span class="p">,</span>
+        <span class="n">include_dir</span><span class="o">=</span><span class="s2">"/usr/local/gromacs/share/gromacs/top/"</span><span class="p">,</span>
         <span class="n">infer_system</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse ITP file into Topology</span>
+<span class="w">        </span><span class="sd">"""Parse ITP file into Topology</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -687,7 +687,7 @@
 <span class="sd">            A directory in which to look for other files included</span>
 <span class="sd">            from the original file, if the files are not first found</span>
 <span class="sd">            in the current directory.</span>
-<span class="sd">            Default: &quot;/usr/local/gromacs/share/gromacs/top/&quot;</span>
+<span class="sd">            Default: "/usr/local/gromacs/share/gromacs/top/"</span>
 
 <span class="sd">        infer_system: bool, optional (default True)</span>
 <span class="sd">            If a ``[ molecules ]`` directive is not found within the the</span>
@@ -698,7 +698,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        MDAnalysis *Topology* object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="p">{}</span>
@@ -711,16 +711,16 @@
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">itpfile</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">GmxTopIterator</span><span class="p">(</span><span class="n">itpfile</span><span class="p">,</span> <span class="n">include_dir</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;[&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;]&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">"["</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">"]"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"["</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"]"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-                    <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;atomtypes&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">"atomtypes"</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_atomtypes</span>
 
-                    <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;moleculetype&quot;</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">"moleculetype"</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_moleculetype</span>
 
-                    <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;molecules&quot;</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">"molecules"</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_molecules</span>
 
                     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_mol</span><span class="p">:</span>
@@ -744,23 +744,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">):</span>
-            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">==</span> <span class="s2">""</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">[</span><span class="n">empty</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="s2">"charge"</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                    <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">else</span> <span class="s2">""</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">[</span><span class="n">empty</span><span class="p">]</span>
             <span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">):</span>
-            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">==</span> <span class="s2">""</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">empty</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="s2">"mass"</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                    <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">else</span> <span class="s2">""</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">[</span><span class="n">empty</span><span class="p">]</span>
             <span class="p">]</span>
@@ -778,7 +778,7 @@
                 <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">):</span>
-            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">==</span> <span class="s2">""</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">empty</span><span class="p">]</span> <span class="o">=</span> <span class="n">Masses</span><span class="o">.</span><span class="n">missing_value_label</span>
 
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -791,20 +791,20 @@
                 <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;The elements attribute has been populated by guessing &quot;</span>
-                <span class="s2">&quot;elements from atom types. This behaviour has been &quot;</span>
-                <span class="s2">&quot;temporarily added to the ITPParser as we transition &quot;</span>
-                <span class="s2">&quot;to the new guessing API. &quot;</span>
-                <span class="s2">&quot;This behavior will be removed in release 3.0. &quot;</span>
-                <span class="s2">&quot;Please see issue #4698 for more information. &quot;</span><span class="p">,</span>
+                <span class="s2">"The elements attribute has been populated by guessing "</span>
+                <span class="s2">"elements from atom types. This behaviour has been "</span>
+                <span class="s2">"temporarily added to the ITPParser as we transition "</span>
+                <span class="s2">"to the new guessing API. "</span>
+                <span class="s2">"This behavior will be removed in release 3.0. "</span>
+                <span class="s2">"Please see issue #4698 for more information. "</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
-                <span class="s2">&quot;will not be populated. If needed these can be &quot;</span>
-                <span class="s2">&quot;guessed using universe.guess_TopologyAttrs(&quot;</span>
-                <span class="s2">&quot;to_guess=[&#39;elements&#39;]).&quot;</span>
+                <span class="s2">"Element information is missing, elements attribute "</span>
+                <span class="s2">"will not be populated. If needed these can be "</span>
+                <span class="s2">"guessed using universe.guess_TopologyAttrs("</span>
+                <span class="s2">"to_guess=['elements'])."</span>
             <span class="p">)</span>
 
         <span class="c1"># residue stuff</span>
@@ -834,10 +834,10 @@
 
         <span class="c1"># connectivity stuff</span>
         <span class="k">for</span> <span class="n">dct</span><span class="p">,</span> <span class="n">Attr</span><span class="p">,</span> <span class="n">attrname</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impropers</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">,</span> <span class="s2">&quot;impropers&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">,</span> <span class="s2">"bonds"</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="s2">"angles"</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">,</span> <span class="s2">"dihedrals"</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impropers</span><span class="p">,</span> <span class="n">Impropers</span><span class="p">,</span> <span class="s2">"impropers"</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="k">if</span> <span class="n">dct</span><span class="p">:</span>
                 <span class="n">indices</span><span class="p">,</span> <span class="n">types</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">dct</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
@@ -856,17 +856,17 @@
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_atomtypes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;type_bonded&quot;</span><span class="p">,</span> <span class="s2">&quot;atomic_number&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="s2">&quot;p_type&quot;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"type_bonded"</span><span class="p">,</span> <span class="s2">"atomic_number"</span><span class="p">,</span> <span class="s2">"mass"</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">,</span> <span class="s2">"p_type"</span><span class="p">]</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fields</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">""</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_moleculetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>

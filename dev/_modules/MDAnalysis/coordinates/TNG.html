@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">TNG trajectory files --- :mod:`MDAnalysis.coordinates.TNG`</span>
 <span class="sd">==========================================================</span>
 
@@ -229,7 +229,7 @@
 <span class="sd">.. _TNG specification:</span>
 <span class="sd">    https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
@@ -255,7 +255,7 @@
 <div class="viewcode-block" id="TNGReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TNGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the TNG format</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Reader for the TNG format</span>
 
 <span class="sd">    The TNG format :footcite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
 <span class="sd">    storage of trajectory and topology information. This reader is are based on</span>
@@ -271,21 +271,21 @@
 <span class="sd">    `ts.data` dictionary if they are available at the current frame.</span>
 
 <span class="sd">    .. versionadded:: 2.4.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TNG&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"TNG"</span>
     <span class="c1"># NOTE: Time units are in seconds unlike other GROMACS formats</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;second&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;nm/ps&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="s2">&quot;kJ/(mol*nm)&quot;</span><span class="p">,</span>
+        <span class="s2">"time"</span><span class="p">:</span> <span class="s2">"second"</span><span class="p">,</span>
+        <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nm"</span><span class="p">,</span>
+        <span class="s2">"velocity"</span><span class="p">:</span> <span class="s2">"nm/ps"</span><span class="p">,</span>
+        <span class="s2">"force"</span><span class="p">:</span> <span class="s2">"kJ/(mol*nm)"</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">_box_blockname</span> <span class="o">=</span> <span class="s2">&quot;TNG_TRAJ_BOX_SHAPE&quot;</span>
-    <span class="n">_positions_blockname</span> <span class="o">=</span> <span class="s2">&quot;TNG_TRAJ_POSITIONS&quot;</span>
-    <span class="n">_velocities_blockname</span> <span class="o">=</span> <span class="s2">&quot;TNG_TRAJ_VELOCITIES&quot;</span>
-    <span class="n">_forces_blockname</span> <span class="o">=</span> <span class="s2">&quot;TNG_TRAJ_FORCES&quot;</span>
+    <span class="n">_box_blockname</span> <span class="o">=</span> <span class="s2">"TNG_TRAJ_BOX_SHAPE"</span>
+    <span class="n">_positions_blockname</span> <span class="o">=</span> <span class="s2">"TNG_TRAJ_POSITIONS"</span>
+    <span class="n">_velocities_blockname</span> <span class="o">=</span> <span class="s2">"TNG_TRAJ_VELOCITIES"</span>
+    <span class="n">_forces_blockname</span> <span class="o">=</span> <span class="s2">"TNG_TRAJ_FORCES"</span>
     <span class="n">_special_blocks</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">_box_blockname</span><span class="p">,</span>
         <span class="n">_positions_blockname</span><span class="p">,</span>
@@ -294,11 +294,11 @@
     <span class="p">]</span>
 
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.23495&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The TNG paper&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1002/jcc.23495"</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">"The TNG paper"</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span>
     <span class="p">)</span>
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a TNG trajectory</span>
+<span class="w">        </span><span class="sd">"""Initialize a TNG trajectory</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -307,10 +307,10 @@
 <span class="sd">        convert_units : bool (optional)</span>
 <span class="sd">            convert into MDAnalysis units</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYTNG</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span>
+                <span class="s2">"TNGReader: To read TNG files please install pytng"</span>
             <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">TNGReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -318,7 +318,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span> <span class="o">=</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span> <span class="o">=</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">n_steps</span>
 
@@ -383,11 +383,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_strides_and_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Check that the strides and frame numbers of the blocks in the TNG</span>
 <span class="sd">        file match up so that the file can be iterated over retrieving data at</span>
 <span class="sd">        each integrator step</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">strides</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">n_data_frames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -403,7 +403,7 @@
 
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strides_eq</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">frames_eq</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                <span class="s2">&quot;Strides of TNG special blocks not equal, file cannot be read&quot;</span>
+                <span class="s2">"Strides of TNG special blocks not equal, file cannot be read"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_global_stride</span> <span class="o">=</span> <span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -416,10 +416,10 @@
             <span class="k">if</span> <span class="n">stride_add</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_stride</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">stride_add</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_stride</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;TNG additional block </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s2"> does not match&quot;</span>
-                        <span class="s2">&quot; strides of other blocks and is not&quot;</span>
-                        <span class="s2">&quot; divisible by the global stride_length.&quot;</span>
-                        <span class="s2">&quot; It will not be read&quot;</span>
+                        <span class="sa">f</span><span class="s2">"TNG additional block </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s2"> does not match"</span>
+                        <span class="s2">" strides of other blocks and is not"</span>
+                        <span class="s2">" divisible by the global stride_length."</span>
+                        <span class="s2">" It will not be read"</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -431,7 +431,7 @@
 <div class="viewcode-block" id="TNGReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;close the reader&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""close the reader"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span></div>
 
 
@@ -439,7 +439,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;parse the number of atoms in the TNG trajectory file</span>
+<span class="w">        </span><span class="sd">"""parse the number of atoms in the TNG trajectory file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -451,42 +451,42 @@
 <span class="sd">        n_atoms : int</span>
 <span class="sd">            The number of atoms in the TNG file</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYTNG</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span>
+                <span class="s2">"TNGReader: To read TNG files please install pytng"</span>
             <span class="p">)</span>
-        <span class="k">with</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tng</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">tng</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">tng</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;number of frames in trajectory</span>
+<span class="w">        </span><span class="sd">"""number of frames in trajectory</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        n_frames : int</span>
 <span class="sd">            The number of data containing frames in the trajectory</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;list of the blocks that are in the file</span>
+<span class="w">        </span><span class="sd">"""list of the blocks that are in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 
 <span class="sd">        blocks : list</span>
 <span class="sd">            The block names present in the TNG trajectory</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">special_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;list of the special blocks that are in the file</span>
+<span class="w">        </span><span class="sd">"""list of the special blocks that are in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -494,12 +494,12 @@
 <span class="sd">        special_blocks : list</span>
 <span class="sd">            The special block names (positions, box, velocities, forces)</span>
 <span class="sd">            present in the TNG trajectory</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_special_block_present</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">additional_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;list of the additional (non-special) blocks that are being read from</span>
+<span class="w">        </span><span class="sd">"""list of the additional (non-special) blocks that are being read from</span>
 <span class="sd">        the trajectory. This may be exclude some blocks present in the file if</span>
 <span class="sd">        they do not fall on the same trajectory stride as the positions and</span>
 <span class="sd">        velocities.</span>
@@ -509,18 +509,18 @@
 
 <span class="sd">        additional_blocks : list</span>
 <span class="sd">            The additional block names in the TNG trajectory</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;reopen the trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""reopen the trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_frame_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a frame number to an integrator step</span>
+<span class="w">        </span><span class="sd">"""Convert a frame number to an integrator step</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -532,11 +532,11 @@
 <span class="sd">        integrators_step :  int</span>
 <span class="sd">            The integrator step of the frame in the TNG file</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_stride</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;read frame i</span>
+<span class="w">        </span><span class="sd">"""read frame i</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -547,13 +547,13 @@
 <span class="sd">        -------</span>
 <span class="sd">        ts : Timestep</span>
 <span class="sd">            Data from frame i encapsulated in an MDA `:class:Timestep`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timestep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read next frame into a timestep</span>
+<span class="w">        </span><span class="sd">"""Read next frame into a timestep</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -564,9 +564,9 @@
 <span class="sd">        -------</span>
 <span class="sd">        ts :  Timestep</span>
 <span class="sd">            The timestep filled with data from the next step</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;trying to go over trajectory limit&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"trying to go over trajectory limit"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
         <span class="c1"># convert from frames to integrator steps</span>
@@ -577,9 +577,9 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_frame_to_ts</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">curr_step</span><span class="p">:</span> <span class="s2">&quot;pytng.TNGCurrentIntegratorStep&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">:</span> <span class="n">Timestep</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">curr_step</span><span class="p">:</span> <span class="s2">"pytng.TNGCurrentIntegratorStep"</span><span class="p">,</span> <span class="n">ts</span><span class="p">:</span> <span class="n">Timestep</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timestep</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;convert a TNGCurrentIteratorStep to an MDA Timestep</span>
+<span class="w">        </span><span class="sd">"""convert a TNGCurrentIteratorStep to an MDA Timestep</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -599,38 +599,38 @@
 <span class="sd">        ------</span>
 <span class="sd">        IOError</span>
 <span class="sd">            The reading of one of the attributes from the TNG file failed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">step</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">step</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_box</span><span class="p">:</span>
             <span class="n">curr_step</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_box_temp</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_box_temp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">read_success</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read box from TNG file&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Failed to read box from TNG file"</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span><span class="p">:</span>
             <span class="n">curr_step</span><span class="o">.</span><span class="n">get_positions</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">read_success</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read positions from TNG file&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Failed to read positions from TNG file"</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span><span class="p">:</span>
             <span class="n">curr_step</span><span class="o">.</span><span class="n">get_velocities</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">read_success</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read velocities from TNG file&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Failed to read velocities from TNG file"</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
             <span class="n">curr_step</span><span class="o">.</span><span class="n">get_forces</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">read_success</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read forces from TNG file&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Failed to read forces from TNG file"</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
 
@@ -647,27 +647,27 @@
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">read_success</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Failed to read additional block </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s2"> from TNG file&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Failed to read additional block </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s2"> from TNG file"</span>
                     <span class="p">)</span>
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a dictionary of the class state to pickle Reader instance.</span>
+<span class="w">        </span><span class="sd">"""Make a dictionary of the class state to pickle Reader instance.</span>
 
 <span class="sd">        Must be done manually as pytng uses a non-trivial`__cinit__`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># cant have PyTNG file iterator in as it is non-pickable</span>
-        <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_file_iterator&quot;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s2">"_file_iterator"</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore class from `state` dictionary in unpickling of Reader</span>
+<span class="w">        </span><span class="sd">"""Restore class from `state` dictionary in unpickling of Reader</span>
 <span class="sd">        instance</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
         <span class="c1"># reconstruct file iterator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span> <span class="o">=</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span> <span class="o">=</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
 
         <span class="c1"># unlike self._read_frame(self._frame),</span>
         <span class="c1"># the following lines update the state of the C-level file iterator</span>
@@ -681,15 +681,15 @@
 <div class="viewcode-block" id="TNGReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writer for TNG files</span>
+<span class="w">        </span><span class="sd">"""Writer for TNG files</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        NotImplementedError</span>
 <span class="sd">            Currently there is not writer for TNG files pending implementation</span>
 <span class="sd">            upstream in pytng.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;There is currently no writer for TNG files&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"There is currently no writer for TNG files"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

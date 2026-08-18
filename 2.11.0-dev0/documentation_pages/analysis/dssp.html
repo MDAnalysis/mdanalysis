@@ -223,7 +223,7 @@ structure.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">DSSP</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
-<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -238,11 +238,11 @@ trajectory got assigned the ‘X’ label.</p>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="n">long_run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">mean_secondary_structure</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">long_run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mean_secondary_structure</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mean_secondary_structure</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Running this code produces</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;--EEEE----------HHHHHHH----EE----HHHHH------HHHHHHHHHH------HHHHHHHHHHH---------EEEE-----HHHHHHHHH------EEEEEE--HHHHHH----EE--------EE---E----------------------HHHHHHHHHHHHHHHHHHHHHHHHHHHH----EEEEE------HHHHHHHHH--&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'--EEEE----------HHHHHHH----EE----HHHHH------HHHHHHHHHH------HHHHHHHHHHH---------EEEE-----HHHHHHHHH------EEEEEE--HHHHHH----EE--------EE---E----------------------HHHHHHHHHHHHHHHHHHHHHHHHHHHH----EEEEE------HHHHHHHHH--'</span>
 </pre></div>
 </div>
 </section>
@@ -265,11 +265,11 @@ that they maintain during the run:</p>
     <span class="o">.</span><span class="n">dssp_ndarray</span>
     <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">persistent_residues</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">persistent_residues</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Running this code produces</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;--EEEE----------HHHH&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'--EEEE----------HHHH'</span>
 </pre></div>
 </div>
 </section>
@@ -355,7 +355,7 @@ Can be set to <code class="docutils literal notranslate"><span class="pre">&quot
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">20</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">20</span><span class="p">]))</span>
 <span class="go">--EEEEE-----HHHHHHHH</span>
 </pre></div>
 </div>
@@ -374,7 +374,7 @@ used to compute, for instance, the <strong>average secondary structure</strong>:
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mean_secondary_structure</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mean_secondary_structure</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mean_secondary_structure</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
 <span class="go">-EEEEEE------HHHHHHH</span>
 </pre></div>
 </div>
@@ -618,12 +618,12 @@ have its last axis of shape 3: <code class="docutils literal notranslate"><span 
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">translate</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="c1"># encoding &#39;HE-&#39;</span>
-<span class="n">onehot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>  <span class="c1"># &#39;H&#39;</span>
-                   <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>  <span class="c1"># &#39;E&#39;</span>
-                   <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]])</span> <span class="c1"># &#39;-&#39;</span>
-<span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">onehot</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">onehot</span><span class="p">)))</span>
+<span class="c1"># encoding 'HE-'</span>
+<span class="n">onehot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>  <span class="c1"># 'H'</span>
+                   <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>  <span class="c1"># 'E'</span>
+                   <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]])</span> <span class="c1"># '-'</span>
+<span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">onehot</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">onehot</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>Running this code produces</p>

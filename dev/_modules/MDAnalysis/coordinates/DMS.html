@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">DESRES file format --- :mod:`MDAnalysis.coordinates.DMS`</span>
 <span class="sd">========================================================</span>
 
@@ -174,7 +174,7 @@
 <span class="sd">.. _DESRES: http://www.deshawresearch.com</span>
 <span class="sd">.. _Desmond: http://www.deshawresearch.com/resources_desmond.html</span>
 <span class="sd">.. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
 
@@ -185,36 +185,36 @@
 <div class="viewcode-block" id="DMSReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DMSReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Reads both coordinates and velocities.</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;DMS&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;A/ps&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"DMS"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"velocity"</span><span class="p">:</span> <span class="s2">"A/ps"</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur</span><span class="p">):</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM particle&quot;</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * FROM particle"</span><span class="p">)</span>
         <span class="n">particles</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[(</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">p</span><span class="p">[</span><span class="s2">"x"</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">"y"</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">"z"</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_particle_by_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM particle&quot;</span><span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">,</span> <span class="s2">"z"</span><span class="p">]</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * FROM particle"</span><span class="p">)</span>
         <span class="n">particles</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_global_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur</span><span class="p">):</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM global_cell&quot;</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * FROM global_cell"</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z</span><span class="p">}</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">"z"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"x"</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s2">"z"</span><span class="p">:</span> <span class="n">z</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">coords_list</span> <span class="o">=</span> <span class="kc">None</span>
@@ -232,12 +232,12 @@
             <span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
             <span class="n">coords_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
             <span class="n">velocities_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_particle_by_columns</span><span class="p">(</span>
-                <span class="n">cur</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">]</span>
+                <span class="n">cur</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"vx"</span><span class="p">,</span> <span class="s2">"vy"</span><span class="p">,</span> <span class="s2">"vz"</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_global_cell</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">coords_list</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Found no coordinates&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Found no coordinates"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords_list</span><span class="p">)</span>
 
         <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocities_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -252,7 +252,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0-based frame number</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">triclinic_box</span><span class="p">(</span>
-            <span class="n">unitcell</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="s2">"x"</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">[</span><span class="s2">"y"</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">[</span><span class="s2">"z"</span><span class="p">]</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>

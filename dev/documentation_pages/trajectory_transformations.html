@@ -233,9 +233,9 @@ being added.</p>
 returns it. If it takes no other arguments but a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>
 can be defined as the following example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Translate all coordinates by 2 angstroms up along the Z dimension.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ts</span>
 </pre></div>
@@ -270,9 +270,9 @@ See <a class="reference internal" href="transformations/translate.html#module-MD
 <p>Transformation can also be a wrapped function takes the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object as argument.
 So in this case, a transformation function (closure) can be roughly defined as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">up_by_x_func</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates a transformation that will translate all coordinates by a given amount along the Z dimension.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">distance</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ts</span>

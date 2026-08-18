@@ -237,7 +237,7 @@ of adenylate kinase (AdK). The trajectory is included within the test data files
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 
 <span class="c1"># selection of atomgroups</span>
-<span class="n">selected_residues</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 5-10&quot;</span><span class="p">)</span>
+<span class="n">selected_residues</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"resid 5-10"</span><span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.bat</span><span class="w"> </span><span class="kn">import</span> <span class="n">BAT</span>
 <span class="n">R</span> <span class="o">=</span> <span class="n">BAT</span><span class="p">(</span><span class="n">selected_residues</span><span class="p">)</span>
@@ -269,11 +269,11 @@ previous snippet has been executed.</p>
 </div>
 <p>Store data to the disk and load it again:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># BAT coordinates can be saved to disk in the numpy binary format</span>
-<span class="n">R</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;test.npy&#39;</span><span class="p">)</span>
+<span class="n">R</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'test.npy'</span><span class="p">)</span>
 
 <span class="c1"># The BAT coordinates in a new BAT instance can be loaded from disk</span>
 <span class="c1"># instead of using the run() method.</span>
-<span class="n">Rnew</span> <span class="o">=</span> <span class="n">BAT</span><span class="p">(</span><span class="n">selected_residues</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;test.npy&#39;</span><span class="p">)</span>
+<span class="n">Rnew</span> <span class="o">=</span> <span class="n">BAT</span><span class="p">(</span><span class="n">selected_residues</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">'test.npy'</span><span class="p">)</span>
 
 <span class="c1"># The BAT coordinates before and after disk I/O should be close</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Rnew</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">))</span>

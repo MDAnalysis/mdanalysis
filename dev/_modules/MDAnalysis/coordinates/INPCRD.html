@@ -165,10 +165,10 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`</span>
+<span class="sd">"""INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`</span>
 <span class="sd">================================================================================</span>
 
-<span class="sd">Read coordinates in Amber_ coordinate/restart file (suffix &quot;inpcrd&quot;).</span>
+<span class="sd">Read coordinates in Amber_ coordinate/restart file (suffix "inpcrd").</span>
 
 <span class="sd">.. _Amber: https://ambermd.org/FileFormats.php</span>
 
@@ -179,7 +179,7 @@
 <span class="sd">.. autoclass:: INPReader</span>
 <span class="sd">   :members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 
@@ -187,14 +187,14 @@
 <div class="viewcode-block" id="INPReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/INPCRD.html#MDAnalysis.coordinates.INPCRD.INPReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">INPReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for Amber restart files.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reader for Amber restart files."""</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;INPCRD&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTRT&quot;</span><span class="p">]</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"INPCRD"</span><span class="p">,</span> <span class="s2">"RESTRT"</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read header</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -232,7 +232,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/INPCRD.html#MDAnalysis.coordinates.INPCRD.INPReader.parse_n_atoms">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>

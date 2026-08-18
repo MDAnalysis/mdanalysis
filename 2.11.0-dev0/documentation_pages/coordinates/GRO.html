@@ -202,10 +202,10 @@ identities of atoms.</p>
 <p>For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; u = mda.Universe()`
 
-&gt;&gt;&gt; u.atoms.write(&#39;out.gro&#39;, reindex=False)
+&gt;&gt;&gt; u.atoms.write('out.gro', reindex=False)
 
 # OR
-&gt;&gt;&gt; with mda.Writer(&#39;out.gro&#39;, reindex=False) as w:
+&gt;&gt;&gt; with mda.Writer('out.gro', reindex=False) as w:
 ...     w.write(u.atoms)
 </pre></div>
 </div>
@@ -318,11 +318,11 @@ below.:</p>
 </pre></div>
 </div>
 <p>Usage 1:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;out.gro&#39;</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'out.gro'</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Usage 2:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s1">&#39;out.gro&#39;</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s1">'out.gro'</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
     <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -378,14 +378,14 @@ strings for writing lines in <code class="docutils literal notranslate"><span cl
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">n_atoms</span></code></dt><dd><p>For the first line of the gro file, supply the number of atoms in the system.
 E.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">'n_atoms'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">xyz</span></code></dt><dd><p>An atom line without velocities.  Requires that the ‘resid’, ‘resname’,
 ‘name’, ‘index’ and ‘pos’ keys be supplied.
 E.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">&#39;SOL&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;OW2&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">'xyz'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">'SOL'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'OW2'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd>
@@ -394,7 +394,7 @@ E.g.:</p>
 <dt><code class="docutils literal notranslate"><span class="pre">box_orthorhombic</span></code></dt><dd><p>The final line of the gro file which gives box dimensions.  Requires
 the box keyword to be given, which should be the three cartesian dimensions.
 E.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmt</span><span class="p">[</span><span class="s1">'box_orthorhombic'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd>

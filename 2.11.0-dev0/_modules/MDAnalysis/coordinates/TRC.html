@@ -165,7 +165,7 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;GROMOS11 trajectory reader --- :mod:`MDAnalysis.coordinates.TRC`</span>
+<span class="sd">"""GROMOS11 trajectory reader --- :mod:`MDAnalysis.coordinates.TRC`</span>
 <span class="sd">====================================================================</span>
 
 <span class="sd">Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.</span>
@@ -175,13 +175,13 @@
 <span class="sd">a PDB::</span>
 
 <span class="sd">    import MDAnalysis as mda</span>
-<span class="sd">    u = mda.Universe(&quot;topology.pdb&quot;, [&quot;md_1.trc.gz&quot;,&quot;md_2.trc.gz&quot;],</span>
+<span class="sd">    u = mda.Universe("topology.pdb", ["md_1.trc.gz","md_2.trc.gz"],</span>
 <span class="sd">    continuous=True)</span>
 
 <span class="sd">.. Note::</span>
 <span class="sd">   The GROMOS trajectory format organizes its data in blocks. A block starts</span>
 <span class="sd">   with a blockname in capital letters (example: POSITIONRED) and ends with</span>
-<span class="sd">   a line containing only &#39;&#39;END&#39;&#39;. Only the TITLE-block at the beginning of</span>
+<span class="sd">   a line containing only ''END''. Only the TITLE-block at the beginning of</span>
 <span class="sd">   each file is mandatory, others blocks can be chosen depending on the task.</span>
 
 <span class="sd">   The trajectory format as well as all permitted blocks and their data are</span>
@@ -189,8 +189,8 @@
 <span class="sd">   The manual can be downloaded here:</span>
 <span class="sd">   https://gromos.net/gromos11_pdf_manuals/vol4.pdf</span>
 
-<span class="sd">This reader is designed to read the blocks &quot;TIMESTEP&quot;, &quot;POSITIONRED&quot; and</span>
-<span class="sd">&quot;GENBOX&quot; from the trajectory which covers the standard trajectories of most</span>
+<span class="sd">This reader is designed to read the blocks "TIMESTEP", "POSITIONRED" and</span>
+<span class="sd">"GENBOX" from the trajectory which covers the standard trajectories of most</span>
 <span class="sd">simulations . If a trajectory includes other blocks, a warning is served</span>
 <span class="sd">and the blocks are ignored.</span>
 
@@ -206,7 +206,7 @@
 <span class="sd">.. autoclass:: TRCReader</span>
 <span class="sd">   :members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
@@ -220,49 +220,49 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.GROMOS11&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.coordinates.GROMOS11"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TRCReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRC.html#MDAnalysis.coordinates.TRC.TRCReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TRCReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the GROMOS11 format&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Coordinate reader for the GROMOS11 format"""</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRC&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"TRC"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nm"</span><span class="p">}</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
-    <span class="n">SUPPORTED_BLOCKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TITLE&quot;</span><span class="p">,</span> <span class="s2">&quot;TIMESTEP&quot;</span><span class="p">,</span> <span class="s2">&quot;POSITIONRED&quot;</span><span class="p">,</span> <span class="s2">&quot;GENBOX&quot;</span><span class="p">]</span>
+    <span class="n">SUPPORTED_BLOCKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"TITLE"</span><span class="p">,</span> <span class="s2">"TIMESTEP"</span><span class="p">,</span> <span class="s2">"POSITIONRED"</span><span class="p">,</span> <span class="s2">"GENBOX"</span><span class="p">]</span>
     <span class="n">NOT_SUPPORTED_BLOCKS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;POSITION&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;REFPOSITION&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;VELOCITY&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;VELOCITYRED&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;FREEFORCE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;FREEFORCERED&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;CONSFORCE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;CONSFORCERED&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SHAKEFAILPOSITION&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SHAKEFAILPREVPOSITION&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;LATTICESHIFTS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;COSDISPLACEMENTS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;STOCHINT&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;NHCVARIABLES&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ROTTRANSREFPOS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;PERTDATA&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;DISRESEXPAVE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;JVALUERESEXPAVE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;JVALUERESEPS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;JVALUEPERSCALE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ORDERPARAMRESEXPAVE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;XRAYRESEXPAVE&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;LEUSBIAS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;LEUSBIASBAS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ENERGY03&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;VOLUMEPRESSURE03&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;FREEENERGYDERIVS03&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;BFACTOR&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;AEDSS&quot;</span><span class="p">,</span>
+        <span class="s2">"POSITION"</span><span class="p">,</span>
+        <span class="s2">"REFPOSITION"</span><span class="p">,</span>
+        <span class="s2">"VELOCITY"</span><span class="p">,</span>
+        <span class="s2">"VELOCITYRED"</span><span class="p">,</span>
+        <span class="s2">"FREEFORCE"</span><span class="p">,</span>
+        <span class="s2">"FREEFORCERED"</span><span class="p">,</span>
+        <span class="s2">"CONSFORCE"</span><span class="p">,</span>
+        <span class="s2">"CONSFORCERED"</span><span class="p">,</span>
+        <span class="s2">"SHAKEFAILPOSITION"</span><span class="p">,</span>
+        <span class="s2">"SHAKEFAILPREVPOSITION"</span><span class="p">,</span>
+        <span class="s2">"LATTICESHIFTS"</span><span class="p">,</span>
+        <span class="s2">"COSDISPLACEMENTS"</span><span class="p">,</span>
+        <span class="s2">"STOCHINT"</span><span class="p">,</span>
+        <span class="s2">"NHCVARIABLES"</span><span class="p">,</span>
+        <span class="s2">"ROTTRANSREFPOS"</span><span class="p">,</span>
+        <span class="s2">"PERTDATA"</span><span class="p">,</span>
+        <span class="s2">"DISRESEXPAVE"</span><span class="p">,</span>
+        <span class="s2">"JVALUERESEXPAVE"</span><span class="p">,</span>
+        <span class="s2">"JVALUERESEPS"</span><span class="p">,</span>
+        <span class="s2">"JVALUEPERSCALE"</span><span class="p">,</span>
+        <span class="s2">"ORDERPARAMRESEXPAVE"</span><span class="p">,</span>
+        <span class="s2">"XRAYRESEXPAVE"</span><span class="p">,</span>
+        <span class="s2">"LEUSBIAS"</span><span class="p">,</span>
+        <span class="s2">"LEUSBIASBAS"</span><span class="p">,</span>
+        <span class="s2">"ENERGY03"</span><span class="p">,</span>
+        <span class="s2">"VOLUMEPRESSURE03"</span><span class="p">,</span>
+        <span class="s2">"FREEENERGYDERIVS03"</span><span class="p">,</span>
+        <span class="s2">"BFACTOR"</span><span class="p">,</span>
+        <span class="s2">"AEDSS"</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@store_init_arguments</span>
@@ -272,7 +272,7 @@
         <span class="c1"># GROMOS11 trajectories are usually either *.trc or *.trc.gz.</span>
         <span class="c1"># (trj suffix can come up when trajectory obtained from clustering)</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;trc&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;trj&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">"trc"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">"trj"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compressed</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compressed</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -287,32 +287,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"dt"</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_atoms"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of atoms in one frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">"""The number of atoms in one frame."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_atoms"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_frames"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of frames in the trajectory.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_frames&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">"""The number of frames in the trajectory."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_frames"</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frameDat</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a frame to a :class:`TimeStep`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert a frame to a :class:`TimeStep`"""</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span>
 
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span>
 
-        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">"dimensions"</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">"positions"</span><span class="p">]</span>
 
         <span class="c1"># Convert the units</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
@@ -324,12 +324,12 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_traj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        * Reads the number of atoms per frame (n_atoms)</span>
 <span class="sd">        * Reads the number of frames (n_frames)</span>
 <span class="sd">        * Reads the startposition of the timestep block</span>
 <span class="sd">          for each frame (l_blockstart_offset)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">traj_properties</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -338,10 +338,10 @@
         <span class="c1">#</span>
         <span class="n">first_block</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">""</span><span class="p">):</span>
                 <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">stripped_line</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">SUPPORTED_BLOCKS</span> <span class="ow">and</span> <span class="p">(</span>
-                    <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">&quot;TITLE&quot;</span>
+                    <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">"TITLE"</span>
                 <span class="p">):</span>
                     <span class="c1"># Save the name of the first non-title block</span>
                     <span class="c1"># in the trajectory file</span>
@@ -354,14 +354,14 @@
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">frame_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">block_size</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">block_size</span><span class="p">[</span><span class="s2">&quot;POSITIONRED&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">block_size</span><span class="p">[</span><span class="s2">"POSITIONRED"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">inconsistent_size</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="n">l_blockstart_offset</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">l_timestep_timevalues</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">""</span><span class="p">):</span>
                 <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="c1">#</span>
                 <span class="c1"># First block of frame</span>
@@ -373,31 +373,31 @@
                 <span class="c1">#</span>
                 <span class="c1"># Timestep-block</span>
                 <span class="c1">#</span>
-                <span class="k">if</span> <span class="s2">&quot;TIMESTEP&quot;</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">"TIMESTEP"</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
                     <span class="n">l_timestep_timevalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
                     <span class="p">)</span>
-                    <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">&quot;END&quot;</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">"END"</span><span class="p">:</span>
                         <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="c1">#</span>
                 <span class="c1"># Coordinates-block</span>
                 <span class="c1">#</span>
-                <span class="k">if</span> <span class="s2">&quot;POSITIONRED&quot;</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">"POSITIONRED"</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
                     <span class="c1"># Only count the number of atoms in the first block</span>
                     <span class="c1"># Also stores the size of the POSITIONRED block which</span>
                     <span class="c1"># should be consistent in most cases.</span>
                     <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">start</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                        <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">&quot;END&quot;</span><span class="p">:</span>
+                        <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">"END"</span><span class="p">:</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                             <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stripped_line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                                 <span class="n">n_atoms</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="n">end</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                        <span class="n">block_size</span><span class="p">[</span><span class="s2">&quot;POSITIONRED&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+                        <span class="n">block_size</span><span class="p">[</span><span class="s2">"POSITIONRED"</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
 
                     <span class="k">elif</span> <span class="n">inconsistent_size</span><span class="p">:</span>
-                        <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">&quot;END&quot;</span><span class="p">:</span>
+                        <span class="k">while</span> <span class="n">stripped_line</span> <span class="o">!=</span> <span class="s2">"END"</span><span class="p">:</span>
                             <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
                     <span class="k">else</span><span class="p">:</span>
@@ -414,37 +414,37 @@
                         <span class="c1"># we can seek to where the end of the block should be.</span>
                         <span class="n">current_pos</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                         <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span>
-                            <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">[</span><span class="s2">&quot;POSITIONRED&quot;</span><span class="p">]</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">[</span><span class="s2">"POSITIONRED"</span><span class="p">]</span>
                         <span class="p">)</span>
 
                         <span class="c1"># Check if we are at the correct position</span>
                         <span class="c1"># If not, set inconsistent_size to true and seek back</span>
                         <span class="c1"># to where we were before</span>
-                        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;END&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"END"</span><span class="p">:</span>
                             <span class="n">inconsistent_size</span> <span class="o">=</span> <span class="kc">True</span>
-                            <span class="n">warnmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Inconsistent POSITIONRED block size in file </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. Falling back to slow reader.&quot;</span>
+                            <span class="n">warnmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Inconsistent POSITIONRED block size in file </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. Falling back to slow reader."</span>
                             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
                             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">)</span>
                             <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">current_pos</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">frame_counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">errormsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;No supported blocks were found within the GROMOS trajectory!&quot;</span>
+                <span class="s2">"No supported blocks were found within the GROMOS trajectory!"</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
 
-        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_atoms</span>
-        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_frames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_counter</span>
-        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_blockstart_offset</span>
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_atoms"</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_frames"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_counter</span>
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">"l_blockstart_offset"</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_blockstart_offset</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_timestep_timevalues</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">"dt"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">warnmsg</span> <span class="o">=</span> <span class="s2">&quot;The trajectory does not contain TIMESTEP blocks!&quot;</span>
+            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">"dt"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">warnmsg</span> <span class="o">=</span> <span class="s2">"The trajectory does not contain TIMESTEP blocks!"</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">)</span>
 
@@ -452,54 +452,54 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_GROMOS11_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">frameDat</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
-        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">"positions"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_atoms"</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
         <span class="p">)</span>
-        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">"dimensions"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Read the trajectory</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">""</span><span class="p">):</span>
             <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="s2">&quot;TIMESTEP&quot;</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"TIMESTEP"</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
                 <span class="n">tmp_step</span><span class="p">,</span> <span class="n">tmp_time</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp_step</span><span class="p">)</span>
-                <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tmp_time</span><span class="p">)</span>
+                <span class="n">frameDat</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp_step</span><span class="p">)</span>
+                <span class="n">frameDat</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tmp_time</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="s2">&quot;POSITIONRED&quot;</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="s2">"POSITIONRED"</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
                 <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">buffer</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="n">coords_str</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">"#"</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
                         <span class="k">continue</span>
-                    <span class="k">elif</span> <span class="s2">&quot;END&quot;</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="s2">"END"</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coords_str</span><span class="p">)</span>
                         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
                 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span>
-                    <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span>
+                    <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span>
+                    <span class="n">sep</span><span class="o">=</span><span class="s2">" "</span><span class="p">,</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
                     <span class="n">count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">frameDat</span><span class="p">[</span><span class="s2">"positions"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]:</span>
-                    <span class="n">errormsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> atoms in step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="si">}</span><span class="s2">, but expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"n_atoms"</span><span class="p">]:</span>
+                    <span class="n">errormsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> atoms in step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="si">}</span><span class="s2">, but expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s1">'n_atoms'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="s2">&quot;GENBOX&quot;</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="s2">"GENBOX"</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
                 <span class="n">ntb_setting</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
                 <span class="k">if</span> <span class="n">ntb_setting</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">"dimensions"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="k">elif</span> <span class="n">ntb_setting</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
@@ -507,7 +507,7 @@
                     <span class="n">tmp_alpha</span><span class="p">,</span> <span class="n">tmp_beta</span><span class="p">,</span> <span class="n">tmp_gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
                         <span class="nb">float</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                     <span class="p">)</span>
-                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">"dimensions"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="n">tmp_a</span><span class="p">,</span>
                         <span class="n">tmp_b</span><span class="p">,</span>
                         <span class="n">tmp_c</span><span class="p">,</span>
@@ -523,7 +523,7 @@
                         <span class="o">&gt;</span> <span class="mf">1e-10</span>
                     <span class="p">):</span>
                         <span class="n">errormsg</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="s2">&quot;This reader doesnt&#39;t support a shifted origin!&quot;</span>
+                            <span class="s2">"This reader doesnt't support a shifted origin!"</span>
                         <span class="p">)</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
@@ -533,12 +533,12 @@
                         <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
                         <span class="o">&gt;</span> <span class="mf">1e-10</span>
                     <span class="p">):</span>
-                        <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">&quot;This reader doesnt&#39;t support yawed, pitched or rolled boxes!&quot;</span>
+                        <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">"This reader doesnt't support yawed, pitched or rolled boxes!"</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">&quot;This reader does&#39;t support truncated-octahedral periodic boundary conditions&quot;</span>
+                    <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">"This reader does't support truncated-octahedral periodic boundary conditions"</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
                 <span class="k">break</span>
@@ -549,19 +549,19 @@
             <span class="p">):</span>
                 <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">non_supp_bn</span> <span class="o">==</span> <span class="n">stripped_line</span><span class="p">:</span>
-                        <span class="n">warnmsg</span> <span class="o">=</span> <span class="n">non_supp_bn</span> <span class="o">+</span> <span class="s2">&quot; block is not supported!&quot;</span>
+                        <span class="n">warnmsg</span> <span class="o">=</span> <span class="n">non_supp_bn</span> <span class="o">+</span> <span class="s2">" block is not supported!"</span>
                         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warnmsg</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">frameDat</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;read frame i&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""read frame i"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="c1"># Move position in file just (-2 byte) before the start of the block</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">"l_blockstart_offset"</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
@@ -569,7 +569,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">:</span>
-            <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">&quot;Trying to go over trajectory limit&quot;</span>
+            <span class="n">errormsg</span> <span class="o">=</span> <span class="s2">"Trying to go over trajectory limit"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
 
@@ -579,13 +579,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close and reopen the trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close and reopen the trajectory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">errormsg</span> <span class="o">=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;TRC file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+            <span class="n">errormsg</span> <span class="o">=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">"TRC file already opened"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errormsg</span><span class="p">)</span>
 
@@ -603,7 +603,7 @@
 <div class="viewcode-block" id="TRCReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRC.html#MDAnalysis.coordinates.TRC.TRCReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the trc trajectory file if it was open.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the trc trajectory file if it was open."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="o">=</span> <span class="kc">None</span></div>

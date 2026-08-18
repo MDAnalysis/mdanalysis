@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`</span>
 <span class="sd">================================================================</span>
 
@@ -187,7 +187,7 @@
 <span class="sd">3. *Radius Cut*: To count as a contact the atoms *i* and *j* cannot be further</span>
 <span class="sd">   apart than some distance `radius`.</span>
 
-<span class="sd">The &quot;fraction of native contacts&quot; *Q(t)* is a number between 0 and 1 and</span>
+<span class="sd">The "fraction of native contacts" *Q(t)* is a number between 0 and 1 and</span>
 <span class="sd">calculated as the total number of native contacts for a given time frame</span>
 <span class="sd">divided by the total number of contacts in the reference structure.</span>
 
@@ -198,7 +198,7 @@
 <span class="sd">One-dimensional contact analysis</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">As an example we analyze the opening (&quot;unzipping&quot;) of salt bridges</span>
+<span class="sd">As an example we analyze the opening ("unzipping") of salt bridges</span>
 <span class="sd">when the AdK enzyme opens up; this is one of the example trajectories</span>
 <span class="sd">in MDAnalysis. ::</span>
 
@@ -212,26 +212,26 @@
 <span class="sd">    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
 <span class="sd">    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
 <span class="sd">    # problem before using this for real work.</span>
-<span class="sd">    sel_basic = &quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
-<span class="sd">    sel_acidic = &quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="sd">    sel_basic = "(resname ARG LYS) and (name NH* NZ)"</span>
+<span class="sd">    sel_acidic = "(resname ASP GLU) and (name OE* OD*)"</span>
 <span class="sd">    # reference groups (first frame of the trajectory, but you could also use a</span>
 <span class="sd">    # separate PDB, eg crystal structure)</span>
 <span class="sd">    acidic = u.select_atoms(sel_acidic)</span>
 <span class="sd">    basic = u.select_atoms(sel_basic)</span>
-<span class="sd">    # set up analysis of native contacts (&quot;salt bridges&quot;); salt bridges have a</span>
+<span class="sd">    # set up analysis of native contacts ("salt bridges"); salt bridges have a</span>
 <span class="sd">    # distance &lt;6 A</span>
 <span class="sd">    ca1 = contacts.Contacts(u, select=(sel_acidic, sel_basic),</span>
 <span class="sd">                            refgroup=(acidic, basic), radius=6.0)</span>
-<span class="sd">    # iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
+<span class="sd">    # iterate through trajectory and perform analysis of "native contacts" Q</span>
 <span class="sd">    ca1.run()</span>
 <span class="sd">    # print number of averave contacts</span>
 <span class="sd">    average_contacts = np.mean(ca1.results.timeseries[:, 1])</span>
-<span class="sd">    print(&#39;average contacts = {}&#39;.format(average_contacts))</span>
+<span class="sd">    print('average contacts = {}'.format(average_contacts))</span>
 <span class="sd">    # plot time series q(t)</span>
 <span class="sd">    fig, ax = plt.subplots()</span>
 <span class="sd">    ax.plot(ca1.results.timeseries[:, 0], ca1.results.timeseries[:, 1])</span>
-<span class="sd">    ax.set(xlabel=&#39;frame&#39;, ylabel=&#39;fraction of native contacts&#39;,</span>
-<span class="sd">           title=&#39;Native Contacts, average = {:.2f}&#39;.format(average_contacts))</span>
+<span class="sd">    ax.set(xlabel='frame', ylabel='fraction of native contacts',</span>
+<span class="sd">           title='Native Contacts, average = {:.2f}'.format(average_contacts))</span>
 <span class="sd">    fig.show()</span>
 
 
@@ -263,17 +263,17 @@
 <span class="sd">    from MDAnalysis.analysis import contacts</span>
 <span class="sd">    from MDAnalysisTests.datafiles import PSF, DCD</span>
 <span class="sd">    u = mda.Universe(PSF, DCD)</span>
-<span class="sd">    q1q2 = contacts.q1q2(u, &#39;name CA&#39;, radius=8)</span>
+<span class="sd">    q1q2 = contacts.q1q2(u, 'name CA', radius=8)</span>
 <span class="sd">    q1q2.run()</span>
 
 <span class="sd">    f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))</span>
 <span class="sd">    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 1],</span>
-<span class="sd">               label=&#39;q1&#39;)</span>
+<span class="sd">               label='q1')</span>
 <span class="sd">    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 2],</span>
-<span class="sd">               label=&#39;q2&#39;)</span>
-<span class="sd">    ax[0].legend(loc=&#39;best&#39;)</span>
+<span class="sd">               label='q2')</span>
+<span class="sd">    ax[0].legend(loc='best')</span>
 <span class="sd">    ax[1].plot(q1q2.results.timeseries[:, 1],</span>
-<span class="sd">               q1q2.results.timeseries[:, 2], &#39;.-&#39;)</span>
+<span class="sd">               q1q2.results.timeseries[:, 2], '.-')</span>
 <span class="sd">    f.show()</span>
 
 <span class="sd">Compare the resulting pathway to the `MinActionPath result for AdK`_</span>
@@ -307,8 +307,8 @@
 <span class="sd">    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
 <span class="sd">    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
 <span class="sd">    # problem before using this for real work.</span>
-<span class="sd">    sel_basic = &quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
-<span class="sd">    sel_acidic = &quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="sd">    sel_basic = "(resname ARG LYS) and (name NH* NZ)"</span>
+<span class="sd">    sel_acidic = "(resname ASP GLU) and (name OE* OD*)"</span>
 
 <span class="sd">    # reference groups (first frame of the trajectory, but you could also use a</span>
 <span class="sd">    # separate PDB, eg crystal structure)</span>
@@ -317,7 +317,7 @@
 
 <span class="sd">    nc = contacts.Contacts(u, select=(sel_acidic, sel_basic),</span>
 <span class="sd">                           method=is_any_closer,</span>
-<span class="sd">                           refgroup=(acidic, basic), kwargs={&#39;dist&#39;: 2.5})</span>
+<span class="sd">                           refgroup=(acidic, basic), kwargs={'dist': 2.5})</span>
 <span class="sd">    nc.run()</span>
 
 <span class="sd">    bound = nc.results.timeseries[:, 1]</span>
@@ -325,8 +325,8 @@
 
 <span class="sd">    f, ax = plt.subplots()</span>
 
-<span class="sd">    ax.plot(frames, bound, &#39;.&#39;)</span>
-<span class="sd">    ax.set(xlabel=&#39;frame&#39;, ylabel=&#39;is Bound&#39;,</span>
+<span class="sd">    ax.plot(frames, bound, '.')</span>
+<span class="sd">    ax.set(xlabel='frame', ylabel='is Bound',</span>
 <span class="sd">           ylim=(-0.1, 1.1))</span>
 
 <span class="sd">    f.show()</span>
@@ -350,7 +350,7 @@
 <span class="sd">.. rubric:: References</span>
 <span class="sd">.. footbibliography::</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -368,13 +368,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">UpdatingAtomGroup</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.contacts&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.contacts"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="soft_cut_q">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">soft_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">lambda_constant</span><span class="o">=</span><span class="mf">1.8</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a soft cut off</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate fraction of native contacts *Q* for a soft cut off</span>
 
 <span class="sd">    The native contact function is defined as :footcite:p:`Best2013`</span>
 
@@ -402,7 +402,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    Q : float</span>
 <span class="sd">      fraction of native contacts</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">lambda_constant</span> <span class="o">*</span> <span class="n">r0</span><span class="p">)))</span>
@@ -414,7 +414,7 @@
 <div class="viewcode-block" id="hard_cut_q">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.hard_cut_q">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a hard cut off.</span>
+<span class="w">    </span><span class="sd">"""Calculate fraction of native contacts *Q* for a hard cut off.</span>
 
 <span class="sd">    The cutoff can either be a float or a :class:`~numpy.ndarray` of the same</span>
 <span class="sd">    shape as `r`.</span>
@@ -432,7 +432,7 @@
 <span class="sd">    Q : float</span>
 <span class="sd">        fraction of contacts</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">cutoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">cutoff</span>
@@ -443,7 +443,7 @@
 <div class="viewcode-block" id="radius_cut_q">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.radius_cut_q">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">radius_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;calculate native contacts *Q* based on the single distance radius.</span>
+<span class="w">    </span><span class="sd">"""calculate native contacts *Q* based on the single distance radius.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -459,7 +459,7 @@
 <span class="sd">    Q : float</span>
 <span class="sd">        fraction of contacts</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
 
 
@@ -467,7 +467,7 @@
 <div class="viewcode-block" id="contact_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.contact_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">contact_matrix</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;calculate contacts from distance matrix</span>
+<span class="w">    </span><span class="sd">"""calculate contacts from distance matrix</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -484,7 +484,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    contacts : ndarray</span>
 <span class="sd">        boolean array of formed contacts</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span>
     <span class="k">else</span><span class="p">:</span>
@@ -496,7 +496,7 @@
 <div class="viewcode-block" id="Contacts">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.Contacts">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Contacts</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate contacts based observables.</span>
+<span class="w">    </span><span class="sd">"""Calculate contacts based observables.</span>
 
 <span class="sd">    The standard methods used in this class calculate the fraction of native</span>
 <span class="sd">    contacts *Q* from a trajectory.</span>
@@ -537,7 +537,7 @@
 <span class="sd">       Introduced :meth:`get_supported_backends` allowing</span>
 <span class="sd">       for parallel execution on :mod:`multiprocessing`</span>
 <span class="sd">       and :mod:`dask` backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -546,9 +546,9 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -557,13 +557,13 @@
         <span class="n">u</span><span class="p">,</span>
         <span class="n">select</span><span class="p">,</span>
         <span class="n">refgroup</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hard_cut&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">"hard_cut"</span><span class="p">,</span>
         <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
         <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">basekwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Universe</span>
@@ -576,8 +576,8 @@
 <span class="sd">        radius : float, optional (4.5 Angstroms)</span>
 <span class="sd">            radius within which contacts exist in refgroup</span>
 <span class="sd">        method : string | callable (optional)</span>
-<span class="sd">            Can either be one of ``[&#39;hard_cut&#39; , &#39;soft_cut&#39;, &#39;radius_cut&#39;]`` or a callable</span>
-<span class="sd">            with call signature ``func(r, r0, **kwargs)`` (the &quot;Contacts API&quot;).</span>
+<span class="sd">            Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable</span>
+<span class="sd">            with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").</span>
 <span class="sd">        pbc : bool (optional)</span>
 <span class="sd">            Uses periodic boundary conditions to calculate distances if set to ``True``; the</span>
 <span class="sd">            default is ``True``.</span>
@@ -600,23 +600,23 @@
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Changed `selection` keyword to `select`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Contacts</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;hard_cut&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">"hard_cut"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">hard_cut_q</span>
-        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;soft_cut&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">"soft_cut"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">soft_cut_q</span>
-        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;radius_cut&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">"radius_cut"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
                 <span class="n">radius_cut_q</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;method has to be callable&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"method has to be callable"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">method</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
@@ -661,9 +661,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_atomgroup</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
         <span class="n">select_error_message</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;selection must be either string or a &quot;</span>
-            <span class="s2">&quot;static AtomGroup. Updating AtomGroups &quot;</span>
-            <span class="s2">&quot;are not supported.&quot;</span>
+            <span class="s2">"selection must be either string or a "</span>
+            <span class="s2">"static AtomGroup. Updating AtomGroups "</span>
+            <span class="s2">"are not supported."</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
@@ -677,7 +677,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_box_func</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">pbc</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the dimensions of the simulation box based on PBC.</span>
+<span class="w">        </span><span class="sd">"""Retrieve the dimensions of the simulation box based on PBC.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -694,7 +694,7 @@
 <span class="sd">        box_dimensions : ndarray or None</span>
 <span class="sd">            The dimensions of the simulation box as a NumPy array if PBC</span>
 <span class="sd">            is True, else returns `None`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -720,20 +720,20 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
-            <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.timeseries` instead&quot;</span>
+            <span class="s2">"The `timeseries` attribute was deprecated in MDAnalysis "</span>
+            <span class="s2">"2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.timeseries` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;timeseries&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">"timeseries"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;create stand alone AGs from selections at frame&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""create stand alone AGs from selections at frame"""</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">u_orig</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">u_orig</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selections</span><span class="p">]</span>
@@ -741,8 +741,8 @@
 
 <div class="viewcode-block" id="q1q2">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">"all"</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Perform a q1-q2 analysis.</span>
 
 <span class="sd">    Compares native contacts between the starting structure and final structure</span>
 <span class="sd">    of a trajectory :footcite:p:`Franklin2007`.</span>
@@ -766,7 +766,7 @@
 <span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">       Support for setting ``start``, ``stop``, and ``step`` has been removed.</span>
 <span class="sd">       These should now be directly passed to :meth:`Contacts.run`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">select</span><span class="p">)</span>
     <span class="n">first_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">last_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -775,7 +775,7 @@
         <span class="n">selection</span><span class="p">,</span>
         <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
         <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;radius_cut&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">"radius_cut"</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 </pre></div>

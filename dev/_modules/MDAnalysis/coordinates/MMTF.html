@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;MMTF trajectory reader --- :mod:`MDAnalysis.coordinates.MMTF`</span>
+<span class="sd">"""MMTF trajectory reader --- :mod:`MDAnalysis.coordinates.MMTF`</span>
 <span class="sd">================================================================</span>
 
 <span class="sd">Reads coordinates data from the Macromolecular Transmission Format format</span>
@@ -182,7 +182,7 @@
 
 <span class="sd">.. _MMTF: https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">mmtf</span>
 
@@ -193,7 +193,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"gz"</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse_gzip</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
@@ -202,22 +202,22 @@
 <div class="viewcode-block" id="MMTFReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.MMTFReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MMTFReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the Macromolecular Transmission Format format (MMTF_).</span>
+<span class="w">    </span><span class="sd">"""Coordinate reader for the Macromolecular Transmission Format format (MMTF_).</span>
 
 
 <span class="sd">    .. deprecated:: 2.8.0</span>
 <span class="sd">       The MMTF format is no longer supported / serviced by the</span>
 <span class="sd">       Protein Data Bank. The Reader will be removed in version 3.0.</span>
 <span class="sd">       Users are encouraged to instead use alternative PDB formats.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MMTF&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"MMTF"</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The MMTF Reader is deprecated and will be removed in &quot;</span>
-            <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span>
+            <span class="s2">"The MMTF Reader is deprecated and will be removed in "</span>
+            <span class="s2">"MDAnalysis version 3.0.0"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
@@ -227,16 +227,16 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this Reader read *thing*?</span>
+<span class="w">        </span><span class="sd">"""Can this Reader read *thing*?</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">)</span>
 
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1371/journal.pcbi.1005575&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Reader&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.coordinates.MMTF&quot;</span><span class="p">,</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1371/journal.pcbi.1005575"</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"MMTF Reader"</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.coordinates.MMTF"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TOOD: Check units?</span>

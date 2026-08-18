@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">MMTF Topology Parser</span>
 <span class="sd">====================</span>
 
@@ -220,7 +220,7 @@
 <span class="sd">   :members:</span>
 
 <span class="sd">.. _Macromolecular Transmission Format (MMTF) format: https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">mmtf</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -249,19 +249,19 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"gz"</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse_gzip</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Models</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
-    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">"models"</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s2">"model"</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Models in this Universe.</span>
+<span class="w">        </span><span class="sd">"""Models in this Universe.</span>
 
 <span class="sd">        The MMTF format can define various models for a given structure. The</span>
 <span class="sd">        topology (eg residue identity) can change between different models,</span>
@@ -270,19 +270,19 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A list of AtomGroups, each representing a single model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">model_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;model </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">model_ids</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">"model </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">model_ids</span><span class="p">]</span>
 
-    <span class="n">transplants</span><span class="p">[</span><span class="s2">&quot;Universe&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">))</span>
+    <span class="n">transplants</span><span class="p">[</span><span class="s2">"Universe"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s2">"models"</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">))</span>
     <span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">"model"</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s2">"models"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
@@ -302,20 +302,20 @@
 <div class="viewcode-block" id="MMTFParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MMTFParser.html#MDAnalysis.topology.MMTFParser.MMTFParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MMTFParser</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MMTF&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"MMTF"</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can parser read *thing*?</span>
+<span class="w">        </span><span class="sd">"""Can parser read *thing*?</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">)</span>
 
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1371/journal.pcbi.1005575&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Parser&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.topology.MMTFParser&quot;</span><span class="p">,</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">"10.1371/journal.pcbi.1005575"</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"MMTF Parser"</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">"MDAnalysis.topology.MMTFParser"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
@@ -336,9 +336,9 @@
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># required</span>
-        <span class="n">charges</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">&quot;formalChargeList&quot;</span><span class="p">)))</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="n">Atomnames</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">&quot;atomNameList&quot;</span><span class="p">)))</span>
-        <span class="n">types</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">&quot;elementList&quot;</span><span class="p">)))</span>
+        <span class="n">charges</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">"formalChargeList"</span><span class="p">)))</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">Atomnames</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">"atomNameList"</span><span class="p">)))</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iter_atoms</span><span class="p">(</span><span class="s2">"elementList"</span><span class="p">)))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">charges</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">types</span><span class="p">])</span>
 
         <span class="c1"># optional are empty list if empty, sometimes arrays</span>
@@ -351,13 +351,13 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">AltLocs</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">alt_loc_list</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AltLocs</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">natoms</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AltLocs</span><span class="p">([</span><span class="s2">""</span><span class="p">]</span> <span class="o">*</span> <span class="n">natoms</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">b_factor_list</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tempfactors</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">b_factor_list</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -372,22 +372,22 @@
         <span class="n">resids</span> <span class="o">=</span> <span class="n">Resids</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">group_id_list</span><span class="p">)</span>
         <span class="n">resnums</span> <span class="o">=</span> <span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">Resnames</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;groupName&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_type_list</span><span class="p">]</span>
+            <span class="p">[</span><span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"groupName"</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_type_list</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">])</span>
         <span class="c1"># optional</span>
-        <span class="c1"># mmtf empty icode is &#39;\x00&#39; rather than &#39;&#39;</span>
+        <span class="c1"># mmtf empty icode is '\x00' rather than ''</span>
         <span class="k">if</span> <span class="n">mtop</span><span class="o">.</span><span class="n">ins_code_list</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">ICodes</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">ins_code_list</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">nresidues</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">([</span><span class="s2">""</span><span class="p">]</span> <span class="o">*</span> <span class="n">nresidues</span><span class="p">))</span>
 
         <span class="c1"># Segment things</span>
         <span class="c1"># optional</span>
@@ -395,7 +395,7 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">chain_name_list</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># required for MDAnalysis</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">nsegments</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">]</span> <span class="o">*</span> <span class="n">nsegments</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
         <span class="n">mods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">num_models</span><span class="p">),</span> <span class="n">mtop</span><span class="o">.</span><span class="n">chains_per_model</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Models</span><span class="p">(</span><span class="n">mods</span><span class="p">))</span>
@@ -403,7 +403,7 @@
 
         <span class="c1"># number of atoms in a given group id</span>
         <span class="n">groupID_2_natoms</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;atomNameList&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">)</span>
+            <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">"atomNameList"</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="c1"># mapping of atoms to residues</span>
         <span class="n">resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
@@ -416,12 +416,12 @@
 
         <span class="c1"># Bonds</span>
         <span class="c1"># bonds are listed as indices within a group,</span>
-        <span class="c1"># offset pulls out &#39;global&#39; index</span>
+        <span class="c1"># offset pulls out 'global' index</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">gtype</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_type_list</span><span class="p">:</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">[</span><span class="n">gtype</span><span class="p">]</span>
-            <span class="n">bondlist</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;bondAtomList&quot;</span><span class="p">]</span>
+            <span class="n">bondlist</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s2">"bondAtomList"</span><span class="p">]</span>
 
             <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bondlist</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">bondlist</span><span class="p">[::</span><span class="mi">2</span><span class="p">]):</span>
                 <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">:</span>

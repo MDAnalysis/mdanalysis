@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">AMBER PRMTOP topology parser</span>
 <span class="sd">============================</span>
 
@@ -230,7 +230,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 
@@ -260,21 +260,21 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TOPParser&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.topology.TOPParser"</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">TypeIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numerical type of each Atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Numerical type of each Atom"""</span>
 
-    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;type_indices&quot;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;type_index&quot;</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s2">"type_indices"</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s2">"type_index"</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="s2">"atom"</span>
 
 
 <div class="viewcode-block" id="TOPParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TOPParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads topology information from an AMBER top file.</span>
+<span class="w">    </span><span class="sd">"""Reads topology information from an AMBER top file.</span>
 
 <span class="sd">    Reads the following Attributes if in topology:</span>
 <span class="sd">    - Atomnames</span>
@@ -292,7 +292,7 @@
 
 <span class="sd">    The format is defined in `PARM parameter/topology file</span>
 <span class="sd">    specification`_.  The reader tries to detect if it is a newer</span>
-<span class="sd">    (AMBER 12?) file format by looking for the flag &quot;ATOMIC_NUMBER&quot;.</span>
+<span class="sd">    (AMBER 12?) file format by looking for the flag "ATOMIC_NUMBER".</span>
 
 <span class="sd">    .. _`PARM parameter/topology file specification`:</span>
 <span class="sd">       https://ambermd.org/FileFormats.php#topo.cntrl</span>
@@ -318,79 +318,79 @@
 <span class="sd">      no longer guesses elements if missing</span>
 <span class="sd">    .. versionchanged:: 2.7.0</span>
 <span class="sd">      gets Segments and chainIDs from flag RESIDUE_CHAINID, when present</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TOP&quot;</span><span class="p">,</span> <span class="s2">&quot;PRMTOP&quot;</span><span class="p">,</span> <span class="s2">&quot;PARM7&quot;</span><span class="p">]</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"TOP"</span><span class="p">,</span> <span class="s2">"PRMTOP"</span><span class="p">,</span> <span class="s2">"PARM7"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="TOPParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse Amber PRMTOP topology file *filename*.</span>
+<span class="w">        </span><span class="sd">"""Parse Amber PRMTOP topology file *filename*.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Sections that we grab as we parse the file</span>
         <span class="n">sections</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;ATOM_NAME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_names</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;CHARGE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_charges</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;ATOMIC_NUMBER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_elements</span><span class="p">,</span> <span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;MASS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_masses</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"ATOM_NAME"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_names</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">"CHARGE"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_charges</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">"ATOMIC_NUMBER"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_elements</span><span class="p">,</span> <span class="s2">"elements"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">"MASS"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_masses</span><span class="p">,</span> <span class="s2">"mass"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">"ATOM_TYPE_INDEX"</span><span class="p">:</span> <span class="p">(</span>
                 <span class="mi">1</span><span class="p">,</span>
                 <span class="mi">10</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parse_type_indices</span><span class="p">,</span>
-                <span class="s2">&quot;type_indices&quot;</span><span class="p">,</span>
+                <span class="s2">"type_indices"</span><span class="p">,</span>
                 <span class="mi">0</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="s2">&quot;AMBER_ATOM_TYPE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_types</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;RESIDUE_LABEL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_resnames</span><span class="p">,</span> <span class="s2">&quot;resname&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
-            <span class="s2">&quot;RESIDUE_POINTER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_residx</span><span class="p">,</span> <span class="s2">&quot;respoint&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
-            <span class="s2">&quot;BONDS_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;bondh&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-            <span class="s2">&quot;BONDS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;bonda&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-            <span class="s2">&quot;ANGLES_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;angh&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-            <span class="s2">&quot;ANGLES_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;anga&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-            <span class="s2">&quot;DIHEDRALS_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;dihh&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-            <span class="s2">&quot;DIHEDRALS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"AMBER_ATOM_TYPE"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_types</span><span class="p">,</span> <span class="s2">"types"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">"RESIDUE_LABEL"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_resnames</span><span class="p">,</span> <span class="s2">"resname"</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+            <span class="s2">"RESIDUE_POINTER"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_residx</span><span class="p">,</span> <span class="s2">"respoint"</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+            <span class="s2">"BONDS_INC_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">"bondh"</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s2">"BONDS_WITHOUT_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">"bonda"</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="s2">"ANGLES_INC_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">"angh"</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="s2">"ANGLES_WITHOUT_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">"anga"</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">"DIHEDRALS_INC_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">"dihh"</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+            <span class="s2">"DIHEDRALS_WITHOUT_HYDROGEN"</span><span class="p">:</span> <span class="p">(</span>
                 <span class="mi">5</span><span class="p">,</span>
                 <span class="mi">10</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span>
-                <span class="s2">&quot;diha&quot;</span><span class="p">,</span>
+                <span class="s2">"diha"</span><span class="p">,</span>
                 <span class="mi">7</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="s2">&quot;RESIDUE_CHAINID&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chainids</span><span class="p">,</span> <span class="s2">&quot;segids&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+            <span class="s2">"RESIDUE_CHAINID"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chainids</span><span class="p">,</span> <span class="s2">"segids"</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
         <span class="p">}</span>
 
-        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># empty dict for attrs that we&#39;ll fill</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># empty dict for attrs that we'll fill</span>
 
         <span class="c1"># Open and check top validity</span>
         <span class="c1"># Reading header info POINTERS</span>
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">:</span>
             <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;%VE&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"%VE"</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. %VE Missing in header&quot;</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="s2">"</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. %VE Missing in header"</span>
+                    <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">title</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;TITLE&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"TITLE"</span><span class="p">):</span>
                 <span class="c1"># Raise a separate warning if Chamber-style TOP is detected</span>
-                <span class="k">if</span> <span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CTITLE&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"CTITLE"</span><span class="p">:</span>
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is detected as a Chamber-style TOP file. &quot;</span>
-                        <span class="s2">&quot;At this time MDAnalysis does not support such &quot;</span>
-                        <span class="s2">&quot;topologies&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                        <span class="s2">"</span><span class="si">{0}</span><span class="s2"> is detected as a Chamber-style TOP file. "</span>
+                        <span class="s2">"At this time MDAnalysis does not support such "</span>
+                        <span class="s2">"topologies"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. &quot;</span>
-                        <span class="s2">&quot;&#39;TITLE&#39; missing in header&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                        <span class="s2">"</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. "</span>
+                        <span class="s2">"'TITLE' missing in header"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
                     <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-            <span class="k">while</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG POINTERS&quot;</span><span class="p">):</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"</span><span class="si">%F</span><span class="s2">LAG POINTERS"</span><span class="p">):</span>
                 <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
             <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
 
@@ -399,7 +399,7 @@
 
             <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
             <span class="c1"># grab the next section title</span>
-            <span class="n">next_section</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">next_section</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="si">%F</span><span class="s2">LAG"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
             <span class="k">while</span> <span class="n">next_section</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -431,88 +431,88 @@
                     <span class="n">next_section</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">next_section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">next_section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="si">%F</span><span class="s2">LAG"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;%FLAG section not found, formatting error &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;for PARM7 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">"%FLAG section not found, formatting error "</span>
+                            <span class="sa">f</span><span class="s2">"for PARM7 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> "</span>
                         <span class="p">)</span>
                         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># strip out a few values to play with them</span>
-        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span>
 
-        <span class="n">resptrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;respoint&quot;</span><span class="p">)</span>
+        <span class="n">resptrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"respoint"</span><span class="p">)</span>
         <span class="n">resptrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span>
         <span class="n">residx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">resptrs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">resptrs</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
             <span class="n">residx</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
 
-        <span class="n">n_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resname&quot;</span><span class="p">])</span>
+        <span class="n">n_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"resname"</span><span class="p">])</span>
 
         <span class="c1"># Deal with recreating bonds and angle records here</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;bonds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bonds</span><span class="p">(</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"bonds"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bonds</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">i</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
-                    <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bonda&quot;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bondh&quot;</span><span class="p">)</span>
+                    <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"bonda"</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"bondh"</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;angles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Angles</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;anga&quot;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;angh&quot;</span><span class="p">))]</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"angles"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Angles</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"anga"</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"angh"</span><span class="p">))]</span>
         <span class="p">)</span>
 
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;dihedrals&quot;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;impropers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">(</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;diha&quot;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dihh&quot;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"dihedrals"</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">"impropers"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">(</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"diha"</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dihh"</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="c1"># Warn user if elements not in topology</span>
-        <span class="k">if</span> <span class="s2">&quot;elements&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"elements"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;ATOMIC_NUMBER record not found, elements attribute will &quot;</span>
-                <span class="s2">&quot;not be populated. If needed these can be guessed using &quot;</span>
-                <span class="s2">&quot;universe.guess_TopologyAttrs(to_guess=[&#39;elements&#39;]).&quot;</span>
+                <span class="s2">"ATOMIC_NUMBER record not found, elements attribute will "</span>
+                <span class="s2">"not be populated. If needed these can be guessed using "</span>
+                <span class="s2">"universe.guess_TopologyAttrs(to_guess=['elements'])."</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"elements"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">""</span><span class="p">):</span>
             <span class="c1"># only send out one warning that some elements are unknown</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;Unknown ATOMIC_NUMBER value found for some atoms, these &quot;</span>
-                <span class="s2">&quot;have been given an empty element record. If needed these &quot;</span>
-                <span class="s2">&quot;can be guessed using &quot;</span>
-                <span class="s2">&quot;universe.guess_TopologyAttrs(to_guess=[&#39;elements&#39;]).&quot;</span>
+                <span class="s2">"Unknown ATOMIC_NUMBER value found for some atoms, these "</span>
+                <span class="s2">"have been given an empty element record. If needed these "</span>
+                <span class="s2">"can be guessed using "</span>
+                <span class="s2">"universe.guess_TopologyAttrs(to_guess=['elements'])."</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="c1"># atom ids are mandatory</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;atomids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;resnums&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"atomids"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"resids"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">"resnums"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># Amber&#39;s &#39;RESIDUE_CHAINID&#39; is a by-residue attribute, turn it into</span>
+        <span class="c1"># Amber's 'RESIDUE_CHAINID' is a by-residue attribute, turn it into</span>
         <span class="c1"># a by-atom attribute when present. See PR #4007.</span>
-        <span class="k">if</span> <span class="s2">&quot;segids&quot;</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">n_res</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"segids"</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">])</span> <span class="o">==</span> <span class="n">n_res</span><span class="p">:</span>
             <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">],),</span> <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">],)</span>
+                <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">],),</span> <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">],)</span>
             <span class="p">)</span>
-            <span class="n">chainids</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residx</span><span class="p">]</span>
+            <span class="n">chainids</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residx</span><span class="p">]</span>
 
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;ChainIDs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainids</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"ChainIDs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainids</span><span class="p">)</span>
             <span class="n">n_segs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;segids&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"segids"</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Number of residues (</span><span class="si">{</span><span class="n">n_res</span><span class="si">}</span><span class="s2">) does not match number of &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;%RESIDUE_CHAINID (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segids&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">). Skipping section.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Number of residues (</span><span class="si">{</span><span class="n">n_res</span><span class="si">}</span><span class="s2">) does not match number of "</span>
+                    <span class="sa">f</span><span class="s2">"%RESIDUE_CHAINID (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'segids'</span><span class="p">])</span><span class="si">}</span><span class="s2">). Skipping section."</span>
                 <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">"segids"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"SYSTEM"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
             <span class="n">segidx</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">n_segs</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -531,16 +531,16 @@
 <div class="viewcode-block" id="TOPParser.skipper">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.skipper">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">skipper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;TOPParser :class: helper function, skips lines of input parm7 file</span>
+<span class="w">        </span><span class="sd">"""TOPParser :class: helper function, skips lines of input parm7 file</span>
 <span class="sd">        until we find the next %FLAG entry and return that</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        line : string</span>
 <span class="sd">            String containing the current line of the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">):</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"</span><span class="si">%F</span><span class="s2">LAG"</span><span class="p">):</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">line</span></div>
 
@@ -548,7 +548,7 @@
 <div class="viewcode-block" id="TOPParser.parse_names">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_names">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts atoms names from parm7 file</span>
+<span class="w">        </span><span class="sd">"""Extracts atoms names from parm7 file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -562,7 +562,7 @@
 <span class="sd">        attr : :class:`Atomnames`</span>
 <span class="sd">            A :class:`Atomnames` instance containing the names of each atom as</span>
 <span class="sd">            defined in the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -571,7 +571,7 @@
 <div class="viewcode-block" id="TOPParser.parse_resnames">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the names of each residue</span>
+<span class="w">        </span><span class="sd">"""Extracts the names of each residue</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -585,7 +585,7 @@
 <span class="sd">        attr : :class:`Resnames`</span>
 <span class="sd">            A :class:`Resnames` instance containing the names of each residue</span>
 <span class="sd">            as defined in the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Resnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -594,7 +594,7 @@
 <div class="viewcode-block" id="TOPParser.parse_charges">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_charges">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the partial charges for each atom</span>
+<span class="w">        </span><span class="sd">"""Extracts the partial charges for each atom</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -608,7 +608,7 @@
 <span class="sd">        attr : :class:`Charges`</span>
 <span class="sd">            A :class:`Charges` instance containing the partial charges of each</span>
 <span class="sd">            atom as defined in the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">charges</span> <span class="o">/=</span> <span class="mf">18.2223</span>  <span class="c1"># to electron charge units</span>
@@ -619,7 +619,7 @@
 <div class="viewcode-block" id="TOPParser.parse_masses">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_masses">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the mass of each atom</span>
+<span class="w">        </span><span class="sd">"""Extracts the mass of each atom</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -633,7 +633,7 @@
 <span class="sd">        attr : :class:`Masses`</span>
 <span class="sd">            A :class:`Masses` instance containing the mass of each atom as</span>
 <span class="sd">            defined in the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -642,7 +642,7 @@
 <div class="viewcode-block" id="TOPParser.parse_elements">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_elements">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the atomic numbers of each atom and converts to element type</span>
+<span class="w">        </span><span class="sd">"""Extracts the atomic numbers of each atom and converts to element type</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -666,10 +666,10 @@
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Unrecognised elements will now return a empty string. The parser</span>
 <span class="sd">           will no longer attempt to guess the element by default.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span>
-            <span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Z2SYMB</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Z2SYMB</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">""</span>
         <span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -678,7 +678,7 @@
 <div class="viewcode-block" id="TOPParser.parse_types">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_types">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the force field atom types of each atom</span>
+<span class="w">        </span><span class="sd">"""Extracts the force field atom types of each atom</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -692,7 +692,7 @@
 <span class="sd">        attr : :class:`Atomtypes`</span>
 <span class="sd">            A :class:`Atomtypes` instance containing the atom types for each</span>
 <span class="sd">            atom as defined in the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -701,7 +701,7 @@
 <div class="viewcode-block" id="TOPParser.parse_type_indices">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_type_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the index of atom types of the each atom involved in Lennard</span>
+<span class="w">        </span><span class="sd">"""Extracts the index of atom types of the each atom involved in Lennard</span>
 <span class="sd">        Jones (6-12) interactions.</span>
 
 <span class="sd">        Parameters</span>
@@ -716,7 +716,7 @@
 <span class="sd">        attr :class:`TypeIndices`</span>
 <span class="sd">            A :class:`TypeIndices` instance containing the LJ 6-12 atom type</span>
 <span class="sd">            index for each atom</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">TypeIndices</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
@@ -725,7 +725,7 @@
 <div class="viewcode-block" id="TOPParser.parse_residx">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_residx">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_residx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the residue pointers for each atom</span>
+<span class="w">        </span><span class="sd">"""Extracts the residue pointers for each atom</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -738,7 +738,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        vals : list of int</span>
 <span class="sd">            A list of zero-formatted residue pointers for each atom</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vals</span></div>
 
@@ -746,7 +746,7 @@
 <div class="viewcode-block" id="TOPParser.parse_chunks">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to parse AMBER PRMTOP bonds/angles.</span>
+<span class="w">        </span><span class="sd">"""Helper function to parse AMBER PRMTOP bonds/angles.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -769,7 +769,7 @@
 <span class="sd">        and the internal index links to a given set of FF parameters.</span>
 <span class="sd">        Therefore, to extract the required information, we split out the list</span>
 <span class="sd">        into chunks of size num_per_record, and only extract the atom ids.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">tuple</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">chunksize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">chunksize</span><span class="p">)</span>
@@ -780,7 +780,7 @@
 <div class="viewcode-block" id="TOPParser.parse_bonded">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_bonded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts bond information from PARM7 format files</span>
+<span class="w">        </span><span class="sd">"""Extracts bond information from PARM7 format files</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -798,7 +798,7 @@
 <span class="sd">        zero-indexing, we only divide by 3.</span>
 
 <span class="sd">        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chunks</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">section</span></div>
@@ -807,7 +807,7 @@
 <div class="viewcode-block" id="TOPParser.parsesection_mapper">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parsesection_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numlines</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses FORTRAN formatted section, and returns a list of all entries</span>
+<span class="w">        </span><span class="sd">"""Parses FORTRAN formatted section, and returns a list of all entries</span>
 <span class="sd">        in each line</span>
 
 <span class="sd">        Parameters</span>
@@ -821,21 +821,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        section : list</span>
 <span class="sd">            A list of all entries in a given parm7 section</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Skips &#39;%COMMENT&#39; lines until it gets the FORMAT specification</span>
-<span class="sd">            for the section.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Skips '%COMMENT' lines until it gets the FORMAT specification</span>
+<span class="sd">            for the section."""</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="si">%F</span><span class="s2">ORMAT&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;%COMMENT&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"</span><span class="si">%F</span><span class="s2">ORMAT"</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">")"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"%COMMENT"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Invalid header line. Does not begin with either </span><span class="si">%F</span><span class="s2">LAG, </span><span class="si">%F</span><span class="s2">ORMAT &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;nor %COMMENT:</span><span class="se">\n</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">"Invalid header line. Does not begin with either </span><span class="si">%F</span><span class="s2">LAG, </span><span class="si">%F</span><span class="s2">ORMAT "</span>
+                    <span class="sa">f</span><span class="s2">"nor %COMMENT:</span><span class="se">\n</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
 
         <span class="c1"># There may be %COMMENT lines between %FLAG and %FORMAT statements. Skip them.</span>
@@ -853,7 +853,7 @@
 <div class="viewcode-block" id="TOPParser.parse_dihedrals">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combines hydrogen and non-hydrogen containing AMBER dihedral lists</span>
+<span class="w">        </span><span class="sd">"""Combines hydrogen and non-hydrogen containing AMBER dihedral lists</span>
 <span class="sd">        and extracts sublists for conventional dihedrals and improper angles</span>
 
 <span class="sd">        Parameters</span>
@@ -885,7 +885,7 @@
 <span class="sd">        part of a multi-term dihedral definition or if it is an improper.</span>
 
 <span class="sd">        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">improp</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dihed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
@@ -905,7 +905,7 @@
 <div class="viewcode-block" id="TOPParser.parse_chainids">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_chainids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numlines</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the chainID of each residue</span>
+<span class="w">        </span><span class="sd">"""Extracts the chainID of each residue</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -919,7 +919,7 @@
 <span class="sd">        attr : numpy array</span>
 <span class="sd">            A numpy array containing the chainID of each residue as defined in</span>
 <span class="sd">            the parm7 file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attr</span></div>

@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">PDB Topology Parser</span>
 <span class="sd">=========================================================================</span>
 
@@ -174,7 +174,7 @@
 <span class="sd">The topology reader reads a PDB file line by line and ignores atom</span>
 <span class="sd">numbers but only reads residue numbers up to 9,999 correctly. If you</span>
 <span class="sd">have systems containing at least 10,000 residues then you need to use</span>
-<span class="sd">a different file format (e.g. the &quot;extended&quot; PDB, *XPDB* format, see</span>
+<span class="sd">a different file format (e.g. the "extended" PDB, *XPDB* format, see</span>
 <span class="sd">:mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue</span>
 <span class="sd">numbers up to 99,999.</span>
 
@@ -207,7 +207,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -236,7 +236,7 @@
 <span class="p">)</span>
 
 <span class="c1"># Set up a logger for the PDBParser</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.PDBParser&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.topology.PDBParser"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">float_or_default</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
@@ -246,14 +246,14 @@
         <span class="k">return</span> <span class="n">default</span>
 
 
-<span class="n">DIGITS_UPPER</span> <span class="o">=</span> <span class="s2">&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span>
+<span class="n">DIGITS_UPPER</span> <span class="o">=</span> <span class="s2">"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>
 <span class="n">DIGITS_LOWER</span> <span class="o">=</span> <span class="n">DIGITS_UPPER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 <span class="n">DIGITS_UPPER_VALUES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIGITS_UPPER</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">))])</span>
 <span class="n">DIGITS_LOWER_VALUES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIGITS_LOWER</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">))])</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decodes the string s using the digit, value associations for each</span>
+<span class="w">    </span><span class="sd">"""Decodes the string s using the digit, value associations for each</span>
 <span class="sd">    character.</span>
 
 <span class="sd">    Parameters</span>
@@ -267,7 +267,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    The integer in base-10 corresponding to traditional base-36.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits_values</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
@@ -277,7 +277,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">hy36decode</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Decodes base-10/upper-case base-36/lower-case base-36 hybrid.</span>
 
 <span class="sd">    Parameters</span>
@@ -291,10 +291,10 @@
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
 <span class="sd">        Base-10 integer corresponding to hybrid36.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">width</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span> <span class="ow">or</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">"-"</span> <span class="ow">or</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">" "</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()):</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">elif</span> <span class="p">(</span><span class="n">f</span> <span class="ow">in</span> <span class="n">DIGITS_UPPER_VALUES</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="o">=</span><span class="n">DIGITS_UPPER_VALUES</span><span class="p">,</span>
@@ -302,13 +302,13 @@
         <span class="k">elif</span> <span class="p">(</span><span class="n">f</span> <span class="ow">in</span> <span class="n">DIGITS_LOWER_VALUES</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="o">=</span><span class="n">DIGITS_LOWER_VALUES</span><span class="p">,</span>
                                <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">*</span> <span class="mi">36</span> <span class="o">**</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">width</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid number literal.&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid number literal."</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PDBParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PDBParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser that obtains a list of atoms from a standard PDB file.</span>
+<span class="w">    </span><span class="sd">"""Parser that obtains a list of atoms from a standard PDB file.</span>
 
 <span class="sd">    Creates the following Attributes (if present):</span>
 <span class="sd">     - names</span>
@@ -361,30 +361,30 @@
 <span class="sd">        `force_chainids_to_segids` keyword argument. Some infos in logger will</span>
 <span class="sd">        be generated if the segids is not present or if the chainids are not</span>
 <span class="sd">        completely equal to segids.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
+<span class="sd">    """</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'PDB'</span><span class="p">,</span> <span class="s1">'ENT'</span><span class="p">]</span>
 
 <div class="viewcode-block" id="PDBParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse atom information from PDB file</span>
+<span class="w">        </span><span class="sd">"""Parse atom information from PDB file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsebonds</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Invalid atom serials were present, &quot;</span>
-                          <span class="s2">&quot;bonds will not be parsed&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Invalid atom serials were present, "</span>
+                          <span class="s2">"bonds will not be parsed"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;CONECT records was corrupt, &quot;</span>
-                          <span class="s2">&quot;bonds will not be parsed&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"CONECT records was corrupt, "</span>
+                          <span class="s2">"bonds will not be parsed"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Issue 2832: don&#39;t append Bonds if there are no bonds</span>
+            <span class="c1"># Issue 2832: don't append Bonds if there are no bonds</span>
             <span class="k">if</span> <span class="n">bonds</span><span class="p">:</span>
                 <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
 
@@ -392,7 +392,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the initial Topology object&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create the initial Topology object"""</span>
         <span class="n">resid_prev</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># resid looping hack</span>
 
         <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
@@ -416,9 +416,9 @@
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Remove extra spaces</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>  <span class="c1"># Skip line if empty</span>
                     <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;END&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'END'</span><span class="p">):</span>
                     <span class="k">break</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="s1">&#39;HETATM&#39;</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">'ATOM'</span><span class="p">,</span> <span class="s1">'HETATM'</span><span class="p">)):</span>
                     <span class="k">continue</span>
 
                 <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
@@ -428,7 +428,7 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">serial</span> <span class="o">=</span> <span class="n">hy36decode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                        <span class="c1"># serial can become &#39;***&#39; when they get too high</span>
+                        <span class="c1"># serial can become '***' when they get too high</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="n">serial</span> <span class="o">=</span> <span class="n">last_wrapped_serial</span>
                         <span class="n">last_wrapped_serial</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -444,7 +444,7 @@
 
                 <span class="c1"># Resids are optional</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s2">&quot;XPDB&quot;</span><span class="p">:</span>  <span class="c1"># fugly but keeps code DRY</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s2">"XPDB"</span><span class="p">:</span>  <span class="c1"># fugly but keeps code DRY</span>
                         <span class="c1"># extended non-standard format used by VMD</span>
                         <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">27</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -454,8 +454,8 @@
                             <span class="n">resid</span> <span class="o">+=</span> <span class="mi">10000</span>
                         <span class="n">resid_prev</span> <span class="o">=</span> <span class="n">resid</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;PDB file is missing resid information.  &quot;</span>
-                                  <span class="s2">&quot;Defaulted to &#39;1&#39;&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"PDB file is missing resid information.  "</span>
+                                  <span class="s2">"Defaulted to '1'"</span><span class="p">)</span>
                     <span class="n">resid</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">finally</span><span class="p">:</span>
                     <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
@@ -468,23 +468,23 @@
 
         <span class="c1"># Warn about wrapped serials</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Serial numbers went over 100,000.  &quot;</span>
-                          <span class="s2">&quot;Higher serials have been guessed&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Serial numbers went over 100,000.  "</span>
+                          <span class="s2">"Higher serials have been guessed"</span><span class="p">)</span>
 
         <span class="c1"># If segids is not equal to chainids, warn the user</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">a</span> <span class="o">!=</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">segids</span><span class="p">,</span> <span class="n">chainids</span><span class="p">)]):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Segment IDs and Chain IDs are not completely equal.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Segment IDs and Chain IDs are not completely equal."</span><span class="p">)</span>
 
         <span class="c1"># If segids not present, try to use chainids</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">segids</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting segids from chainIDs because no segids &quot;</span>
-                        <span class="s2">&quot;found in the PDB file.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Setting segids from chainIDs because no segids "</span>
+                        <span class="s2">"found in the PDB file."</span><span class="p">)</span>
             <span class="n">segids</span> <span class="o">=</span> <span class="n">chainids</span>
 
         <span class="c1"># If force_chainids_to_segids is set, use chainids as segids</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids is set. &quot;</span>
-                        <span class="s2">&quot;Using chain IDs as segment IDs.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"force_chainids_to_segids"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"force_chainids_to_segids is set. "</span>
+                        <span class="s2">"Using chain IDs as segment IDs."</span><span class="p">)</span>
             <span class="n">segids</span> <span class="o">=</span> <span class="n">chainids</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">serials</span><span class="p">)</span>
@@ -512,41 +512,41 @@
                 <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span><span class="p">:</span>
                     <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> found for some atoms. &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;These have been given an empty element record. &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;If needed they can be guessed using &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;universe.guess_TopologyAttrs(context=&#39;default&#39;,&quot;</span>
-                            <span class="s2">&quot; to_guess=[&#39;elements&#39;]).&quot;</span><span class="p">)</span>
+                    <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> found for some atoms. "</span>
+                            <span class="sa">f</span><span class="s2">"These have been given an empty element record. "</span>
+                            <span class="sa">f</span><span class="s2">"If needed they can be guessed using "</span>
+                            <span class="sa">f</span><span class="s2">"universe.guess_TopologyAttrs(context='default',"</span>
+                            <span class="s2">" to_guess=['elements'])."</span><span class="p">)</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
-                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
-                          <span class="s2">&quot;will not be populated. If needed these can be&quot;</span>
-                          <span class="s2">&quot; guessed using universe.guess_TopologyAttrs(&quot;</span>
-                          <span class="s2">&quot;context=&#39;default&#39;, to_guess=[&#39;elements&#39;]).&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Element information is missing, elements attribute "</span>
+                          <span class="s2">"will not be populated. If needed these can be"</span>
+                          <span class="s2">" guessed using universe.guess_TopologyAttrs("</span>
+                          <span class="s2">"context='default', to_guess=['elements'])."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-                            <span class="c1"># Technically a lack of charge shouldn&#39;t be in the</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">''</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">'0'</span><span class="p">:</span>
+                            <span class="c1"># Technically a lack of charge shouldn't be in the</span>
                             <span class="c1"># PDB but MDA has a few files that specifically</span>
                             <span class="c1"># have 0 entries, indicating that some folks</span>
                             <span class="c1"># interpret 0 as an allowed entry</span>
                             <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                        <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">):</span>
+                        <span class="k">elif</span> <span class="p">(</span><span class="s1">'+'</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">'-'</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">):</span>
                             <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">entry</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown entry </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2"> encountered in formal charge &quot;</span>
-                        <span class="s2">&quot;field. This likely indicates that the PDB file is &quot;</span>
-                        <span class="s2">&quot;not fully standard compliant. The formalcharges &quot;</span>
-                        <span class="s2">&quot;attribute will not be populated.&quot;</span><span class="p">)</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown entry </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2"> encountered in formal charge "</span>
+                        <span class="s2">"field. This likely indicates that the PDB file is "</span>
+                        <span class="s2">"not fully standard compliant. The formalcharges "</span>
+                        <span class="s2">"attribute will not be populated."</span><span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FormalCharges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
@@ -554,8 +554,8 @@
         <span class="c1"># Residue level stuff from here</span>
         <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resnames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s1">&#39;XPDB&#39;</span><span class="p">:</span>  <span class="c1"># XPDB doesn&#39;t have icodes</span>
-            <span class="n">icodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_atoms</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s1">'XPDB'</span><span class="p">:</span>  <span class="c1"># XPDB doesn't have icodes</span>
+            <span class="n">icodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">''</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_atoms</span>
         <span class="n">icodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">icodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
         <span class="n">resnums</span> <span class="o">=</span> <span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
@@ -569,7 +569,7 @@
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"force_chainids_to_segids"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span>
             <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">segids</span><span class="p">))</span>
         <span class="p">):</span>
             <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">segids</span><span class="p">,),</span> <span class="p">(</span><span class="n">segids</span><span class="p">,))</span>
@@ -577,10 +577,10 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'SYSTEM'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
             <span class="n">segidx</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Segment/chain ID is empty, &quot;</span>
-                        <span class="s2">&quot;setting segids to default value &#39;SYSTEM&#39;.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Segment/chain ID is empty, "</span>
+                        <span class="s2">"setting segids to default value 'SYSTEM'."</span><span class="p">)</span>
 
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
                        <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
@@ -594,12 +594,12 @@
         <span class="c1"># then doing post processing after all Atoms have been read</span>
         <span class="c1"># ie do one pass through the file only</span>
         <span class="c1"># Problem is that in multiframe PDB, the CONECT is at end of file,</span>
-        <span class="c1"># so the &quot;break&quot; call happens before bonds are reached.</span>
+        <span class="c1"># so the "break" call happens before bonds are reached.</span>
 
-        <span class="c1"># If the serials wrapped, this won&#39;t work</span>
+        <span class="c1"># If the serials wrapped, this won't work</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Invalid atom serials were present, bonds will not&quot;</span>
-                          <span class="s2">&quot; be parsed&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Invalid atom serials were present, bonds will not"</span>
+                          <span class="s2">" be parsed"</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span>  <span class="c1"># gets caught in parse</span>
 
         <span class="c1"># Mapping between the atom array indicies a.index and atom ids</span>
@@ -608,7 +608,7 @@
 
         <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CONECT&quot;</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"CONECT"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                 <span class="n">atom</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="n">_parse_conect</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
@@ -618,8 +618,8 @@
                         <span class="c1"># Bonds to TER records have no mapping</span>
                         <span class="c1"># Ignore these as they are not real atoms</span>
                         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                            <span class="s2">&quot;PDB file contained CONECT record to TER entry. &quot;</span>
-                            <span class="s2">&quot;These are not included in bonds.&quot;</span><span class="p">)</span>
+                            <span class="s2">"PDB file contained CONECT record to TER entry. "</span>
+                            <span class="s2">"These are not included in bonds."</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bond</span><span class="p">)</span>
 
@@ -630,7 +630,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_conect</span><span class="p">(</span><span class="n">conect</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;parse a CONECT record from pdbs</span>
+<span class="w">    </span><span class="sd">"""parse a CONECT record from pdbs</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -648,17 +648,17 @@
 <span class="sd">    ------</span>
 <span class="sd">    RuntimeError</span>
 <span class="sd">        Raised if ``conect`` is not a valid CONECT record</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">atom_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
     <span class="n">n_bond_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">11</span><span class="p">:])</span> <span class="o">//</span> <span class="mi">5</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">11</span><span class="p">:])</span> <span class="o">%</span> <span class="n">n_bond_atoms</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Bond atoms aren&#39;t aligned proberly for CONECT &quot;</span>
-                               <span class="s2">&quot;record: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conect</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Bond atoms aren't aligned proberly for CONECT "</span>
+                               <span class="s2">"record: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conect</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
         <span class="c1"># Conect record with only one entry (CONECT A\n)</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Found CONECT record with single entry, ignoring this&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Found CONECT record with single entry, ignoring this"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">atom_id</span><span class="p">,</span> <span class="p">[]</span>  <span class="c1"># return empty list to allow iteration over nothing</span>
 
     <span class="n">bond_atoms</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">11</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">16</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">5</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>

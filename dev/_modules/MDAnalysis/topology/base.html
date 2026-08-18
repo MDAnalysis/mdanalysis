@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Base topology reader classes --- :mod:`MDAnalysis.topology.base`</span>
 <span class="sd">================================================================</span>
 
@@ -178,7 +178,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
@@ -191,7 +191,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_Topologymeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal: Topology Parser registration voodoo</span>
+<span class="w">    </span><span class="sd">"""Internal: Topology Parser registration voodoo</span>
 
 <span class="sd">    When classes which inherit from TopologyReaderBase are *defined*</span>
 <span class="sd">    this metaclass makes it known to MDAnalysis.  The optional `format`</span>
@@ -203,7 +203,7 @@
 <span class="sd">    Eg::</span>
 
 <span class="sd">      class ThingParser(TopologyReaderBase):</span>
-<span class="sd">          format = [&#39;foo&#39;, &#39;bar&#39;]</span>
+<span class="sd">          format = ['foo', 'bar']</span>
 
 <span class="sd">          @staticmethod</span>
 <span class="sd">          _format_hint(thing):</span>
@@ -213,18 +213,18 @@
 <span class="sd">                  return False</span>
 <span class="sd">              return isinstance(thing, WeirdPackage.Thing)</span>
 
-<span class="sd">    This way there is no strict dependency on &quot;WeirdPackage&quot;, but if</span>
-<span class="sd">    a user supplies a WeirdPackage.Thing the &quot;ThingParser&#39; will be able</span>
+<span class="sd">    This way there is no strict dependency on "WeirdPackage", but if</span>
+<span class="sd">    a user supplies a WeirdPackage.Thing the "ThingParser' will be able</span>
 <span class="sd">    to step up and read it.</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Added format_hint functionality</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">])</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s2">"format"</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -232,16 +232,16 @@
                 <span class="n">fmt_name</span> <span class="o">=</span> <span class="n">fmt_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
                 <span class="n">_PARSERS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
-                <span class="k">if</span> <span class="s2">&quot;_format_hint&quot;</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">"_format_hint"</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
                     <span class="n">_PARSER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span>
-                        <span class="s2">&quot;_format_hint&quot;</span>
+                        <span class="s2">"_format_hint"</span>
                     <span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 
 <div class="viewcode-block" id="TopologyReaderBase">
 <a class="viewcode-back" href="../../../documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TopologyReaderBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Topologymeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for topology readers</span>
+<span class="w">    </span><span class="sd">"""Base class for topology readers</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -261,19 +261,19 @@
 
 <span class="sd">    .. versionadded:: 0.9.0</span>
 <span class="sd">    .. versionchanged:: 0.9.2</span>
-<span class="sd">       Added keyword &#39;universe&#39; to pass to Atom creation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">       Added keyword 'universe' to pass to Atom creation.</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this in each subclass&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Override this in each subclass"</span><span class="p">)</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">squash_by</span><span class="p">(</span><span class="n">child_parent_ids</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Squash a child-parent relationship</span>
+<span class="w">    </span><span class="sd">"""Squash a child-parent relationship</span>
 
 <span class="sd">    Arguments</span>
 <span class="sd">    ---------</span>
@@ -286,7 +286,7 @@
 <span class="sd">                        parent</span>
 <span class="sd">    parent_ids - len(parent) of the ids</span>
 <span class="sd">    *parent_attrs - len(parent) of the other attributes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">unique_resids</span><span class="p">,</span> <span class="n">sort_mask</span><span class="p">,</span> <span class="n">atom_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
         <span class="n">child_parent_ids</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
@@ -295,7 +295,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">change_squash</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="n">to_squash</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Squash per atom data to per residue according to changes in resid</span>
+<span class="w">    </span><span class="sd">"""Squash per atom data to per residue according to changes in resid</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -315,8 +315,8 @@
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    resids = np.array([2, 2, 3, 3, 2, 2])</span>
-<span class="sd">    resnames = np.array([&#39;RsA&#39;, &#39;RsA&#39;, &#39;RsB&#39;, &#39;RsB&#39;, &#39;RsC&#39;, &#39;RsC&#39;])</span>
-<span class="sd">    segids = np.array([&#39;A&#39;, &#39;A&#39;, &#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;])</span>
+<span class="sd">    resnames = np.array(['RsA', 'RsA', 'RsB', 'RsB', 'RsC', 'RsC'])</span>
+<span class="sd">    segids = np.array(['A', 'A', 'A', 'A', 'B', 'B'])</span>
 
 <span class="sd">    residx, (new_resids, new_resnames, new_segids) = resid_change_squash(</span>
 <span class="sd">                                                      (resids,), (resids, resnames, segids))</span>
@@ -325,12 +325,12 @@
 <span class="sd">    residx: [0, 0, 1, 1, 2, 2]</span>
 <span class="sd">    # Per residue record of each attribute</span>
 <span class="sd">    new_resids: [2, 3, 2]</span>
-<span class="sd">    new_resnames: [&#39;RsA&#39;, &#39;RsB&#39;, &#39;RsC&#39;]</span>
-<span class="sd">    new_segids: [&#39;A&#39;, &#39;A&#39;, &#39;B&#39;]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    new_resnames: ['RsA', 'RsB', 'RsC']</span>
+<span class="sd">    new_segids: ['A', 'A', 'B']</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_borders</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator of indices to slice arrays when they change&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generator of indices to slice arrays when they change"""</span>
         <span class="n">borders</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
             <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">))</span>
         <span class="p">)</span>
@@ -341,7 +341,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="n">l0</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">to_squash</span><span class="p">)</span>
     <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All arrays must be equally sized&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"All arrays must be equally sized"</span><span class="p">)</span>
 
     <span class="c1"># 1) Detect where resids change</span>
     <span class="n">borders</span> <span class="o">=</span> <span class="n">get_borders</span><span class="p">(</span><span class="o">*</span><span class="n">criteria</span><span class="p">)</span>
@@ -357,7 +357,7 @@
 
     <span class="c1"># 3) Slice through resids and others to find values</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">borders</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">borders</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
-        <span class="n">residx</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c1"># atoms between x &amp; y are in the i&#39;th residue</span>
+        <span class="n">residx</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c1"># atoms between x &amp; y are in the i'th residue</span>
         <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">to_squash</span><span class="p">,</span> <span class="n">new_others</span><span class="p">):</span>
             <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># TODO: Check that x:y is the same</span>
             <span class="c1"># Should be the same for self consistency...</span>
@@ -366,7 +366,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">reduce_singular</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the value in an array of length 1, or</span>
+<span class="w">    </span><span class="sd">"""Returns the value in an array of length 1, or</span>
 <span class="sd">    the tuple of an array with a longer lengh.</span>
 
 <span class="sd">    Parameters</span>
@@ -377,7 +377,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    values: tuple or single value</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>

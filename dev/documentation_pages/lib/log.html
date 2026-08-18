@@ -188,10 +188,10 @@ with <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAna
 optional argument to <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_logging()</span></code></a>).</p>
 <p>Any code can log to the MDAnalysis logger by using</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.MODULENAME&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'MDAnalysis.MODULENAME'</span><span class="p">)</span>
 
 <span class="c1"># use the logger, for example at info level:</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting task ...&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting task ..."</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The important point is that the name of the logger begins with
@@ -233,7 +233,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 <dd><p>Silent Handler.</p>
 <p>Useful as a default:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis"</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">h</span>
 </pre></div>
 </div>

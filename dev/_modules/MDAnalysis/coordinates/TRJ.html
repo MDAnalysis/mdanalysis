@@ -163,11 +163,11 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`</span>
+<span class="sd">"""AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`</span>
 <span class="sd">========================================================</span>
 
-<span class="sd">AMBER_ can write :ref:`ASCII trajectories&lt;ascii-trajectories&gt;` (&quot;traj&quot;) and</span>
-<span class="sd">:ref:`binary trajectories&lt;netcdf-trajectories&gt;` (&quot;netcdf&quot;). MDAnalysis supports</span>
+<span class="sd">AMBER_ can write :ref:`ASCII trajectories&lt;ascii-trajectories&gt;` ("traj") and</span>
+<span class="sd">:ref:`binary trajectories&lt;netcdf-trajectories&gt;` ("netcdf"). MDAnalysis supports</span>
 <span class="sd">reading of both formats and writing for the binary trajectories.</span>
 
 <span class="sd">Note</span>
@@ -192,7 +192,7 @@
 
 <span class="sd">The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data</span>
 <span class="sd">Form) format. Such binary trajectories are recognized in MDAnalysis by</span>
-<span class="sd">the &#39;.ncdf&#39; suffix and read by the :class:`NCDFReader`.</span>
+<span class="sd">the '.ncdf' suffix and read by the :class:`NCDFReader`.</span>
 
 <span class="sd">Binary trajectories can also contain velocities and forces, and can record the</span>
 <span class="sd">exact time</span>
@@ -218,18 +218,18 @@
 <span class="sd">are handled by the :class:`TRJReader`. It is also possible to directly</span>
 <span class="sd">read *bzip2* or *gzip* compressed files.</span>
 
-<span class="sd">AMBER ASCII trajectories are recognised by the suffix &#39;.trj&#39;,</span>
-<span class="sd">&#39;.mdcrd&#39; or &#39;.crdbox (possibly with an additional &#39;.gz&#39; or &#39;.bz2&#39;).</span>
+<span class="sd">AMBER ASCII trajectories are recognised by the suffix '.trj',</span>
+<span class="sd">'.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').</span>
 
 <span class="sd">.. Note::</span>
 
 <span class="sd">   In the AMBER community, these trajectories are often saved with the</span>
-<span class="sd">   suffix &#39;.crd&#39; but this extension conflicts with the CHARMM CRD</span>
-<span class="sd">   format and MDAnalysis *will not correctly autodetect AMBER &quot;.crd&quot;</span>
-<span class="sd">   trajectories*. Instead, explicitly provide the ``format=&quot;TRJ&quot;``</span>
+<span class="sd">   suffix '.crd' but this extension conflicts with the CHARMM CRD</span>
+<span class="sd">   format and MDAnalysis *will not correctly autodetect AMBER ".crd"</span>
+<span class="sd">   trajectories*. Instead, explicitly provide the ``format="TRJ"``</span>
 <span class="sd">   argument to :class:`~MDAnalysis.core.universe.Universe`::</span>
 
-<span class="sd">     u = MDAnalysis.Universe(&quot;top.prmtop&quot;, &quot;traj.crd&quot;, format=&quot;TRJ&quot;)</span>
+<span class="sd">     u = MDAnalysis.Universe("top.prmtop", "traj.crd", format="TRJ")</span>
 
 <span class="sd">   In this way, the AMBER :class:`TRJReader` is used.</span>
 
@@ -271,7 +271,7 @@
 <span class="sd">.. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues</span>
 <span class="sd">.. _GitHub Discussions: https://github.com/MDAnalysis/mdanalysis/discussions</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.io.netcdf</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -284,20 +284,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">store_init_arguments</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.AMBER&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.coordinates.AMBER"</span><span class="p">)</span>
 
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">netCDF4</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">netCDF4</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;netCDF4 is not available. Writing AMBER ncdf files will be slow.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"netCDF4 is not available. Writing AMBER ncdf files will be slow."</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TRJReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TRJReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;AMBER trajectory reader.</span>
+<span class="w">    </span><span class="sd">"""AMBER trajectory reader.</span>
 
 <span class="sd">    Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information</span>
 <span class="sd">    is auto-detected.</span>
@@ -316,16 +316,16 @@
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based.</span>
 <span class="sd">       kwarg `delta` renamed to `dt`, for uniformity with other Readers</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TRJ&#39;</span><span class="p">,</span> <span class="s1">&#39;MDCRD&#39;</span><span class="p">,</span> <span class="s1">&#39;CRDBOX&#39;</span><span class="p">]</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+<span class="sd">    """</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'TRJ'</span><span class="p">,</span> <span class="s1">'MDCRD'</span><span class="p">,</span> <span class="s1">'CRDBOX'</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="s1">'ps'</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">:</span> <span class="s1">'Angstrom'</span><span class="p">}</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TRJReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AMBER TRJ reader REQUIRES the n_atoms keyword&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"AMBER TRJ reader REQUIRES the n_atoms keyword"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -333,19 +333,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
 
         <span class="c1"># FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">&quot;10F8.3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">"10F8.3"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines_per_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span><span class="p">)))</span>
         <span class="c1"># The last line per frame might have fewer than 10</span>
         <span class="c1"># We determine right away what parser we need for the last</span>
         <span class="c1"># line because it will be the same for all frames.</span>
         <span class="n">last_per_line</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:d}</span><span class="s2">F8.3&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">"</span><span class="si">{0:d}</span><span class="s2">F8.3"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">last_per_line</span><span class="p">))</span>
 
         <span class="c1"># FORMAT(10F8.3)  BOX(1), BOX(2), BOX(3)</span>
         <span class="c1"># is this always on a separate line??</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">box_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">&quot;3F8.3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s2">"3F8.3"</span><span class="p">)</span>
 
         <span class="c1"># Now check for box</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_detect_amber_box</span><span class="p">()</span>
@@ -357,7 +357,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1&#39;d in _read_next</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1'd in _read_next</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,7 +396,7 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_detect_amber_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detecting a box in a AMBER trajectory</span>
+<span class="w">        </span><span class="sd">"""Detecting a box in a AMBER trajectory</span>
 
 <span class="sd">        Rewind trajectory and check for potential box data</span>
 <span class="sd">        after the first frame.</span>
@@ -406,22 +406,22 @@
 
 <span class="sd">        Only run at the beginning as it *rewinds* the trajctory.</span>
 
-<span class="sd">         - see if there&#39;s data after the atoms have been read that looks</span>
+<span class="sd">         - see if there's data after the atoms have been read that looks</span>
 <span class="sd">           like::</span>
 
 <span class="sd">             FORMAT(10F8.3)  BOX(1), BOX(2), BOX(3)</span>
 <span class="sd">             BOX    : size of periodic box</span>
 
 <span class="sd">         - this WILL fail if we have exactly 1 atom in the trajectory because</span>
-<span class="sd">           there&#39;s no way to distinguish the coordinates from the box</span>
+<span class="sd">           there's no way to distinguish the coordinates from the box</span>
 <span class="sd">           so for 1 atom we always assume no box</span>
 
 <span class="sd">        .. TODO:: needs a Timestep that knows about AMBER unitcells!</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># for 1 atom we cannot detect the box with the current approach</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># see _read_next_timestep()!</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="s2">&quot;Trajectory contains a single atom: assuming periodic=False&quot;</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="s2">"Trajectory contains a single atom: assuming periodic=False"</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -442,7 +442,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of frames (obtained from reading the whole trajectory).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Number of frames (obtained from reading the whole trajectory)."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># return cached value</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span>
         <span class="k">try</span><span class="p">:</span>
@@ -480,14 +480,14 @@
 <div class="viewcode-block" id="TRJReader.open_trajectory">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open the trajectory for reading and load first frame.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open the trajectory for reading and load first frame."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ignore first line</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">80</span><span class="p">:</span>
             <span class="c1"># Chimera uses this check</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
-                <span class="s2">&quot;Header of AMBER formatted trajectory has more than 80 chars. &quot;</span>
-                <span class="s2">&quot;This is probably not a AMBER trajectory.&quot;</span><span class="p">)</span>
+                <span class="s2">"Header of AMBER formatted trajectory has more than 80 chars. "</span>
+                <span class="s2">"This is probably not a AMBER trajectory."</span><span class="p">)</span>
         <span class="c1"># reset ts</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -498,7 +498,7 @@
 <div class="viewcode-block" id="TRJReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close trj trajectory file if it was open.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close trj trajectory file if it was open."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -510,10 +510,10 @@
 <div class="viewcode-block" id="NCDFReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NCDFReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for `AMBER NETCDF format`_ (version 1.0).</span>
+<span class="w">    </span><span class="sd">"""Reader for `AMBER NETCDF format`_ (version 1.0).</span>
 
 <span class="sd">    AMBER binary trajectories are automatically recognised by the</span>
-<span class="sd">    file extension &quot;.ncdf&quot;.</span>
+<span class="sd">    file extension ".ncdf".</span>
 
 <span class="sd">    The number of atoms (`n_atoms`) does not have to be provided as it can</span>
 <span class="sd">    be read from the trajectory. The trajectory reader can randomly access</span>
@@ -577,15 +577,15 @@
 <span class="sd">       :meth:`Writer` now also sets `convert_units`, `velocities`, `forces` and</span>
 <span class="sd">       `scale_factor` information for the :class:`NCDFWriter`.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NCDF&#39;</span><span class="p">,</span> <span class="s1">&#39;NC&#39;</span><span class="p">]</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'NCDF'</span><span class="p">,</span> <span class="s1">'NC'</span><span class="p">]</span>
     <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">}</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">"1.0"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="s1">'ps'</span><span class="p">,</span>
+             <span class="s1">'length'</span><span class="p">:</span> <span class="s1">'Angstrom'</span><span class="p">,</span>
+             <span class="s1">'velocity'</span><span class="p">:</span> <span class="s1">'Angstrom/ps'</span><span class="p">,</span>
+             <span class="s1">'force'</span><span class="p">:</span> <span class="s1">'kcal/(mol*Angstrom)'</span><span class="p">}</span>
 
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
@@ -596,7 +596,7 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">NCDFReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># ensure maskandscale is off so we don&#39;t end up double scaling</span>
+        <span class="c1"># ensure maskandscale is off so we don't end up double scaling</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">NCDFPicklable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                                      <span class="n">mmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mmap</span><span class="p">,</span>
                                      <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -604,94 +604,94 @@
         <span class="c1"># AMBER NetCDF files should always have a convention</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">conventions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">Conventions</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;AMBER&#39;</span> <span class="ow">in</span> <span class="n">conventions</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="ow">or</span>
-                    <span class="s1">&#39;AMBER&#39;</span> <span class="ow">in</span> <span class="n">conventions</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()):</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not conform to AMBER &quot;</span>
-                          <span class="s2">&quot;specifications, &quot;</span>
-                          <span class="s2">&quot;http://ambermd.org/netcdf/nctraj.xhtml &quot;</span>
-                          <span class="s2">&quot;(&#39;AMBER&#39; must be one of the token in attribute &quot;</span>
-                          <span class="s2">&quot;Conventions)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">'AMBER'</span> <span class="ow">in</span> <span class="n">conventions</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span> <span class="ow">or</span>
+                    <span class="s1">'AMBER'</span> <span class="ow">in</span> <span class="n">conventions</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()):</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not conform to AMBER "</span>
+                          <span class="s2">"specifications, "</span>
+                          <span class="s2">"http://ambermd.org/netcdf/nctraj.xhtml "</span>
+                          <span class="s2">"('AMBER' must be one of the token in attribute "</span>
+                          <span class="s2">"Conventions)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> is missing Conventions&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> is missing Conventions"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># AMBER NetCDF files should also have a ConventionVersion</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ConventionVersion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">ConventionVersion</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">ConventionVersion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">ConventionVersion</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ConventionVersion</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
-                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory format is </span><span class="si">{0!s}</span><span class="s2"> but the reader &quot;</span>
-                        <span class="s2">&quot;implements format </span><span class="si">{1!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory format is </span><span class="si">{0!s}</span><span class="s2"> but the reader "</span>
+                        <span class="s2">"implements format </span><span class="si">{1!s}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                          <span class="n">ConventionVersion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">))</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> is missing ConventionVersion&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> is missing ConventionVersion"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># The AMBER NetCDF standard enforces 64 bit offsets</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">version_byte</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not conform to AMBER &quot;</span>
-                      <span class="s2">&quot;specifications, as detailed in &quot;</span>
-                      <span class="s2">&quot;https://ambermd.org/netcdf/nctraj.xhtml &quot;</span>
-                      <span class="s2">&quot;(NetCDF file does not use 64 bit offsets &quot;</span>
-                      <span class="s2">&quot;[version_byte = 2])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not conform to AMBER "</span>
+                      <span class="s2">"specifications, as detailed in "</span>
+                      <span class="s2">"https://ambermd.org/netcdf/nctraj.xhtml "</span>
+                      <span class="s2">"(NetCDF file does not use 64 bit offsets "</span>
+                      <span class="s2">"[version_byte = 2])"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
         <span class="c1"># The AMBER NetCDF standard enforces 3D coordinates</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Incorrect spatial value for NCDF trajectory file&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">'spatial'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"Incorrect spatial value for NCDF trajectory file"</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;NCDF trajectory does not contain spatial dimension&quot;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"NCDF trajectory does not contain spatial dimension"</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># AMBER NetCDF specs require program and programVersion. Warn users</span>
         <span class="c1"># if those attributes do not exist</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">,</span> <span class="s1">&#39;programVersion&#39;</span><span class="p">)):</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> may not fully adhere to AMBER &quot;</span>
-                    <span class="s2">&quot;standards as either the `program` or `programVersion` &quot;</span>
-                    <span class="s2">&quot;attributes are missing&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">,</span> <span class="s1">'program'</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">,</span> <span class="s1">'programVersion'</span><span class="p">)):</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> may not fully adhere to AMBER "</span>
+                    <span class="s2">"standards as either the `program` or `programVersion` "</span>
+                    <span class="s2">"attributes are missing"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">'atom'</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Supplied n_atoms (</span><span class="si">{0}</span><span class="s2">) != natom from ncdf (</span><span class="si">{1}</span><span class="s2">). &quot;</span>
-                          <span class="s2">&quot;Note: n_atoms can be None and then the ncdf value &quot;</span>
-                          <span class="s2">&quot;is used!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Supplied n_atoms (</span><span class="si">{0}</span><span class="s2">) != natom from ncdf (</span><span class="si">{1}</span><span class="s2">). "</span>
+                          <span class="s2">"Note: n_atoms can be None and then the ncdf value "</span>
+                          <span class="s2">"is used!"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not contain atom &quot;</span>
-                      <span class="s2">&quot;information&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory </span><span class="si">{0}</span><span class="s2"> does not contain atom "</span>
+                      <span class="s2">"information"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">'frame'</span><span class="p">]</span>
             <span class="c1"># example trajectory when read with scipy.io.netcdf has</span>
-            <span class="c1"># dimensions[&#39;frame&#39;] == None (indicating a record dimension that</span>
+            <span class="c1"># dimensions['frame'] == None (indicating a record dimension that</span>
             <span class="c1"># can grow) whereas if read with netCDF4 I get</span>
-            <span class="c1"># len(dimensions[&#39;frame&#39;]) ==  10: in any case, we need to get</span>
+            <span class="c1"># len(dimensions['frame']) ==  10: in any case, we need to get</span>
             <span class="c1"># the number of frames from somewhere such as the time variable:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'coordinates'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NCDF trajectory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> does not contain &quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;frame information&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"NCDF trajectory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> does not contain "</span>
+                      <span class="sa">f</span><span class="s2">"frame information"</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">title</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="c1"># other metadata (*= requd):</span>
         <span class="c1"># - application           AMBER</span>
         <span class="c1">#</span>
@@ -699,57 +699,57 @@
         <span class="c1"># checks for not-implemented features (other units would need to be</span>
         <span class="c1"># hacked into MDAnalysis.units)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="s1">&#39;picosecond&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="s1">'picosecond'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_time</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_time</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NCDF trajectory does not contain `time` information;&quot;</span>
-                    <span class="s2">&quot; `time` will be set as an increasing index&quot;</span><span class="p">)</span>  
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NCDF trajectory does not contain `time` information;"</span>
+                    <span class="s2">" `time` will be set as an increasing index"</span><span class="p">)</span>  
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-                           <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'coordinates'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                           <span class="s1">'angstrom'</span><span class="p">)</span>
 
         <span class="c1"># Check for scale_factor attributes for all data variables and</span>
         <span class="c1"># store this to multiply through later (Issue #2323)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="s1">&#39;cell_lengths&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="s1">&#39;cell_angles&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="s1">&#39;velocities&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">'cell_lengths'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">'cell_angles'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">'coordinates'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">'velocities'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">'forces'</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
         <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="s1">&#39;scale_factor&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="s1">'scale_factor'</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">:</span>
                     <span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">scale_factor</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scale_factor</span><span class="si">}</span><span class="s2"> is not a float&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">scale_factor</span><span class="si">}</span><span class="s2"> is not a float"</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_factor</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;scale_factors for variable </span><span class="si">{0}</span><span class="s2"> are &quot;</span>
-                              <span class="s2">&quot;not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"scale_factors for variable </span><span class="si">{0}</span><span class="s2"> are "</span>
+                              <span class="s2">"not implemented"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
                     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="s1">&#39;velocities&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="s1">'velocities'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-                               <span class="s1">&#39;angstrom/picosecond&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'velocities'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                               <span class="s1">'angstrom/picosecond'</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="s1">&#39;forces&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="s1">'forces'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-                               <span class="s1">&#39;kilocalorie/mole/angstrom&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'forces'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                               <span class="s1">'kilocalorie/mole/angstrom'</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="s1">&#39;cell_lengths&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="s1">'cell_lengths'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-                               <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'cell_lengths'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                               <span class="s1">'angstrom'</span><span class="p">)</span>
             <span class="c1"># As of v1.0.0 only `degree` is accepted as a unit</span>
-            <span class="n">cell_angle_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="n">cell_angle_units</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+            <span class="n">cell_angle_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'cell_angles'</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_units</span><span class="p">(</span><span class="n">cell_angle_units</span><span class="p">,</span> <span class="s1">'degree'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -764,10 +764,10 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_verify_units</span><span class="p">(</span><span class="n">eval_unit</span><span class="p">,</span> <span class="n">expected_units</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">eval_unit</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_units</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;NETCDFReader currently assumes that the trajectory &quot;</span>
-                      <span class="s2">&quot;was written in units of </span><span class="si">{0}</span><span class="s2"> instead of </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                       <span class="n">eval_unit</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">expected_units</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">eval_unit</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_units</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"NETCDFReader currently assumes that the trajectory "</span>
+                      <span class="s2">"was written in units of </span><span class="si">{0}</span><span class="s2"> instead of </span><span class="si">{1}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                       <span class="n">eval_unit</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="n">expected_units</span><span class="p">))</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NCDFReader.parse_n_atoms">
@@ -775,19 +775,19 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">'atom'</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_var_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to get variable at given frame from NETCDF file and</span>
+<span class="w">        </span><span class="sd">"""Helper function to get variable at given frame from NETCDF file and</span>
 <span class="sd">        scale if necessary.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        If scale_factor is 1.0 within numerical precision then we don&#39;t apply</span>
+<span class="sd">        If scale_factor is 1.0 within numerical precision then we don't apply</span>
 <span class="sd">        the scaling.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">scale_factor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">isclose</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span>
@@ -798,25 +798,25 @@
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Trajectory is closed&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Trajectory is closed"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
             <span class="c1"># convention... for netcdf could also be a slice</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;frame must be a positive integer or zero&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"frame must be a positive integer or zero"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">or</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;frame index must be 0 &lt;= frame &lt; </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">"frame index must be 0 &lt;= frame &lt; </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
-        <span class="c1"># note: self.trjfile.variables[&#39;coordinates&#39;].shape == (frames, n_atoms, 3)</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="c1"># note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'coordinates'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_time</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'velocities'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'forces'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
             <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-            <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
-            <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'cell_lengths'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">'cell_angles'</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">unitcell</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
@@ -846,13 +846,13 @@
             <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets dt based on the time difference between the first and second</span>
+<span class="w">        </span><span class="sd">"""Gets dt based on the time difference between the first and second</span>
 <span class="sd">        frame. If missing (i.e. an IndexError is triggered), raises an</span>
 <span class="sd">        AttributeError which triggers the default 1 ps return of dt().</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'time'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'time'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span>
         <span class="k">return</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
@@ -860,14 +860,14 @@
 <div class="viewcode-block" id="NCDFReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close trajectory; any further access will raise an :exc:`IOError`.</span>
+<span class="w">        </span><span class="sd">"""Close trajectory; any further access will raise an :exc:`IOError`.</span>
 
 <span class="sd">        .. Note:: The underlying :mod:`scipy.io.netcdf` module may open netcdf</span>
 <span class="sd">                  files with :class:`~mmap.mmap` if ``mmap=True`` was</span>
 <span class="sd">                  set. Hence *any* reference to an array *must* be removed</span>
 <span class="sd">                  before the file can be closed.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -876,7 +876,7 @@
 <div class="viewcode-block" id="NCDFReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a NCDFWriter for `filename` with the same parameters as this NCDF.</span>
+<span class="w">        </span><span class="sd">"""Returns a NCDFWriter for `filename` with the same parameters as this NCDF.</span>
 
 <span class="sd">        All values can be changed through keyword arguments.</span>
 
@@ -910,14 +910,14 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        :class:`NCDFWriter`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;remarks&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;convert_units&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'n_atoms'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'remarks'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'convert_units'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'velocities'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'forces'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;scale_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="sa">f</span><span class="s1">'scale_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">NCDFWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
 
@@ -926,10 +926,10 @@
 <div class="viewcode-block" id="NCDFWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NCDFWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writer for `AMBER NETCDF format`_ (version 1.0).</span>
+<span class="w">    </span><span class="sd">"""Writer for `AMBER NETCDF format`_ (version 1.0).</span>
 
 <span class="sd">    AMBER binary trajectories are automatically recognised by the</span>
-<span class="sd">    file extension &quot;.ncdf&quot; or &quot;.nc&quot;.</span>
+<span class="sd">    file extension ".ncdf" or ".nc".</span>
 
 <span class="sd">    Velocities are written out if they are detected in the input</span>
 <span class="sd">    :class:`Timestep`. The trajectories are always written with ångström</span>
@@ -992,8 +992,8 @@
 
 <span class="sd">      &gt;&gt;&gt; import netCDF4</span>
 <span class="sd">      Traceback (most recent call last):</span>
-<span class="sd">        File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</span>
-<span class="sd">        File &quot;/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py&quot;, line 3, in &lt;module&gt;</span>
+<span class="sd">        File "&lt;string&gt;", line 1, in &lt;module&gt;</span>
+<span class="sd">        File "/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py", line 3, in &lt;module&gt;</span>
 <span class="sd">          from ._netCDF4 import *</span>
 <span class="sd">      ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32</span>
 
@@ -1026,7 +1026,7 @@
 <span class="sd">        `scale_factor` of 20.455. In MDAnalysis 2.0, the :class:`NCDFWriter`</span>
 <span class="sd">        will enforce `scale_factor` writing to either match user inputs (either</span>
 <span class="sd">        manually defined or via the :class:`NCDFReader`) or those as written by</span>
-<span class="sd">        AmberTools&#39;s :program:`sander` under default operation.</span>
+<span class="sd">        AmberTools's :program:`sander` under default operation.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -1052,15 +1052,15 @@
 <span class="sd">       only velocities write a scale_factor of 20.455 (echoing the behaviour</span>
 <span class="sd">       seen from AMBER).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NC&#39;</span><span class="p">,</span> <span class="s1">&#39;NCDF&#39;</span><span class="p">]</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'NC'</span><span class="p">,</span> <span class="s1">'NCDF'</span><span class="p">]</span>
     <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">}</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">"1.0"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="s1">'ps'</span><span class="p">,</span>
+             <span class="s1">'length'</span><span class="p">:</span> <span class="s1">'Angstrom'</span><span class="p">,</span>
+             <span class="s1">'velocity'</span><span class="p">:</span> <span class="s1">'Angstrom/ps'</span><span class="p">,</span>
+             <span class="s1">'force'</span><span class="p">:</span> <span class="s1">'kcal/(mol*Angstrom)'</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scale_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1069,12 +1069,12 @@
                  <span class="n">scale_forces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NCDFWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"NCDFWriter: no atoms in output trajectory"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
         <span class="c1"># convert length and time to base units on the fly?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span> <span class="ow">or</span> <span class="s2">&quot;AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span> <span class="ow">or</span> <span class="s2">"AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># signals to open trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># open on first write with _init_netcdf()</span>
@@ -1083,31 +1083,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="n">forces</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">scale_time</span><span class="p">,</span>
-                <span class="s1">&#39;cell_lengths&#39;</span><span class="p">:</span> <span class="n">scale_cell_lengths</span><span class="p">,</span>
-                <span class="s1">&#39;cell_angles&#39;</span><span class="p">:</span> <span class="n">scale_cell_angles</span><span class="p">,</span>
-                <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="n">scale_coordinates</span><span class="p">,</span>
-                <span class="s1">&#39;velocities&#39;</span><span class="p">:</span> <span class="n">scale_velocities</span><span class="p">,</span>
-                <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="n">scale_forces</span><span class="p">}</span>
+                <span class="s1">'time'</span><span class="p">:</span> <span class="n">scale_time</span><span class="p">,</span>
+                <span class="s1">'cell_lengths'</span><span class="p">:</span> <span class="n">scale_cell_lengths</span><span class="p">,</span>
+                <span class="s1">'cell_angles'</span><span class="p">:</span> <span class="n">scale_cell_angles</span><span class="p">,</span>
+                <span class="s1">'coordinates'</span><span class="p">:</span> <span class="n">scale_coordinates</span><span class="p">,</span>
+                <span class="s1">'velocities'</span><span class="p">:</span> <span class="n">scale_velocities</span><span class="p">,</span>
+                <span class="s1">'forces'</span><span class="p">:</span> <span class="n">scale_forces</span><span class="p">}</span>
         <span class="c1"># NCDF standard enforces float scale_factors</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
                     <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">))):</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;scale_factor </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is not a float&quot;</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"scale_factor </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is not a float"</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize netcdf AMBER 1.0 trajectory.</span>
+<span class="w">        </span><span class="sd">"""Initialize netcdf AMBER 1.0 trajectory.</span>
 
 <span class="sd">        The trajectory is opened when the first frame is written</span>
 <span class="sd">        because that is the earliest time that we can detect if the</span>
 <span class="sd">        output should contain periodicity information (i.e. the unit</span>
 <span class="sd">        cell dimensions).</span>
 
-<span class="sd">        Based on Joshua Adelman&#39;s `netcdf4storage.py`_ in `Issue 109`_ and uses</span>
-<span class="sd">        Jason Swail&#39;s hack from `ParmEd/ParmEd#722`_ to switch between</span>
+<span class="sd">        Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_ and uses</span>
+<span class="sd">        Jason Swail's hack from `ParmEd/ParmEd#722`_ to switch between</span>
 <span class="sd">        :mod:`scipy.io.netcdf` and :mod:`netCDF4`.</span>
 
 <span class="sd">        .. _`Issue 109`:</span>
@@ -1116,95 +1116,95 @@
 <span class="sd">           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py</span>
 <span class="sd">        .. _`ParmEd/ParmEd#722`: https://github.com/ParmEd/ParmEd/pull/722</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
                 <span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span>
-                <span class="s2">&quot;Attempt to write to closed file </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="s2">"Attempt to write to closed file </span><span class="si">{0}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">netCDF4</span><span class="p">:</span>
-            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
-                                     <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF3_64BIT&#39;</span><span class="p">)</span>
+            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span>
+                                     <span class="nb">format</span><span class="o">=</span><span class="s1">'NETCDF3_64BIT'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ncfile</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                          <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                          <span class="n">mode</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                                           <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Could not find netCDF4 module. Falling back to MUCH &quot;</span>
-                    <span class="s2">&quot;slower scipy.io.netcdf implementation for writing.&quot;</span><span class="p">)</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Could not find netCDF4 module. Falling back to MUCH "</span>
+                    <span class="s2">"slower scipy.io.netcdf implementation for writing."</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
         <span class="c1"># Set global attributes.</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">,</span> <span class="s1">&#39;MDAnalysis.coordinates.TRJ.NCDFWriter&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">&#39;programVersion&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">&#39;Conventions&#39;</span><span class="p">,</span> <span class="s1">&#39;AMBER&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">&#39;ConventionVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">&#39;application&#39;</span><span class="p">,</span> <span class="s1">&#39;MDAnalysis&#39;</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">'program'</span><span class="p">,</span> <span class="s1">'MDAnalysis.coordinates.TRJ.NCDFWriter'</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">'programVersion'</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">'Conventions'</span><span class="p">,</span> <span class="s1">'AMBER'</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">'ConventionVersion'</span><span class="p">,</span> <span class="s1">'1.0'</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="s1">'application'</span><span class="p">,</span> <span class="s1">'MDAnalysis'</span><span class="p">)</span>
 
         <span class="c1"># Create dimensions</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span>
                                <span class="kc">None</span><span class="p">)</span>  <span class="c1"># unlimited number of steps (can append)</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;atom&#39;</span><span class="p">,</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'atom'</span><span class="p">,</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>  <span class="c1"># number of atoms in system</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># number of spatial dimensions</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;cell_spatial&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># unitcell lengths</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># unitcell angles</span>
-        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># needed for cell_angular</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'spatial'</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># number of spatial dimensions</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'cell_spatial'</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># unitcell lengths</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'cell_angular'</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># unitcell angles</span>
+        <span class="n">ncfile</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">'label'</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># needed for cell_angular</span>
 
         <span class="c1"># Create variables.</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
-                                       <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]:</span>
-            <span class="n">coords</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'coordinates'</span><span class="p">,</span> <span class="s1">'f4'</span><span class="p">,</span>
+                                       <span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span> <span class="s1">'atom'</span><span class="p">,</span> <span class="s1">'spatial'</span><span class="p">))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'angstrom'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'coordinates'</span><span class="p">]:</span>
+            <span class="n">coords</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'coordinates'</span><span class="p">]</span>
 
-        <span class="n">spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="p">))</span>
-        <span class="n">spatial</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
+        <span class="n">spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'spatial'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span> <span class="p">(</span><span class="s1">'spatial'</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">spatial</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">'xyz'</span><span class="p">))</span>
 
-        <span class="n">time</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,))</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;picosecond&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'f4'</span><span class="p">,</span> <span class="p">(</span><span class="s1">'frame'</span><span class="p">,))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'picosecond'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">periodic</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
-            <span class="n">cell_lengths</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span>
-                                                 <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_spatial&#39;</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_lengths</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">]:</span>
-                <span class="n">cell_lengths</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">]</span>
+            <span class="n">cell_lengths</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'cell_lengths'</span><span class="p">,</span> <span class="s1">'f8'</span><span class="p">,</span>
+                                                 <span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span> <span class="s1">'cell_spatial'</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_lengths</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'angstrom'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'cell_lengths'</span><span class="p">]:</span>
+                <span class="n">cell_lengths</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'cell_lengths'</span><span class="p">]</span>
 
-            <span class="n">cell_spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_spatial&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
-                                                 <span class="p">(</span><span class="s1">&#39;cell_spatial&#39;</span><span class="p">,</span> <span class="p">))</span>
-            <span class="n">cell_spatial</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">))</span>
+            <span class="n">cell_spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'cell_spatial'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span>
+                                                 <span class="p">(</span><span class="s1">'cell_spatial'</span><span class="p">,</span> <span class="p">))</span>
+            <span class="n">cell_spatial</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">'abc'</span><span class="p">))</span>
 
-            <span class="n">cell_angles</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span>
-                                                <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_angular&#39;</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_angles</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">]:</span>
-                <span class="n">cell_angles</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">]</span>
+            <span class="n">cell_angles</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'cell_angles'</span><span class="p">,</span> <span class="s1">'f8'</span><span class="p">,</span>
+                                                <span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span> <span class="s1">'cell_angular'</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_angles</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'degree'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'cell_angles'</span><span class="p">]:</span>
+                <span class="n">cell_angles</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'cell_angles'</span><span class="p">]</span>
 
-            <span class="n">cell_angular</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
-                                                 <span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">))</span>
-            <span class="n">cell_angular</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="s1">&#39;beta &#39;</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="s1">&#39;gamma&#39;</span><span class="p">)])</span>
+            <span class="n">cell_angular</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'cell_angular'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span>
+                                                 <span class="p">(</span><span class="s1">'cell_angular'</span><span class="p">,</span> <span class="s1">'label'</span><span class="p">))</span>
+            <span class="n">cell_angular</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="s1">'alpha'</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="s1">'beta '</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="s1">'gamma'</span><span class="p">)])</span>
 
         <span class="c1"># These properties are optional, and are specified on Writer creation</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
-            <span class="n">velocs</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
-                                           <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">velocs</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom/picosecond&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">]:</span>
-                <span class="n">velocs</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">]</span>
+            <span class="n">velocs</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'velocities'</span><span class="p">,</span> <span class="s1">'f4'</span><span class="p">,</span>
+                                           <span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span> <span class="s1">'atom'</span><span class="p">,</span> <span class="s1">'spatial'</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">velocs</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'angstrom/picosecond'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'velocities'</span><span class="p">]:</span>
+                <span class="n">velocs</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'velocities'</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
-            <span class="n">forces</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
-                                           <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;kilocalorie/mole/angstrom&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]:</span>
-                <span class="n">forces</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span>
+            <span class="n">forces</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">'forces'</span><span class="p">,</span> <span class="s1">'f4'</span><span class="p">,</span>
+                                           <span class="p">(</span><span class="s1">'frame'</span><span class="p">,</span> <span class="s1">'atom'</span><span class="p">,</span> <span class="s1">'spatial'</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'kilocalorie/mole/angstrom'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'forces'</span><span class="p">]:</span>
+                <span class="n">forces</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">'forces'</span><span class="p">]</span>
 
         <span class="c1"># Important for netCDF4! Disable maskandscale for created variables!</span>
-        <span class="c1"># Won&#39;t work if called before variable creation!</span>
+        <span class="c1"># Won't work if called before variable creation!</span>
         <span class="k">if</span> <span class="n">netCDF4</span><span class="p">:</span>
             <span class="n">ncfile</span><span class="o">.</span><span class="n">set_auto_maskandscale</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -1215,7 +1215,7 @@
 <div class="viewcode-block" id="NCDFWriter.is_periodic">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if timestep ``ts`` contains a periodic box.</span>
+<span class="w">        </span><span class="sd">"""Test if timestep ``ts`` contains a periodic box.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1227,12 +1227,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
 <span class="sd">            Return ``True`` if `ts` contains a valid simulation box</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write information associated with ``ag`` at current frame into trajectory</span>
+<span class="w">        </span><span class="sd">"""Write information associated with ``ag`` at current frame into trajectory</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1245,7 +1245,7 @@
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Deprecated support for Timestep argument has now been removed.</span>
 <span class="sd">           Use AtomGroup or Universe as an input instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Atomgroup?</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">ts</span>
@@ -1254,12 +1254,12 @@
                 <span class="c1"># Universe?</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"Input obj is neither an AtomGroup or Universe"</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                <span class="s2">&quot;NCDFWriter: Timestep does not have the correct number of atoms&quot;</span><span class="p">)</span>
+                <span class="s2">"NCDFWriter: Timestep does not have the correct number of atoms"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># first time step: analyze data and open trajectory accordingly</span>
@@ -1268,13 +1268,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_frame_var_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to set variables and scale them if necessary.</span>
+<span class="w">        </span><span class="sd">"""Helper function to set variables and scale them if necessary.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 <span class="sd">        If scale_factor is numerically close to 1.0, the variable data is not</span>
 <span class="sd">        scaled.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">sfactor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">sfactor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">isclose</span><span class="p">(</span><span class="n">sfactor</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -1282,13 +1282,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span> <span class="o">/</span> <span class="n">sfactor</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write coordinates and unitcell information to NCDF file.</span>
+<span class="w">        </span><span class="sd">"""Write coordinates and unitcell information to NCDF file.</span>
 
 <span class="sd">        Do not call this method directly; instead use</span>
 <span class="sd">        :meth:`write` because some essential setup is done</span>
 <span class="sd">        there before writing the first frame.</span>
 
-<span class="sd">        Based on Joshua Adelman&#39;s `netcdf4storage.py`_ in `Issue 109`_.</span>
+<span class="sd">        Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.</span>
 
 <span class="sd">        .. _`Issue 109`:</span>
 <span class="sd">           https://github.com/MDAnalysis/mdanalysis/issues/109</span>
@@ -1298,7 +1298,7 @@
 
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Can now write scale_factors, and scale variables accordingly.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
         <span class="n">unitcell</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
@@ -1316,17 +1316,17 @@
 
         <span class="c1"># write step</span>
         <span class="c1"># coordinates</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'coordinates'</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 
         <span class="c1"># time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
 
         <span class="c1"># unitcell</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
             <span class="c1"># cell lengths</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'cell_lengths'</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'cell_angles'</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
 
         <span class="c1"># velocities</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
@@ -1335,7 +1335,7 @@
                 <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span>
                     <span class="n">velocities</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="n">velocities</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'velocities'</span><span class="p">,</span> <span class="n">velocities</span><span class="p">)</span>
 
         <span class="c1"># forces</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
@@ -1344,7 +1344,7 @@
                 <span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_to_native</span><span class="p">(</span>
                     <span class="n">forces</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="n">forces</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">'forces'</span><span class="p">,</span> <span class="n">forces</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1362,7 +1362,7 @@
 <div class="viewcode-block" id="NCDFPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NCDFPicklable</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;NetCDF file object (read-only) that can be pickled.</span>
+<span class="w">    </span><span class="sd">"""NetCDF file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by</span>
 <span class="sd">    :class:`scipy.io.netcdf_file`) that,</span>
@@ -1400,13 +1400,13 @@
 <span class="sd">    ::</span>
 
 <span class="sd">        f = NCDFPicklable(NCDF)</span>
-<span class="sd">        print(f.variables[&#39;coordinates&#39;].data)</span>
+<span class="sd">        print(f.variables['coordinates'].data)</span>
 <span class="sd">        f.close()</span>
 
 <span class="sd">    can also be used as context manager::</span>
 
 <span class="sd">        with NCDFPicklable(NCDF) as f:</span>
-<span class="sd">            print(f.variables[&#39;coordinates&#39;].data)</span>
+<span class="sd">            print(f.variables['coordinates'].data)</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    ---------</span>
@@ -1421,7 +1421,7 @@
 
 
 <span class="sd">    .. _`scipy netcdf API documentation`: https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_mmap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version_byte</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">maskandscale</span><span class="p">)</span>

@@ -386,7 +386,7 @@ stored in the current timestep in the <code class="docutils literal notranslate"
 <em>aux_spec</em>; e.g. to add additional pull force data stored in
 pull-force.xvg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">'pull'</span><span class="p">,</span> <span class="s1">'pull-force.xvg'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The representative value for the current timestep may then be accessed
@@ -395,14 +395,14 @@ as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.
 <a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
 <p>All data that is present in the (energy) file can be added by omitting
 <cite>aux_spec</cite> like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>aux_spec</em> is expected to be a dictionary that maps the desired
 attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
 added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span> <span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adding this data can be useful, for example, to filter trajectory
@@ -1076,7 +1076,7 @@ stored in the current timestep in the <code class="docutils literal notranslate"
 <em>aux_spec</em>; e.g. to add additional pull force data stored in
 pull-force.xvg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">'pull'</span><span class="p">,</span> <span class="s1">'pull-force.xvg'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The representative value for the current timestep may then be accessed
@@ -1085,14 +1085,14 @@ as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.
 <a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
 <p>All data that is present in the (energy) file can be added by omitting
 <cite>aux_spec</cite> like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>aux_spec</em> is expected to be a dictionary that maps the desired
 attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
 added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span> <span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adding this data can be useful, for example, to filter trajectory
@@ -1755,7 +1755,7 @@ stored in the current timestep in the <code class="docutils literal notranslate"
 <em>aux_spec</em>; e.g. to add additional pull force data stored in
 pull-force.xvg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">'pull'</span><span class="p">,</span> <span class="s1">'pull-force.xvg'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The representative value for the current timestep may then be accessed
@@ -1764,14 +1764,14 @@ as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.
 <a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
 <p>All data that is present in the (energy) file can be added by omitting
 <cite>aux_spec</cite> like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>aux_spec</em> is expected to be a dictionary that maps the desired
 attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
 added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span> <span class="s2">"epot"</span><span class="p">:</span> <span class="s2">"Potential"</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">"ener.edr"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adding this data can be useful, for example, to filter trajectory

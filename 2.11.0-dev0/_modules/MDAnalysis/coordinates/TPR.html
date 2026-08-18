@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">TPR file format --- :mod:`MDAnalysis.coordinates.TPR`</span>
 <span class="sd">======================================================</span>
 
@@ -192,7 +192,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
@@ -202,7 +202,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.TPR&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.coordinates.TPR"</span><span class="p">)</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -215,24 +215,24 @@
     <span class="c1"># in the binary file to avoid re-reading topology</span>
     <span class="c1"># or perhaps combine the topology and coordinate reading</span>
     <span class="c1"># with some inheritance shenanigans?</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class supporting read in of positions and velocities from GROMACS TPR files.</span>
+<span class="w">    </span><span class="sd">"""Class supporting read in of positions and velocities from GROMACS TPR files.</span>
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TPR&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;nm/ps&quot;</span><span class="p">}</span>
+<span class="sd">    """</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"TPR"</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nm"</span><span class="p">,</span> <span class="s2">"velocity"</span><span class="p">:</span> <span class="s2">"nm/ps"</span><span class="p">}</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read header/move over topology</span>
         <span class="c1"># TODO: reduce duplication with TPRparser perhaps...</span>
-        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
             <span class="n">tprf</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">TPXUnpacker</span><span class="p">(</span><span class="n">tprf</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">th</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># tpxheader</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">: Invalid tpr coordinate file or cannot be recognized&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">: Invalid tpr coordinate file or cannot be recognized"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
@@ -246,8 +246,8 @@
             <span class="k">if</span> <span class="n">actual_body_size</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">th</span><span class="o">.</span><span class="n">sizeOfTprBody</span><span class="p">:</span>
                 <span class="c1"># See issue #2428.</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;TPR files produced with beta versions of gromacs 2020 &quot;</span>
-                    <span class="s2">&quot;are not supported.&quot;</span>
+                    <span class="s2">"TPR files produced with beta versions of gromacs 2020 "</span>
+                    <span class="s2">"are not supported."</span>
                 <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>

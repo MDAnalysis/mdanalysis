@@ -141,7 +141,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for MDAnalysis.coordinates.IMD</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">IMDReader --- :mod:`MDAnalysis.coordinates.IMD`</span>
 <span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
 
@@ -190,12 +190,12 @@
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    import MDAnalysis as mda</span>
-<span class="sd">    u = mda.Universe(&quot;topol.tpr&quot;, &quot;imd://localhost:8889&quot;, buffer_size=10*1024*1024)</span>
+<span class="sd">    u = mda.Universe("topol.tpr", "imd://localhost:8889", buffer_size=10*1024*1024)</span>
 
-<span class="sd">    print(&quot;    time [         position         ] [         velocity         ] [           force          ] [            box           ]&quot;)</span>
-<span class="sd">    sel = u.select_atoms(&quot;all&quot;)  # Select all atoms; adjust selection as needed</span>
+<span class="sd">    print("    time [         position         ] [         velocity         ] [           force          ] [            box           ]")</span>
+<span class="sd">    sel = u.select_atoms("all")  # Select all atoms; adjust selection as needed</span>
 <span class="sd">    for ts in u.trajectory:</span>
-<span class="sd">        print(f&#39;{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}&#39;)</span>
+<span class="sd">        print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')</span>
 
 <span class="sd">.. important::</span>
 <span class="sd">   **Jupyter Notebook Users**: When using IMDReader in Jupyter notebooks, be aware that </span>
@@ -209,9 +209,9 @@
 <span class="sd">       import MDAnalysis as mda</span>
 <span class="sd">       </span>
 <span class="sd">       try:</span>
-<span class="sd">           u = mda.Universe(&quot;topol.tpr&quot;, &quot;imd://localhost:8889&quot;)</span>
+<span class="sd">           u = mda.Universe("topol.tpr", "imd://localhost:8889")</span>
 <span class="sd">       except Exception as e:</span>
-<span class="sd">           print(f&quot;Error during connection: {e}&quot;)</span>
+<span class="sd">           print(f"Error during connection: {e}")</span>
 <span class="sd">       else:</span>
 <span class="sd">           try:</span>
 <span class="sd">               # Your analysis code here</span>
@@ -261,7 +261,7 @@
 <span class="sd">.. important::</span>
 <span class="sd">   Even when multiple connections are supported by the simulation engine, each connection </span>
 <span class="sd">   receives its own independent data stream. These streams may contain different data </span>
-<span class="sd">   depending on the simulation engine&#39;s configuration, so multiple connections should </span>
+<span class="sd">   depending on the simulation engine's configuration, so multiple connections should </span>
 <span class="sd">   not be assumed to provide identical data streams.</span>
 
 <span class="sd">Classes</span>
@@ -271,7 +271,7 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -284,7 +284,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">Version</span>
 
-<span class="n">MIN_IMDCLIENT_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.2.2&quot;</span><span class="p">)</span>
+<span class="n">MIN_IMDCLIENT_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">"0.2.2"</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">imdclient</span>
@@ -292,7 +292,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">imdclient.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_host_port</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">imdclient_version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.0.0&quot;</span><span class="p">)</span>
+    <span class="n">imdclient_version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">"0.0.0"</span><span class="p">)</span>
 
     <span class="c1"># Allow building documentation without imdclient</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
@@ -300,9 +300,9 @@
     <span class="k">class</span><span class="w"> </span><span class="nc">MockIMDClient</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="n">imdclient</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="s2">&quot;imdclient&quot;</span><span class="p">)</span>
+    <span class="n">imdclient</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="s2">"imdclient"</span><span class="p">)</span>
     <span class="n">imdclient</span><span class="o">.</span><span class="n">IMDClient</span> <span class="o">=</span> <span class="n">MockIMDClient</span>
-    <span class="n">imdclient</span><span class="o">.</span><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.0&quot;</span>
+    <span class="n">imdclient</span><span class="o">.</span><span class="n">__version__</span> <span class="o">=</span> <span class="s2">"0.0.0"</span>
 
 <span class="k">else</span><span class="p">:</span>
     <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">True</span>
@@ -311,20 +311,20 @@
     <span class="c1"># Check for compatibility: currently needs to be &gt;=0.2.2</span>
     <span class="k">if</span> <span class="n">imdclient_version</span> <span class="o">&lt;</span> <span class="n">MIN_IMDCLIENT_VERSION</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;imdclient version </span><span class="si">{</span><span class="n">imdclient_version</span><span class="si">}</span><span class="s2"> is too old; &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;need at least </span><span class="si">{</span><span class="n">MIN_IMDCLIENT_VERSION</span><span class="si">}</span><span class="s2">, Your installed version of &quot;</span>
-            <span class="s2">&quot;imdclient will NOT be used.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"imdclient version </span><span class="si">{</span><span class="n">imdclient_version</span><span class="si">}</span><span class="s2"> is too old; "</span>
+            <span class="sa">f</span><span class="s2">"need at least </span><span class="si">{</span><span class="n">MIN_IMDCLIENT_VERSION</span><span class="si">}</span><span class="s2">, Your installed version of "</span>
+            <span class="s2">"imdclient will NOT be used."</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.IMDReader&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.coordinates.IMDReader"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="IMDReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/IMD.html#MDAnalysis.coordinates.IMD.IMDReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IMDReader</span><span class="p">(</span><span class="n">StreamReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Coordinate reader implementing the IMDv3 protocol for streaming simulation data.</span>
 
 <span class="sd">    This class handles the technical aspects of connecting to IMD-enabled simulation</span>
@@ -338,14 +338,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename : a string of the form &quot;imd://host:port&quot; where host is the hostname</span>
-<span class="sd">        or IP address of the listening simulation engine&#39;s IMD server and port</span>
+<span class="sd">    filename : a string of the form "imd://host:port" where host is the hostname</span>
+<span class="sd">        or IP address of the listening simulation engine's IMD server and port</span>
 <span class="sd">        is the port number.</span>
 <span class="sd">    n_atoms : int (optional)</span>
 <span class="sd">        number of atoms in the system. defaults to number of atoms</span>
-<span class="sd">        in the topology. Don&#39;t set this unless you know what you&#39;re doing.</span>
+<span class="sd">        in the topology. Don't set this unless you know what you're doing.</span>
 <span class="sd">    buffer_size: int (optional) default=10*(1024**2)</span>
-<span class="sd">        number of bytes of memory to allocate to the :class:`~imdclient.IMDClient.IMDClient`&#39;s</span>
+<span class="sd">        number of bytes of memory to allocate to the :class:`~imdclient.IMDClient.IMDClient`'s</span>
 <span class="sd">        internal buffer. Defaults to 10 megabytes. Larger buffers can improve</span>
 <span class="sd">        performance for analyses with periodic heavy computation.</span>
 <span class="sd">    **kwargs : dict (optional)</span>
@@ -353,7 +353,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The IMDReader provides access to additional simulation data through the timestep&#39;s</span>
+<span class="sd">    The IMDReader provides access to additional simulation data through the timestep's</span>
 <span class="sd">    `data` attribute (`ts.data`). The following keys may be available depending on</span>
 <span class="sd">    what the simulation engine transmits:</span>
 
@@ -362,7 +362,7 @@
 <span class="sd">    * `step` : int</span>
 <span class="sd">        Current simulation step number (from the `IMD_TIME`_ packet of the IMDv3 protocol)</span>
 <span class="sd">    * Energy terms : float</span>
-<span class="sd">        Various energy components (e.g., &#39;potential&#39;, &#39;kinetic&#39;, &#39;total&#39;, etc.)</span>
+<span class="sd">        Various energy components (e.g., 'potential', 'kinetic', 'total', etc.)</span>
 <span class="sd">        from the `IMD_ENERGIES`_ packet of the IMDv3 protocol.</span>
 
 <span class="sd">    .. _IMD_TIME: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time</span>
@@ -373,9 +373,9 @@
 <span class="sd">       and :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for more technical details.</span>
 
 <span class="sd">    .. versionadded:: 2.10.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;IMD&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"IMD"</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -387,23 +387,23 @@
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_IMDCLIENT</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;IMDReader requires the imdclient package. &quot;</span>
-                <span class="s2">&quot;Please install it with &#39;pip install imdclient&#39;.&quot;</span>
+                <span class="s2">"IMDReader requires the imdclient package. "</span>
+                <span class="s2">"Please install it with 'pip install imdclient'."</span>
             <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">IMDReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader initializing&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"IMDReader initializing"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;IMDReader: n_atoms must be specified&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"IMDReader: n_atoms must be specified"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">parse_host_port</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMDReader: Invalid IMD URL &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"IMDReader: Invalid IMD URL '</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># This starts the simulation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="o">=</span> <span class="n">IMDClient</span><span class="p">(</span>
@@ -413,8 +413,8 @@
         <span class="n">imdsinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span><span class="o">.</span><span class="n">get_imdsessioninfo</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">imdsinfo</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;IMDReader: Detected IMD version v</span><span class="si">{</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="o">+</span> <span class="s2">&quot;but IMDReader is only compatible with v3&quot;</span>
+                <span class="sa">f</span><span class="s2">"IMDReader: Detected IMD version v</span><span class="si">{</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="o">+</span> <span class="s2">"but IMDReader is only compatible with v3"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span>
@@ -428,7 +428,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">EOFError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMDReader: Read error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"IMDReader: Read error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 
@@ -437,24 +437,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_imdframe_into_ts</span><span class="p">(</span><span class="n">imdf</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader: Loaded frame </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"IMDReader: Loaded frame </span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_imdframe_into_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imdf</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
         <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">time</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">dt</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"dt"</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">dt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">step</span>
         <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">energies</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imdf</span><span class="o">.</span><span class="n">energies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;step&quot;</span><span class="p">}</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imdf</span><span class="o">.</span><span class="n">energies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">"step"</span><span class="p">}</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">imdf</span><span class="o">.</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">positions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># must call copy because reference is expected to reset</span>
-            <span class="c1"># see &#39;test_frame_collect_all_same&#39; in MDAnalysisTests.coordinates.base</span>
+            <span class="c1"># see 'test_frame_collect_all_same' in MDAnalysisTests.coordinates.base</span>
             <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">imdf</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span> <span class="n">imdf</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
@@ -466,7 +466,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="c1"># a weaker check for type hint</span>
-        <span class="k">if</span> <span class="n">thing</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;imd://&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">thing</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"imd://"</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -474,11 +474,11 @@
 <div class="viewcode-block" id="IMDReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/IMD.html#MDAnalysis.coordinates.IMD.IMDReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gracefully shut down the reader. Stops the producer thread.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader close() called&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Gracefully shut down the reader. Stops the producer thread."""</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"IMDReader close() called"</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader shut down gracefully.&quot;</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"IMDReader shut down gracefully."</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

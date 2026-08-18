@@ -383,9 +383,9 @@ expressions into nested Selection tree.</p>
 <p>For reference, the grammar that we parse is</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">(</span><span class="n">xpression</span><span class="p">)</span><span class="o">--&gt;</span> <span class="n">Exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">Exp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">--&gt;</span>      <span class="n">P</span> <span class="p">{</span><span class="n">B</span> <span class="n">Exp</span><span class="p">(</span><span class="n">q</span><span class="p">)}</span>
-<span class="n">P</span> <span class="o">--&gt;</span>           <span class="n">U</span> <span class="n">Exp</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">|</span> <span class="s2">&quot;(&quot;</span> <span class="n">E</span> <span class="s2">&quot;)&quot;</span> <span class="o">|</span> <span class="n">v</span>
-<span class="n">B</span><span class="p">(</span><span class="n">inary</span><span class="p">)</span> <span class="o">--&gt;</span>    <span class="s2">&quot;and&quot;</span> <span class="o">|</span> <span class="s2">&quot;or&quot;</span>
-<span class="n">U</span><span class="p">(</span><span class="n">nary</span><span class="p">)</span> <span class="o">--&gt;</span>     <span class="s2">&quot;not&quot;</span>
+<span class="n">P</span> <span class="o">--&gt;</span>           <span class="n">U</span> <span class="n">Exp</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">|</span> <span class="s2">"("</span> <span class="n">E</span> <span class="s2">")"</span> <span class="o">|</span> <span class="n">v</span>
+<span class="n">B</span><span class="p">(</span><span class="n">inary</span><span class="p">)</span> <span class="o">--&gt;</span>    <span class="s2">"and"</span> <span class="o">|</span> <span class="s2">"or"</span>
+<span class="n">U</span><span class="p">(</span><span class="n">nary</span><span class="p">)</span> <span class="o">--&gt;</span>     <span class="s2">"not"</span>
 <span class="n">T</span><span class="p">(</span><span class="n">erms</span><span class="p">)</span> <span class="o">--&gt;</span>     <span class="n">segid</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
                 <span class="o">|</span> <span class="n">resname</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
                 <span class="o">|</span> <span class="n">resid</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
@@ -530,8 +530,8 @@ module to avoid namespace clashes.</p>
 <p>The function creates a class inside <code class="docutils literal notranslate"><span class="pre">_selectors</span></code> and returns it.
 Normally it should not need to be manually called, as it is created
 for each TopologyAttr:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen_selection_class</span><span class="p">(</span><span class="s2">&quot;resname&quot;</span><span class="p">,</span> <span class="s2">&quot;resnames&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;residue&quot;</span><span class="p">)</span>
-<span class="go">&lt;class &#39;MDAnalysis.core.selection._selectors.ResnameSelection&#39;&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen_selection_class</span><span class="p">(</span><span class="s2">"resname"</span><span class="p">,</span> <span class="s2">"resnames"</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">"residue"</span><span class="p">)</span>
+<span class="go">&lt;class 'MDAnalysis.core.selection._selectors.ResnameSelection'&gt;</span>
 </pre></div>
 </div>
 <p>Simply generating this selector is sufficient for the keyword to be

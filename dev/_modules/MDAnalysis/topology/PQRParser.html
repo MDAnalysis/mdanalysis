@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">PQR topology parser</span>
 <span class="sd">===================</span>
 
@@ -189,7 +189,7 @@
 <span class="sd">.. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html</span>
 <span class="sd">.. _PDB:     http://www.wwpdb.org/documentation/file-format</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">openany</span>
@@ -213,7 +213,7 @@
 <div class="viewcode-block" id="PQRParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PQRParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
+<span class="w">    </span><span class="sd">"""Parse atom information from PQR file *filename*.</span>
 
 <span class="sd">    Creates a MDAnalysis Topology with the following attributes</span>
 <span class="sd">     - Atomids</span>
@@ -236,26 +236,26 @@
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       Read chainID from a PQR file and use it as segid (before we always used</span>
-<span class="sd">       &#39;SYSTEM&#39; as the new segid).</span>
+<span class="sd">       'SYSTEM' as the new segid).</span>
 <span class="sd">    .. versionchanged:: 0.16.1</span>
 <span class="sd">       Now reads insertion codes and splits into new residues around these</span>
 <span class="sd">    .. versionchanged:: 0.18.0</span>
 <span class="sd">       Added parsing of Record types</span>
 <span class="sd">       Can now read PQR files from Gromacs, these provide atom type as last column</span>
-<span class="sd">       but don&#39;t have segids</span>
+<span class="sd">       but don't have segids</span>
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">        Removed type and mass guessing (attributes guessing takes place now</span>
 <span class="sd">        through universe.guess_TopologyAttrs() API).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;PQR&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"PQR"</span>
 
 <div class="viewcode-block" id="PQRParser.guess_flavour">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.guess_flavour">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">guess_flavour</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess which variant of PQR format this line is</span>
+<span class="w">        </span><span class="sd">"""Guess which variant of PQR format this line is</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -268,29 +268,29 @@
 <span class="sd">          ORIGINAL / GROMACS / NO_CHAINID</span>
 
 <span class="sd">        .. versionadded:: 0.18.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">flavour</span> <span class="o">=</span> <span class="s2">&quot;GROMACS&quot;</span>
+                <span class="n">flavour</span> <span class="o">=</span> <span class="s2">"GROMACS"</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">flavour</span> <span class="o">=</span> <span class="s2">&quot;ORIGINAL&quot;</span>
+                <span class="n">flavour</span> <span class="o">=</span> <span class="s2">"ORIGINAL"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">flavour</span> <span class="o">=</span> <span class="s2">&quot;NO_CHAINID&quot;</span>
+            <span class="n">flavour</span> <span class="o">=</span> <span class="s2">"NO_CHAINID"</span>
         <span class="k">return</span> <span class="n">flavour</span></div>
 
 
 <div class="viewcode-block" id="PQRParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
+<span class="w">        </span><span class="sd">"""Parse atom information from PQR file *filename*.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">serials</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -306,13 +306,13 @@
 
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;ATOM&quot;</span><span class="p">,</span> <span class="s2">&quot;HETATM&quot;</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"ATOM"</span><span class="p">,</span> <span class="s2">"HETATM"</span><span class="p">)):</span>
                     <span class="k">continue</span>
                 <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
                 <span class="k">if</span> <span class="n">flavour</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">flavour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_flavour</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">&quot;ORIGINAL&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">"ORIGINAL"</span><span class="p">:</span>
                     <span class="p">(</span>
                         <span class="n">recordName</span><span class="p">,</span>
                         <span class="n">serial</span><span class="p">,</span>
@@ -326,7 +326,7 @@
                         <span class="n">charge</span><span class="p">,</span>
                         <span class="n">radius</span><span class="p">,</span>
                     <span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
-                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">&quot;GROMACS&quot;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">"GROMACS"</span><span class="p">:</span>
                     <span class="p">(</span>
                         <span class="n">recordName</span><span class="p">,</span>
                         <span class="n">serial</span><span class="p">,</span>
@@ -340,9 +340,9 @@
                         <span class="n">radius</span><span class="p">,</span>
                         <span class="n">element</span><span class="p">,</span>
                     <span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
-                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">&quot;SYSTEM&quot;</span>
+                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">"SYSTEM"</span>
                     <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">&quot;NO_CHAINID&quot;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s2">"NO_CHAINID"</span><span class="p">:</span>
                     <span class="c1"># files without the chainID</span>
                     <span class="p">(</span>
                         <span class="n">recordName</span><span class="p">,</span>
@@ -356,7 +356,7 @@
                         <span class="n">charge</span><span class="p">,</span>
                         <span class="n">radius</span><span class="p">,</span>
                     <span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
-                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">&quot;SYSTEM&quot;</span>
+                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">"SYSTEM"</span>
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">)</span>
@@ -365,7 +365,7 @@
                     <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="n">icode</span> <span class="o">=</span> <span class="n">resSeq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">icode</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">icode</span> <span class="o">=</span> <span class="s2">""</span>
 
                 <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recordName</span><span class="p">)</span>
                 <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serial</span><span class="p">)</span>

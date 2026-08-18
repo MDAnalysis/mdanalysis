@@ -269,11 +269,11 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 <span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.timestep.Timestep.time" title="Link to this definition"></a></dt>
 <dd><p>The time in ps of this timestep</p>
 <p>This is calculated as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'time_offset'</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
 </pre></div>
 </div>
 <p>Or, if the trajectory doesn’t provide time information:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'time_offset'</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
 </pre></div>
 </div>
 <div class="versionadded">

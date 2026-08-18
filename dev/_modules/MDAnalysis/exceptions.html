@@ -164,24 +164,24 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Custom exceptions and warnings --- :mod:`MDAnalysis.exceptions`</span>
 <span class="sd">===============================================================</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 
 <div class="viewcode-block" id="SelectionError">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.SelectionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a atom selection failed.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when a atom selection failed."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoDataError">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.NoDataError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoDataError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when empty input is not allowed or required data are missing.</span>
+<span class="w">    </span><span class="sd">"""Raised when empty input is not allowed or required data are missing.</span>
 
 <span class="sd">    This exception is raised in the following scenarios:</span>
 
@@ -203,67 +203,67 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Now a subclass of AttributeError as well as ValueError</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="ApplicationError">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.ApplicationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ApplicationError</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an external application failed.</span>
+<span class="w">    </span><span class="sd">"""Raised when an external application failed.</span>
 
 <span class="sd">    The error code is specific for the application.</span>
 
 <span class="sd">    .. versionadded:: 0.7.7</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="SelectionWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.SelectionWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectionWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating a possible problem with a selection.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Warning indicating a possible problem with a selection."""</span></div>
 
 
 
 <div class="viewcode-block" id="MissingDataWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.MissingDataWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MissingDataWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating is that required data are missing.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Warning indicating is that required data are missing."""</span></div>
 
 
 
 <div class="viewcode-block" id="ConversionWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.ConversionWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConversionWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating a problem with converting between units.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Warning indicating a problem with converting between units."""</span></div>
 
 
 
 <div class="viewcode-block" id="FileFormatWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.FileFormatWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileFormatWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating possible problems with a file format.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Warning indicating possible problems with a file format."""</span></div>
 
 
 
 <div class="viewcode-block" id="StreamWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.StreamWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating a possible problem with a stream.</span>
+<span class="w">    </span><span class="sd">"""Warning indicating a possible problem with a stream.</span>
 
 <span class="sd">    :exc:`StreamWarning` is used when streams are substituted for simple access</span>
 <span class="sd">    by filename (see in particular</span>
 <span class="sd">    :class:`~MDAnalysis.lib.util.NamedStream`). This does not work everywhere</span>
 <span class="sd">    in MDAnalysis (yet).</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="DuplicateWarning">
 <a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.legacy.x3dna.DuplicateWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DuplicateWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning indicating possible problems arising from an</span>
+<span class="w">    </span><span class="sd">"""Warning indicating possible problems arising from an</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.AtomGroup` /</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.ResidueGroup` /</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.SegmentGroup` containing duplicate</span>
@@ -273,7 +273,7 @@
 
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 </pre></div>
 

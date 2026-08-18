@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;Correlations utilities --- :mod:`MDAnalysis.lib.correlations`</span>
+<span class="sd">"""Correlations utilities --- :mod:`MDAnalysis.lib.correlations`</span>
 <span class="sd">=================================================================================</span>
 
 
@@ -207,7 +207,7 @@
 
 <span class="sd">.. footbibliography::</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
@@ -216,7 +216,7 @@
 <div class="viewcode-block" id="autocorrelation">
 <a class="viewcode-back" href="../../../documentation_pages/lib/correlations.html#MDAnalysis.lib.correlations.autocorrelation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">autocorrelation</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">,</span> <span class="n">tau_max</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implementation of a discrete autocorrelation function.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Implementation of a discrete autocorrelation function.</span>
 
 <span class="sd">    The autocorrelation of a property :math:`x` from a time :math:`t=t_0` to :math:`t=t_0 + \tau`</span>
 <span class="sd">    is given by:</span>
@@ -277,20 +277,20 @@
 <span class="sd">        This allows the time dependant evolution of :math:`S(\tau)` to be investigated.</span>
 
 <span class="sd">    .. versionadded:: 0.19.2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># check types</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span>
         <span class="n">list_of_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;list_of_sets must be a one-dimensional list of sets&quot;</span>
+            <span class="s2">"list_of_sets must be a one-dimensional list of sets"</span>
         <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
 
     <span class="c1"># Check dimensions of parameters</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tau_max</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;tau_max cannot be greater than the length of list_of_sets&quot;</span>
+            <span class="s2">"tau_max cannot be greater than the length of list_of_sets"</span>
         <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
 
     <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
@@ -324,7 +324,7 @@
 <div class="viewcode-block" id="correct_intermittency">
 <a class="viewcode-back" href="../../../documentation_pages/lib/correlations.html#MDAnalysis.lib.correlations.correct_intermittency">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">correct_intermittency</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">,</span> <span class="n">intermittency</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Preprocess data to allow intermittent behaviour prior to calling :func:`autocorrelation`.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Preprocess data to allow intermittent behaviour prior to calling :func:`autocorrelation`.</span>
 
 <span class="sd">    Survival probabilty may be calculated either with a strict continuous requirement or</span>
 <span class="sd">    a less strict intermittency. If calculating the survival probability water around a</span>
@@ -369,7 +369,7 @@
 <span class="sd">        both atoms will be considered present throughout and thus the returned list of sets will be</span>
 <span class="sd">        [{0, 1}, {0, 1}, {0, 1}, {0, 1}].</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">intermittency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">list_of_sets</span>
 

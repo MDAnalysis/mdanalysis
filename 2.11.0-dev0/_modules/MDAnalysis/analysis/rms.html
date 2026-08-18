@@ -163,7 +163,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`</span>
 <span class="sd">==========================================================================</span>
 
@@ -227,10 +227,10 @@
 <span class="sd">   import MDAnalysis.analysis.rms</span>
 
 <span class="sd">   R = MDAnalysis.analysis.rms.RMSD(u, ref,</span>
-<span class="sd">              select=&quot;backbone&quot;,             # superimpose on whole backbone of the whole protein</span>
-<span class="sd">              groupselections=[&quot;backbone and (resid 1-29 or resid 60-121 or resid 160-214)&quot;,   # CORE</span>
-<span class="sd">                               &quot;backbone and resid 122-159&quot;,                                   # LID</span>
-<span class="sd">                               &quot;backbone and resid 30-59&quot;])                                    # NMP</span>
+<span class="sd">              select="backbone",             # superimpose on whole backbone of the whole protein</span>
+<span class="sd">              groupselections=["backbone and (resid 1-29 or resid 60-121 or resid 160-214)",   # CORE</span>
+<span class="sd">                               "backbone and resid 122-159",                                   # LID</span>
+<span class="sd">                               "backbone and resid 30-59"])                                    # NMP</span>
 <span class="sd">   R.run()</span>
 
 <span class="sd">   import matplotlib.pyplot as plt</span>
@@ -238,14 +238,14 @@
 <span class="sd">   time = rmsd[1]</span>
 <span class="sd">   fig = plt.figure(figsize=(4,4))</span>
 <span class="sd">   ax = fig.add_subplot(111)</span>
-<span class="sd">   ax.plot(time, rmsd[2], &#39;k-&#39;,  label=&quot;all&quot;)</span>
-<span class="sd">   ax.plot(time, rmsd[3], &#39;k--&#39;, label=&quot;CORE&quot;)</span>
-<span class="sd">   ax.plot(time, rmsd[4], &#39;r--&#39;, label=&quot;LID&quot;)</span>
-<span class="sd">   ax.plot(time, rmsd[5], &#39;b--&#39;, label=&quot;NMP&quot;)</span>
-<span class="sd">   ax.legend(loc=&quot;best&quot;)</span>
-<span class="sd">   ax.set_xlabel(&quot;time (ps)&quot;)</span>
-<span class="sd">   ax.set_ylabel(r&quot;RMSD ($\\AA$)&quot;)</span>
-<span class="sd">   fig.savefig(&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;)</span>
+<span class="sd">   ax.plot(time, rmsd[2], 'k-',  label="all")</span>
+<span class="sd">   ax.plot(time, rmsd[3], 'k--', label="CORE")</span>
+<span class="sd">   ax.plot(time, rmsd[4], 'r--', label="LID")</span>
+<span class="sd">   ax.plot(time, rmsd[5], 'b--', label="NMP")</span>
+<span class="sd">   ax.legend(loc="best")</span>
+<span class="sd">   ax.set_xlabel("time (ps)")</span>
+<span class="sd">   ax.set_ylabel(r"RMSD ($\\AA$)")</span>
+<span class="sd">   fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")</span>
 
 <span class="sd">.. _figure-RMSD:</span>
 
@@ -303,7 +303,7 @@
 <span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use :attr:`results.rmsf`</span>
 <span class="sd">         instead.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -315,13 +315,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">get_weights</span>
 
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.rmsd&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.rmsd"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="rmsd">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.rmsd">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rmsd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">superposition</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns RMSD between two coordinate sets `a` and `b`.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Returns RMSD between two coordinate sets `a` and `b`.</span>
 
 <span class="sd">    `a` and `b` are arrays of the coordinates of N atoms of shape</span>
 <span class="sd">    :math:`N times 3` as generated by, e.g.,</span>
@@ -371,11 +371,11 @@
 <span class="sd">    the number of coordinates.</span>
 
 <span class="sd">    The weights :math:`w_i` are calculated from the input weights</span>
-<span class="sd">    `weights` :math:`w&#39;_i` as relative to the mean:</span>
+<span class="sd">    `weights` :math:`w'_i` as relative to the mean:</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
+<span class="sd">       w_i = \frac{w'_i}{\langle w' \rangle}</span>
 
 
 <span class="sd">    Example</span>
@@ -384,7 +384,7 @@
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.rms import rmsd</span>
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
 <span class="sd">    &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
-<span class="sd">    &gt;&gt;&gt; bb = u.select_atoms(&#39;backbone&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; bb = u.select_atoms('backbone')</span>
 <span class="sd">    &gt;&gt;&gt; A = bb.positions.copy()  # coordinates of first frame</span>
 <span class="sd">    &gt;&gt;&gt; _ = u.trajectory[-1]  # forward to last frame</span>
 <span class="sd">    &gt;&gt;&gt; B = bb.positions.copy()  # coordinates of last frame</span>
@@ -397,13 +397,13 @@
 <span class="sd">    .. versionchanged:: 0.14.0</span>
 <span class="sd">       *superposition* keyword added</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a and b must have same shape&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"a and b must have same shape"</span><span class="p">)</span>
 
     <span class="c1"># superposition only works if structures are centered</span>
     <span class="k">if</span> <span class="n">center</span> <span class="ow">or</span> <span class="n">superposition</span><span class="p">:</span>
@@ -414,7 +414,7 @@
 
     <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must have same length as a and b&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"weights must have same length as a and b"</span><span class="p">)</span>
         <span class="c1"># weights are constructed as relative to the mean</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
 
@@ -429,21 +429,21 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a canonical selection dictionary.</span>
+<span class="w">    </span><span class="sd">"""Return a canonical selection dictionary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    select : str or tuple or dict or None</span>
 
 <span class="sd">        - `str` -&gt; Any valid string selection</span>
-<span class="sd">        - `dict` -&gt; ``{&#39;mobile&#39;:sel1, &#39;reference&#39;:sel2}``</span>
+<span class="sd">        - `dict` -&gt; ``{'mobile':sel1, 'reference':sel2}``</span>
 <span class="sd">        - `tuple` -&gt; ``(sel1, sel2)``</span>
 <span class="sd">        - ``None``</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
-<span class="sd">        selections for &#39;reference&#39; and &#39;mobile&#39;. Values are guarenteed to be</span>
+<span class="sd">        selections for 'reference' and 'mobile'. Values are guarenteed to be</span>
 <span class="sd">        iterable (so that one can provide selections to retain order) or</span>
 <span class="sd">        ``None`` if no selection is to be performed.</span>
 
@@ -451,45 +451,45 @@
 <span class="sd">    -----</span>
 <span class="sd">    The dictionary input for `select` can be generated by</span>
 <span class="sd">    :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">)}</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"reference"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="s2">"mobile"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">)}</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mobile"</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"reference"</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
-                <span class="s2">&quot;select must contain two selection strings &quot;</span>
-                <span class="s2">&quot;(reference, mobile)&quot;</span>
+                <span class="s2">"select must contain two selection strings "</span>
+                <span class="s2">"(reference, mobile)"</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># compatability hack to use new nomenclature</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span>
-            <span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+            <span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span>
+            <span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="s2">&quot;select dictionary must contain entries for keys &quot;</span>
-                <span class="s2">&quot;&#39;mobile&#39; and &#39;reference&#39;.&quot;</span>
+                <span class="s2">"select dictionary must contain entries for keys "</span>
+                <span class="s2">"'mobile' and 'reference'."</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="k">elif</span> <span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"reference"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"mobile"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;select&#39; must be either a string, 2-tuple, dict or None&quot;</span>
+            <span class="s2">"'select' must be either a string, 2-tuple, dict or None"</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">select</span>
 
 
 <div class="viewcode-block" id="RMSD">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSD">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RMSD</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class to perform RMSD analysis on a trajectory.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Class to perform RMSD analysis on a trajectory.</span>
 
 <span class="sd">    The RMSD will be computed for two groups of atoms and all frames in the</span>
 <span class="sd">    trajectory belonging to `atomgroup`. The groups of atoms are obtained by</span>
@@ -517,7 +517,7 @@
 <span class="sd">    .. versionchanged:: 2.8.0</span>
 <span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
 <span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -526,9 +526,9 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -536,7 +536,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atomgroup</span><span class="p">,</span>
         <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">"all"</span><span class="p">,</span>
         <span class="n">groupselections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">weights_groupselections</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -544,7 +544,7 @@
         <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atomgroup : AtomGroup or Universe</span>
 <span class="sd">            Group of atoms for which the RMSD is calculated. If a trajectory is</span>
@@ -560,7 +560,7 @@
 <span class="sd">               :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that</span>
 <span class="sd">               produces identical selections in `atomgroup` and `reference`; or</span>
 
-<span class="sd">            2. a dictionary ``{&#39;mobile&#39;: sel1, &#39;reference&#39;: sel2}`` where *sel1*</span>
+<span class="sd">            2. a dictionary ``{'mobile': sel1, 'reference': sel2}`` where *sel1*</span>
 <span class="sd">               and *sel2* are valid selection strings that are applied to</span>
 <span class="sd">               `atomgroup` and `reference` respectively (the</span>
 <span class="sd">               :func:`MDAnalysis.analysis.align.fasta2select` function returns such</span>
@@ -593,8 +593,8 @@
 <span class="sd">            .. Note:: Experimental feature. Only limited error checking</span>
 <span class="sd">                      implemented.</span>
 
-<span class="sd">        weights : {&quot;mass&quot;, ``None``} or array_like (optional)</span>
-<span class="sd">             1. &quot;mass&quot; will use masses as weights for both `select` and `groupselections`.</span>
+<span class="sd">        weights : {"mass", ``None``} or array_like (optional)</span>
+<span class="sd">             1. "mass" will use masses as weights for both `select` and `groupselections`.</span>
 
 <span class="sd">             2. ``None`` will weigh each atom equally for both `select` and `groupselections`.</span>
 
@@ -602,13 +602,13 @@
 <span class="sd">             use each element of the `array_like` as a weight for the</span>
 <span class="sd">             corresponding atom in `select`, and assumes ``None`` for `groupselections`.</span>
 
-<span class="sd">        weights_groupselections : False or list of {&quot;mass&quot;, ``None`` or array_like} (optional)</span>
+<span class="sd">        weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)</span>
 <span class="sd">             1. ``False`` will apply imposed weights to `groupselections` from</span>
-<span class="sd">             ``weights`` option if ``weights`` is either ``&quot;mass&quot;`` or ``None``.</span>
+<span class="sd">             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``.</span>
 <span class="sd">             Otherwise will assume a list of length equal to length of</span>
 <span class="sd">             `groupselections` filled with ``None`` values.</span>
 
-<span class="sd">             2. A list of {&quot;mass&quot;, ``None`` or array_like} with the length of `groupselections`</span>
+<span class="sd">             2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`</span>
 <span class="sd">             will apply the weights to `groupselections` correspondingly.</span>
 
 <span class="sd">        tol_mass : float (optional)</span>
@@ -647,15 +647,15 @@
 <span class="sd">                                    - \mathbf{x}_i^{\text{ref}}\right)^2}</span>
 
 <span class="sd">        The weights :math:`w_i` are calculated from the input weights `weights`</span>
-<span class="sd">        :math:`w&#39;_i` as relative to the mean of the input weights:</span>
+<span class="sd">        :math:`w'_i` as relative to the mean of the input weights:</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
+<span class="sd">           w_i = \frac{w'_i}{\langle w' \rangle}</span>
 
 <span class="sd">        The selected coordinates from `atomgroup` are optimally superimposed</span>
 <span class="sd">        (translation and rotation) on the `reference` coordinates at each time step</span>
-<span class="sd">        as to minimize the RMSD. Douglas Theobald&#39;s fast QCP algorithm</span>
+<span class="sd">        as to minimize the RMSD. Douglas Theobald's fast QCP algorithm</span>
 <span class="sd">        [Theobald2005]_ is used for the rotational superposition and to calculate</span>
 <span class="sd">        the RMSD (see :mod:`MDAnalysis.lib.qcprot` for implementation details).</span>
 
@@ -681,14 +681,14 @@
 <span class="sd">           Flexible weighting scheme with new `weights` keyword.</span>
 <span class="sd">        .. deprecated:: 0.16.0</span>
 <span class="sd">           Instead of ``mass_weighted=True`` (removal in 0.17.0) use new</span>
-<span class="sd">           ``weights=&#39;mass&#39;``; refactored to fit with AnalysisBase API</span>
+<span class="sd">           ``weights='mass'``; refactored to fit with AnalysisBase API</span>
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           removed deprecated `mass_weighted` keyword; `groupselections`</span>
 <span class="sd">           are *not* rotationally superimposed any more.</span>
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           `filename` keyword was removed.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span> <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span>
@@ -704,28 +704,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span> <span class="o">=</span> <span class="n">ref_frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span> <span class="o">=</span> <span class="n">weights_groupselections</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">select</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
             <span class="n">err</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;Reference and trajectory atom selections do &quot;</span>
-                <span class="s2">&quot;not contain the same number of atoms: &quot;</span>
-                <span class="s2">&quot;N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"Reference and trajectory atom selections do "</span>
+                <span class="s2">"not contain the same number of atoms: "</span>
+                <span class="s2">"N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span>
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;RMS calculation &quot;</span> <span class="s2">&quot;for </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">))</span>
+            <span class="s2">"RMS calculation "</span> <span class="s2">"for </span><span class="si">{0:d}</span><span class="s2"> atoms."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">))</span>
         <span class="p">)</span>
         <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">))</span>
@@ -734,13 +734,13 @@
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
             <span class="c1"># diagnostic output:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Atoms: reference | mobile&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Atoms: reference | mobile"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{0!s:&gt;4}</span><span class="s2"> </span><span class="si">{1:3d}</span><span class="s2"> </span><span class="si">{2!s:&gt;3}</span><span class="s2"> </span><span class="si">{3!s:&gt;3}</span><span class="s2"> </span><span class="si">{4:6.3f}</span><span class="s2">&quot;</span>
-                        <span class="s2">&quot;|  </span><span class="si">{5!s:&gt;4}</span><span class="s2"> </span><span class="si">{6:3d}</span><span class="s2"> </span><span class="si">{7!s:&gt;3}</span><span class="s2"> </span><span class="si">{8!s:&gt;3}</span><span class="s2">&quot;</span>
-                        <span class="s2">&quot;</span><span class="si">{9:6.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s2">"</span><span class="si">{0!s:&gt;4}</span><span class="s2"> </span><span class="si">{1:3d}</span><span class="s2"> </span><span class="si">{2!s:&gt;3}</span><span class="s2"> </span><span class="si">{3!s:&gt;3}</span><span class="s2"> </span><span class="si">{4:6.3f}</span><span class="s2">"</span>
+                        <span class="s2">"|  </span><span class="si">{5!s:&gt;4}</span><span class="s2"> </span><span class="si">{6:3d}</span><span class="s2"> </span><span class="si">{7!s:&gt;3}</span><span class="s2"> </span><span class="si">{8!s:&gt;3}</span><span class="s2">"</span>
+                        <span class="s2">"</span><span class="si">{9:6.3f}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span>
                             <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
                             <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
@@ -754,9 +754,9 @@
                         <span class="p">)</span>
                     <span class="p">)</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;Inconsistent selections, masses differ by more than&quot;</span>
-                <span class="s2">&quot;</span><span class="si">{0:f}</span><span class="s2">; mis-matching atoms&quot;</span>
-                <span class="s2">&quot;are shown above.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">)</span>
+                <span class="s2">"Inconsistent selections, masses differ by more than"</span>
+                <span class="s2">"</span><span class="si">{0:f}</span><span class="s2">; mis-matching atoms"</span>
+                <span class="s2">"are shown above."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
@@ -768,10 +768,10 @@
         <span class="c1">#   *groupselections* groups each a dict with reference/mobile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                    <span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+                <span class="s2">"reference"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]),</span>
+                <span class="s2">"mobile"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]),</span>
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span>
         <span class="p">]</span>
@@ -779,26 +779,26 @@
         <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;SelectionError: Group Selection&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"SelectionError: Group Selection"</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span>
-                    <span class="s2">&quot;Group selection </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> | </span><span class="si">{2}</span><span class="s2">: Reference and trajectory &quot;</span>
-                    <span class="s2">&quot;atom selections do not contain the same number of atoms: &quot;</span>
-                    <span class="s2">&quot;N_ref=</span><span class="si">{3}</span><span class="s2">, N_traj=</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"Group selection </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> | </span><span class="si">{2}</span><span class="s2">: Reference and trajectory "</span>
+                    <span class="s2">"atom selections do not contain the same number of atoms: "</span>
+                    <span class="s2">"N_ref=</span><span class="si">{3}</span><span class="s2">, N_traj=</span><span class="si">{4}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">igroup</span><span class="p">,</span>
-                        <span class="n">sel</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">],</span>
-                        <span class="n">sel</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">],</span>
-                        <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]),</span>
-                        <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]),</span>
+                        <span class="n">sel</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">],</span>
+                        <span class="n">sel</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">],</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]),</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]),</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
 
         <span class="c1"># check weights type</span>
-        <span class="n">acceptable_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">))</span>
+        <span class="n">acceptable_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">"float64"</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">"int64"</span><span class="p">))</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;weights should only be &#39;mass&#39;, None or 1D float array.&quot;</span>
-            <span class="s2">&quot;For weights on groupselections, &quot;</span>
-            <span class="s2">&quot;use **weight_groupselections**&quot;</span>
+            <span class="s2">"weights should only be 'mass', None or 1D float array."</span>
+            <span class="s2">"For weights on groupselections, "</span>
+            <span class="s2">"use **weight_groupselections**"</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">):</span>
@@ -814,14 +814,14 @@
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">acceptable_dtypes</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">!=</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">!=</span> <span class="s2">"mass"</span><span class="p">:</span>
             <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Length of weights_groupselections is not equal to &quot;</span>
-                    <span class="s2">&quot;length of groupselections &quot;</span>
+                    <span class="s2">"Length of weights_groupselections is not equal to "</span>
+                    <span class="s2">"length of groupselections "</span>
                 <span class="p">)</span>
             <span class="k">for</span> <span class="n">weights</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">selection</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">,</span>
@@ -829,12 +829,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="n">weights</span> <span class="o">!=</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
-                        <span class="n">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="n">weights</span> <span class="o">!=</span> <span class="s2">"mass"</span><span class="p">:</span>
+                        <span class="n">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)(</span>
                         <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                        <span class="o">+</span> <span class="s2">&quot; happens in selection </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="s2">" happens in selection </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">selection</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span>
                     <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -842,7 +842,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
-            <span class="p">):</span>  <span class="c1"># apply &#39;mass&#39; or &#39;None&#39; to groupselections</span>
+            <span class="p">):</span>  <span class="c1"># apply 'mass' or 'None' to groupselections</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span>
                 <span class="p">)</span>
@@ -854,8 +854,8 @@
         <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"mass"</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
             <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
@@ -885,7 +885,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_ref_coords64</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                            <span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+                            <span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span>
                         <span class="p">)</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span>
@@ -901,7 +901,7 @@
             <span class="c1"># RMSDs.</span>
             <span class="c1"># R: rotation matrix that aligns r-r_com, x~-x~com</span>
             <span class="c1">#    (x~: selected coordinates, x: all coordinates)</span>
-            <span class="c1"># Final transformed traj coordinates: x&#39; = (x-x~_com)*R + ref_com</span>
+            <span class="c1"># Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># allocate space</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -916,7 +916,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rmsd&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">"rmsd"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
@@ -950,7 +950,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="c1"># Transform each atom in the trajectory (use inplace ops to</span>
             <span class="c1"># avoid copying arrays) (Marginally (~3%) faster than</span>
-            <span class="c1"># &quot;ts.positions[:] = (ts.positions - x_com) * R + ref_com&quot;.)</span>
+            <span class="c1"># "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span> <span class="o">-=</span> <span class="n">mobile_com</span>
 
             <span class="c1"># R acts to the left &amp; is broadcasted N times.</span>
@@ -968,7 +968,7 @@
             <span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">(</span>
                     <span class="n">refpos</span><span class="p">,</span>
-                    <span class="n">atoms</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                    <span class="n">atoms</span><span class="p">[</span><span class="s2">"mobile"</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                     <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span> <span class="o">-</span> <span class="mi">3</span><span class="p">],</span>
                     <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">superposition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -989,9 +989,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and &quot;</span>
-            <span class="s2">&quot;will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.rmsd` instead.&quot;</span>
+            <span class="s2">"The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "</span>
+            <span class="s2">"will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.rmsd` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
@@ -1001,7 +1001,7 @@
 <div class="viewcode-block" id="RMSF">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RMSF</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate RMSF of given atoms across a trajectory.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate RMSF of given atoms across a trajectory.</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
@@ -1015,17 +1015,17 @@
 <span class="sd">    Run the analysis with :meth:`RMSF.run`, which stores the results</span>
 <span class="sd">    in the array :attr:`RMSF.results.rmsf`.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="RMSF.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"serial"</span><span class="p">,)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atomgroup : AtomGroup</span>
 <span class="sd">            Atoms for which RMSF is calculated</span>
@@ -1076,14 +1076,14 @@
 <span class="sd">           from MDAnalysis.tests.datafiles import TPR, XTC</span>
 
 <span class="sd">           u = mda.Universe(TPR, XTC, in_memory=True)</span>
-<span class="sd">           protein = u.select_atoms(&quot;protein&quot;)</span>
+<span class="sd">           protein = u.select_atoms("protein")</span>
 
 <span class="sd">           # 1) the current trajectory contains a protein split across</span>
 <span class="sd">           #    periodic boundaries, so we first make the protein whole and</span>
 <span class="sd">           #    center it in the box using on-the-fly transformations</span>
 <span class="sd">           import MDAnalysis.transformations as trans</span>
 
-<span class="sd">           not_protein = u.select_atoms(&#39;not protein&#39;)</span>
+<span class="sd">           not_protein = u.select_atoms('not protein')</span>
 <span class="sd">           transforms = [trans.unwrap(protein),</span>
 <span class="sd">                         trans.center_in_box(protein, wrap=True),</span>
 <span class="sd">                         trans.wrap(not_protein)]</span>
@@ -1091,15 +1091,15 @@
 
 <span class="sd">           # 2) fit to the initial frame to get a better average structure</span>
 <span class="sd">           #    (the trajectory is changed in memory)</span>
-<span class="sd">           prealigner = align.AlignTraj(u, u, select=&quot;protein and name CA&quot;,</span>
+<span class="sd">           prealigner = align.AlignTraj(u, u, select="protein and name CA",</span>
 <span class="sd">                                        in_memory=True).run()</span>
 
 <span class="sd">           # 3) reference = average structure</span>
 <span class="sd">           ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)</span>
 <span class="sd">           # make a reference structure (need to reshape into a 1-frame</span>
-<span class="sd">           # &quot;trajectory&quot;)</span>
+<span class="sd">           # "trajectory")</span>
 <span class="sd">           reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],</span>
-<span class="sd">                                                   order=&quot;afc&quot;)</span>
+<span class="sd">                                                   order="afc")</span>
 
 <span class="sd">        We created a new universe ``reference`` that contains a single frame</span>
 <span class="sd">        with the averaged coordinates of the protein.  Now we need to fit the</span>
@@ -1107,7 +1107,7 @@
 <span class="sd">        :class:`MDAnalysis.analysis.align.AlignTraj`::</span>
 
 <span class="sd">           aligner = align.AlignTraj(u, reference,</span>
-<span class="sd">                                     select=&quot;protein and name CA&quot;,</span>
+<span class="sd">                                     select="protein and name CA",</span>
 <span class="sd">                                     in_memory=True).run()</span>
 
 <span class="sd">        The trajectory is now fitted to the reference (the RMSD is stored as</span>
@@ -1116,7 +1116,7 @@
 
 <span class="sd">           from MDAnalysis.analysis.rms import RMSF</span>
 
-<span class="sd">           calphas = protein.select_atoms(&quot;name CA&quot;)</span>
+<span class="sd">           calphas = protein.select_atoms("name CA")</span>
 <span class="sd">           rmsfer = RMSF(calphas, verbose=True).run()</span>
 
 <span class="sd">        and plot::</span>
@@ -1143,7 +1143,7 @@
 <span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
 <span class="sd">           removed. These should instead be passed to :meth:`RMSF.run`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RMSF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
 
@@ -1164,16 +1164,16 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Some RMSF values negative; overflow &quot;</span>
-                <span class="o">+</span> <span class="s2">&quot;or underflow occurred&quot;</span>
+                <span class="s2">"Some RMSF values negative; overflow "</span>
+                <span class="o">+</span> <span class="s2">"or underflow occurred"</span>
             <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rmsf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and &quot;</span>
-            <span class="s2">&quot;will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.rmsd` instead.&quot;</span>
+            <span class="s2">"The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "</span>
+            <span class="s2">"will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.rmsd` instead."</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsf</span></div>

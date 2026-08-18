@@ -164,7 +164,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;Streamplots (3D) --- :mod:`MDAnalysis.visualization.streamlines_3D`</span>
+<span class="sd">"""Streamplots (3D) --- :mod:`MDAnalysis.visualization.streamlines_3D`</span>
 <span class="sd">===================================================================</span>
 
 <span class="sd">:Authors: Tyler Reddy and Matthieu Chavent</span>
@@ -188,7 +188,7 @@
 
 <span class="sd">.. autofunction:: generate_streamlines_3d</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -202,7 +202,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">determine_container_limits</span><span class="p">(</span>
     <span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">buffer_value</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the extent of the atom coordinates + buffer.</span>
+<span class="w">    </span><span class="sd">"""Calculate the extent of the atom coordinates + buffer.</span>
 
 <span class="sd">    A function for the parent process which should take the input trajectory</span>
 <span class="sd">    and calculate the limits of the container for the system and return these</span>
@@ -216,12 +216,12 @@
 <span class="sd">        trajectory file name</span>
 <span class="sd">    buffer_value : float</span>
 <span class="sd">        buffer value (padding) in +/- {x, y, z}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">universe_object</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
         <span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span>
     <span class="p">)</span>
     <span class="n">all_atom_selection</span> <span class="o">=</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-        <span class="s2">&quot;all&quot;</span>
+        <span class="s2">"all"</span>
     <span class="p">)</span>  <span class="c1"># select all particles</span>
     <span class="n">all_atom_coordinate_array</span> <span class="o">=</span> <span class="n">all_atom_selection</span><span class="o">.</span><span class="n">positions</span>
     <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span> <span class="o">=</span> <span class="p">[</span>
@@ -244,7 +244,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce a 3D grid for the simulation system.</span>
+<span class="w">    </span><span class="sd">"""Produce a 3D grid for the simulation system.</span>
 
 <span class="sd">    The partitioning is based on the tuple of Cartesian Coordinate limits</span>
 <span class="sd">    calculated in an earlier step.</span>
@@ -261,7 +261,7 @@
 <span class="sd">    grid : array</span>
 <span class="sd">        ``numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]``</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span> <span class="o">=</span> <span class="n">tuple_of_limits</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span>
         <span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">,</span>
@@ -272,7 +272,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split the grid into blocks of vertices.</span>
+<span class="w">    </span><span class="sd">"""Split the grid into blocks of vertices.</span>
 
 <span class="sd">    Take the overall `grid` for the system and split it into lists of cube</span>
 <span class="sd">    vertices that can be distributed to each core.</span>
@@ -291,7 +291,7 @@
 <span class="sd">    num_sheets : int</span>
 <span class="sd">    delta_array_shape : tuple</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># unpack the x,y,z mgrid arrays</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">grid</span>
     <span class="n">num_z_values</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -335,7 +335,7 @@
     <span class="n">array_ordered_cartesian_coords_per_sheet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="n">ordered_list_cartesian_coordinates_per_sheet</span>
     <span class="p">)</span>
-    <span class="c1"># now I&#39;m going to want to build cubes in an ordered fashion, and in such a way that I can track the index /</span>
+    <span class="c1"># now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /</span>
     <span class="c1"># centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input</span>
     <span class="c1"># cubes will be formed from N - 1 base sheets combined with subsequent sheets</span>
     <span class="n">current_base_sheet</span> <span class="o">=</span> <span class="mi">0</span>
@@ -347,7 +347,7 @@
         <span class="p">]</span>
         <span class="n">current_top_sheet_array</span> <span class="o">=</span> <span class="n">array_ordered_cartesian_coords_per_sheet</span><span class="p">[</span>
             <span class="n">current_base_sheet</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="p">]</span>  <span class="c1"># the points of the sheet &#39;to the right&#39; in the grid</span>
+        <span class="p">]</span>  <span class="c1"># the points of the sheet 'to the right' in the grid</span>
         <span class="n">current_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">current_index</span> <span class="o">&lt;</span> <span class="n">current_base_sheet_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">num_z_values</span><span class="p">:</span>
             <span class="c1"># iterate through all the indices in each of the sheet arrays (careful to avoid extra</span>
@@ -388,13 +388,13 @@
                 <span class="k">assert</span> <span class="n">vertex_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
                     <span class="mi">8</span><span class="p">,</span>
                     <span class="mi">3</span><span class="p">,</span>
-                <span class="p">),</span> <span class="s2">&quot;vertex_array has incorrect shape&quot;</span>
+                <span class="p">),</span> <span class="s2">"vertex_array has incorrect shape"</span>
                 <span class="n">cube_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_list_cube_vertices</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
                 <span class="p">)</span>
                 <span class="n">dictionary_cubes_centroids_indices</span><span class="p">[</span><span class="n">cube_counter</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;centroid&quot;</span><span class="p">:</span> <span class="n">cube_centroid</span><span class="p">,</span>
-                    <span class="s2">&quot;vertex_list&quot;</span><span class="p">:</span> <span class="n">current_list_cube_vertices</span><span class="p">,</span>
+                    <span class="s2">"centroid"</span><span class="p">:</span> <span class="n">cube_centroid</span><span class="p">,</span>
+                    <span class="s2">"vertex_list"</span><span class="p">:</span> <span class="n">current_list_cube_vertices</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -414,7 +414,7 @@
     <span class="p">)</span>
     <span class="c1"># now, the split of pseudoindices seems to work well, and the above sublist_of_cube_indices_per_core is a list of</span>
     <span class="c1"># arrays of cube numbers / keys in the original dictionary</span>
-    <span class="c1"># now I think I&#39;ll try to produce a list of dictionaries that each contain their assigned cubes based on the above</span>
+    <span class="c1"># now I think I'll try to produce a list of dictionaries that each contain their assigned cubes based on the above</span>
     <span class="c1">#  per core split</span>
     <span class="n">list_dictionaries_for_cores</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">subdictionary_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -444,10 +444,10 @@
     <span class="n">start_frame</span><span class="p">,</span>
     <span class="n">end_frame</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the analysis on one core.</span>
+<span class="w">    </span><span class="sd">"""Run the analysis on one core.</span>
 
 <span class="sd">    The code to perform on a given core given the dictionary of cube data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># define some utility functions for trajectory iteration:</span>
@@ -455,13 +455,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">point_in_cube</span><span class="p">(</span>
         <span class="n">array_point_coordinates</span><span class="p">,</span> <span class="n">list_cube_vertices</span><span class="p">,</span> <span class="n">cube_centroid</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if an array of coordinates are within a cube.&quot;&quot;&quot;</span>
-        <span class="c1"># the simulation particle point can&#39;t be more than half the cube side length away from the cube centroid in</span>
+<span class="w">        </span><span class="sd">"""Determine if an array of coordinates are within a cube."""</span>
+        <span class="c1"># the simulation particle point can't be more than half the cube side length away from the cube centroid in</span>
         <span class="c1"># any given dimension:</span>
         <span class="n">array_cube_vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">list_cube_vertices</span><span class="p">)</span>
         <span class="n">cube_half_side_length</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span>
-                <span class="n">array_cube_vertices</span><span class="p">,</span> <span class="s2">&quot;euclidean&quot;</span>
+                <span class="n">array_cube_vertices</span><span class="p">,</span> <span class="s2">"euclidean"</span>
             <span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
             <span class="o">/</span> <span class="mf">2.0</span>
         <span class="p">)</span>
@@ -475,8 +475,8 @@
             <span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
             <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">atol</span><span class="o">=</span><span class="mf">1.5e-4</span><span class="p">,</span>
-            <span class="n">err_msg</span><span class="o">=</span><span class="s2">&quot;not all cube vertex to centroid distances are the same, &quot;</span>
-            <span class="s2">&quot;so not a true cube&quot;</span><span class="p">,</span>
+            <span class="n">err_msg</span><span class="o">=</span><span class="s2">"not all cube vertex to centroid distances are the same, "</span>
+            <span class="s2">"so not a true cube"</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">absolute_delta_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">array_point_coordinates</span><span class="p">,</span> <span class="n">cube_centroid</span><span class="p">)</span>
@@ -504,68 +504,68 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span>
         <span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Basically update the cube dictionary objects assigned to this core to contain a new key/value pair</span>
+<span class="w">        </span><span class="sd">"""Basically update the cube dictionary objects assigned to this core to contain a new key/value pair</span>
 <span class="sd">        corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,</span>
 <span class="sd">        store a key/value pair for the centroid of the particles that fall within the cube.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">dictionary_cube_data_this_core</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">index_list_in_cube</span> <span class="o">=</span> <span class="n">point_in_cube</span><span class="p">(</span>
                 <span class="n">array_simulation_particle_coordinates</span><span class="p">,</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;vertex_list&quot;</span><span class="p">],</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid&quot;</span><span class="p">],</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"vertex_list"</span><span class="p">],</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid"</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;start_frame_index_list_in_cube&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list_in_cube</span>
+            <span class="n">cube</span><span class="p">[</span><span class="s2">"start_frame_index_list_in_cube"</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list_in_cube</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">index_list_in_cube</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">):</span>  <span class="c1"># if there&#39;s at least one particle in this cube</span>
+            <span class="p">):</span>  <span class="c1"># if there's at least one particle in this cube</span>
                 <span class="n">centroid_particles_in_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
                     <span class="n">array_simulation_particle_coordinates</span><span class="p">[</span><span class="n">index_list_in_cube</span><span class="p">],</span>
                     <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_particles_first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid_of_particles_first_frame"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">centroid_particles_in_cube</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># empty cube</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_particles_first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid_of_particles_first_frame"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">update_dictionary_end_frame</span><span class="p">(</span>
         <span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the cube dictionary objects again as appropriate for the second and final frame.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the cube dictionary objects again as appropriate for the second and final frame."""</span>
         <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">dictionary_cube_data_this_core</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0</span>
-            <span class="k">if</span> <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_particles_first_frame&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid_of_particles_first_frame"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dx"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dy"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dz"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># there was at least one particle in the starting cube so we can get dx,dy,dz centroid values</span>
                 <span class="n">new_coordinate_array_for_particles_starting_in_this_cube</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">array_simulation_particle_coordinates</span><span class="p">[</span>
-                        <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;start_frame_index_list_in_cube&quot;</span><span class="p">]</span>
+                        <span class="n">cube</span><span class="p">[</span><span class="s2">"start_frame_index_list_in_cube"</span><span class="p">]</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
                 <span class="n">new_centroid_for_particles_starting_in_this_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
                     <span class="n">new_coordinate_array_for_particles_starting_in_this_cube</span><span class="p">,</span>
                     <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_paticles_final_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid_of_paticles_final_frame"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">new_centroid_for_particles_starting_in_this_cube</span>
                 <span class="p">)</span>
                 <span class="n">delta_centroid_array_this_cube</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">new_centroid_for_particles_starting_in_this_cube</span>
-                    <span class="o">-</span> <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_particles_first_frame&quot;</span><span class="p">]</span>
+                    <span class="o">-</span> <span class="n">cube</span><span class="p">[</span><span class="s2">"centroid_of_particles_first_frame"</span><span class="p">]</span>
                 <span class="p">)</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;dz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dx"</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dy"</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s2">"dz"</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="c1"># now that the parent process is dealing with the universe object &amp; grabbing required coordinates, each child</span>
     <span class="c1"># process only needs to take the coordinate arrays &amp; perform the operations with its assigned cubes (no more file</span>
-    <span class="c1">#  opening and trajectory iteration on each core--which I&#39;m hoping will substantially reduce the physical memory</span>
+    <span class="c1">#  opening and trajectory iteration on each core--which I'm hoping will substantially reduce the physical memory</span>
     <span class="c1"># footprint of my 3D streamplot code)</span>
     <span class="n">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span>
         <span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span>
@@ -583,14 +583,14 @@
     <span class="n">start_frame</span><span class="p">,</span>
     <span class="n">end_frame</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate coordinate arrays.</span>
+<span class="w">    </span><span class="sd">"""Generate coordinate arrays.</span>
 
 <span class="sd">    To reduce memory footprint produce only a single MDA selection and get</span>
 <span class="sd">    desired coordinate arrays; can later send these coordinate arrays to all</span>
 <span class="sd">    child processes rather than having each child process open a trajectory and</span>
 <span class="sd">    waste memory.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">universe_object</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
         <span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span>
     <span class="p">)</span>
@@ -631,9 +631,9 @@
     <span class="n">zmin</span><span class="p">,</span>
     <span class="n">zmax</span><span class="p">,</span>
     <span class="n">maximum_delta_magnitude</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-    <span class="n">num_cores</span><span class="o">=</span><span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+    <span class="n">num_cores</span><span class="o">=</span><span class="s2">"maximum"</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Produce the x, y and z components of a 3D streamplot data set.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Produce the x, y and z components of a 3D streamplot data set.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -664,8 +664,8 @@
 <span class="sd">            centroid of a group of particles ( angstroms). Values above this</span>
 <span class="sd">            displacement will not count in the streamplot (treated as</span>
 <span class="sd">            excessively large displacements crossing the periodic boundary)</span>
-<span class="sd">    num_cores : int or &#39;maximum&#39; (optional)</span>
-<span class="sd">            The number of cores to use. (Default &#39;maximum&#39; uses all available</span>
+<span class="sd">    num_cores : int or 'maximum' (optional)</span>
+<span class="sd">            The number of cores to use. (Default 'maximum' uses all available</span>
 <span class="sd">            cores)</span>
 
 <span class="sd">    Returns</span>
@@ -695,12 +695,12 @@
 <span class="sd">        grid_spacing_value = 20</span>
 
 <span class="sd">        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d(</span>
-<span class="sd">                        &#39;testing.gro&#39;, &#39;testing_filtered.xtc&#39;,</span>
+<span class="sd">                        'testing.gro', 'testing_filtered.xtc',</span>
 <span class="sd">                         xmin=x_lower, xmax=x_upper,</span>
 <span class="sd">                         ymin=y_lower, ymax=y_upper,</span>
 <span class="sd">                         zmin=z_lower, zmax=z_upper,</span>
-<span class="sd">                         grid_spacing=grid_spacing_value, MDA_selection = &#39;name PO4&#39;,</span>
-<span class="sd">                         start_frame=2, end_frame=3, num_cores=&#39;maximum&#39;)</span>
+<span class="sd">                         grid_spacing=grid_spacing_value, MDA_selection = 'name PO4',</span>
+<span class="sd">                         start_frame=2, end_frame=3, num_cores='maximum')</span>
 
 <span class="sd">        x, y, z = np.mgrid[x_lower:x_upper:x1.shape[0]*1j,</span>
 <span class="sd">                          y_lower:y_upper:y1.shape[1]*1j,</span>
@@ -710,8 +710,8 @@
 <span class="sd">        fig = mayavi.mlab.figure(bgcolor=(1.0, 1.0, 1.0), size=(800, 800), fgcolor=(0, 0, 0))</span>
 <span class="sd">        for z_value in np.arange(z_lower, z_upper, grid_spacing_value):</span>
 <span class="sd">            st = mayavi.mlab.flow(x, y, z, x1, y1, z1, line_width=1,</span>
-<span class="sd">                                  seedtype=&#39;plane&#39;, integration_direction=&#39;both&#39;)</span>
-<span class="sd">            st.streamline_type = &#39;tube&#39;</span>
+<span class="sd">                                  seedtype='plane', integration_direction='both')</span>
+<span class="sd">            st.streamline_type = 'tube'</span>
 <span class="sd">            st.tube_filter.radius = 2</span>
 <span class="sd">            st.seed.widget.origin = np.array([ x_lower,  y_upper,   z_value])</span>
 <span class="sd">            st.seed.widget.point1 = np.array([ x_upper, y_upper,  z_value])</span>
@@ -720,7 +720,7 @@
 <span class="sd">            st.seed.widget.enabled = False</span>
 <span class="sd">        mayavi.mlab.axes(extent = [0, 1200, 0, 1200, -300, 300])</span>
 <span class="sd">        fig.scene.z_plus_view()</span>
-<span class="sd">        mayavi.mlab.savefig(&#39;test_streamplot_3D.png&#39;)</span>
+<span class="sd">        mayavi.mlab.savefig('test_streamplot_3D.png')</span>
 <span class="sd">        # more compelling examples can be produced for vesicles and other spherical systems</span>
 
 <span class="sd">    .. image:: test_streamplot_3D.png</span>
@@ -731,14 +731,14 @@
 
 
 <span class="sd">    .. _mayavi: http://docs.enthought.com/mayavi/mayavi/</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># work out the number of cores to use:</span>
-    <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s2">&quot;maximum&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s2">"maximum"</span><span class="p">:</span>
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># use all available cores</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span>  <span class="c1"># use the value specified by the user</span>
-        <span class="c1"># assert isinstance(num_cores,(int,long)), &quot;The number of specified cores must (of course) be an integer.&quot;</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">)</span>
+        <span class="c1"># assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">"warn"</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="s2">"raise"</span><span class="p">)</span>
     <span class="n">parent_cube_dictionary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># collect all data from child processes here</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">process_dict</span><span class="p">):</span>
@@ -802,13 +802,13 @@
     <span class="k">for</span> <span class="n">cube_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_cubes</span><span class="p">):</span>
         <span class="n">dx_array</span><span class="p">[</span>
             <span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">&quot;dx&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">"dx"</span><span class="p">]</span>
         <span class="n">dy_array</span><span class="p">[</span>
             <span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">&quot;dy&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">"dy"</span><span class="p">]</span>
         <span class="n">dz_array</span><span class="p">[</span>
             <span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">&quot;dz&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span><span class="s2">"dz"</span><span class="p">]</span>
         <span class="n">z_index_current_column</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">total_cubes_current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">z_index_current_column</span> <span class="o">==</span> <span class="n">delta_array_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>

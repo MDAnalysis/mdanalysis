@@ -256,7 +256,7 @@ bonds in water:</p>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
-<span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span><span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">&#39;resname TIP3 and name H1 H2&#39;</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">&#39;resname TIP3 and name OH2&#39;</span><span class="p">)</span>
+<span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span><span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">'resname TIP3 and name H1 H2'</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">'resname TIP3 and name OH2'</span><span class="p">)</span>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -269,8 +269,8 @@ the universe may be used to guess the atoms. For example, find hydrogens and acc
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span><span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -284,14 +284,14 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span><span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
 
-<span class="n">protein_hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">protein_acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein_hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">protein_acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
 
-<span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name H1 H2&quot;</span>
-<span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name OH2&quot;</span>
+<span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">"resname TIP3 and name H1 H2"</span>
+<span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">"resname TIP3 and name OH2"</span>
 
-<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)&quot;</span>
-<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)"</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)"</span>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -307,17 +307,17 @@ or water-water hydrogen bonds:</p>
 
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span>
   <span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-  <span class="n">between</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;resname TIP3&#39;</span><span class="p">,</span> <span class="s1">&#39;protein&#39;</span><span class="p">]</span>
+  <span class="n">between</span><span class="o">=</span><span class="p">[</span><span class="s1">'resname TIP3'</span><span class="p">,</span> <span class="s1">'protein'</span><span class="p">]</span>
   <span class="p">)</span>
 
-<span class="n">protein_hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
-<span class="n">protein_acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein_hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
+<span class="n">protein_acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">"protein"</span><span class="p">)</span>
 
-<span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name H1 H2&quot;</span>
-<span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name OH2&quot;</span>
+<span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">"resname TIP3 and name H1 H2"</span>
+<span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">"resname TIP3 and name OH2"</span>
 
-<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2">)&quot;</span>
-<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2">)"</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2">)"</span>
 
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
@@ -331,9 +331,9 @@ no water-water hydrogen bonds.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span>
              <span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-             <span class="n">donors_sel</span><span class="o">=</span><span class="s1">&#39;type 2&#39;</span><span class="p">,</span>
-             <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">&#39;type 1&#39;</span><span class="p">,</span>
-             <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">&#39;type 2&#39;</span><span class="p">,</span>
+             <span class="n">donors_sel</span><span class="o">=</span><span class="s1">'type 2'</span><span class="p">,</span>
+             <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">'type 1'</span><span class="p">,</span>
+             <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">'type 2'</span><span class="p">,</span>
             <span class="p">)</span>
 </pre></div>
 </div>
@@ -359,9 +359,9 @@ donor-hydrogen pairs will be identified via a distance cutoff,
 
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span>
   <span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-  <span class="n">donors_sel</span><span class="o">=</span><span class="s1">&#39;resname TIP3 and name OH2&#39;</span><span class="p">,</span>
-  <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">&#39;resname TIP3 and name H1 H2&#39;</span><span class="p">,</span>
-  <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">&#39;resname TIP3 and name OH2&#39;</span><span class="p">,</span>
+  <span class="n">donors_sel</span><span class="o">=</span><span class="s1">'resname TIP3 and name OH2'</span><span class="p">,</span>
+  <span class="n">hydrogens_sel</span><span class="o">=</span><span class="s1">'resname TIP3 and name H1 H2'</span><span class="p">,</span>
+  <span class="n">acceptors_sel</span><span class="o">=</span><span class="s1">'resname TIP3 and name OH2'</span><span class="p">,</span>
   <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span>
 <span class="p">)</span>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>

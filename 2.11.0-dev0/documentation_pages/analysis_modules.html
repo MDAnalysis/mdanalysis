@@ -299,8 +299,8 @@ example we show how to run an RMSD calculation in parallel:</p>
 <span class="n">ref</span> <span class="o">=</span> <span class="n">avg</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span>
 
 <span class="c1"># initialize RMSD run</span>
-<span class="n">rmsd</span> <span class="o">=</span> <span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
-<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">'backbone'</span><span class="p">)</span>
+<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">'multiprocessing'</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Be explicit and specify both <code class="docutils literal notranslate"><span class="pre">backend</span></code> and <code class="docutils literal notranslate"><span class="pre">n_workers</span></code>. Choosing too many

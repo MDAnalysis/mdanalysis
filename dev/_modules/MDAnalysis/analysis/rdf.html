@@ -164,11 +164,11 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`</span>
+<span class="sa">r</span><span class="sd">"""Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`</span>
 <span class="sd">====================================================================</span>
 
 <span class="sd">This module contains two classes to calculate radial</span>
-<span class="sd">`pair distribution functions`_ (`radial distribution functions`_ or &quot;RDF&quot;).</span>
+<span class="sd">`pair distribution functions`_ (`radial distribution functions`_ or "RDF").</span>
 <span class="sd">The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is</span>
 
 <span class="sd">.. _equation-gab:</span>
@@ -187,7 +187,7 @@
 
 <span class="sd">.. math::</span>
 
-<span class="sd">   G_{ab}(r) = \int_0^r \!\!dr&#39; 4\pi r&#39;^2 g_{ab}(r&#39;)</span>
+<span class="sd">   G_{ab}(r) = \int_0^r \!\!dr' 4\pi r'^2 g_{ab}(r')</span>
 
 <span class="sd">and the average number of :math:`b` particles within radius :math:`r`</span>
 
@@ -218,7 +218,7 @@
 <span class="sd">.. Not Implemented yet:</span>
 <span class="sd">.. - Structure factor?</span>
 <span class="sd">.. - Coordination number</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -229,7 +229,7 @@
 <div class="viewcode-block" id="nested_array_sum">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.nested_array_sum">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nested_array_sum</span><span class="p">(</span><span class="n">arrs</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Custom aggregator for nested arrays</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Custom aggregator for nested arrays</span>
 
 <span class="sd">    This function takes a nested list or tuple of NumPy arrays, flattens it</span>
 <span class="sd">    into a single list, and aggregates the elements at alternating indices</span>
@@ -249,7 +249,7 @@
 <span class="sd">          in the sum of flattened arrays.</span>
 <span class="sd">        - The second array is the sum of all elements at odd indices</span>
 <span class="sd">          in the sum of flattened arrays.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -268,7 +268,7 @@
 <div class="viewcode-block" id="InterRDF">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InterRDF</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Radial distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Radial distribution function</span>
 
 <span class="sd">    :class:`InterRDF` is a tool to calculate average radial distribution</span>
 <span class="sd">    functions between two groups of atoms. Suppose we have two AtomGroups ``A``</span>
@@ -299,10 +299,10 @@
 <span class="sd">        Number of bins in the histogram</span>
 <span class="sd">    range : tuple or list</span>
 <span class="sd">        The size of the RDF</span>
-<span class="sd">    norm : str, {&#39;rdf&#39;, &#39;density&#39;, &#39;none&#39;}</span>
-<span class="sd">          For &#39;rdf&#39; calculate :math:`g_{ab}(r)`. For</span>
-<span class="sd">          &#39;density&#39; the :ref:`single particle density&lt;equation-nab&gt;`</span>
-<span class="sd">          :math:`n_{ab}(r)` is computed. &#39;none&#39; computes the number of</span>
+<span class="sd">    norm : str, {'rdf', 'density', 'none'}</span>
+<span class="sd">          For 'rdf' calculate :math:`g_{ab}(r)`. For</span>
+<span class="sd">          'density' the :ref:`single particle density&lt;equation-nab&gt;`</span>
+<span class="sd">          :math:`n_{ab}(r)` is computed. 'none' computes the number of</span>
 <span class="sd">          particles occurences in each spherical shell.</span>
 
 <span class="sd">          .. versionadded:: 2.3.0</span>
@@ -310,14 +310,14 @@
 <span class="sd">    exclusion_block : tuple</span>
 <span class="sd">        A tuple representing the tile to exclude from the distance array.</span>
 <span class="sd">    exclude_same : str</span>
-<span class="sd">        Will exclude pairs of atoms that share the same &quot;residue&quot;, &quot;segment&quot;, or &quot;chain&quot;.</span>
+<span class="sd">        Will exclude pairs of atoms that share the same "residue", "segment", or "chain".</span>
 <span class="sd">        Those are the only valid values. This is intended to remove atoms that are</span>
 <span class="sd">        spatially correlated due to direct bonded connections.</span>
 <span class="sd">    verbose : bool</span>
 <span class="sd">        Show detailed progress of the calculation if set to `True`</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">    backend : {'serial', 'OpenMP', 'distopia'}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration of the distance calculations.</span>
-<span class="sd">        Default is &#39;serial&#39;.</span>
+<span class="sd">        Default is 'serial'.</span>
 
 <span class="sd">        .. versionadded:: 2.10.0</span>
 
@@ -410,16 +410,16 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="InterRDF.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -431,10 +431,10 @@
         <span class="n">g2</span><span class="p">,</span>
         <span class="n">nbins</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span>
         <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
-        <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="s2">"rdf"</span><span class="p">,</span>
         <span class="n">exclusion_block</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">exclude_same</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+        <span class="n">backend</span><span class="o">=</span><span class="s2">"serial"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">InterRDF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">g1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -442,32 +442,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">g2</span> <span class="o">=</span> <span class="n">g2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bins&quot;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bins"</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span> <span class="s2">"range"</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="o">=</span> <span class="n">exclusion_block</span>
         <span class="k">if</span> <span class="n">exclude_same</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclude_same</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="s2">&quot;residue&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;segment&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chain&quot;</span><span class="p">,</span>
+            <span class="s2">"residue"</span><span class="p">,</span>
+            <span class="s2">"segment"</span><span class="p">,</span>
+            <span class="s2">"chain"</span><span class="p">,</span>
         <span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The exclude_same argument to InterRDF must be None, &#39;residue&#39;, &#39;segment&#39; &quot;</span>
-                <span class="s2">&quot;or &#39;chain&#39;.&quot;</span>
+                <span class="s2">"The exclude_same argument to InterRDF must be None, 'residue', 'segment' "</span>
+                <span class="s2">"or 'chain'."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">exclude_same</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclusion_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The exclude_same argument to InterRDF cannot be used with exclusion_block.&quot;</span>
+                <span class="s2">"The exclude_same argument to InterRDF cannot be used with exclusion_block."</span>
             <span class="p">)</span>
         <span class="n">name_to_attr</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;residue&quot;</span><span class="p">:</span> <span class="s2">&quot;resindices&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;segment&quot;</span><span class="p">:</span> <span class="s2">&quot;segindices&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chain&quot;</span><span class="p">:</span> <span class="s2">&quot;chainIDs&quot;</span><span class="p">,</span>
+            <span class="s2">"residue"</span><span class="p">:</span> <span class="s2">"resindices"</span><span class="p">,</span>
+            <span class="s2">"segment"</span><span class="p">:</span> <span class="s2">"segindices"</span><span class="p">,</span>
+            <span class="s2">"chain"</span><span class="p">:</span> <span class="s2">"chainIDs"</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exclude_same</span> <span class="o">=</span> <span class="n">name_to_attr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exclude_same</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"rdf"</span><span class="p">,</span> <span class="s2">"density"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="si">}</span><span class="s2">&#39; is an invalid norm. &quot;</span>
-                <span class="s2">&quot;Use &#39;rdf&#39;, &#39;density&#39; or &#39;none&#39;.&quot;</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="si">}</span><span class="s2">' is an invalid norm. "</span>
+                <span class="s2">"Use 'rdf', 'density' or 'none'."</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
@@ -481,11 +481,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="c1"># Cumulative volume for rdf normalization</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Set the max range to filter the search radius</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">"range"</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span>
@@ -512,27 +512,27 @@
         <span class="n">count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">count</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
-                <span class="s2">&quot;volume_cum&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
-                <span class="s2">&quot;bins&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
-                <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
+                <span class="s2">"count"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
+                <span class="s2">"volume_cum"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
+                <span class="s2">"bins"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
+                <span class="s2">"edges"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"rdf"</span><span class="p">,</span> <span class="s2">"density"</span><span class="p">]:</span>
             <span class="c1"># Volume in each radial shell</span>
             <span class="n">vols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="n">norm</span> <span class="o">*=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vols</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="c1"># Number of each selection</span>
             <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="p">)</span>
             <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="p">)</span>
@@ -554,9 +554,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `edges` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `edges` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span>
@@ -564,9 +564,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `count` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `count` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">count</span>
@@ -574,9 +574,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `bins` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `bins` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span>
@@ -584,9 +584,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `rdf` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.rdf` instead&quot;</span>
+            <span class="s2">"The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.rdf` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span></div>
@@ -596,7 +596,7 @@
 <div class="viewcode-block" id="InterRDF_s">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InterRDF_s</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Site-specific radial distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Site-specific radial distribution function</span>
 
 <span class="sd">    Calculates site-specific radial distribution</span>
 <span class="sd">    functions. Instead of two groups of atoms it takes as input a list of</span>
@@ -626,10 +626,10 @@
 <span class="sd">        Number of bins in the histogram</span>
 <span class="sd">    range : tuple or list</span>
 <span class="sd">        The size of the RDF</span>
-<span class="sd">    norm : str, {&#39;rdf&#39;, &#39;density&#39;, &#39;none&#39;}</span>
-<span class="sd">        For &#39;rdf&#39; calculate :math:`g_{ab}(r)`. For</span>
-<span class="sd">        &#39;density&#39; the :ref:`single particle density&lt;equation-nab&gt;`</span>
-<span class="sd">        :math:`n_{ab}(r)` is computed. &#39;none&#39; computes the number of</span>
+<span class="sd">    norm : str, {'rdf', 'density', 'none'}</span>
+<span class="sd">        For 'rdf' calculate :math:`g_{ab}(r)`. For</span>
+<span class="sd">        'density' the :ref:`single particle density&lt;equation-nab&gt;`</span>
+<span class="sd">        :math:`n_{ab}(r)` is computed. 'none' computes the number of</span>
 <span class="sd">        particles occurences in each spherical shell.</span>
 
 <span class="sd">        .. versionadded:: 2.3.0</span>
@@ -647,11 +647,11 @@
 <span class="sd">            documented.</span>
 
 <span class="sd">        .. deprecated:: 2.3.0</span>
-<span class="sd">            Instead of `density=True` use `norm=&#39;density&#39;`</span>
+<span class="sd">            Instead of `density=True` use `norm='density'`</span>
 
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">    backend : {'serial', 'OpenMP', 'distopia'}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration of the distance calculations.</span>
-<span class="sd">        Default is &#39;serial&#39;.</span>
+<span class="sd">        Default is 'serial'.</span>
 
 <span class="sd">        .. versionadded:: 2.10.0</span>
 
@@ -685,9 +685,9 @@
 
 <span class="sd">    results.rdf : list</span>
 <span class="sd">        :class:`list` of the site-specific :ref:`radial distribution</span>
-<span class="sd">        functions&lt;equation-gab&gt;` if `norm=&#39;rdf&#39;` or :ref:`density</span>
+<span class="sd">        functions&lt;equation-gab&gt;` if `norm='rdf'` or :ref:`density</span>
 <span class="sd">        functions&lt;equation-nab&gt;` for the :attr:`bins`</span>
-<span class="sd">        if `norm=&#39;density&#39;`. The list contains</span>
+<span class="sd">        if `norm='density'`. The list contains</span>
 <span class="sd">        ``len(ags)`` entries. Each entry for the ``i``-th pair `[A, B]</span>
 <span class="sd">        = ags[i]` in `ags` is a :class:`numpy.ndarray` with shape</span>
 <span class="sd">        ``(len(A), len(B))``, i.e., a stack of RDFs. For example,</span>
@@ -744,10 +744,10 @@
 <span class="sd">      from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT</span>
 <span class="sd">      u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)</span>
 
-<span class="sd">      s1 = u.select_atoms(&#39;name ZND and resid 289&#39;)</span>
-<span class="sd">      s2 = u.select_atoms(&#39;(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)&#39;)</span>
-<span class="sd">      s3 = u.select_atoms(&#39;name ZND and (resid 291 or resid 292)&#39;)</span>
-<span class="sd">      s4 = u.select_atoms(&#39;(name OD1 or name OD2) and sphzone 5.0 (resid 291)&#39;)</span>
+<span class="sd">      s1 = u.select_atoms('name ZND and resid 289')</span>
+<span class="sd">      s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')</span>
+<span class="sd">      s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')</span>
+<span class="sd">      s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')</span>
 <span class="sd">      ags = [[s1, s2], [s3, s4]]</span>
 
 <span class="sd">      rdf = InterRDF_s(u, ags)</span>
@@ -762,7 +762,7 @@
 <span class="sd">    ``s2``)</span>
 
 <span class="sd">    To generate the *cumulative distribution function* (cdf) in the sense of</span>
-<span class="sd">    &quot;particles within radius :math:`r`&quot;, i.e., :math:`N_{ab}(r)`, use the</span>
+<span class="sd">    "particles within radius :math:`r`", i.e., :math:`N_{ab}(r)`, use the</span>
 <span class="sd">    :meth:`~InterRDF_s.get_cdf` method ::</span>
 
 <span class="sd">      cdf = rdf.get_cdf()</span>
@@ -789,23 +789,23 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Introduce `norm` and `exclusion_blocks` attributes.</span>
 <span class="sd">    .. deprecated:: 2.3.0</span>
-<span class="sd">       Instead of `density=True` use `norm=&#39;density&#39;`</span>
+<span class="sd">       Instead of `density=True` use `norm='density'`</span>
 <span class="sd">    .. deprecated:: 2.3.0</span>
 <span class="sd">       The `universe` parameter is superflous.</span>
 <span class="sd">    .. versionchanged:: 2.10.0</span>
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="InterRDF_s.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+            <span class="s2">"serial"</span><span class="p">,</span>
+            <span class="s2">"multiprocessing"</span><span class="p">,</span>
+            <span class="s2">"dask"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -814,10 +814,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">nested_array_sum</span><span class="p">,</span>
-                <span class="s2">&quot;volume_cum&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
-                <span class="s2">&quot;bins&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
-                <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
+                <span class="s2">"count"</span><span class="p">:</span> <span class="n">nested_array_sum</span><span class="p">,</span>
+                <span class="s2">"volume_cum"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
+                <span class="s2">"bins"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
+                <span class="s2">"edges"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_mean</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
@@ -827,9 +827,9 @@
         <span class="n">ags</span><span class="p">,</span>
         <span class="n">nbins</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span>
         <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
-        <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="s2">"rdf"</span><span class="p">,</span>
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+        <span class="n">backend</span><span class="o">=</span><span class="s2">"serial"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">InterRDF_s</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -837,30 +837,30 @@
         <span class="p">)</span>
 
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;The `u` attribute is superflous and will be removed &quot;</span>
-            <span class="s2">&quot;in MDAnalysis 3.0.0.&quot;</span><span class="p">,</span>
+            <span class="s2">"The `u` attribute is superflous and will be removed "</span>
+            <span class="s2">"in MDAnalysis 3.0.0."</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ags</span> <span class="o">=</span> <span class="n">ags</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bins&quot;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bins"</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span> <span class="s2">"range"</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"rdf"</span><span class="p">,</span> <span class="s2">"density"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="si">}</span><span class="s2">&#39; is an invalid norm. &quot;</span>
-                <span class="s2">&quot;Use &#39;rdf&#39;, &#39;density&#39; or &#39;none&#39;.&quot;</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="si">}</span><span class="s2">' is an invalid norm. "</span>
+                <span class="s2">"Use 'rdf', 'density' or 'none'."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">density</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;The `density` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.3.0 and will be removed in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 3.0.0. Please use `norm=density` &quot;</span>
-                <span class="s2">&quot;instead.&quot;</span><span class="p">,</span>
+                <span class="s2">"The `density` attribute was deprecated in "</span>
+                <span class="s2">"MDAnalysis 2.3.0 and will be removed in "</span>
+                <span class="s2">"MDAnalysis 3.0.0. Please use `norm=density` "</span>
+                <span class="s2">"instead."</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="s2">&quot;density&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="s2">"density"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
 
@@ -873,10 +873,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="c1"># Cumulative volume for rdf normalization</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">"range"</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">):</span>
@@ -889,8 +889,8 @@
             <span class="p">)</span>
 
             <span class="c1"># Fast manual implementation for distance histogram (equidistant bins)</span>
-            <span class="n">nbins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">&quot;bins&quot;</span><span class="p">]</span>
-            <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+            <span class="n">nbins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">"bins"</span><span class="p">]</span>
+            <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s2">"range"</span><span class="p">]</span>
             <span class="n">bin_indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">-</span> <span class="n">rmin</span><span class="p">)</span> <span class="o">*</span> <span class="n">nbins</span> <span class="o">/</span> <span class="p">(</span><span class="n">rmax</span> <span class="o">-</span> <span class="n">rmin</span><span class="p">)</span>
             <span class="n">bin_indices</span> <span class="o">=</span> <span class="n">bin_indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
             <span class="n">counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_indices</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">bin_indices</span> <span class="o">&lt;</span> <span class="n">nbins</span><span class="p">)</span>
@@ -899,17 +899,17 @@
             <span class="n">idx2s</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx1s</span><span class="p">,</span> <span class="n">idx2s</span><span class="p">,</span> <span class="n">bin_indices</span><span class="p">]</span> <span class="o">+=</span> <span class="n">counts</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"rdf"</span><span class="p">,</span> <span class="s2">"density"</span><span class="p">]:</span>
             <span class="c1"># Volume in each radial shell</span>
             <span class="n">vols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="n">norm</span> <span class="o">*=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vols</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">==</span> <span class="s2">"rdf"</span><span class="p">:</span>
             <span class="c1"># Average number density</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume_cum</span>
             <span class="n">norm</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume_cum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
@@ -926,7 +926,7 @@
 <div class="viewcode-block" id="InterRDF_s.get_cdf">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the cumulative counts for all sites.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Calculate the cumulative counts for all sites.</span>
 
 <span class="sd">        This is the :ref:`cumulative count&lt;equation-countab&gt;` within a given</span>
 <span class="sd">        radius, i.e., :math:`N_{ab}(r)`.</span>
@@ -938,7 +938,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        cdf : list</span>
 <span class="sd">              list of arrays with the same structure as :attr:`results.rdf`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cdf</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
@@ -950,9 +950,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `edges` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `edges` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span>
@@ -960,9 +960,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `count` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `count` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">count</span>
@@ -970,9 +970,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `bins` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.bins` instead&quot;</span>
+            <span class="s2">"The `bins` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.bins` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span>
@@ -980,9 +980,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `rdf` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.rdf` instead&quot;</span>
+            <span class="s2">"The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.rdf` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span>
@@ -990,9 +990,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;The `cdf` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-            <span class="s2">&quot;`results.cdf` instead&quot;</span>
+            <span class="s2">"The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "</span>
+            <span class="s2">"and will be removed in MDAnalysis 3.0.0. Please use "</span>
+            <span class="s2">"`results.cdf` instead"</span>
         <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cdf</span></div>

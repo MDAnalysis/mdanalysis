@@ -165,7 +165,7 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`</span>
+<span class="sd">"""XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`</span>
 <span class="sd">==============================================================</span>
 
 <span class="sd">The :ref:`XYZ format &lt;xyz-format&gt;` is a loosely defined, simple</span>
@@ -187,7 +187,7 @@
 
 <span class="sd">* Coordinates are in Angstroms.</span>
 <span class="sd">* The length of a timestep can be set by passing the *dt* argument,</span>
-<span class="sd">  it&#39;s assumed to be in ps (default: 1 ps).</span>
+<span class="sd">  it's assumed to be in ps (default: 1 ps).</span>
 
 <span class="sd">There appears to be no rigid format definition so it is likely users</span>
 <span class="sd">will need to tweak this class.</span>
@@ -223,7 +223,7 @@
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
@@ -231,7 +231,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.XYZ&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.coordinates.XYZ"</span><span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.timestep</span><span class="w"> </span><span class="kn">import</span> <span class="n">Timestep</span>
@@ -244,7 +244,7 @@
 <div class="viewcode-block" id="XYZWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XYZWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes an XYZ file</span>
+<span class="w">    </span><span class="sd">"""Writes an XYZ file</span>
 
 <span class="sd">    The XYZ file format is not formally defined. This writer follows</span>
 <span class="sd">    the VMD implementation for the molfile `xyzplugin`_.</span>
@@ -279,12 +279,12 @@
 <span class="sd">       passed to the writer, these should be added to the</span>
 <span class="sd">       :class:`~MDAnalysis.core.universe.Universe`, or</span>
 <span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` before invoking the writer.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XYZ&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"XYZ"</span>
     <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="c1"># these are assumed!</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -295,13 +295,13 @@
         <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the XYZ trajectory writer</span>
+<span class="w">        </span><span class="sd">"""Initialize the XYZ trajectory writer</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename: str</span>
-<span class="sd">            filename of trajectory file. If it ends with &quot;gz&quot; then the file</span>
-<span class="sd">            will be gzip-compressed; if it ends with &quot;bz2&quot; it will be bzip2</span>
+<span class="sd">            filename of trajectory file. If it ends with "gz" then the file</span>
+<span class="sd">            will be gzip-compressed; if it ends with "bz2" it will be bzip2</span>
 <span class="sd">            compressed.</span>
 <span class="sd">        n_atoms: int (optional)</span>
 <span class="sd">            Number of atoms in trajectory. By default assume that this is None</span>
@@ -312,7 +312,7 @@
 <span class="sd">            convert quantities to default MDAnalysis units of Angstrom upon</span>
 <span class="sd">            writing  [``True``]</span>
 <span class="sd">        remark: str (optional)</span>
-<span class="sd">            single line of text (&quot;molecule name&quot;). By default writes MDAnalysis</span>
+<span class="sd">            single line of text ("molecule name"). By default writes MDAnalysis</span>
 <span class="sd">            version and frame</span>
 <span class="sd">        precision: int (optional)</span>
 <span class="sd">            set precision of saved trjactory to this number of decimal places.</span>
@@ -327,7 +327,7 @@
 <span class="sd">           parameter is no longer relevant and has been removed. If passing</span>
 <span class="sd">           an empty universe, please use ``add_TopologyAttr`` to add in the</span>
 <span class="sd">           required elements or names.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">remark</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
@@ -335,10 +335,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span>
 
         <span class="c1"># can also be gz, bz2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"wt"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_atoms_elements_or_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of atom elements (if present) or fallback to atom names&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a list of atom elements (if present) or fallback to atom names"""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
@@ -346,19 +346,19 @@
                 <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
                 <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;Input AtomGroup or Universe does not have atom &quot;</span>
-                    <span class="s2">&quot;elements or names attributes, writer will default &quot;</span>
-                    <span class="s2">&quot;atom names to &#39;X&#39;&quot;</span>
+                    <span class="s2">"Input AtomGroup or Universe does not have atom "</span>
+                    <span class="s2">"elements or names attributes, writer will default "</span>
+                    <span class="s2">"atom names to 'X'"</span>
                 <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;X&quot;</span><span class="p">,))</span>
+                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">"X"</span><span class="p">,))</span>
 
 <div class="viewcode-block" id="XYZWriter.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the trajectory file and finalize the writing&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the trajectory file and finalize the writing"""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -366,7 +366,7 @@
 <div class="viewcode-block" id="XYZWriter.write">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write object `obj` at current trajectory frame to file.</span>
+<span class="w">        </span><span class="sd">"""Write object `obj` at current trajectory frame to file.</span>
 
 <span class="sd">        Atom elements (or names) in the output are taken from the `obj` or</span>
 <span class="sd">        default to the value of the `atoms` keyword supplied to the</span>
@@ -382,7 +382,7 @@
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">           Deprecated support for Timestep argument has now been removed.</span>
 <span class="sd">           Use AtomGroup or Universe as an input instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># prepare the Timestep and extract atom names if possible</span>
         <span class="c1"># (The way it is written it should be possible to write</span>
         <span class="c1"># trajectories with frames that differ in atom numbers</span>
@@ -390,10 +390,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">"Input obj is neither an AtomGroup or Universe"</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;universe&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"universe"</span><span class="p">):</span>
                 <span class="c1"># For AtomGroup and children (Residue, ResidueGroup, Segment)</span>
                 <span class="n">ts_full</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
                 <span class="k">if</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
@@ -401,7 +401,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Only populate a time step with the selected atoms.</span>
                     <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;trajectory&quot;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"trajectory"</span><span class="p">):</span>
                 <span class="c1"># For Universe only --- get everything</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
             <span class="c1"># update atom names</span>
@@ -411,19 +411,19 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Write coordinate information in *ts* to the trajectory</span>
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Print out :code:`remark` if present, otherwise use generic one</span>
 <span class="sd">           (Issue #2692).</span>
 <span class="sd">           Renamed from `write_next_timestep` to `_write_next_frame`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ts&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"ts"</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
-                    <span class="s2">&quot;XYZWriter: no coordinate data to write to &quot;</span>
-                    <span class="s2">&quot;trajectory file&quot;</span>
+                    <span class="s2">"XYZWriter: no coordinate data to write to "</span>
+                    <span class="s2">"trajectory file"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
@@ -431,11 +431,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;n_atoms keyword was specified indicating &quot;</span>
-                    <span class="s2">&quot;that this should be a trajectory of the &quot;</span>
-                    <span class="s2">&quot;same model. But the provided TimeStep has a &quot;</span>
-                    <span class="s2">&quot;different number (</span><span class="si">{}</span><span class="s2">) then expected (</span><span class="si">{}</span><span class="s2">)&quot;</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+                    <span class="s2">"n_atoms keyword was specified indicating "</span>
+                    <span class="s2">"that this should be a trajectory of the "</span>
+                    <span class="s2">"same model. But the provided TimeStep has a "</span>
+                    <span class="s2">"different number (</span><span class="si">{}</span><span class="s2">) then expected (</span><span class="si">{}</span><span class="s2">)"</span>
+                    <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -443,9 +443,9 @@
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span>
             <span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s2">&quot;Trying to write a TimeStep with unknown atoms. &quot;</span>
-                    <span class="s1">&#39;Expected </span><span class="si">{}</span><span class="s1"> atoms, got </span><span class="si">{}</span><span class="s1">. Try using &quot;write&quot; if you are &#39;</span>
-                    <span class="s1">&#39;using &quot;_write_next_frame&quot; directly&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"Trying to write a TimeStep with unknown atoms. "</span>
+                    <span class="s1">'Expected </span><span class="si">{}</span><span class="s1"> atoms, got </span><span class="si">{}</span><span class="s1">. Try using "write" if you are '</span>
+                    <span class="s1">'using "_write_next_frame" directly'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
@@ -459,25 +459,25 @@
             <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
 
         <span class="c1"># Write number of atoms</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{0:d}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
 
         <span class="c1"># Write remark</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">remark</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;frame </span><span class="si">{}</span><span class="s2"> | Written by MDAnalysis </span><span class="si">{}</span><span class="s2"> (release </span><span class="si">{}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"frame </span><span class="si">{}</span><span class="s2"> | Written by MDAnalysis </span><span class="si">{}</span><span class="s2"> (release </span><span class="si">{}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__version__</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">remark</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># Write content</span>
         <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{0!s:&gt;8}</span><span class="s2">  {1:10.</span><span class="si">{p}</span><span class="s2">f} {2:10.</span><span class="si">{p}</span><span class="s2">f} {3:10.</span><span class="si">{p}</span><span class="s2">f}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
+                <span class="s2">"</span><span class="si">{0!s:&gt;8}</span><span class="s2">  {1:10.</span><span class="si">{p}</span><span class="s2">f} {2:10.</span><span class="si">{p}</span><span class="s2">f} {3:10.</span><span class="si">{p}</span><span class="s2">f}</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="s2">""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
             <span class="p">)</span></div>
 
 
@@ -485,7 +485,7 @@
 <div class="viewcode-block" id="XYZReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">XYZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads from an XYZ file</span>
+<span class="w">    </span><span class="sd">"""Reads from an XYZ file</span>
 
 <span class="sd">    :Data:</span>
 <span class="sd">        :attr:`ts`</span>
@@ -502,13 +502,13 @@
 <span class="sd">          on the fly and also reads streams via</span>
 <span class="sd">          :class:`~MDAnalysis.lib.util.NamedStream`.</span>
 
-<span class="sd">    The XYZ file format follows VMD&#39;s xyzplugin_ and is also described</span>
+<span class="sd">    The XYZ file format follows VMD's xyzplugin_ and is also described</span>
 <span class="sd">    under :ref:`XYZ format &lt;xyz-format&gt;`.</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based. Added *dt* and</span>
 <span class="sd">       *time_offset* keywords (passed to :class:`Timestep`)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Phil Fowler:</span>
     <span class="c1"># Validation: the geometric centre of 1284 atoms was calculated over</span>
@@ -516,9 +516,9 @@
     <span class="c1"># exact agreement (measured to three decimal places). bzipped and</span>
     <span class="c1"># gzipped versions of the XYZ file were also tested</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XYZ&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"XYZ"</span>
     <span class="c1"># these are assumed!</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">}</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="nd">@store_init_arguments</span>
@@ -530,27 +530,27 @@
         <span class="c1"># bzipped or not</span>
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="s2">&quot;xyz&quot;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="s2">"xyz"</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
-        <span class="c1"># Haven&#39;t quite figured out where to start with all the self._reopen()</span>
+        <span class="c1"># Haven't quite figured out where to start with all the self._reopen()</span>
         <span class="c1"># etc.</span>
         <span class="c1"># (Also cannot just use seek() or reset() because that would break</span>
         <span class="c1"># with urllib2.urlopen() streams)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_atoms"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;number of atoms in a frame&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""number of atoms in a frame"""</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="c1"># need to check type of n</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_frames"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_n_frames</span><span class="p">()</span>
@@ -579,7 +579,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1&#39;d in next</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1'd in next</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -610,7 +610,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;XYZ file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">"XYZ file already opened"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -624,7 +624,7 @@
 <div class="viewcode-block" id="XYZReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.Writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a XYZWriter for *filename* with the same parameters as this</span>
+<span class="w">        </span><span class="sd">"""Returns a XYZWriter for *filename* with the same parameters as this</span>
 <span class="sd">        XYZ.</span>
 
 <span class="sd">        Parameters</span>
@@ -644,7 +644,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :class:`XYZWriter`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="n">XYZWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -653,7 +653,7 @@
 <div class="viewcode-block" id="XYZReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close xyz trajectory file if it was open.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close xyz trajectory file if it was open."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

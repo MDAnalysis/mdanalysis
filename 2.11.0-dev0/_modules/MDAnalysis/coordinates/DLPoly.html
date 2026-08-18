@@ -164,13 +164,13 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;DL_Poly format reader :mod:`MDAnalysis.coordinates.DLPoly`</span>
+<span class="sd">"""DL_Poly format reader :mod:`MDAnalysis.coordinates.DLPoly`</span>
 <span class="sd">=============================================================</span>
 
 <span class="sd">Read DL Poly_ format coordinate files</span>
 
 <span class="sd">.. _Poly: https://www.sc.stfc.ac.uk/software/type/computational-materials-and-molecular-science/?searchquery=dl_poly</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
@@ -178,28 +178,28 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 
-<span class="n">_DLPOLY_UNITS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom/ps&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">}</span>
+<span class="n">_DLPOLY_UNITS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="s2">"Angstrom"</span><span class="p">,</span> <span class="s2">"velocity"</span><span class="p">:</span> <span class="s2">"Angstrom/ps"</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="s2">"ps"</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="ConfigReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/DLPoly.html#MDAnalysis.coordinates.DLPoly.ConfigReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DLPoly Config file Reader</span>
+<span class="w">    </span><span class="sd">"""DLPoly Config file Reader</span>
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       coordinates, velocities, and forces are no longer stored in &#39;F&#39; memory</span>
-<span class="sd">       layout, instead now using the numpy default of &#39;C&#39;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">       coordinates, velocities, and forces are no longer stored in 'F' memory</span>
+<span class="sd">       layout, instead now using the numpy default of 'C'.</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CONFIG&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"CONFIG"</span>
     <span class="n">units</span> <span class="o">=</span> <span class="n">_DLPOLY_UNITS</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">levcfg</span><span class="p">,</span> <span class="n">imcon</span><span class="p">,</span> <span class="n">megatm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">])</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">imcon</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -225,7 +225,7 @@
             <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:])</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># dl_poly classic doesn&#39;t have this</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># dl_poly classic doesn't have this</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -280,12 +280,12 @@
 <div class="viewcode-block" id="HistoryReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/DLPoly.html#MDAnalysis.coordinates.DLPoly.HistoryReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HistoryReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads DLPoly format HISTORY files</span>
+<span class="w">    </span><span class="sd">"""Reads DLPoly format HISTORY files</span>
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;HISTORY&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">"HISTORY"</span>
     <span class="n">units</span> <span class="o">=</span> <span class="n">_DLPOLY_UNITS</span>
 
     <span class="nd">@store_init_arguments</span>
@@ -293,8 +293,8 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">HistoryReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># &quot;private&quot; file handle</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="c1"># "private" file handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_levcfg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imcon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">header</span>
@@ -322,7 +322,7 @@
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># timestep line</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;timestep&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"timestep"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">IOError</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_cell</span><span class="p">:</span>
@@ -355,7 +355,7 @@
 
         <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-            <span class="c1"># if ids aren&#39;t strictly sequential</span>
+            <span class="c1"># if ids aren't strictly sequential</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ids</span> <span class="o">==</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
                 <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
@@ -368,23 +368,23 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;frame is 0 based, error checking is done in base.getitem&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""frame is 0 based, error checking is done in base.getitem"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1&#39;d in read_next_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1'd in read_next_frame</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">"n_frames"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Second line is traj_key, imcom, n_atoms, n_frames, n_records</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">position</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;timestep&quot;</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"timestep"</span><span class="p">):</span>
                 <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_cell</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -405,7 +405,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># header is 2 lines</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>

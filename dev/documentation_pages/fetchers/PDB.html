@@ -221,22 +221,22 @@ re-fetching), it is required to delete the cache folder as specified by
 <cite>cache_path</cite>.</p>
 <p class="rubric">Examples</p>
 <p>Download a single PDB file:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">(</span><span class="s2">&quot;1AKE&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;cif&quot;</span><span class="p">)</span>
-<span class="go">&#39;./MDAnalysis_pdbs/1AKE.cif&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">(</span><span class="s2">"1AKE"</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">"cif"</span><span class="p">)</span>
+<span class="go">'./MDAnalysis_pdbs/1AKE.cif'</span>
 </pre></div>
 </div>
 <p>Download multiple PDB files with a progress bar:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">([</span><span class="s2">&quot;1AKE&quot;</span><span class="p">,</span> <span class="s2">&quot;4BWZ&quot;</span><span class="p">],</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">[&#39;./MDAnalysis_pdbs/1AKE.pdb.gz&#39;, &#39;./MDAnalysis_pdbs/4BWZ.pdb.gz&#39;]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">([</span><span class="s2">"1AKE"</span><span class="p">,</span> <span class="s2">"4BWZ"</span><span class="p">],</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']</span>
 </pre></div>
 </div>
 <p>Download a single PDB file and convert it to a universe:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">(</span><span class="s2">&quot;1AKE&quot;</span><span class="p">),</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;pdb.gz&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">(</span><span class="s2">"1AKE"</span><span class="p">),</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">"pdb.gz"</span><span class="p">)</span>
 <span class="go">&lt;Universe with 3816 atoms&gt;</span>
 </pre></div>
 </div>
 <p>Download multiple PDB files and convert each of them into a universe:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span> <span class="k">for</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">([</span><span class="s2">&quot;1AKE&quot;</span><span class="p">,</span> <span class="s2">&quot;4BWZ&quot;</span><span class="p">],</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span> <span class="k">for</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="n">mda</span><span class="o">.</span><span class="n">fetch</span><span class="o">.</span><span class="n">from_PDB</span><span class="p">([</span><span class="s2">"1AKE"</span><span class="p">,</span> <span class="s2">"4BWZ"</span><span class="p">],</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 <span class="go">[&lt;Universe with 3816 atoms&gt;, &lt;Universe with 2824 atoms&gt;]</span>
 </pre></div>
 </div>
