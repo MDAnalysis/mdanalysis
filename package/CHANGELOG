@@ -24,6 +24,8 @@ The rules for this file:
 
 Fixes
  * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
+ * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
+   existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
    also rotate velocities and forces besides positions. This also affects
    `MDAnalysis.analysis.align.alignto()` and `AlignTraj`, since they
