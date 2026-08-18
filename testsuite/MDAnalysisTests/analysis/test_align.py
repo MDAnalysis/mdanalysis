@@ -456,6 +456,73 @@ class TestAlign(object):
             ).run()
             assert_equal(aligner._writer.precision, 2)
 
+    def test_AlignTraj_subselection_str(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join("sub_align.dcd"))
+        reference.trajectory[-1]
+        sub_sel = "resid 1-50"
+        sub_atoms = universe.select_atoms(sub_sel)
+
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_sel,
+            filename=outfile,
+        ).run()
+
+        # Output trajectory should only have atoms from subselection
+        sub_u = mda.Merge(sub_atoms)
+        sub_u.load_new(outfile)
+        assert sub_u.atoms.n_atoms == sub_atoms.n_atoms
+        assert len(sub_u.trajectory) == len(universe.trajectory)
+
+    def test_AlignTraj_subselection_atomgroup(
+        self, universe, reference, tmpdir
+    ):
+        outfile = str(tmpdir.join("sub_ag_align.dcd"))
+        reference.trajectory[-1]
+        sub_atoms = universe.select_atoms("resid 1-50")
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_atoms,
+            filename=outfile,
+        ).run()
+
+        sub_u = mda.Merge(sub_atoms)
+        sub_u.load_new(outfile)
+        assert sub_u.atoms.n_atoms == sub_atoms.n_atoms
+
+    def test_AlignTraj_subselection_in_memory(self, universe, reference):
+        reference.trajectory[-1]
+        sub_sel = "resid 1-50"
+        sub_atoms = universe.select_atoms(sub_sel)
+        orig_positions = sub_atoms.positions.copy()
+
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_sel,
+            in_memory=True,
+        ).run()
+
+        assert aligner.filename is None
+        assert not np.allclose(sub_atoms.positions, orig_positions)
+
+    def test_AlignTraj_subselection_invalid(self, universe, reference):
+        with pytest.raises(
+            TypeError, match="subselection must be a selection string"
+        ):
+            align.AlignTraj(
+                universe,
+                reference,
+                select="name CA",
+                subselection=12345,
+            )
+
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(
