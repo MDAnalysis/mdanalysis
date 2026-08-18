@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri
+         raulloiscuns, Aryaman-Chaudhri, akshitboora
 
  * 2.11.0
 
@@ -103,12 +103,22 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+ * `AlignTraj` now accepts a `subselection` keyword argument (a selection
+   string or AtomGroup) that restricts which atoms are written to the output
+   trajectory, enabling a performance/memory trade-off when only a subset
+   of atoms is of interest (Issue #5380)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 
 Deprecations
+
+Documentation
+ * Added a guide on "Performance and memory trade-offs when aligning
+   sub-systems" to `MDAnalysis.analysis.align` documenting how to use
+   `AlignTraj` with `subselection` and in-memory trajectories to avoid
+   reading/writing full-system coordinates (Issue #5380)
 
 
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
