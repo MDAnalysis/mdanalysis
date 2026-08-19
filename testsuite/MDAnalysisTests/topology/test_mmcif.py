@@ -117,6 +117,17 @@ def test_wrong_format():
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_unparseable_content():
+    # content that fails both CIF and PDB parsing in gemmi must re-raise
+    # the original CIF error
+    garbage = util.NamedStream(
+        StringIO("data_\n_nonsense.field ??? ][\n"), "garbage.cif"
+    )
+    with pytest.raises(ValueError, match="parse error"):
+        mda.Universe(garbage)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_multimodel_warning_msg():
     with pytest.warns(
         UserWarning,

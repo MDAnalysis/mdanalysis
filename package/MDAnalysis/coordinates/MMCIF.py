@@ -101,7 +101,9 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
     except ValueError as e:
         try:
             return gemmi.read_pdb_string(content_as_str)
-        except ValueError:
+        except (ValueError, RuntimeError):
+            # gemmi raises RuntimeError for unparseable PDB content;
+            # re-raise the mmCIF error since that is the primary format here
             raise e
 
 
@@ -137,6 +139,12 @@ class MMCIFReader(base.SingleFrameReaderBase):
 
     format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
     units = {"time": None, "length": "Angstrom"}
+
+    def __init__(self, filename, **kwargs):
+        if not HAS_GEMMI:
+            errmsg = "MMCIFReader: To read mmCIF files, please install gemmi"
+            raise ImportError(errmsg)
+        super(MMCIFReader, self).__init__(filename, **kwargs)
 
     def _read_first_frame(self):
         structure = self._get_structure()
