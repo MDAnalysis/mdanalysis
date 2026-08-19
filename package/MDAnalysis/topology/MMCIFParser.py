@@ -55,7 +55,7 @@ import warnings
 
 import numpy as np
 
-from ..coordinates.MMCIF import _read_gemmi_structure
+from ..coordinates.MMCIF import HAS_GEMMI, _read_gemmi_structure
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     AltLocs,
@@ -110,6 +110,15 @@ class MMCIFParser(TopologyReaderBase):
     """
 
     format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+
+    def __init__(self, filename):
+        if not HAS_GEMMI:
+            errmsg = (
+                "MMCIFParser: To read a Topology from an mmCIF file, "
+                "please install gemmi"
+            )
+            raise ImportError(errmsg)
+        super(MMCIFParser, self).__init__(filename)
 
     def parse(self, **kwargs) -> Topology:
         """Read the file and return the structure.

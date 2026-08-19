@@ -104,6 +104,12 @@ def test_altlocs():
     assert set(with_altloc.resnames) == {"GLN"}
 
 
+def test_no_gemmi_raises(monkeypatch):
+    monkeypatch.setattr(mda.topology.MMCIFParser, "HAS_GEMMI", False)
+    with pytest.raises(ImportError, match="please install gemmi"):
+        mda.topology.MMCIFParser.MMCIFParser(f"{MMCIF_FOLDER}/1YJP.cif")
+
+
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_wrong_format():
     with pytest.raises(ValueError):

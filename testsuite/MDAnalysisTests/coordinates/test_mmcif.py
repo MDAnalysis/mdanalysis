@@ -93,6 +93,12 @@ def test_cell(mmcif_filename, cell):
     assert np.allclose(mda.Universe(mmcif_filename).coord._unitcell, cell)
 
 
+def test_no_gemmi_raises(monkeypatch):
+    monkeypatch.setattr(mda.coordinates.MMCIF, "HAS_GEMMI", False)
+    with pytest.raises(ImportError, match="please install gemmi"):
+        mda.coordinates.MMCIF.MMCIFReader(f"{MMCIF_FOLDER}/1YJP.cif")
+
+
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_multimodel_warning_msg():
     with pytest.warns(
