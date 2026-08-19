@@ -159,7 +159,7 @@ class MMCIFParser(TopologyReaderBase):
                             "Found an atom that is neither ATOM nor HETATM"
                         )
                 for atom in residue:
-                    altlocs.append(atom.altloc or "A")
+                    altlocs.append(atom.altloc if atom.has_altloc() else "")
                     serials.append(atom.serial)
                     names.append(atom.name)
                     chainids.append(chain.name)

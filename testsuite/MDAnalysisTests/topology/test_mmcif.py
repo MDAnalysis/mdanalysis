@@ -93,6 +93,18 @@ def test_sequence(mmcif_filename, sequence):
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_altlocs():
+    # gemmi stores absent altlocs as "\0", which must not leak into the
+    # topology (it ends up in written PDB files otherwise)
+    u = mda.Universe(f"{MMCIF_FOLDER}/3PWP.cif.gz")
+    assert not any("\x00" in altloc for altloc in u.atoms.altLocs)
+    with_altloc = u.atoms[[altloc != "" for altloc in u.atoms.altLocs]]
+    assert len(with_altloc) == 12
+    assert set(with_altloc.altLocs) == {"A", "B"}
+    assert set(with_altloc.resnames) == {"GLN"}
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_wrong_format():
     with pytest.raises(ValueError):
         mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif.gz")
