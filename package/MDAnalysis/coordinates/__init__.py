@@ -267,6 +267,11 @@ also recognized when they are compressed with :program:`gzip` or
    | DL_Poly [#a]_ | history   |  r    | DL_Poly ascii history file                           |
    |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
    +---------------+-----------+-------+------------------------------------------------------+
+   | MMCIF [#a]_   | cif,      |  r    | Single frame of coordinates from macromolecular      |
+   |               | mmcif     |       | structures in the PDBx/mmCIF format (requires the    |
+   |               |           |       | gemmi_ package).                                     |
+   |               |           |       | :mod:`MDAnalysis.coordinates.MMCIF`                  |
+   +---------------+-----------+-------+------------------------------------------------------+
    | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.MMTF`                   |
    +---------------+-----------+-------+------------------------------------------------------+
@@ -297,6 +302,7 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`chemfiles`: https://chemfiles.org/
+.. _`gemmi`: https://gemmi.readthedocs.io/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
 .. _`additional tng block data`: https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
 .. _`PyTNG package`: https://github.com/MDAnalysis/pytng
