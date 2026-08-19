@@ -66,7 +66,6 @@ def test_works_without_explicit_format(mmcif_filename):
     [
         (f"{MMCIF_FOLDER}/1YJP.cif", 59, 66),
         (f"{MMCIF_FOLDER}/1YJP.cif.gz", 59, 66),
-        (f"{MMCIF_FOLDER}/7ETN.cif", 150, 150),
         (f"{MMCIF_FOLDER}/7ETN.cif.gz", 150, 150),
     ],
 )
@@ -101,7 +100,7 @@ def test_multimodel_warning_msg():
         match=r"File .+ has .+ models, but only the first one will be read",
     ):
         mda.coordinates.MMCIF.MMCIFReader(
-            f"{MMCIF_FOLDER}/multimodel_warning.cif"
+            f"{MMCIF_FOLDER}/multimodel_warning.cif.gz"
         )
 
 

@@ -60,7 +60,6 @@ def test_legacy_pdb_vs_mmcif(basename):
     [
         (f"{MMCIF_FOLDER}/1YJP.cif", 1),
         (f"{MMCIF_FOLDER}/1YJP.cif.gz", 1),
-        (f"{MMCIF_FOLDER}/7ETN.cif", 2),
         (f"{MMCIF_FOLDER}/7ETN.cif.gz", 2),
     ],
 )
@@ -81,7 +80,6 @@ def test_chains(mmcif_filename, n_chains):
             f"{MMCIF_FOLDER}/1YJP.cif.gz",
             ["GLY", "ASN", "ASN", "GLN", "GLN", "ASN", "TYR"],
         ),
-        (f"{MMCIF_FOLDER}/7ETN.cif", ["PRO", "PHE", "LEU", "ILE"]),
         (f"{MMCIF_FOLDER}/7ETN.cif.gz", ["PRO", "PHE", "LEU", "ILE"]),
     ],
 )
@@ -97,7 +95,7 @@ def test_sequence(mmcif_filename, sequence):
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_wrong_format():
     with pytest.raises(ValueError):
-        mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif")
+        mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif.gz")
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
@@ -110,7 +108,7 @@ def test_multimodel_warning_msg():
         ),
     ):
         mda.topology.MMCIFParser.MMCIFParser(
-            f"{MMCIF_FOLDER}/multimodel_warning.cif"
+            f"{MMCIF_FOLDER}/multimodel_warning.cif.gz"
         ).parse()
 
 

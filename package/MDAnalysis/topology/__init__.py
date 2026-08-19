@@ -156,6 +156,18 @@ the attributes they provide.
                                 bonds, angles,    angles, and dihedrals.
                                 dihedrals         :mod:`MDAnalysis.topology.GSDParser`
 
+   MMCIF [#a]_       cif,       ids, names,       macromolecular structures in the `PDBx/mmCIF`_
+                     mmcif      types, altLocs,   format, as distributed by, e.g., the RCSB PDB
+                                chainids,         (requires the gemmi_ package);
+                                elements, masses, :mod:`MDAnalysis.topology.MMCIFParser`
+                                formalcharges,
+                                occupancies,
+                                tempfactors,
+                                record_types,
+                                resids, resnames,
+                                resnums, icodes,
+                                segids
+
    MMTF [#a]_        mmtf       altLocs,          `Macromolecular Transmission Format (MMTF)`_. An
                                 tempfactors,      efficient compact format for biomolecular
                                 charges, masses,  structures.
@@ -206,6 +218,8 @@ Note
 .. _AutoDock: http://autodock.scripps.edu/
 .. _APBS: https://apbs.readthedocs.io/en/latest/
 .. _Macromolecular Transmission Format (MMTF): https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c
+.. _PDBx/mmCIF: https://mmcif.wwpdb.org/
+.. _gemmi: https://gemmi.readthedocs.io/
 .. _FHI-AIMS: https://aimsclub.fhi-berlin.mpg.de/
 .. _GAMESS: https://www.msg.chem.iastate.edu/gamess/
 
