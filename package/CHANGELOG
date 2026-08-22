@@ -28,6 +28,8 @@ Fixes
    (the default for a file name) no longer grows the resident memory of the
    process towards the size of the whole trajectory file. Requires a platform
    that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792).
+ * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
+   existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
    also rotate velocities and forces besides positions. This also affects
    `MDAnalysis.analysis.align.alignto()` and `AlignTraj`, since they
