@@ -675,7 +675,7 @@ class MemoryReader(base.ProtoReader):
 
         Parameters
         ----------
-        transform_list : list
+        transformations : list
             list of all the transformations that will be applied to the coordinates
 
         See Also

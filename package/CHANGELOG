@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri
+         raulloiscuns, Aryaman-Chaudhri, eeshsaxena
 
  * 2.11.0
 
@@ -36,6 +36,7 @@ Fixes
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
    attribute; cmaps are now combined like the other connection attributes
    (bonds, angles, dihedrals, impropers) (Issue #3672).
+ * doc string fixes in coordinates.memory, guesser, and lib.util (PR #5412)
  * The `principal_axes` method in :class:`Masses` now uses
    `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
    stability. This may lead to slightly different results from previous
