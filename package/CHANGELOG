@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri
+         raulloiscuns, Aryaman-Chaudhri, sici17
 
  * 2.11.0
 
@@ -76,6 +76,9 @@ Fixes
    to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
+ * Mass (u) has been added to MDAnalysis base units and
+   clarified that physical constants use CODATA 2010 values
+   (Issue #3944, PR #5439)
 
 Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)

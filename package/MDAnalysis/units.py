@@ -50,6 +50,13 @@ table on :ref:`table-baseunits`.
    mass         u              :math:`1.66053892103219 \times 10^{-27}` kg
    =========== ============== ===============================================
 
+
+MDAnalysis currently uses the NIST `CODATA 2010`_ values for physical constants.
+
+.. _`CODATA 2010`:
+   https://physics.nist.gov/cuu/Constants/ArchiveASCII/allascii_2010.txt
+
+
 Implementation notes
 --------------------
 
