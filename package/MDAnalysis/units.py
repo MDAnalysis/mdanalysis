@@ -56,12 +56,6 @@ MDAnalysis currently uses the NIST `CODATA 2010`_ values for physical constants.
    https://physics.nist.gov/cuu/Constants/ArchiveASCII/allascii_2010.txt
 
 
-MDAnalysis currently uses the NIST `CODATA 2010`_ values for physical constants.
-
-.. _`CODATA 2010`:
-   https://physics.nist.gov/cuu/Constants/ArchiveASCII/allascii_2010.txt
-
-
 Implementation notes
 --------------------
 
