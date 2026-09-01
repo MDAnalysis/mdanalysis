@@ -28,10 +28,7 @@ Fixes
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
    attribute; cmaps are now combined like the other connection attributes
    (bonds, angles, dihedrals, impropers) (Issue #3672).
- * Fixed several docstrings that documented parameter names not matching
-   their signatures: ``util.which`` (``programe`` -> ``program``),
-   ``add_transformations`` (``transform_list`` -> ``transformations``) and
-   ``GuesserBase.is_guessable`` (``guess`` -> ``attr_to_guess``) (PR #5412).
+ * doc string fixes in coordinates.memory, guesser, and lib.util (PR #5412)
  * The `principal_axes` method in :class:`Masses` now uses
    `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
    stability. This may lead to slightly different results from previous
