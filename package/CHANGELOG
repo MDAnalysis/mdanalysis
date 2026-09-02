@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri
+         raulloiscuns, Aryaman-Chaudhri, virvihuta
 
  * 2.11.0
 
@@ -110,6 +110,8 @@ Enhancements
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
+ * Ported `test_pqr.py` to use the new `BaseReaderTest`/`BaseWriterTest`
+   classes (Issue #516).
 
 Deprecations
 

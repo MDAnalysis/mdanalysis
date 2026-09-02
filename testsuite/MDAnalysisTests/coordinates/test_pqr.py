@@ -21,7 +21,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-import os
+from MDAnalysis.coordinates.PQR import PQRReader, PQRWriter
+from MDAnalysisTests.coordinates.base import (
+    BaseReference,
+    BaseWriterTest,
+    BaseReaderTest,
+)
 import pytest
 
 from numpy.testing import (
@@ -31,11 +36,11 @@ from numpy.testing import (
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.datafiles import PQR
+from MDAnalysisTests.datafiles import PQR, COORDINATES_PQR
 from MDAnalysisTests import make_Universe
 
 
-class TestPQRReader(_SingleFrameReader):
+class TestPQRReaderOld(_SingleFrameReader):
     __test__ = True
 
     def setUp(self):
@@ -85,7 +90,7 @@ class TestPQRReader(_SingleFrameReader):
         assert self.universe.dimensions is None
 
 
-class TestPQRWriter(RefAdKSmall):
+class TestPQRWriterOld(RefAdKSmall):
     @staticmethod
     @pytest.fixture
     def universe():
@@ -186,6 +191,53 @@ class TestPQRWriter(RefAdKSmall):
             3,
             "Total charge (in CHARMM) does not match expected value.",
         )
+
+
+class PQRReference(BaseReference):
+    def __init__(self):
+        super(PQRReference, self).__init__()
+        self.trajectory = COORDINATES_PQR
+        self.topology = COORDINATES_PQR
+        self.reader = PQRReader
+        self.writer = PQRWriter
+        self.ext = "pqr"
+        self.n_frames = 1
+        self.prec = 3
+        self.totaltime = 0
+        self.container_format = False
+        self.dimensions = None
+        self.volume = 0
+
+
+class TestPQRReader(BaseReaderTest):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return PQRReference()
+
+    def test_get_writer_1(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = "test_writer." + ref.ext
+            with reader.Writer(outfile) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+
+    def test_get_writer_2(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = "test_writer." + ref.ext
+            with reader.Writer(outfile, n_atoms=100) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+
+
+class TestPQRWriter(BaseWriterTest):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return PQRReference()
+
+    def test_no_container(self, ref, tmpdir):
+        with tmpdir.as_cwd():
+            # PQRWriter doesnt require n_atoms at construction time
+            ref.writer("foo")
 
 
 class TestPQRWriterMissingAttrs(object):
