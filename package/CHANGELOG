@@ -23,9 +23,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Mass (u) has been added to MDAnalysis base units and
-   clarified that physical constants use CODATA 2010 values
-   (Issue #3944, PR #5439)
+ * Mass (u) has been added to MDAnalysis base units and clarified that physical
+   constants use CODATA 2010 values (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
    existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
