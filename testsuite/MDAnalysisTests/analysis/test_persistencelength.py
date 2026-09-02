@@ -31,7 +31,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 
 from MDAnalysisTests.datafiles import Plength, TRZ_psf, TRZ
 
@@ -177,3 +177,218 @@ class TestSortBackbone(object):
         u.add_TopologyAttr(Bonds(bondlist))
         with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
+
+
+def _reference_bond_autocorrelation(chains, frame_indices):
+    """Independently compute the expected normalized bond autocorrelation
+    for exactly the given sequence of trajectory frame indices.
+
+    Mirrors the mathematical definition directly from atom positions,
+    without calling into :class:`~MDAnalysis.analysis.polymer.
+    PersistenceLength` or reusing any of its results, so this stays a
+    meaningful check even if the class under test is itself broken.
+    Frame indices are visited explicitly (in the order given, duplicates
+    allowed) rather than via a slice, so this can independently mirror
+    any of `run`'s `start`/`stop`/`step`/`frames` selections. See Issue
+    #5453.
+    """
+    chainlength = len(chains[0])
+    raw = np.zeros(chainlength - 1, dtype=np.float64)
+
+    universe = chains[0].universe
+    n_frames = 0
+    for frame in frame_indices:
+        universe.trajectory[frame]
+        n_frames += 1
+        for chain in chains:
+            vecs = chain.positions[1:] - chain.positions[:-1]
+            vecs = vecs / np.sqrt((vecs * vecs).sum(axis=1))[:, None]
+            inner_pr = np.inner(vecs, vecs)
+            for i in range(chainlength - 1):
+                raw[: (chainlength - 1) - i] += inner_pr[i, i:]
+
+    norm = np.linspace(chainlength - 1, 1, chainlength - 1)
+    norm *= len(chains) * n_frames
+    return raw / norm, n_frames
+
+
+class TestPersistenceLengthSlicedNormalization(object):
+    # Regression test for Issue #5453.
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def u():
+        return mda.Universe(TRZ_psf, TRZ)
+
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def chains(u):
+        backbones = [
+            chain.select_atoms("not name O* H*") for chain in u.atoms.fragments
+        ]
+        return [polymer.sort_backbone(bb) for bb in backbones]
+
+    def test_full_trajectory_unchanged(self, chains, u):
+        p = polymer.PersistenceLength(chains).run()
+
+        assert p.n_frames == u.trajectory.n_frames
+
+        expected, n_frames = _reference_bond_autocorrelation(
+            chains, range(u.trajectory.n_frames)
+        )
+        assert n_frames == u.trajectory.n_frames
+        # atol/rtol (looser than a plain decimal=6 comparison) account for
+        # PersistenceLength accumulating raw_bond_autocorr in float32 while
+        # this reference accumulates in float64; their rounding drift is
+        # a couple of float32 ULPs at this trajectory's frame/chain count,
+        # not a sign of disagreement.
+        assert_allclose(
+            p.results.bond_autocorrelation, expected, rtol=1e-4, atol=5e-6
+        )
+
+    def test_sliced_run_normalized_by_frames_analyzed(self, chains, u):
+        n_sliced_frames = 3
+        assert n_sliced_frames < u.trajectory.n_frames
+
+        p = polymer.PersistenceLength(chains).run(stop=n_sliced_frames)
+
+        assert p.n_frames == n_sliced_frames
+        assert p.n_frames != u.trajectory.n_frames
+
+        expected, n_frames = _reference_bond_autocorrelation(
+            chains, range(n_sliced_frames)
+        )
+        assert n_frames == n_sliced_frames
+        # atol/rtol (looser than a plain decimal=6 comparison) account for
+        # PersistenceLength accumulating raw_bond_autocorr in float32 while
+        # this reference accumulates in float64; their rounding drift is
+        # a couple of float32 ULPs at this trajectory's frame/chain count,
+        # not a sign of disagreement.
+        assert_allclose(
+            p.results.bond_autocorrelation, expected, rtol=1e-4, atol=5e-6
+        )
+
+        # Sanity check: reproduce the old (buggy) behavior by normalizing
+        # the *sliced* raw sum with the *total* trajectory frame count
+        # instead of n_sliced_frames, and confirm that no longer matches
+        # the class's output -- i.e. this test is sensitive to the bug
+        # described in Issue #5453.
+        wrong = expected * n_sliced_frames / u.trajectory.n_frames
+        assert not np.allclose(p.results.bond_autocorrelation, wrong)
+
+    @pytest.mark.parametrize(
+        "run_kwargs, frame_indices",
+        [
+            pytest.param({"step": 2}, [0, 2, 4], id="step_only"),
+            pytest.param(
+                {"start": 1, "stop": 6, "step": 2},
+                [1, 3, 5],
+                id="start_stop_step",
+            ),
+            pytest.param({"frames": [0, 2, 5]}, [0, 2, 5], id="frames_list"),
+            pytest.param(
+                {"frames": [4, 1, 3]},
+                [4, 1, 3],
+                id="frames_list_unordered",
+            ),
+        ],
+    )
+    def test_various_frame_selections_normalized_correctly(
+        self, chains, u, run_kwargs, frame_indices
+    ):
+        # Regression test for Issue #5453: the normalization fix relies
+        # on self.n_frames, which AnalysisBase derives the same way
+        # regardless of whether the run was sliced via start/stop/step
+        # or via an explicit frames= list. Exercise more than just a
+        # plain stop= slice to guard against that assumption breaking.
+        p = polymer.PersistenceLength(chains).run(**run_kwargs)
+
+        assert p.n_frames == len(frame_indices)
+        assert p.n_frames != u.trajectory.n_frames
+
+        expected, n_frames = _reference_bond_autocorrelation(
+            chains, frame_indices
+        )
+        assert n_frames == len(frame_indices)
+        # atol/rtol (looser than a plain decimal=6 comparison) account for
+        # PersistenceLength accumulating raw_bond_autocorr in float32 while
+        # this reference accumulates in float64; their rounding drift is
+        # a couple of float32 ULPs at this trajectory's frame/chain count,
+        # not a sign of disagreement.
+        assert_allclose(
+            p.results.bond_autocorrelation, expected, rtol=1e-4, atol=5e-6
+        )
+
+    def test_sliced_run_parallel_matches_serial(self, chains, u):
+        # Regression test for Issue #5453: the bug was introduced by the
+        # multi-worker refactor in PR #5074, but neither existing test
+        # actually exercised backend="multiprocessing" together with a
+        # sliced run. _conclude() only ever runs once, on the main
+        # process, after worker results are merged -- so self.n_frames
+        # at normalization time should be the total sliced frame count
+        # regardless of how work was chunked across workers. Confirm
+        # that holds, rather than only checking it by hand.
+        n_sliced_frames = 5
+        assert n_sliced_frames < u.trajectory.n_frames
+
+        serial = polymer.PersistenceLength(chains).run(stop=n_sliced_frames)
+        parallel = polymer.PersistenceLength(chains).run(
+            stop=n_sliced_frames, backend="multiprocessing", n_workers=2
+        )
+
+        assert serial.n_frames == parallel.n_frames == n_sliced_frames
+        assert_allclose(
+            serial.results.bond_autocorrelation,
+            parallel.results.bond_autocorrelation,
+            rtol=1e-4,
+            atol=5e-6,
+        )
+
+    def test_empty_frame_selection_raises_clear_error(self, chains):
+        # Edge case found while verifying the fix for Issue #5453: an
+        # empty frame selection drives self.n_frames to 0, which used
+        # to silently divide by the (nonzero) total trajectory frame
+        # count and return a fabricated all-zero curve with no warning.
+        # After the fix, the zero-frame divisor would instead produce
+        # NaNs that surface as an opaque scipy error deep inside
+        # curve_fit. Raise a clear, immediate error instead.
+        with pytest.raises(ValueError, match="analyzed zero frames"):
+            polymer.PersistenceLength(chains).run(start=2, stop=2)
+
+    def test_single_atom_chain_unaffected_by_normalization_fix(self, u):
+        # Not a regression from Issue #5453's fix: a chain with only one
+        # atom has no bonds to correlate (chainlength - 1 == 0), so
+        # raw_bond_autocorr and norm are both length-0 arrays regardless
+        # of the run() call's start/stop/step. This has always raised
+        # from inside _perform_fit()'s curve_fit call, independent of
+        # which frame count _conclude() normalizes by. Documented here
+        # so it doesn't get mistaken for something this PR should fix.
+        one_atom_chain = [u.atoms.fragments[0][:1]]
+        with pytest.raises(ValueError):
+            polymer.PersistenceLength(one_atom_chain).run()
+
+    @pytest.mark.xfail(
+        reason=(
+            "Pre-existing AnalysisBase bug, independent of Issue #5453: "
+            "_setup_computation_groups checks `isinstance(obj, bool)`, "
+            "which is False for numpy bool scalars, so a numpy boolean "
+            "frames= mask is treated as an integer index array (True/"
+            "False read as 1/0) instead of a mask. A plain Python list "
+            "of bools is unaffected. Left xfail to document the "
+            "framework-level issue without attempting to fix "
+            "AnalysisBase in this PR."
+        ),
+        strict=True,
+    )
+    def test_numpy_bool_mask_frames_selection(self, chains, u):
+        mask = np.zeros(u.trajectory.n_frames, dtype=bool)
+        mask[[0, 2, 4]] = True
+
+        p = polymer.PersistenceLength(chains).run(frames=mask)
+
+        assert p.n_frames == int(mask.sum())
+        expected, n_frames = _reference_bond_autocorrelation(
+            chains, np.flatnonzero(mask)
+        )
+        assert_allclose(
+            p.results.bond_autocorrelation, expected, rtol=1e-4, atol=5e-6
+        )
