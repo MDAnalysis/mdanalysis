@@ -23,6 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Mass (u) has been added to MDAnalysis base units and
+   clarified that physical constants use CODATA 2010 values
+   (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
    existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
@@ -76,9 +79,6 @@ Fixes
    to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
- * Mass (u) has been added to MDAnalysis base units and
-   clarified that physical constants use CODATA 2010 values
-   (Issue #3944, PR #5439)
 
 Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
