@@ -155,6 +155,69 @@ function and then feed the resulting dictionary to :class:`AlignTraj`::
 (See the documentation of the functions for this advanced usage.)
 
 
+Performance and memory trade-offs when aligning sub-systems
+-----------------------------------------------------------
+
+When working with large molecular systems (such as a protein solvated in
+thousands of water molecules), you are often only interested in aligning
+and analyzing a specific sub-system or domain (e.g. a solute protein or a
+binding domain). Understanding the trade-offs between memory consumption,
+disk I/O, and CPU performance is key to selecting the right workflow:
+
+1. **Lazy disk iteration vs in-memory representation (`in_memory`)**:
+   - By default (``in_memory=False``), MDAnalysis loads frames lazily
+     one-by-one from disk into memory. This uses minimal constant RAM, making
+     it suitable for very large trajectories or memory-constrained
+     environments, at the cost of disk I/O when reading and writing.
+   - Setting ``in_memory=True`` transfers the trajectory coordinates to an
+     in-memory numpy array
+     (:class:`~MDAnalysis.coordinates.memory.MemoryReader`), enabling fast
+     in-place transformations without writing to disk. However, this
+     requires approximately :math:`N_{\\text{frames}} \\times N_{\\text{atoms}} \\times 3 \\times 4\\text{ bytes}`
+     (or 8 bytes for double precision) of RAM. For a system with 500,000
+     atoms and 10,000 frames, holding the entire trajectory in RAM would
+     require ~60 GB.
+
+2. **Aligning only a sub-system with `subselection`**:
+   By default, :class:`AlignTraj` computes the optimal rotation/translation
+   matrix using the atoms in `select`, but applies the transformation and
+   writes out coordinates for all atoms in the universe (:attr:`mobile.atoms`).
+   If you only need the aligned coordinates of a sub-domain (e.g. ``protein``),
+   use the `subselection` keyword::
+
+      >>> aligner = align.AlignTraj(
+      ...     trj, ref, select="protein and name CA", subselection="protein",
+      ...     filename="protein_aligned.dcd"
+      ... ) # doctest: +SKIP
+      >>> aligner.run() # doctest: +SKIP
+
+   This calculates the superposition on the C-alpha atoms, but only transforms
+   and writes the ``protein`` atoms to disk, drastically reducing output file
+   size and disk write overhead.
+
+3. **In-memory alignment of sub-systems without writing files**:
+   If you want the speed benefits of an in-memory trajectory without the huge
+   RAM footprint of solvent atoms, extract the sub-system into an in-memory
+   Universe using :func:`~MDAnalysis.core.universe.Merge` and
+   :func:`~MDAnalysis.analysis.base.AnalysisFromFunction`
+   (see :ref:`creating-in-memory-trajectory-label`)::
+
+      >>> from MDAnalysis.coordinates.memory import MemoryReader
+      >>> from MDAnalysis.analysis.base import AnalysisFromFunction
+      >>>
+      >>> domain_a = trj.select_atoms("protein")
+      >>> coords_a = AnalysisFromFunction(
+      ...     lambda ag: ag.positions.copy(), domain_a
+      ... ).run().results['timeseries'] # doctest: +SKIP
+      >>> u_sub = mda.Merge(domain_a) # doctest: +SKIP
+      >>> u_sub.load_new(coords_a, format=MemoryReader) # doctest: +SKIP
+      >>>
+      >>> # Now align u_sub in-place in memory with a minimal RAM footprint
+      >>> aligner = align.AlignTraj(
+      ...     u_sub, u_sub, select="name CA", in_memory=True
+      ... ).run() # doctest: +SKIP
+
+
 Functions and Classes
 ---------------------
 
@@ -720,6 +783,7 @@ class AlignTraj(AnalysisBase):
         strict=False,
         force=True,
         in_memory=False,
+        subselection=None,
         writer_kwargs=None,
         **kwargs,
     ):
@@ -758,6 +822,18 @@ class AlignTraj(AnalysisBase):
             performance substantially in some cases. In this case, no file
             is written out (`filename` and `prefix` are ignored) and only
             the coordinates of `mobile` are *changed in memory*.
+        subselection : str or AtomGroup or None (optional)
+            Apply the transformation and write out only this selection.
+
+            ``None`` [default]
+                Apply to and write ``mobile.universe.atoms`` (i.e., all atoms
+                in the context of `mobile`).
+            *selection-string*
+                Apply to and write ``mobile.select_atoms(selection-string)``.
+            :class:`~MDAnalysis.core.groups.AtomGroup`
+                Apply to and write the arbitrary group of atoms.
+
+            .. versionadded:: 2.11.0
         verbose : bool (optional)
              Set logger to show more information and show detailed progress of
              the calculation if set to ``True``; the default is ``False``.
@@ -792,8 +868,8 @@ class AlignTraj(AnalysisBase):
         Notes
         -----
         - If set to ``verbose=False``, it is recommended to wrap the statement
-          in a ``try ...  finally`` to guarantee restoring of the log level in
-          the case of an exception.
+           in a ``try ...  finally`` to guarantee restoring of the log level in
+           the case of an exception.
         - The ``in_memory`` option changes the `mobile` universe to an
           in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
           for the remainder of the Python session. If ``mobile.trajectory`` is
@@ -826,6 +902,10 @@ class AlignTraj(AnalysisBase):
         .. versionchanged:: 2.8.0
            Added ``writer_kwargs`` kwarg dict to pass to the writer
 
+        .. versionadded:: 2.11.0
+           Added ``subselection`` keyword to allow applying and writing the
+           transformation to a subset of atoms.
+
         """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select["reference"])
@@ -856,7 +936,23 @@ class AlignTraj(AnalysisBase):
             logging.disable(logging.WARN)
 
         # store reference to mobile atoms
-        self.mobile = mobile.atoms
+        if subselection is None:
+            self.mobile = (
+                mobile.universe.atoms
+                if hasattr(mobile, "universe")
+                else mobile.atoms
+            )
+        elif isinstance(subselection, str):
+            self.mobile = mobile.select_atoms(subselection)
+        else:
+            try:
+                self.mobile = subselection.atoms
+            except AttributeError:
+                err = (
+                    "subselection must be a selection string, an "
+                    "AtomGroup or Universe or None"
+                )
+                raise TypeError(err) from None
 
         self.filename = filename
 
