@@ -25,8 +25,9 @@
 PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
-This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+This suite of functions download structure files from the Research
+Collaboratory for Structural Bioinformatics (RCSB)
+`Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
@@ -35,30 +36,23 @@ Variables
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
-
 Functions
 ---------
 
 .. autofunction:: from_PDB
 
 """
-from pathlib import Path
 
-try:
-    import pooch
-except ImportError:
-    HAS_POOCH = False
-else:
-    HAS_POOCH = True
+from .fetchers import StaticFetcher
 
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.
+#: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
 #:
-#: .. versionadded:: 2.11.0
-DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+#: Maintained for backwards compatiblity
+#:
+from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
 
-# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
+# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files
+_SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
     "bcif",
@@ -100,7 +94,8 @@ def from_PDB(
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
     progressbar : bool
-        If True, display a progress bar during file downloads. Default is False.
+        If True, display a progress bar during file downloads. Default
+        is False.
 
     Returns
     -------
@@ -119,8 +114,8 @@ def from_PDB(
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
 
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
@@ -132,9 +127,9 @@ def from_PDB(
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
 
     Examples
     --------
@@ -162,39 +157,21 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
-        )
-    elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in _SUPPORTED_FILE_FORMATS_PDB:
         raise ValueError(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
     if isinstance(pdb_ids, str):
-        _pdb_ids = (pdb_ids,)
+        _pdb_ids = (pdb_ids + "." + file_format,)
     else:
-        _pdb_ids = pdb_ids
+        _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
-    if cache_path is None:
-        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
-
-    # Have to do this dictionary approach instead of using pooch.retrieve in order
-    # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
-
-    downloader = pooch.create(
-        path=cache_path,
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary,
+        progressbar=progressbar,
+        append_db=True,
     )
-
-    paths = [
-        Path(downloader.fetch(fname=file_name, progressbar=progressbar))
-        for file_name in registry_dictionary.keys()
-    ]
-
-    return paths if not isinstance(pdb_ids, str) else paths[0]
