@@ -108,6 +108,10 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+ * TPRReader now reads box vectors from TPR files and exposes them as
+   ``Universe.dimensions``. Previously, ``u.dimensions`` returned ``None``
+   when a TPR file was used as the sole coordinate source
+   (``mda.Universe(tpr)`` or ``mda.Universe(tpr, tpr)``). (Issue #5375)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
