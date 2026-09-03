@@ -25,8 +25,9 @@
 PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
-This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+This suite of functions download structure files from the Research
+Collaboratory for Structural Bioinformatics (RCSB)
+`Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
@@ -35,30 +36,28 @@ Variables
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
-
 Functions
 ---------
 
 .. autofunction:: from_PDB
+.. autofunction:: from_ALPHAFOLD
 
 """
-from pathlib import Path
+import json
 
-try:
-    import pooch
-except ImportError:
-    HAS_POOCH = False
-else:
-    HAS_POOCH = True
+from urllib.request import urlretrieve
+from tempfile import TemporaryDirectory
 
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.
+from .fetchers import StaticFetcher
+
+#: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
 #:
-#: .. versionadded:: 2.11.0
-DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+#: Maintained for backwards compatiblity
+#:
+from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
 
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
+_SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
     "bcif",
@@ -70,6 +69,14 @@ SUPPORTED_FILE_FORMATS_DOWNLOADER = (
     "pdb1",
     "pdb1.gz",
 )
+
+# These file formats are fields in the alphafold API
+# https://alphafold.ebi.ac.uk/api-docs
+_SUPPORTED_FILE_FORMATS_ALPHAFOLD = {
+    "bcif": "bcifUrl",
+    "cif": "cifUrl",
+    "pdb": "pdbUrl",
+}
 
 
 def from_PDB(
@@ -100,7 +107,8 @@ def from_PDB(
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
     progressbar : bool
-        If True, display a progress bar during file downloads. Default is False.
+        If True, display a progress bar during file downloads. Default
+        is False.
 
     Returns
     -------
@@ -119,8 +127,8 @@ def from_PDB(
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
 
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
@@ -132,9 +140,9 @@ def from_PDB(
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
 
     Examples
     --------
@@ -162,39 +170,138 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
-        )
-    elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in _SUPPORTED_FILE_FORMATS_PDB:
         raise ValueError(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
     if isinstance(pdb_ids, str):
-        _pdb_ids = (pdb_ids,)
+        _pdb_ids = (pdb_ids + "." + file_format,)
     else:
-        _pdb_ids = pdb_ids
+        _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
-    if cache_path is None:
-        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
-
-    # Have to do this dictionary approach instead of using pooch.retrieve in order
-    # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
-
-    downloader = pooch.create(
-        path=cache_path,
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary,
+        progressbar=progressbar,
+        append_db=True,
     )
 
-    paths = [
-        Path(downloader.fetch(fname=file_name, progressbar=progressbar))
-        for file_name in registry_dictionary.keys()
-    ]
 
-    return paths if not isinstance(pdb_ids, str) else paths[0]
+def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
+    """
+    Download one or more AlphaFold structure files and cache them locally.
+
+    Given one AlphaFold ID, downloads the corresponding structure file in the
+    specified format and stores it in a local cache directory. If files are
+    cached on disk, *from_ALPHAFOLD* will skip the download and use the cached
+    version instead.
+
+    Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
+
+    Parameters
+    ----------
+    id : str
+        A single AlphaFold ID as a string.
+    cache_path : str or pathlib.Path
+        Directory where downloaded file(s) will be cached.
+        The default ``None`` argument uses the :mod:`pooch` default cache with
+        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+    file_format : str
+        The file extension/format to download (e.g., "cif", "pdb").
+        See the Notes section below for a list of all supported file formats.
+    progressbar : bool
+        If True, display a progress bar during file downloads. Default
+        is False.
+
+    Returns
+    -------
+    :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
+        The path(s) to the downloaded file(s). Returns a single
+        :class:`~pathlib.Path` for the downloaded AlphaFold file.
+
+    Raises
+    ------
+    ValueError
+        For an invalid file format. Supported file formats are under Notes.
+
+    :class:`requests.exceptions.HTTPError`
+        If an invalid AlphaFold ID is specified.
+
+    Notes
+    -----
+    This function uses the `AlphaFold API`_ for directly
+    downloading structure files via HTTP GET.
+
+    .. _`AlphaFold API`:
+        https://alphafold.ebi.ac.uk/api-docs
+
+    AlphaFold currently provides data in ``'cif'``, ``'pdb'``, and ``'bcif'``
+    file formats and can therefore be downloaded. Not all of these
+    formats can be currently read with MDAnalysis.
+
+    At the current moment, this function only supports
+    downloading a single AlphaFold ID at a time unlike in :func:`from_PDB`
+    which can download multiple PDB IDs at once.
+
+    Additionally, there is currently no support for downloading prior
+    versions of AlphaFold predictions. The `AlphaFold API`_
+    only provides the latest version of the prediction for
+    a given ID. For more detailed control, it is recommended to browse
+    `AlphaFold <https://alphafold.ebi.ac.uk/>`_ manually.
+
+    Caching, controlled by the ``cache_path`` parameter, is handled
+    internally by :mod:`pooch`. The default cache name is taken from
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by ``cache_path``.
+
+    Examples
+    --------
+    Download a single AlphaFold file:
+
+    >>> from_ALPHAFOLD("Q9I1F6", file_format="cif")
+    './MDAnalysis_pdbs/AF-Q9I1F6-F1-model_v6.cif'
+
+    Download a single AlphaFold file and convert it to a universe:
+
+    >>> mda.Universe(from_ALPHAFOLD("Q9I1F6"), files_format="pdb")
+    <Universe with 2608 atoms>
+
+
+    .. versionadded:: 2.11.0
+    """
+
+    if file_format not in _SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys():
+        raise ValueError(
+            f"Invalid file format: {file_format}. "
+            + "Supported formats are: "
+            + f"{list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}"
+        )
+
+    # Save JSON file to temporary directory.
+    # This also prevents StaticFetcher logging from occuring in the console
+    with TemporaryDirectory() as tmp_dir_path:
+        json_file, _ = urlretrieve(
+            f"https://alphafold.ebi.ac.uk/api/prediction/{id}",
+            f"{tmp_dir_path}/{id}.json",
+        )
+        with open(json_file) as _json:
+            data = json.load(_json)[0]
+
+    url = data[_SUPPORTED_FILE_FORMATS_ALPHAFOLD[file_format]]
+
+    # This splits urls such as
+    # https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.cif into
+    # https://alphafold.ebi.ac.uk/files and AF-Q9I1F6-F1-model_v6.cif
+    base_url, file = url.rsplit("/", 1)
+
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        base_url=base_url,
+        file_name=file,
+        progressbar=progressbar,
+        append_db=True,
+    )
