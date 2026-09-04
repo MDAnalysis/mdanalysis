@@ -80,6 +80,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Add reading single-frame files from mmCIF, also known as PDBx format, using
+   crystallographic library `gemmi` as a backend (Issue #2367 and extension of
+   #4303, also solves #5089, PR #4712).
  * Added ASV benchmark for XYZ trajectory reading (PR #5441)
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and

@@ -60,6 +60,8 @@ inputs:
     default: 'dask'
   distopia:
     default: 'distopia>=0.4.0'
+  gemmi:
+    default: 'gemmi'
   h5py:
     default: 'h5py>=2.10'
   hole2:
@@ -140,6 +142,7 @@ runs:
           ${{ inputs.dask }}
           ${{ inputs.distopia }}
           ${{ inputs.gsd }}
+          ${{ inputs.gemmi }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
           ${{ inputs.imdclient }}

@@ -76,6 +76,7 @@ extra_formats = [
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",
+    "gemmi>=0.7.3",     # for mmcif format
     "rdkit>=2022.09.1",
     "imdclient>=0.2.2",
 ]
