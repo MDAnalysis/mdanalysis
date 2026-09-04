@@ -15,7 +15,84 @@ pr:
 
 
 jobs:
+- job: Precommit_Lint
+  displayName: 'Pre-commit checks'
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    PRE_COMMIT_HOME: '$(Pipeline.Workspace)/.pre-commit-cache'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11'
+      addToPath: true
+      architecture: 'x64'
+  - task: Cache@2
+    inputs:
+      key: 'pre-commit | "$(Agent.OS)" | .pre-commit-config.yaml'
+      path: '$(PRE_COMMIT_HOME)'
+      restoreKeys: |
+        pre-commit | "$(Agent.OS)"
+  - script: python -m pip install --upgrade pip pre-commit
+    displayName: 'Install pre-commit'
+  - script: PRE_COMMIT_HOME=$(PRE_COMMIT_HOME) pre-commit run --all-files
+    displayName: 'Run pre-commit hooks'
+
+- job: Ruff_Lint
+  displayName: 'Ruff lint checks'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11'
+      addToPath: true
+      architecture: 'x64'
+  - script: python -m pip install --upgrade pip ruff
+    displayName: 'Install ruff'
+  - script: ruff check package testsuite
+    displayName: 'Run ruff checks'
+
+- job: Smoke_Tests
+  displayName: 'Smoke tests'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11'
+      addToPath: true
+      architecture: 'x64'
+  - script: python -m pip install --upgrade pip setuptools wheel
+    displayName: 'Install tools'
+  - script: >-
+      python -m pip install --only-binary=scipy,h5py
+      cython
+      h5py>=2.10
+      matplotlib
+      numpy
+      packaging
+      pytest
+      tqdm
+      threadpoolctl
+      filelock
+    displayName: 'Install smoke dependencies'
+  - script: >-
+      python -m pip install
+      ./package
+      ./testsuite
+    displayName: 'Install package and testsuite'
+  - script: >-
+      pytest testsuite/MDAnalysisTests/test_api.py
+      --disable-pytest-warnings
+      -q
+    displayName: 'Run smoke tests'
+
 - job: Azure_Tests
+  dependsOn:
+    - Precommit_Lint
+    - Ruff_Lint
+    - Smoke_Tests
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg

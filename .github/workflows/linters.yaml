@@ -17,6 +17,54 @@ defaults:
     shell: bash -l {0}
 
 jobs:
+  precommit:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PRE_COMMIT_HOME: ~/.cache/pre-commit
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: cache pre-commit
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+    - name: install pre-commit
+      run: |
+        python -m pip install --upgrade pip pre-commit
+
+    - name: run pre-commit
+      run: |
+        pre-commit run --all-files
+
+  ruff_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: install ruff
+      run: |
+        python -m pip install --upgrade pip ruff
+
+    - name: run ruff
+      run: |
+        ruff check package testsuite
+
   black:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
