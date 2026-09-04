@@ -25,8 +25,9 @@
 PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
-This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+This suite of functions download structure files from the Research
+Collaboratory for Structural Bioinformatics (RCSB)
+`Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
@@ -35,30 +36,27 @@ Variables
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
-
 Functions
 ---------
 
 .. autofunction:: from_PDB
+.. autofunction:: from_DOI
 
 """
-from pathlib import Path
 
-try:
-    import pooch
-except ImportError:
-    HAS_POOCH = False
-else:
-    HAS_POOCH = True
+import re
+import warnings
 
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.
+from .fetchers import StaticFetcher
+
+#: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
 #:
-#: .. versionadded:: 2.11.0
-DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+#: Maintained for backwards compatiblity
+#:
+from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
 
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
+_SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
     "bcif",
@@ -100,7 +98,8 @@ def from_PDB(
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
     progressbar : bool
-        If True, display a progress bar during file downloads. Default is False.
+        If True, display a progress bar during file downloads. Default
+        is False.
 
     Returns
     -------
@@ -119,8 +118,8 @@ def from_PDB(
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
 
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
@@ -132,9 +131,9 @@ def from_PDB(
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
 
     Examples
     --------
@@ -162,39 +161,124 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
-        )
-    elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in _SUPPORTED_FILE_FORMATS_PDB:
         raise ValueError(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
     if isinstance(pdb_ids, str):
-        _pdb_ids = (pdb_ids,)
+        _pdb_ids = (pdb_ids + "." + file_format,)
     else:
-        _pdb_ids = pdb_ids
+        _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
-    if cache_path is None:
-        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
-
-    # Have to do this dictionary approach instead of using pooch.retrieve in order
-    # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
-
-    downloader = pooch.create(
-        path=cache_path,
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary,
+        progressbar=progressbar,
+        append_db=True,
     )
 
-    paths = [
-        Path(downloader.fetch(fname=file_name, progressbar=progressbar))
-        for file_name in registry_dictionary.keys()
-    ]
 
-    return paths if not isinstance(pdb_ids, str) else paths[0]
+def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
+    """
+    Download one or more files given the Digital Object Identifier (DOI)
+    and store them locally.
+
+    Given one DOI, this function downloads one or multiple file names from
+    the repository and stores them in a local cache directory. If files
+    are cached on disk, *from_DOI* will skip the download and use the
+    cached version instead.
+
+    Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
+
+    Parameters
+    ----------
+    doi : str
+        The Digital Object Identifier (DOI) of the file(s) to download.
+    file_name : str or list of str
+        The name(s) of the file(s) to download from the repository.
+    remove_prefix : bool
+        If True, remove the prefix (e.g., "https://doi.org/") from the DOI string.
+        Default is True.
+    cache_path : str or pathlib.Path
+        Directory where downloaded file(s) will be cached.
+        The default ``None`` argument uses the :mod:`pooch` default cache with
+        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+
+
+    Returns
+    -------
+    :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
+        The path(s) to the downloaded file(s). Returns a single
+        :class:`~pathlib.Path` if a single DOI is given, or a list of
+        :class:`~pathlib.Path` if multiple DOIs are provided.
+
+    Raises
+    ------
+    ValueError
+        For an invalid DOI link. See Notes for more information.
+
+    :class:`requests.exceptions.HTTPError`
+        If an invalid ``file_name`` is specified.
+
+    Notes
+    -----
+    The DOI link, as specified by ``doi``, should be in the format of
+    ``"https://doi.org/..."`` or ``"doi.org/..."``.
+    The function will automatically handle the prefix removal
+    if ``remove_prefix`` is set to ``True``.
+
+    The current backend for downloading files is :class:`pooch.DOIDownloader`
+    which only handles downloading from Zenodo and Figshare repositories.
+
+
+    Examples
+    --------
+    Download a single DOI file:
+
+    >>> from_DOI("https://doi.org/10.6084/m9.figshare.5108170",
+    ...          file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
+
+    >>> from_DOI("doi.org/10.6084/m9.figshare.5108170",
+    ...          file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
+
+
+    Support pooch specified DOI format:
+
+    >>> from_DOI("doi:10.6084/m9.figshare.5108170",
+    ...          file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
+
+    .. versionadded:: 2.11.0
+    """
+
+    # Supress warnings from pooch about not specifying
+    # which version of the repostory to download.
+    warnings.filterwarnings("ignore", category=UserWarning)
+
+    if remove_prefix:
+        # Captures https:// and ftp://
+        match = re.match(r"^(.*?:\/\/)", doi)
+
+        if match is not None:
+            start, end = match.span()
+            doi = doi[end:]
+
+    # In format of doi.org/stuff/stuff
+    # Need to massage into pooch-compataible syntax
+    doi = doi.replace("doi.org/", "doi:")
+
+    fetcher = StaticFetcher(cache_path=cache_path)
+
+    try:
+        return fetcher.fetch(
+            base_url=doi, file_name=file_name, append_db=True, downloader="doi"
+        )
+    except IndexError as e:
+        raise ValueError(
+            f"DOI link {doi} is invalid. Please check the DOI link."
+        )
