@@ -251,10 +251,14 @@ class PDBParser(TopologyReaderBase):
             bonds = self._parsebonds(top.ids.values)
         except AttributeError:
             warnings.warn(
-                "Invalid atom serials were present, " "bonds will not be parsed"
+                "Invalid atom serials were present, "
+                "bonds will not be parsed"
             )
         except RuntimeError:
-            warnings.warn("CONECT records was corrupt, " "bonds will not be parsed")
+            warnings.warn(
+                "CONECT records was corrupt, "
+                "bonds will not be parsed"
+            )
         else:
             # Issue 2832: don't append Bonds if there are no bonds
             if bonds:
@@ -326,7 +330,8 @@ class PDBParser(TopologyReaderBase):
                         resid_prev = resid
                 except ValueError:
                     warnings.warn(
-                        "PDB file is missing resid information.  " "Defaulted to '1'"
+                        "PDB file is missing resid information.  "
+                        "Defaulted to '1'"
                     )
                     resid = 1
                 finally:
@@ -341,7 +346,8 @@ class PDBParser(TopologyReaderBase):
         # Warn about wrapped serials
         if self._wrapped_serials:
             warnings.warn(
-                "Serial numbers went over 100,000.  " "Higher serials have been guessed"
+                "Serial numbers went over 100,000.  "
+                "Higher serials have been guessed"
             )
 
         # If segids is not equal to chainids, warn the user
@@ -359,7 +365,8 @@ class PDBParser(TopologyReaderBase):
         # If force_chainids_to_segids is set, use chainids as segids
         if kwargs.get("force_chainids_to_segids", False):
             logger.info(
-                "force_chainids_to_segids is set. " "Using chain IDs as segment IDs."
+                "force_chainids_to_segids is set. "
+                "Using chain IDs as segment IDs."
             )
             segids = chainids
 
