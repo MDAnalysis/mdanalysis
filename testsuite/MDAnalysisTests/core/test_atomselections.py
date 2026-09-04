@@ -287,6 +287,17 @@ class TestSelectionsCHARMM(object):
         assert_equal(len(sel), 3194)
         assert_equal(len(sel2), 2001)
 
+    def test_relprop(self, universe):
+        sel1 = universe.select_atoms("relprop z <= 1 index 0")
+        sel2 = universe.select_atoms("relprop abs z <= 1 index 0")
+
+        positions = universe.trajectory[0].positions
+        ref = positions[0, 2]
+        mask_1 = (positions[:, 2] - ref) <= 1
+        assert_equal(len(sel1), np.count_nonzero(mask_1))
+        mask_2 = np.abs(positions[:, 2] - ref) <= 1
+        assert_equal(len(sel2), np.count_nonzero(mask_2))
+
     def test_bynum(self, universe):
         "Tests the bynum selection, also from AtomGroup instances (Issue 275)"
         sel = universe.select_atoms("bynum 5")
@@ -1254,6 +1265,18 @@ class TestSelectionErrors(object):
     def test_invalid_prop_selection(self, universe):
         with pytest.raises(SelectionError, match="Expected one of"):
             universe.select_atoms("prop parsnip < 2")
+
+    def test_invalid_relprop_selection(self, universe):
+        with pytest.raises(SelectionError, match="Expected one of"):
+            universe.select_atoms("relprop parsnip < 2 index 0")
+        with pytest.raises(SelectionError, match="Unknown selection token"):
+            universe.select_atoms("relprop z < 2")
+        with pytest.raises(SelectionError, match="Expected one of"):
+            universe.select_atoms("relprop resid < 2 index 0")
+        with pytest.raises(
+            SelectionError, match="This Universe does not contain"
+        ):
+            universe.select_atoms("relprop z <= 1 index 0")
 
 
 def test_segid_and_resid():
