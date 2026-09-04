@@ -76,14 +76,14 @@ two structures, using :func:`rmsd`::
    >>> ref = mda.Universe(PDB_small)
    >>> mobile = mda.Universe(PSF, DCD)
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions)
-   28.20178579474479
+   np.float64(28.20178579474479)
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
-   21.892591663632704
+   np.float64(21.892591663632704)
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
@@ -126,7 +126,7 @@ To **fit a single structure** with :func:`alignto`::
    >>> ref = mda.Universe(PSF, PDB_small)
    >>> mobile = mda.Universe(PSF, DCD)     # we use the first frame
    >>> align.alignto(mobile, ref, select="protein and name CA", weights="mass")
-   (21.892591663632704, 6.809396586471809)
+   (np.float64(21.892591663632704), 6.809396586471809)
 
 This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).
@@ -137,8 +137,8 @@ To **fit a whole trajectory** to a reference structure with the
    >>> ref = mda.Universe(PSF, PDB_small)   # reference structure 1AKE
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
-   >>> alignment.run()
-   <MDAnalysis.analysis.align.AlignTraj object at ...> 
+   >>> _ = alignment.run()
+
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
