@@ -27,7 +27,7 @@ import warnings
 import MDAnalysis as mda
 import numpy as np
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 from MDAnalysisTests.datafiles import PRM  # ache.prmtop
 from MDAnalysisTests.datafiles import PRM7  # tz2.truncoct.parm7.bz2
@@ -837,3 +837,29 @@ class TestErrorsAndWarnings(object):
 
         for msg in errmsgs:
             assert any(msg in recmsg for recmsg in messages)
+
+
+def test_gh_5032():
+    u = mda.Universe(PRM)
+    # check individual residue.charge
+    actual = []
+    for res in u.residues:
+        actual.append(res.charge)
+    expected = [1.0, # N-terminal A
+                -1.0, # E
+                0.0, # F
+                0.0, # H (HIE)
+                1.0, # R
+                0.0, # W
+                0.0, # S
+                0.0, # S
+                0.0, # Y
+                0.0, # M
+                0.0, # V
+                0.0, # H (HIE)
+                0.0, # W
+                0.0] # C-terminal K
+    assert_allclose(actual, expected)
+    # check residues.charges, which are set
+    # separately
+    assert_allclose(u.residues.charges, expected)
