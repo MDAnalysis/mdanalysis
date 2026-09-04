@@ -128,6 +128,7 @@ writers share.
 import abc
 import numpy as np
 import numbers
+import os
 import warnings
 from typing import Any, Union, Optional, List, Dict
 
@@ -1493,8 +1494,11 @@ class ReaderBase(ProtoReader):
 
         if isinstance(filename, NamedStream):
             self.filename = filename
+        elif isinstance(filename, (str, bytes, os.PathLike)):
+            self.filename = os.fspath(filename)  # handles Path → str
         else:
-            self.filename = str(filename)
+            # Leave non-path objects (decoders, structures, etc.) alone
+            self.filename = filename
         self.convert_units = convert_units
 
         ts_kwargs = {}
@@ -1678,7 +1682,18 @@ class SingleFrameReaderBase(ProtoReader):
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
-        self.filename = filename
+        if isinstance(filename, NamedStream):
+            self.filename = filename
+
+        # Real filename types we’re okay with normalizing
+        elif isinstance(filename, (str, bytes, os.PathLike)):
+            # os.fspath handles Path objects correctly
+            self.filename = os.fspath(filename)
+
+        # Everything else (e.g. mmtf.MMTFDecoder, ParmEd structures, etc.)
+        # must be kept as-is so parsers can detect them by type.
+        else:
+            self.filename = filename
         self.convert_units = convert_units
 
         self.n_frames = 1

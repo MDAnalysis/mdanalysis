@@ -110,6 +110,8 @@ Enhancements
    (Issue #4679, PR #4745)
 
 Changes
+ * Addition of Pathlib object handling for Universe, SingleFrameReaderBase
+   and Toplogy parsers (Issue #3937, PR#4535)
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 

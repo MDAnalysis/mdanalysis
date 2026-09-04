@@ -6,6 +6,8 @@ import pickle
 import sys
 from types import ModuleType
 from weakref import ref
+from pathlib import Path
+from MDAnalysis.topology.MinimalParser import MinimalParser
 
 import pytest
 import numpy as np
@@ -326,6 +328,25 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # Here we can only be sure about the numbers upto the decimal point due
         # to limited floating point precision.
         assert_allclose(vol, ref.volume, rtol=0, atol=1.5e0)
+
+    def test_pathlib_input(self, ref, reader):
+        """
+        IMDReader cannot deduce n_atoms from the IMD URL, so we bypass
+        Universe(...) and directly test MinimalParser with both
+        str and pathlib.Path inputs, passing n_atoms explicitly.
+        """
+        imd_uri = reader.filename
+        path = Path(imd_uri)
+
+        with MinimalParser(imd_uri) as p:
+            top_str = p.parse(n_atoms=ref.n_atoms)
+
+        with MinimalParser(path) as p:
+            top_path = p.parse(n_atoms=ref.n_atoms)
+
+        assert top_str.n_atoms == ref.n_atoms
+        assert top_path.n_atoms == ref.n_atoms
+        assert top_str.n_atoms == top_path.n_atoms
 
     def test_reload_auxiliaries_from_description(self, ref, reader):
         pytest.skip("Cannot create two IMDReaders on the same stream")
