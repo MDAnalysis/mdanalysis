@@ -151,6 +151,10 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * LAMMPS DumpReader now converts forces to MDAnalysis base units by default
+   and supports overriding native units via `timeunit`, `lengthunit`, and
+   `energyunit` kwargs to accommodate different LAMMPS unit styles such as
+   "real" and "metal" (Issue #5115, PR #5117)
  * Add conversion factor for speed unit A/ns and additional representations (Å/fs, A/µs,
    Å/μs, Å/ms) (PR #5053)
  * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold
