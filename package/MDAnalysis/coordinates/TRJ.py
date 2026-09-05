@@ -423,11 +423,6 @@ class NCDFReader(base.ReaderBase):
        the first two frames of the trajectory.
        :meth:`Writer` now also sets `convert_units`, `velocities`, `forces` and
        `scale_factor` information for the :class:`NCDFWriter`.
-    .. versionchanged:: 2.11.0
-       The pages of the memory map are released after every frame, so that
-       memory use no longer grows towards the size of the trajectory file
-       while it is read. Requires ``MADV_DONTNEED``, which is not available
-       on Windows.
 
     """
 
