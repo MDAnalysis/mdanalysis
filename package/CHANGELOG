@@ -18,11 +18,13 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, erikfransson
+         raulloiscuns, Aryaman-Chaudhri, sici17, erikfransson
 
  * 2.11.0
 
 Fixes
+ * Mass (u) has been added to MDAnalysis base units and clarified that physical
+   constants use CODATA 2010 values (Issue #3944, PR #5439)
  * The NCDF reader now releases the pages of the memory map once a frame has
    been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
    (the default for a file name) no longer grows the resident memory of the
@@ -83,6 +85,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added ASV benchmark for XYZ trajectory reading (PR #5441)
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and
    add the angles to the topology (Issue #5361, PR #5372)
