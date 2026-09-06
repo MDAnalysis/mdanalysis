@@ -473,9 +473,9 @@ class Topology(object):
         ----------
         n_atoms : int
             number of atoms in topology. Must be larger then 1 at each level
-        n_residues : int
+        n_res : int
             number of residues in topology. Must be larger then 1 at each level
-        n_segments : int
+        n_seg : int
             number of segments in topology. Must be larger then 1 at each level
         attrs : TopologyAttr objects
             components of the topology to be included

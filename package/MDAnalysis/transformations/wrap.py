@@ -138,7 +138,7 @@ class unwrap(TransformationBase):
 
     Parameters
     ----------
-    atomgroup : AtomGroup
+    ag : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.
 

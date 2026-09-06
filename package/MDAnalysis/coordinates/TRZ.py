@@ -540,7 +540,7 @@ class TRZWriter(base.WriterBase):
 
         Parameters
         ----------
-        ag : AtomGroup or Universe
+        obj : AtomGroup or Universe
 
 
         .. versionchanged:: 1.0.0

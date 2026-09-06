@@ -871,11 +871,11 @@ def pseudo_dihe_baseflip(
         resid below the base that flips
     i : int
         resid of the base that flips
-    segid1 : str (optional)
+    seg1 : str (optional)
         segid of resid base pairing with `bp2`
-    segid2 : str (optional)
+    seg2 : str (optional)
         segid, same as that of segid of flipping resid `i`
-    segid3 : str (optional)
+    seg3 : str (optional)
         segid of resid `i` that flips
 
     Returns

@@ -575,7 +575,7 @@ class TOPParser(TopologyReaderBase):
         ----------
         data : list of int
             Input list of the parm7 bond/angle section, zero-indexed
-        num_per_record : int
+        chunksize : int
             The number of entries for each record in the input list
 
         Returns
@@ -591,7 +591,7 @@ class TOPParser(TopologyReaderBase):
         Where 1:n represent the ids of the n atoms involved in the bond/angle
         and the internal index links to a given set of FF parameters.
         Therefore, to extract the required information, we split out the list
-        into chunks of size num_per_record, and only extract the atom ids.
+        into chunks of size chunksize, and only extract the atom ids.
         """
         vals = [
             tuple(data[x : x + chunksize - 1])

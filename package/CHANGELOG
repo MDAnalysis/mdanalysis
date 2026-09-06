@@ -38,7 +38,11 @@ Fixes
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
    attribute; cmaps are now combined like the other connection attributes
    (bonds, angles, dihedrals, impropers) (Issue #3672).
- * doc string fixes in coordinates.memory, guesser, and lib.util (PR #5412)
+ * doc string fixes: documented parameter names now match the signatures
+   in analysis.bat, analysis.nuclinfo, coordinates.TRZ, coordinates.base,
+   coordinates.chemfiles, coordinates.memory, core.topology,
+   core.topologyattrs, guesser, lib.NeighborSearch, lib.util,
+   topology.TOPParser, and transformations.wrap (PR #5412)
  * The `principal_axes` method in :class:`Masses` now uses
    `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
    stability. This may lead to slightly different results from previous

@@ -1302,8 +1302,8 @@ class Atomnames(AtomStringAttr):
 
         Parameters
         ----------
-        c_name: str (optional)
-            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
         ca_name: str (optional)
             name for the alpha-carbon atom
         cb_name: str (optional)
@@ -1344,8 +1344,8 @@ class Atomnames(AtomStringAttr):
 
         Parameters
         ----------
-        c_name: str (optional)
-            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
         ca_name: str (optional)
             name for the alpha-carbon atom
         cb_name: str (optional)

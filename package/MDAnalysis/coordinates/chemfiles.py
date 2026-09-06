@@ -478,7 +478,7 @@ class ChemfilesPicklable(chemfiles.Trajectory):
 
     Parameters
     ----------
-    filename : str
+    path : str
         a filename given a text or byte string.
     mode : 'r' , optional
         only 'r' can be used for pickling.

@@ -181,7 +181,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
 
     Parameters
     ----------
-    ag_o : list of Atoms
+    atoms : list of Atoms
         List to sort
     reverse : bool
         Atoms will be in descending order

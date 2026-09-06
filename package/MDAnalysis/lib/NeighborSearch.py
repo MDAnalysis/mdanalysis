@@ -51,7 +51,7 @@ class AtomNeighborSearch(object):
 
         Parameters
         ----------
-        atom_list : AtomGroup
+        atom_group : AtomGroup
           list of atoms
         box : array-like or ``None``, optional, default ``None``
           Simulation cell dimensions in the form of
