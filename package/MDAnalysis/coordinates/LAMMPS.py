@@ -606,7 +606,9 @@ class DumpReader(base.ReaderBase):
         to their real values.
     unwrap_images : bool (optional) default=False
         If `True` and the dump file contains image flags, the coordinates
-        will be unwrapped. See `read_data
+        will be unwrapped after converting any scaled convention to real
+        space, using the triclinic box vectors. Already-unwrapped
+        conventions (xu, xsu) are left unchanged. See `read_data
         <https://docs.lammps.org/read_data.html>`__  in the lammps
         documentation for more information.
     **kwargs
@@ -614,6 +616,11 @@ class DumpReader(base.ReaderBase):
        :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
 
+    .. versionchanged:: 2.11.0
+       Image flags are applied after converting scaled coordinates to
+       real space and use triclinic box vectors. Already-unwrapped
+       conventions are not translated again.
+       (Issue `#5138 <https://github.com/MDAnalysis/mdanalysis/issues/5138>`__)
     .. versionchanged:: 2.8.0
        Reading of arbitrary, additional columns is now supported.
        (Issue `#3504 <https://github.com/MDAnalysis/mdanalysis/issues/3504>`__)
@@ -835,8 +842,9 @@ class DumpReader(base.ReaderBase):
             )
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
+        image_flags = None
         if self._unwrap:
-            coord_cols.extend(image_cols)
+            image_flags = np.zeros((self.n_atoms, 3), dtype=np.float32)
 
         ids = "id" in attr_to_col_ix
 
@@ -869,13 +877,9 @@ class DumpReader(base.ReaderBase):
                 [fields[dim] for dim in coord_cols], dtype=np.float32
             )
 
+            ts.positions[i] = coords[:3]
             if self._unwrap:
-                images = coords[3:]
-                coords = coords[:3]
-                coords += images * ts.dimensions[:3]
-            else:
-                coords = coords[:3]
-            ts.positions[i] = coords
+                image_flags[i] = [fields[dim] for dim in image_cols]
 
             if self._has_vels:
                 ts.velocities[i] = [fields[dim] for dim in vel_cols]
@@ -890,6 +894,8 @@ class DumpReader(base.ReaderBase):
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
+        if self._unwrap:
+            image_flags = image_flags[order]
         if self._has_vels:
             ts.velocities = ts.velocities[order]
         if self._has_forces:
@@ -906,5 +912,12 @@ class DumpReader(base.ReaderBase):
             )
         # Transform to origin after transformation of scaled variables
         ts.positions -= np.array([xlo, ylo, zlo])[None, :]
+        if self._unwrap and self.lammps_coordinate_convention not in (
+            "unwrapped",
+            "scaled_unwrapped",
+        ):
+            ts.positions += image_flags.dot(
+                mdamath.triclinic_vectors(ts.dimensions)
+            )
 
         return ts

@@ -203,6 +203,65 @@ def test_unwrap_no_image():
             LAMMPSDUMP_allcoords, format="LAMMPSDUMP", unwrap_images=True
         )
 
+def test_unwrap_scaled_image_flags_after_convention(tmp_path):
+    """Image flags apply after scaled-to-real conversion (Issue #5138)."""
+    xlo = -20.355600153744795
+    xhi = 20.355600153744795
+    length = xhi - xlo
+    dump = tmp_path / "scaled_images.dump"
+    dump.write_text(
+        "ITEM: TIMESTEP\n0\nITEM: NUMBER OF ATOMS\n2\n"
+        "ITEM: BOX BOUNDS pp pp pp\n"
+        f"{xlo} {xhi}\n{xlo} {xhi}\n{xlo} {xhi}\n"
+        "ITEM: ATOMS id xs ys zs ix iy iz\n"
+        "1 0.615361 0.916658 0.977605 0 0 0\n"
+        "2 0.626438 0.883425 0.00280166 0 0 1\n"
+    )
+    universe = mda.Universe(str(dump), format="LAMMPSDUMP", unwrap_images=True)
+    expected = (
+        np.array(
+            [[0.615361, 0.916658, 0.977605], [0.626438, 0.883425, 1.00280166]]
+        )
+        * length
+    )
+    assert_allclose(universe.atoms.positions, expected, atol=1e-5)
+
+    xu = tmp_path / "already_unwrapped.dump"
+    xu.write_text(
+        "ITEM: TIMESTEP\n0\nITEM: NUMBER OF ATOMS\n1\n"
+        "ITEM: BOX BOUNDS pp pp pp\n0.0 10.0\n0.0 10.0\n0.0 10.0\n"
+        "ITEM: ATOMS id xu yu zu ix iy iz\n"
+        "1 25.0 0.0 0.0 2 0 0\n"
+    )
+    flagged = mda.Universe(
+        str(xu),
+        format="LAMMPSDUMP",
+        unwrap_images=True,
+        lammps_coordinate_convention="unwrapped",
+    )
+    plain = mda.Universe(
+        str(xu),
+        format="LAMMPSDUMP",
+        unwrap_images=False,
+        lammps_coordinate_convention="unwrapped",
+    )
+    assert_allclose(flagged.atoms.positions, plain.atoms.positions, atol=1e-5)
+
+    triclinic = tmp_path / "triclinic.dump"
+    triclinic.write_text(
+        "ITEM: TIMESTEP\n0\nITEM: NUMBER OF ATOMS\n1\n"
+        "ITEM: BOX BOUNDS xy xz yz pp pp pp\n"
+        "0.0 13.0 3.0\n0.0 10.0 1.5\n0.0 10.0 0.5\n"
+        "ITEM: ATOMS id x y z ix iy iz\n"
+        "1 1.0 2.0 3.0 1 1 0\n"
+    )
+    tilted = mda.Universe(
+        str(triclinic), format="LAMMPSDUMP", unwrap_images=True
+    )
+    assert_allclose(
+        tilted.atoms.positions[0], np.array([12.5, 11.5, 3.0]), atol=1e-5
+    )
+
 
 class TestLAMMPSDATAWriter(object):
     def test_Writer_dimensions(self, LAMMPSDATAWriter):
