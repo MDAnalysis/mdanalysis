@@ -733,7 +733,7 @@ class RMSD(AnalysisBase):
             if self._groupselections_atoms:
                 self._groupselections_ref_coords64 = [
                     (
-                        self.reference.select_atoms(
+                        self.reference.universe.select_atoms(
                             *s["reference"]
                         ).positions.astype(np.float64)
                     )

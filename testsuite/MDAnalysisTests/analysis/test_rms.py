@@ -194,6 +194,10 @@ class TestRMSD(object):
     def correct_values_backbone_group(self):
         return [[0, 1, 0, 0, 0], [49, 50, 4.6997, 1.9154, 2.7139]]
 
+    @pytest.fixture()
+    def correct_values_alphacarbons_group(self):
+        return [[0, 1, 0, 0], [49, 50, 1.6521, 1.6371]]
+
     def test_rmsd(self, universe, correct_values, client_RMSD):
         # client_RMSD is defined in testsuite/analysis/conftest.py
         # among with other testing fixtures. During testing, it will
@@ -508,6 +512,27 @@ class TestRMSD(object):
                 universe,
                 select=42,
             )
+
+    def test_group_selections_outside_atomgroup(
+        self, universe, correct_values_alphacarbons_group, client_RMSD
+    ):
+        ca = universe.select_atoms("name CA")
+        CORE = "backbone and (resid 1-29 or resid 60-121 or resid 160-214)"
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            ca,
+            ca,
+            select=CORE,
+            groupselections=[CORE],
+        )
+        RMSD.run(step=49, **client_RMSD)
+
+        assert_almost_equal(
+            RMSD.results.rmsd,
+            correct_values_alphacarbons_group,
+            4,
+            err_msg="error: rmsd profile should match"
+            "between true values and calculated values",
+        )
 
 
 class TestRMSF(object):
