@@ -9,16 +9,11 @@ version: 2
 sphinx:
   configuration: package/doc/sphinx/source/conf.py
 
-# Build documentation with MkDocs
-#mkdocs:
-#  configuration: mkdocs.yml
-
 # Set the version of Python and other tools you might need
 build:
   os: ubuntu-lts-latest
   tools:
-    # python: "miniconda3-4.7"
-    python: "mambaforge-4.10"
+    python: "miniforge3-latest"
 
 # Optionally set the version of Python and requirements required to build your docs
 python:

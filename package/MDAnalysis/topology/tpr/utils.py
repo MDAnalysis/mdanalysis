@@ -79,6 +79,7 @@ class TPXUnpacker(xdrlib.Unpacker):
     """
     Extend the standard XDR unpacker for the specificity of TPX files.
     """
+
     def __init__(self, data):
         super().__init__(data)
         self._buf = self.get_buffer()
@@ -103,10 +104,10 @@ class TPXUnpacker(xdrlib.Unpacker):
         return struct.unpack(struct_template, content)[0]
 
     def unpack_int64(self):
-        return self._unpack_value(8, '>q')
+        return self._unpack_value(8, ">q")
 
     def unpack_uint64(self):
-        return self._unpack_value(8, '>Q')
+        return self._unpack_value(8, ">Q")
 
     def unpack_ushort(self):
         return self.unpack_uint()
@@ -114,7 +115,7 @@ class TPXUnpacker(xdrlib.Unpacker):
     def unpack_uchar(self):
         # TPX files prior to gromacs 2020 (tpx version < 119) use unsigned ints
         # (4 bytes) instead of unsigned chars.
-        return self._unpack_value(4, '>I')
+        return self._unpack_value(4, ">I")
 
     def do_string(self):
         """
@@ -138,11 +139,12 @@ class TPXUnpacker2020(TPXUnpacker):
     gromacs 2020, changes le meaning of some types in the file body (the header
     keep using the previous implementation of the serializer).
     """
+
     @classmethod
     def from_unpacker(cls, unpacker):
         new_unpacker = cls(unpacker.get_buffer())
         new_unpacker._pos = unpacker.get_position()
-        if hasattr(unpacker, 'unpack_real'):
+        if hasattr(unpacker, "unpack_real"):
             if unpacker.unpack_real == unpacker.unpack_float:
                 new_unpacker.unpack_real = new_unpacker.unpack_float
             elif unpacker.unpack_real == unpacker.unpack_double:
@@ -153,7 +155,7 @@ class TPXUnpacker2020(TPXUnpacker):
 
     def unpack_fstring(self, n):
         if n < 0:
-            raise ValueError('Size of fstring cannot be negative.')
+            raise ValueError("Size of fstring cannot be negative.")
         start_position = self._pos
         end_position = self._pos = start_position + n
         if end_position > len(self._buf):
@@ -164,12 +166,12 @@ class TPXUnpacker2020(TPXUnpacker):
     def unpack_ushort(self):
         # The InMemorySerializer implements ushort according to the XDR standard
         # on the contrary to the IO serializer.
-        return self._unpack_value(2, '>H')
+        return self._unpack_value(2, ">H")
 
     def unpack_uchar(self):
         # The InMemorySerializer implements uchar according to the XDR standard
         # on the contrary to the IO serializer.
-        return self._unpack_value(1, '>B')
+        return self._unpack_value(1, ">B")
 
     def do_string(self):
         """
@@ -195,7 +197,9 @@ def do_rvec(data):
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(setting.DIM, data.unpack_real) for i in range(n)]
+    return [
+        data.unpack_farray(setting.DIM, data.unpack_real) for i in range(n)
+    ]
 
 
 def ndo_ivec(data, n):
@@ -221,12 +225,11 @@ def define_unpack_real(prec, data):
 
 
 def read_tpxheader(data):
-    """this function is now compatible with do_tpxheader in tpxio.cpp
-    """
+    """this function is now compatible with do_tpxheader in tpxio.cpp"""
     # Last compatibility check with gromacs-2016
     ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
-    if not ver_str.startswith(b'VERSION'):
-        raise ValueError('Input does not look like a TPR file.')
+    if not ver_str.startswith(b"VERSION"):
+        raise ValueError("Input does not look like a TPR file.")
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
@@ -239,17 +242,23 @@ def read_tpxheader(data):
         data.unpack_int()  # the value is 8, but haven't found the
         file_tag = data.do_string()
 
-    fileGeneration = data.unpack_int() if fileVersion >= 26 else 0  # generation of tpx file, e.g. 17
+    fileGeneration = (
+        data.unpack_int() if fileVersion >= 26 else 0
+    )  # generation of tpx file, e.g. 17
 
     # Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag
     # file_tag is used for comparing with tpx_tag. Only tpr files with a
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    file_tag = data.do_string() if fileVersion >= 81 else setting.TPX_TAG_RELEASE
+    file_tag = (
+        data.do_string() if fileVersion >= 81 else setting.TPX_TAG_RELEASE
+    )
 
     natoms = data.unpack_int()  # total number of atoms
-    ngtc = data.unpack_int() if fileVersion >= 28 else 0  # number of groups for T-coupling
+    ngtc = (
+        data.unpack_int() if fileVersion >= 28 else 0
+    )  # number of groups for T-coupling
 
     if fileVersion < 62:
         # not sure what these two are for.
@@ -272,9 +281,24 @@ def read_tpxheader(data):
     if fileVersion >= setting.tpxv_AddSizeField and fileGeneration >= 27:
         sizeOfTprBody = data.unpack_int64()
 
-    th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
-                       file_tag, natoms, ngtc, fep_state, lamb,
-                       bIr, bTop, bX, bV, bF, bBox, sizeOfTprBody)
+    th = obj.TpxHeader(
+        ver_str,
+        precision,
+        fileVersion,
+        fileGeneration,
+        file_tag,
+        natoms,
+        ngtc,
+        fep_state,
+        lamb,
+        bIr,
+        bTop,
+        bX,
+        bV,
+        bF,
+        bBox,
+        sizeOfTprBody,
+    )
     return th
 
 
@@ -328,9 +352,11 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
+        molblock = mtop.moltypes[mb.molb_type].name.decode("utf-8")
         segid = f"seg_{i}_{molblock}"
-        chainID = molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
+        chainID = (
+            molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
+        )
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
@@ -372,17 +398,11 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
         resids += 1
 
     resnames = np.array(resnames, dtype=object)
-    (residx, new_resids,
-     (new_resnames,
-      new_moltypes,
-      new_molnums,
-      perres_segids
-      )
-     ) = squash_by(resids,
-                   resnames,
-                   moltypes,
-                   molnums,
-                   segids)
+    (
+        residx,
+        new_resids,
+        (new_resnames, new_moltypes, new_molnums, perres_segids),
+    ) = squash_by(resids, resnames, moltypes, molnums, segids)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
     residue_moltypes = Moltypes(new_moltypes)
@@ -414,10 +434,12 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
     )
     top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
     top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
-    top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
-                                    if dihedral]))
-    top.add_TopologyAttr(Impropers([improper for improper in impropers
-                                    if improper]))
+    top.add_TopologyAttr(
+        Dihedrals([dihedral for dihedral in dihedrals if dihedral])
+    )
+    top.add_TopologyAttr(
+        Impropers([improper for improper in impropers if improper])
+    )
 
     if any(elements):
         elements = Elements(np.array(elements, dtype=object))
@@ -467,7 +489,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
         if fver > 58:
             ngrid = data.unpack_int()
             grid_spacing = data.unpack_int()
-            n_elements = grid_spacing ** 2
+            n_elements = grid_spacing**2
             for i in range(ngrid):
                 for j in range(n_elements):
                     ndo_real(data, 4)
@@ -547,9 +569,12 @@ def do_iparams(data, functypes, fver):
     # Not all elif cases in this function has been used and tested
     for k, i in enumerate(functypes):
         if i in [
-            setting.F_ANGLES, setting.F_G96ANGLES,
-            setting.F_BONDS, setting.F_G96BONDS,
-            setting.F_HARMONIC, setting.F_IDIHS
+            setting.F_ANGLES,
+            setting.F_G96ANGLES,
+            setting.F_BONDS,
+            setting.F_G96BONDS,
+            setting.F_HARMONIC,
+            setting.F_IDIHS,
         ]:
             do_harm(data)
         elif i in [setting.F_RESTRANGLES]:
@@ -577,8 +602,10 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # restraint.up2B
             data.unpack_real()  # restraint.kB
         elif i in [
-            setting.F_TABBONDS, setting.F_TABBONDSNC,
-            setting.F_TABANGLES, setting.F_TABDIHS,
+            setting.F_TABBONDS,
+            setting.F_TABBONDSNC,
+            setting.F_TABANGLES,
+            setting.F_TABDIHS,
         ]:
             data.unpack_real()  # tab.kA
             data.unpack_int()  # tab.table
@@ -604,7 +631,7 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # u_b.kUBB
         elif i in [setting.F_QUARTIC_ANGLES]:
             data.unpack_real()  # qangle.theta
-            ndo_real(data, 5)   # qangle.c
+            ndo_real(data, 5)  # qangle.c
         elif i in [setting.F_BHAM]:
             data.unpack_real()  # bham.a
             data.unpack_real()  # bham.b
@@ -664,8 +691,10 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # ljcnb.c12
 
         elif i in [
-            setting.F_PIDIHS, setting.F_ANGRES,
-            setting.F_ANGRESZ, setting.F_PDIHS,
+            setting.F_PIDIHS,
+            setting.F_ANGRES,
+            setting.F_ANGRESZ,
+            setting.F_PDIHS,
         ]:
             data.unpack_real()  # pdihs_phiA
             data.unpack_real()  # pdihs_cpA
@@ -714,8 +743,8 @@ def do_iparams(data, functypes, fver):
             do_rvec(data)  # posres.fcB
 
         elif i in [setting.F_FBPOSRES]:
-            data.unpack_int()   # fbposres.geom
-            do_rvec(data)       # fbposres.pos0
+            data.unpack_int()  # fbposres.geom
+            do_rvec(data)  # fbposres.pos0
             data.unpack_real()  # fbposres.r
             data.unpack_real()  # fbposres.k
 
@@ -751,7 +780,11 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # vsite.a
             data.unpack_real()  # vsite.b
 
-        elif i in [setting.F_VSITE3OUT, setting.F_VSITE4FD, setting.F_VSITE4FDN]:
+        elif i in [
+            setting.F_VSITE3OUT,
+            setting.F_VSITE4FD,
+            setting.F_VSITE4FDN,
+        ]:
             data.unpack_real()  # vsite.a
             data.unpack_real()  # vsite.b
             data.unpack_real()  # vsite.c
@@ -794,16 +827,18 @@ def do_moltype(data, symtab, fver):
     #### start: MDAnalysis specific
     atomkinds = []
     for k, a in enumerate(atoms_obj.atoms):
-        atomkinds.append(obj.AtomKind(
-            k,
-            atoms_obj.atomnames[k],
-            atoms_obj.type[k],
-            a.resind,
-            atoms_obj.resnames[a.resind],
-            a.m,
-            a.q,
-            a.atomnumber,
-        ))
+        atomkinds.append(
+            obj.AtomKind(
+                k,
+                atoms_obj.atomnames[k],
+                atoms_obj.type[k],
+                a.resind,
+                atoms_obj.resnames[a.resind],
+                a.m,
+                a.q,
+                a.atomnumber,
+            )
+        )
     #### end: MDAnalysis specific
 
     # key info: about bonds, angles, dih, improp dih.
@@ -819,21 +854,45 @@ def do_moltype(data, symtab, fver):
 
             # the following if..elif..else statement needs to be updated as new
             # type of interactions become interested
-            if ik_obj.name in ['BONDS', 'G96BONDS', 'MORSE', 'CUBICBONDS',
-                               'CONNBONDS', 'HARMONIC', 'FENEBONDS',
-                               'RESTRAINTPOT', 'CONSTR', 'CONSTRNC',
-                               'TABBONDS', 'TABBONDSNC']:
+            if ik_obj.name in [
+                "BONDS",
+                "G96BONDS",
+                "MORSE",
+                "CUBICBONDS",
+                "CONNBONDS",
+                "HARMONIC",
+                "FENEBONDS",
+                "RESTRAINTPOT",
+                "CONSTR",
+                "CONSTRNC",
+                "TABBONDS",
+                "TABBONDSNC",
+            ]:
                 bonds += list(ik_obj.process(ias))
-            elif ik_obj.name in ['ANGLES', 'G96ANGLES', 'CROSS_BOND_BOND',
-                                 'CROSS_BOND_ANGLE', 'UREY_BRADLEY', 'QANGLES',
-                                 'RESTRANGLES', 'TABANGLES', 'LINEAR_ANGLES']:
+            elif ik_obj.name in [
+                "ANGLES",
+                "G96ANGLES",
+                "CROSS_BOND_BOND",
+                "CROSS_BOND_ANGLE",
+                "UREY_BRADLEY",
+                "QANGLES",
+                "RESTRANGLES",
+                "TABANGLES",
+                "LINEAR_ANGLES",
+            ]:
                 angles += list(ik_obj.process(ias))
-            elif ik_obj.name in ['PDIHS', 'RBDIHS', 'RESTRDIHS', 'CBTDIHS',
-                                 'FOURDIHS', 'TABDIHS']:
+            elif ik_obj.name in [
+                "PDIHS",
+                "RBDIHS",
+                "RESTRDIHS",
+                "CBTDIHS",
+                "FOURDIHS",
+                "TABDIHS",
+            ]:
                 dihs += list(ik_obj.process(ias))
-            elif ik_obj.name in ['IDIHS', 'PIDIHS']:
+            elif ik_obj.name in ["IDIHS", "PIDIHS"]:
                 impr += list(ik_obj.process(ias))
-            elif ik_obj.name == 'SETTLE':
+            elif ik_obj.name == "SETTLE":
                 # SETTLE interactions are optimized triangular constraints for
                 # water molecules. They should be counted as a pair of bonds
                 # between the oxygen and the hydrogens. In older versions of
@@ -922,7 +981,9 @@ def do_ilists(data, fver):
     nr = []  # number of ilist
     iatoms = []  # atoms involved in a particular interaction type
     pos = []
-    for j in range(setting.F_NRE):  # total number of energies (i.e. interaction types)
+    for j in range(
+        setting.F_NRE
+    ):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in setting.ftupd:
             if fver < k[0] and j == k[1]:
@@ -952,12 +1013,15 @@ def do_molblock(data):
     molb_nposres_xA = data.unpack_int()
     if molb_nposres_xA > 0:
         ndo_rvec(data, molb_nposres_xA)
-    molb_nposres_xB = data.unpack_int()  # The number of posres coords for top B
+    molb_nposres_xB = (
+        data.unpack_int()
+    )  # The number of posres coords for top B
     if molb_nposres_xB > 0:
         ndo_rvec(data, molb_nposres_xB)
 
-    return obj.Molblock(molb_type, molb_nmol, molb_natoms_mol,
-                        molb_nposres_xA, molb_nposres_xB)
+    return obj.Molblock(
+        molb_type, molb_nmol, molb_natoms_mol, molb_nposres_xA, molb_nposres_xB
+    )
 
 
 def do_block(data):
@@ -969,7 +1033,9 @@ def do_block(data):
 
 def do_blocka(data):
     block_nr = data.unpack_int()  # No. of atoms with excls
-    block_nra = data.unpack_int()  # total times fo appearance of atoms for excls
+    block_nra = (
+        data.unpack_int()
+    )  # total times fo appearance of atoms for excls
     ndo_int(data, block_nr + 1)
     ndo_int(data, block_nra)
     return block_nr, block_nra
