@@ -1,7 +1,9 @@
 [run]
 branch = True
 source = MDAnalysis
-plugins = Cython.Coverage
+# Cython.Coverage plugin disabled for Cython >= 3.1.0 compatibility (Issue #5057).
+# Cython 3.1+ has worker crash bugs with linetrace which is required by the
+# Cython.Coverage plugin, so we disable the plugin to prevent test crashes.
 omit =
     */MDAnalysis/tests/*
     */legacy/*

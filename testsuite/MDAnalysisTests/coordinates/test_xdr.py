@@ -201,6 +201,15 @@ class _GromacsReader(object):
         assert_almost_equal(
             universe.trajectory.dt, 100.0, 4, err_msg="wrong timestep dt"
         )
+        assert_almost_equal(
+            universe.trajectory.ts.dt, 100.0, 4, err_msg="wrong ts.dt"
+        )
+        assert_almost_equal(
+            universe.trajectory._ts_kwargs["dt"],
+            100.0,
+            4,
+            err_msg="wrong _ts_kwargs['dt']",
+        )
 
     def test_dt_when_dt_set(self, universe_with_dt_set):
         assert_almost_equal(
@@ -208,6 +217,18 @@ class _GromacsReader(object):
             2500.0,
             4,
             err_msg="wrong timestep dt when dt set",
+        )
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.ts.dt,
+            2500.0,
+            4,
+            err_msg="wrong ts.dt when dt set",
+        )
+        assert_almost_equal(
+            universe_with_dt_set.trajectory._ts_kwargs["dt"],
+            2500.0,
+            4,
+            err_msg="wrong _ts_kwargs['dt'] when dt set",
         )
 
     def test_totaltime(self, universe):

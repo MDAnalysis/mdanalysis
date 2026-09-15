@@ -83,7 +83,11 @@ try:
             )
         )
         cython_found = False
-    cython_linetrace = bool(os.environ.get("CYTHON_TRACE_NOGIL", False))
+    if Version(Cython.__version__) >= Version("3.1.0"):
+        # Cython 3.1+ has worker crash bugs with linetrace (Issue #5057)
+        cython_linetrace = False
+    else:
+        cython_linetrace = bool(os.environ.get("CYTHON_TRACE_NOGIL", False))
 except ImportError:
     cython_found = False
     if not is_release:
@@ -353,8 +357,15 @@ def extensions(config):
         mathlib = ["m"]
 
     if cython_linetrace:
-        extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
-        cpp_extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+        extra_compile_args.extend(
+            ["-DCYTHON_TRACE_NOGIL=1", "-DCYTHON_TRACE=1"]
+        )
+        cpp_extra_compile_args.extend(
+            ["-DCYTHON_TRACE_NOGIL=1", "-DCYTHON_TRACE=1"]
+        )
+        encore_compile_args.extend(
+            ["-DCYTHON_TRACE_NOGIL=1", "-DCYTHON_TRACE=1"]
+        )
 
     libdcd = MDAExtension(
         "MDAnalysis.lib.formats.libdcd",

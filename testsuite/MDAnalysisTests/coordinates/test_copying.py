@@ -210,10 +210,8 @@ def test_reader_copied_extra_attributes(original_and_copy_extra_args):
     assert original.ts.data["time_offset"] == 10
     assert copy.ts.data["time_offset"] == 10
 
-    # Issue #3689 XTC and XDR overwrite `dt`
-    if original.format not in ("XTC", "TRR"):
-        assert original.ts.data["dt"] == 2
-        assert copy.ts.data["dt"] == 2
+    assert original.ts.data["dt"] == 2
+    assert copy.ts.data["dt"] == 2
 
     assert copy._kwargs["foo"] == "bar"
 
