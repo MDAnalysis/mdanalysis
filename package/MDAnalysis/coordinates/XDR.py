@@ -206,16 +206,15 @@ class XDRBaseReader(base.ReaderBase):
         else:
             self._read_offsets(store=True)
         frame = self._xdr.read()
-        try:
-            xdr_frame = self._xdr.read()
-            if dt is None:
+        if dt is None:
+            try:
+                xdr_frame = self._xdr.read()
                 dt = xdr_frame.time - frame.time
-            else:
-                self._ts_kwargs["dt"] = dt
-            self._xdr.seek(1)
-        except StopIteration:
-            dt = 0
+                self._xdr.seek(1)
+            except StopIteration:
+                dt = 0
 
+        self._ts_kwargs["dt"] = dt
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._frame = 0
         self._frame_to_ts(frame, self.ts)
