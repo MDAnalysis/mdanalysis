@@ -18,11 +18,14 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17
+         raulloiscuns, Aryaman-Chaudhri, sici17, Specter842
 
  * 2.11.0
 
 Fixes
+ * `check_box()` now accepts a `dtype` keyword and passes it through to
+   `triclinic_vectors()`, instead of always downcasting to float32
+   (Issue #3500, PR #5471)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
    constants use CODATA 2010 values (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized

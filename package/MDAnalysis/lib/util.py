@@ -2604,7 +2604,7 @@ def dedent_docstring(text):
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
 
 
-def check_box(box):
+def check_box(box, dtype=np.float32):
     """Take a box input and deduce what type of system it represents based on
     the shape of the array and whether all angles are 90 degrees.
 
@@ -2615,13 +2615,18 @@ def check_box(box):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    dtype : numpy.dtype, optional
+        The dtype of the returned `checked_box`. Defaults to
+        ``numpy.float32`` since that is what the low-level functions in
+        :mod:`~MDAnalysis.lib.c_distances` expect; pass a different dtype
+        (e.g. ``numpy.float64``) if higher precision is needed elsewhere.
 
     Returns
     -------
     boxtype : {``'ortho'``, ``'tri_vecs'``}
         String indicating the box type (orthogonal or triclinic).
     checked_box : numpy.ndarray
-        Array of dtype ``numpy.float32`` containing box information:
+        Array of dtype `dtype` containing box information:
           * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
             containing the x-, y-, and z-dimensions of the orthogonal box.
           * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
@@ -2633,7 +2638,7 @@ def check_box(box):
     ------
     ValueError
         If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
-        or contains data that is not convertible to ``numpy.float32``.
+        or contains data that is not convertible to `dtype`.
 
     See Also
     --------
@@ -2647,12 +2652,15 @@ def check_box(box):
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+    .. versionchanged:: 2.11.0
+       Added the `dtype` keyword to allow the returned box to be given in a
+       precision other than ``numpy.float32``.
     """
     if box is None:
         raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
 
-    box = np.asarray(box, dtype=np.float32, order="C")
+    box = np.asarray(box, dtype=dtype, order="C")
     if box.shape != (6,):
         raise ValueError(
             "Invalid box information. Must be of the form "
@@ -2660,7 +2668,7 @@ def check_box(box):
         )
     if np.all(box[3:] == 90.0):
         return "ortho", box[:3]
-    return "tri_vecs", triclinic_vectors(box)
+    return "tri_vecs", triclinic_vectors(box, dtype=dtype)
 
 
 def store_init_arguments(func):

@@ -1956,6 +1956,22 @@ class TestCheckBox(object):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
 
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    def test_check_box_ortho_dtype(self, dtype):
+        box = [1, 1, 1, 90, 90, 90]
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
+        assert boxtype == "ortho"
+        assert_allclose(checked_box, self.ref_ortho)
+        assert checked_box.dtype == dtype
+
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    def test_check_box_tri_vecs_dtype(self, dtype):
+        box = [1, 1, 2, 45, 90, 90]
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
+        assert boxtype == "tri_vecs"
+        assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
+        assert checked_box.dtype == dtype
+
 
 class StoredClass:
     """
