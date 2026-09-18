@@ -20,15 +20,55 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sqlite3
+
 import MDAnalysis as mda
 import numpy as np
 import pytest
 
-from numpy.testing import assert_equal
+from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.datafiles import DMS
+
+
+def _make_dms_with_box(path, box_vectors):
+    """Create a minimal DMS SQLite file with one atom and real box vectors.
+
+    Parameters
+    ----------
+    path : str or Path
+        Destination file path.
+    box_vectors : list of list
+        Three row vectors [[x1,y1,z1],[x2,y2,z2],[x3,y3,z3]] for global_cell.
+    """
+    with sqlite3.connect(str(path)) as con:
+        cur = con.cursor()
+        cur.execute(
+            "CREATE TABLE particle ("
+            "id integer primary key, anum integer, "
+            "x float, y float, z float, "
+            "vx float, vy float, vz float, "
+            "mass float, charge float, "
+            "name text, resname text, resid integer, chain text, segid text)"
+        )
+        cur.execute(
+            "INSERT INTO particle VALUES (0, 7, 1.0, 2.0, 3.0, "
+            "0.0, 0.0, 0.0, 14.007, -0.3, 'N', 'MET', 1, 'A', 'SYSTEM')"
+        )
+        cur.execute(
+            "CREATE TABLE global_cell "
+            "(id integer primary key, x float, y float, z float)"
+        )
+        for i, row in enumerate(box_vectors, start=1):
+            cur.execute(
+                "INSERT INTO global_cell VALUES (?, ?, ?, ?)",
+                (i, row[0], row[1], row[2]),
+            )
+        cur.execute(
+            "CREATE TABLE bond (p0 integer, p1 integer, 'order' integer)"
+        )
 
 
 class TestDMSReader(object):
@@ -93,3 +133,40 @@ class TestDMSReader(object):
     def test_frame_index_1_raises_IndexError(self, universe):
         with pytest.raises(IndexError):
             universe.trajectory[1]
+
+
+class TestDMSReaderWithBox(object):
+    """Tests for the convert_pos_from_native code path that runs when a DMS
+    file contains a non-zero unit cell (ts.dimensions is not None)."""
+
+    @pytest.fixture()
+    def universe_with_box(self, tmp_path):
+        dms_path = tmp_path / "box.dms"
+        # Orthorhombic 30 x 40 x 50 Angstrom box.
+        box_vectors = [
+            [30.0, 0.0, 0.0],
+            [0.0, 40.0, 0.0],
+            [0.0, 0.0, 50.0],
+        ]
+        _make_dms_with_box(dms_path, box_vectors)
+        return mda.Universe(str(dms_path))
+
+    def test_dimensions_not_none(self, universe_with_box):
+        assert universe_with_box.trajectory.ts.dimensions is not None
+
+    def test_dimensions_values(self, universe_with_box):
+        expected = np.array([30.0, 40.0, 50.0, 90.0, 90.0, 90.0], dtype=np.float32)
+        assert_allclose(
+            universe_with_box.trajectory.ts.dimensions,
+            expected,
+            atol=1e-4,
+        )
+
+    def test_position_read_with_box(self, universe_with_box):
+        # Verify that coordinates are read correctly when a box is present.
+        expected = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+        assert_allclose(
+            universe_with_box.atoms[0].position,
+            expected,
+            atol=1e-4,
+        )
