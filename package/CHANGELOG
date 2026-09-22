@@ -23,6 +23,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Documentation version switcher now preserves the current page path when
+   changing versions (Issue #4629)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
    constants use CODATA 2010 values (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
