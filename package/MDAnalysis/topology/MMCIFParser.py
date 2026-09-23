@@ -57,6 +57,7 @@ import numpy as np
 
 from ..coordinates.MMCIF import HAS_GEMMI, _read_gemmi_structure
 from ..core.topology import Topology
+from ..guesser.tables import SYMB2Z
 from ..core.topologyattrs import (
     AltLocs,
     Atomids,
@@ -164,6 +165,9 @@ class MMCIFParser(TopologyReaderBase):
                     case "H":
                         rec = "HETATM"
                     case _:
+                        # Intentionally strict: this also rejects the "\0"
+                        # (unspecified) het_flag, so an mmCIF lacking the
+                        # ``group_PDB`` field will fail to parse.
                         raise ValueError(
                             "Found an atom that is neither ATOM nor HETATM"
                         )
@@ -182,15 +186,32 @@ class MMCIFParser(TopologyReaderBase):
                     resids.append(residue.seqid.num)
                     resnames.append(residue.name)
 
+        # As in PDBParser: feed atomtypes the raw element column, but
+        # validate elements against known symbols before storing them
+        validated_elements = []
+        for elem in elements:
+            if elem.capitalize() in SYMB2Z:
+                validated_elements.append(elem.capitalize())
+            else:
+                wmsg = (
+                    f"Unknown element {elem} found for some atoms. "
+                    f"These have been given an empty element record. "
+                    f"If needed they can be guessed using "
+                    f"universe.guess_TopologyAttrs(context='default',"
+                    " to_guess=['elements'])."
+                )
+                warnings.warn(wmsg)
+                validated_elements.append("")
+
         # Atom Attributes
         attrs = [
             AltLocs(altlocs),
             Atomids(serials),
             Atomnames(names),
-            Atomtypes(names),
+            Atomtypes(elements),
             # ----------------------------
             ChainIDs(chainids),
-            Elements(elements),
+            Elements(validated_elements),
             FormalCharges(formalcharges),
             Masses(weights),
             # ----------------------------

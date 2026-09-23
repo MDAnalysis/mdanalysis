@@ -3,6 +3,7 @@ import pytest
 from pathlib import Path
 from io import StringIO
 import gzip
+from numpy.testing import assert_equal
 from MDAnalysis.lib import util
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
@@ -90,6 +91,15 @@ def test_sequence(mmcif_filename, sequence):
         for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_types_from_elements():
+    # as in PDBParser, atom types come from the element column, and
+    # elements are validated against known symbols
+    u = mda.Universe(f"{MMCIF_FOLDER}/1YJP.cif")
+    assert_equal(u.atoms.types, u.atoms.elements)
+    assert set(u.atoms.elements) == {"C", "N", "O"}
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
