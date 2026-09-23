@@ -135,8 +135,6 @@ __pycache__
 | MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py
 | MDAnalysis/coordinates/base\.py
-| MDAnalysis/coordinates/MMCIF\.py
-| MDAnalysis/topology/MMCIFParser\.py
 | MDAnalysis/topology/PDBParser\.py
 | MDAnalysis/topology/__init__\.py
 | .*\.pyx
