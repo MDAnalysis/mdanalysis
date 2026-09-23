@@ -132,6 +132,8 @@ MDAnalysisTests = [
     "data/*.txt",
     "data/dssp/*.pdb.gz",
     "data/dssp/*.pdb.dssp",
+    "data/mmcif/*.gz",
+    "data/mmcif/*.cif",
 ]
 
 [tool.pytest.ini_options]
