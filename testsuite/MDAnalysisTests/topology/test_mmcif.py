@@ -138,6 +138,14 @@ def test_unparseable_content():
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_blockless_content():
+    # a comment-only file parses as a CIF document with no data blocks
+    empty = util.NamedStream(StringIO("# no data blocks here\n"), "empty.cif")
+    with pytest.raises(ValueError, match="No data blocks found"):
+        mda.Universe(empty)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_multimodel_warning_msg():
     with pytest.warns(
         UserWarning,

@@ -98,6 +98,12 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
         return gemmi.make_structure_from_block(
             gemmi.cif.read_string(content_as_str)[0]
         )
+    except IndexError:
+        # the document parsed as CIF but contains no data blocks (e.g. an
+        # empty or comment-only file), so it cannot be PDB content either
+        raise ValueError(
+            f"No data blocks found in mmCIF content of {filename}"
+        ) from None
     except ValueError as e:
         try:
             return gemmi.read_pdb_string(content_as_str)
