@@ -37,6 +37,12 @@ jobs:
             # and cython >=3.1 to deal temporarily with
             # keeping on testing Cython whilst issue #5057
             # is not fixed
+            - name: python_315_nocov
+              os: ubuntu-latest
+              python-version: "3.15.0rc2"
+              full-deps: false
+              codecov: false
+              cython: "cython>=3.1"
             - name: python_314_nocov
               os: ubuntu-latest
               python-version: "3.14"
@@ -96,6 +102,7 @@ jobs:
         condarc: |
           channels:
             - conda-forge
+            - conda-forge/label/python_rc
             - bioconda
 
     - name: install_deps
