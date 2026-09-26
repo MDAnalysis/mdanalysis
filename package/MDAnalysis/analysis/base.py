@@ -781,8 +781,10 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; ``frames`` can
-            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
+            array of integers or booleans to slice trajectory. Boolean arrays,
+            including NumPy arrays, are used as masks for fancy indexing.
+            ``frames`` can only be used *instead* of ``start``, ``stop``, and
+            ``step``. Setting
             *both* ``frames`` and at least one of ``start``, ``stop``, ``step``
             to a non-default value will raise a :exc:`ValueError`.
 
@@ -831,6 +833,10 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
+
+        .. versionchanged:: 2.11.0
+            NumPy boolean arrays passed to ``frames`` are now interpreted as
+            boolean masks.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
