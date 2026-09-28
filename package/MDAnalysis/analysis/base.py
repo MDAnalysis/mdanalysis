@@ -782,7 +782,7 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         frames : array_like, optional
             array of integers or booleans to slice trajectory. Boolean arrays,
-            including NumPy arrays, are used as masks for fancy indexing.
+            including NumPy arrays, can be used as masks for fancy indexing.
             ``frames`` can only be used *instead* of ``start``, ``stop``, and
             ``step``. Setting
             *both* ``frames`` and at least one of ``start``, ``stop``, ``step``
