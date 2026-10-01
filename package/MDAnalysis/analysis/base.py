@@ -616,7 +616,9 @@ class AnalysisBase(object):
         else:
             used_frames = frames
 
-        if all(isinstance(obj, bool) for obj in used_frames):
+        if all(
+            isinstance(obj, (bool, np.bool_)) for obj in used_frames
+        ):
             arange = np.arange(len(used_frames))
             used_frames = arange[used_frames]
 

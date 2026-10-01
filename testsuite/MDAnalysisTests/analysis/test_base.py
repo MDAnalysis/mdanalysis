@@ -337,6 +337,14 @@ def test_start_stop_step(u, run_kwargs, frames):
             },
             (0, 1, 3, 5, 6, 8),
         ),
+        (
+            {
+                "frames": np.array(
+                    [True, True, False, True, False, True,
+                     True, False, True, False], dtype=bool)
+            },
+            (0, 1, 3, 5, 6, 8),
+        ),
     ],
 )
 def test_frame_slice(u_xtc, run_kwargs, frames):
@@ -367,6 +375,14 @@ def test_frame_slice(u_xtc, run_kwargs, frames):
                     True,
                     False,
                 ]
+            },
+            (0, 1, 3, 5, 6, 8),
+        ),
+        (
+            {
+                "frames": np.array(
+                    [True, True, False, True, False, True,
+                     True, False, True, False], dtype=bool)
             },
             (0, 1, 3, 5, 6, 8),
         ),

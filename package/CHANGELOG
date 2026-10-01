@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17
+         raulloiscuns, Aryaman-Chaudhri, sici17, barlowa124
 
  * 2.11.0
 
@@ -33,6 +33,9 @@ Fixes
    apply their fit via `AtomGroup.rotate()`. Note: this changes existing
    behavior, as velocities/forces were previously left untouched by
    rotation. (Issue #5421, PR #5452)
+ * `AnalysisBase.run()` no longer misinterprets NumPy boolean masks passed
+   via the ``frames`` argument as integer frame indices, which silently
+   selected the wrong frames (Issue #5472, PR #5480).
  * Fix FileLock tests for XTC and TRR: lock file is no longer removed (#5382)
  * InterRDF now correctly returns bins in parallel (PR #5344)
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
