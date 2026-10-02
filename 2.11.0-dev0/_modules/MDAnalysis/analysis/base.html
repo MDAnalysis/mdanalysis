@@ -787,7 +787,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">used_frames</span> <span class="o">=</span> <span class="n">frames</span>
 
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">used_frames</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">used_frames</span><span class="p">):</span>
             <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">used_frames</span><span class="p">))</span>
             <span class="n">used_frames</span> <span class="o">=</span> <span class="n">arange</span><span class="p">[</span><span class="n">used_frames</span><span class="p">]</span>
 
@@ -958,8 +958,10 @@
 <span class="sd">        step : int, optional</span>
 <span class="sd">            number of frames to skip between each analysed frame</span>
 <span class="sd">        frames : array_like, optional</span>
-<span class="sd">            array of integers or booleans to slice trajectory; ``frames`` can</span>
-<span class="sd">            only be used *instead* of ``start``, ``stop``, and ``step``. Setting</span>
+<span class="sd">            array of integers or booleans to slice trajectory. Boolean arrays,</span>
+<span class="sd">            including NumPy arrays, can be used as masks for fancy indexing.</span>
+<span class="sd">            ``frames`` can only be used *instead* of ``start``, ``stop``, and</span>
+<span class="sd">            ``step``. Setting</span>
 <span class="sd">            *both* ``frames`` and at least one of ``start``, ``stop``, ``step``</span>
 <span class="sd">            to a non-default value will raise a :exc:`ValueError`.</span>
 
@@ -1008,6 +1010,10 @@
 <span class="sd">            Introduced ``backend``, ``n_workers``, ``n_parts`` and</span>
 <span class="sd">            ``unsupported_backend`` keywords, and refactored the method logic to</span>
 <span class="sd">            support parallelizable execution.</span>
+
+<span class="sd">        .. versionchanged:: 2.11.0</span>
+<span class="sd">            NumPy boolean arrays passed to ``frames`` are now interpreted as</span>
+<span class="sd">            boolean masks.</span>
 <span class="sd">        """</span>
         <span class="c1"># default to serial execution</span>
         <span class="n">backend</span> <span class="o">=</span> <span class="s2">"serial"</span> <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend</span>

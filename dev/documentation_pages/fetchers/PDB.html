@@ -183,13 +183,13 @@ disk, <em>from_PDB</em> will skip the download and use the cached version instea
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pdb_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A single PDB ID as a string, or a sequence of PDB IDs to fetch.</p></li>
-<li><p><strong>cache_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><em>pathlib.Path</em></a>) – Directory where downloaded file(s) will be cached.
+<li><p><strong>pdb_ids</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A single PDB ID as a string, or a sequence of PDB IDs to fetch.</p></li>
+<li><p><strong>cache_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><em>pathlib.Path</em></a>) – Directory where downloaded file(s) will be cached.
 The default <code class="docutils literal notranslate"><span class="pre">None</span></code> argument uses the <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch v1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a> default cache with
 project name <a class="reference internal" href="#MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER" title="MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_CACHE_NAME_DOWNLOADER</span></code></a>.</p></li>
-<li><p><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file extension/format to download (e.g., “cif”, “pdb”).
+<li><p><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file extension/format to download (e.g., “cif”, “pdb”).
 See the Notes section below for a list of all supported file formats.</p></li>
-<li><p><strong>progressbar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, display a progress bar during file downloads. Default is False.</p></li>
+<li><p><strong>progressbar</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, display a progress bar during file downloads. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -202,7 +202,7 @@ See the Notes section below for a list of all supported file formats.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – For an invalid file format. Supported file formats are under Notes.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – For an invalid file format. Supported file formats are under Notes.</p></li>
 <li><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.HTTPError" title="(in Requests v2.34.2)"><strong>requests.exceptions.HTTPError</strong></a> – If an invalid PDB code is specified.</p></li>
 </ul>
 </dd>
