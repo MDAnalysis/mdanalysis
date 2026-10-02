@@ -23,6 +23,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
+   as frame masks instead of integer frame indices (Issue #5472)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
    constants use CODATA 2010 values (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
