@@ -340,8 +340,20 @@ def test_start_stop_step(u, run_kwargs, frames):
         (
             {
                 "frames": np.array(
-                    [True, True, False, True, False, True,
-                     True, False, True, False], dtype=bool)
+                    [
+                        True,
+                        True,
+                        False,
+                        True,
+                        False,
+                        True,
+                        True,
+                        False,
+                        True,
+                        False,
+                    ],
+                    dtype=bool,
+                )
             },
             (0, 1, 3, 5, 6, 8),
         ),
@@ -381,8 +393,20 @@ def test_frame_slice(u_xtc, run_kwargs, frames):
         (
             {
                 "frames": np.array(
-                    [True, True, False, True, False, True,
-                     True, False, True, False], dtype=bool)
+                    [
+                        True,
+                        True,
+                        False,
+                        True,
+                        False,
+                        True,
+                        True,
+                        False,
+                        True,
+                        False,
+                    ],
+                    dtype=bool,
+                )
             },
             (0, 1, 3, 5, 6, 8),
         ),
