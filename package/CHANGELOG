@@ -29,7 +29,8 @@ Fixes
    been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
    (the default for a file name) no longer grows the resident memory of the
    process towards the size of the whole trajectory file. Requires a platform
-   that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792).
+   that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792,
+   PR #5463).
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
    existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
