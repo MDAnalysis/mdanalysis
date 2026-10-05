@@ -514,7 +514,10 @@ def test_different_versions():
     assert_equal(u.atoms.velocities.shape, exp_shape)
 
 
-@pytest.mark.parametrize("convert_units", [True, False])
+@pytest.mark.parametrize(
+    "convert_units",
+    [True, False],
+)
 def test_unit_swapping(convert_units):
     reader = TPRReader(TPR_xvf_2024_4, convert_units=convert_units)
     ts = reader.ts
@@ -538,3 +541,141 @@ def test_unit_swapping(convert_units):
     assert_allclose(actual_positions[-1, ...], expected_last_pos * factor)
     assert_allclose(actual_velocities[0, ...], expected_first_vel * factor)
     assert_allclose(actual_velocities[-1, ...], expected_last_vel * factor)
+
+
+# ----- Tests for issue #5375: box vectors from TPR files -----
+
+
+@pytest.mark.parametrize(
+    "tpr_file, expected_dimensions",
+    [
+        # adk_oplsaa.tpr: rhombic dodecahedron box
+        # expected values verified against mda.Universe(TPR, XTC).dimensions
+        # see issue #5375
+        (
+            TPR_xvf_2024_4,
+            [52.763, 52.763, 52.763, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2024_4,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2020,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR455Double,
+            [43.7388, 43.7388, 107.9261, 90.0, 90.0, 90.0],
+        ),
+    ],
+)
+@pytest.mark.parametrize("double_incantation", [True, False])
+def test_tpr_box_vectors(tpr_file, expected_dimensions, double_incantation):
+    """TPR coordinate reader should expose box dimensions (issue #5375).
+
+    When a TPR file is used as the sole coordinate source (either
+    ``mda.Universe(tpr)`` or ``mda.Universe(tpr, tpr)``), the resulting
+    Universe should have non-None ``dimensions`` that match the box stored
+    inside the TPR file.
+    """
+    if double_incantation:
+        u = mda.Universe(tpr_file, tpr_file)
+    else:
+        u = mda.Universe(tpr_file)
+    assert u.dimensions is not None, (
+        "u.dimensions should not be None when using a TPR file as the "
+        "coordinate source (issue #5375)"
+    )
+    assert_allclose(u.dimensions, expected_dimensions, atol=1e-3)
+
+
+def test_tpr_box_vectors_unit_conversion():
+    """Box lengths from TPR reader should respect the convert_units flag.
+
+    With ``convert_units=True`` (default) lengths are in Angstroms; with
+    ``convert_units=False`` they remain in GROMACS native nanometres.
+    Angles are dimensionless and must be identical in both cases.
+    """
+    reader_angstrom = TPRReader(TPR2024_4, convert_units=True)
+    reader_nm = TPRReader(TPR2024_4, convert_units=False)
+
+    dims_ang = reader_angstrom.ts.dimensions
+    dims_nm = reader_nm.ts.dimensions
+
+    assert dims_ang is not None
+    assert dims_nm is not None
+
+    # lengths scale by factor 10 (nm -> Å)
+    assert_allclose(dims_ang[:3], dims_nm[:3] * 10, rtol=1e-5)
+    # angles are unchanged
+    assert_allclose(dims_ang[3:], dims_nm[3:], rtol=1e-5)
+
+
+# ----- Tests for issue #5375: box vectors from TPR files -----
+
+
+@pytest.mark.parametrize(
+    "tpr_file, expected_dimensions",
+    [
+        # adk_oplsaa.tpr: rhombic dodecahedron box
+        # expected values verified against mda.Universe(TPR, XTC).dimensions
+        # see issue #5375
+        (
+            TPR_xvf_2024_4,
+            [52.763, 52.763, 52.763, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2024_4,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2020,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR455Double,
+            [43.7388, 43.7388, 107.9261, 90.0, 90.0, 90.0],
+        ),
+    ],
+)
+@pytest.mark.parametrize("double_incantation", [True, False])
+def test_tpr_box_vectors(tpr_file, expected_dimensions, double_incantation):
+    """TPR coordinate reader should expose box dimensions (issue #5375).
+
+    When a TPR file is used as the sole coordinate source (either
+    ``mda.Universe(tpr)`` or ``mda.Universe(tpr, tpr)``), the resulting
+    Universe should have non-None ``dimensions`` that match the box stored
+    inside the TPR file.
+    """
+    if double_incantation:
+        u = mda.Universe(tpr_file, tpr_file)
+    else:
+        u = mda.Universe(tpr_file)
+    assert u.dimensions is not None, (
+        "u.dimensions should not be None when using a TPR file as the "
+        "coordinate source (issue #5375)"
+    )
+    assert_allclose(u.dimensions, expected_dimensions, atol=1e-3)
+
+
+def test_tpr_box_vectors_unit_conversion():
+    """Box lengths from TPR reader should respect the convert_units flag.
+
+    With ``convert_units=True`` (default) lengths are in Angstroms; with
+    ``convert_units=False`` they remain in GROMACS native nanometres.
+    Angles are dimensionless and must be identical in both cases.
+    """
+    reader_angstrom = TPRReader(TPR2024_4, convert_units=True)
+    reader_nm = TPRReader(TPR2024_4, convert_units=False)
+
+    dims_ang = reader_angstrom.ts.dimensions
+    dims_nm = reader_nm.ts.dimensions
+
+    assert dims_ang is not None
+    assert dims_nm is not None
+
+    # lengths scale by factor 10 (nm -> Å)
+    assert_allclose(dims_ang[:3], dims_nm[:3] * 10, rtol=1e-5)
+    # angles are unchanged
+    assert_allclose(dims_ang[3:], dims_nm[3:], rtol=1e-5)
