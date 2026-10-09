@@ -23,6 +23,12 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fixed `capped_distance` and `self_capped_distance` (and hence bond
+   guessing, selections and other users of the `nsgrid` and `pkdtree`
+   methods) missing pairs within the cutoff in triclinic boxes where both
+   b_x and c_y are non-zero, e.g. truncated octahedra; `apply_PBC` also
+   wrapped some coordinates in such boxes to just outside the primary
+   image (Issue #4906)
  * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
    as frame masks instead of integer frame indices (Issue #5472)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
