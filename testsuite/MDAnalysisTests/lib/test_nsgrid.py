@@ -505,6 +505,39 @@ def test_issue_2670():
     assert len(ag2.select_atoms("around 0.0 resid 3")) == 1
 
 
+@pytest.mark.parametrize(
+    "box",
+    [
+        # truncated octahedron
+        [97.16, 97.16, 97.16, 109.47, 109.47, 109.47],
+        # LAMMPS cell from Issue #4906
+        [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+    ],
+)
+def test_issue_4906(box):
+    # In boxes with both b_x and c_y non-zero, atoms were binned into the
+    # wrong cells and cells could be thinner than the cutoff, so neighbours
+    # within the cutoff were missed.
+    box = np.array(box, dtype=np.float32)
+    rng = np.random.default_rng(4906)
+    frac = rng.uniform(0, 1, size=(1000, 3))
+    coords = (frac @ mda.lib.mdamath.triclinic_vectors(box)).astype(np.float32)
+    cutoff = 0.1 * box[:3].min()
+
+    dists = mda.lib.distances.distance_array(coords, coords, box=box)
+
+    searcher = nsgrid.FastNS(cutoff, coords, box)
+    pairs = searcher.self_search().get_pairs()
+    i, j = np.triu_indices(len(coords), k=1)
+    within = dists[i, j] <= cutoff
+    expected = set(zip(i[within], j[within]))
+    assert {tuple(sorted(p)) for p in pairs} == expected
+
+    pairs = searcher.search(coords).get_pairs()
+    i, j = np.nonzero(dists <= cutoff)
+    assert {tuple(p) for p in pairs} == set(zip(i, j))
+
+
 def high_mem_tests_enabled():
     """Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
     env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="false").lower()

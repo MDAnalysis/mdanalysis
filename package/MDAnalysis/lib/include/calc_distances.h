@@ -294,7 +294,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
             }
             if (!msr) {
                 // translate remainder of crd to central cell along a-axis
-                lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+                lbound = (crd[1] - crd[2] * b_ax_zfactor) * a_ax_yfactor + crd[2] * a_ax_zfactor;
                 ubound = lbound + box[0];
                 if (crd[0] < lbound) {
                     crd[0] += box[0];
@@ -356,7 +356,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
                 crd[1] -= box[4];
             }
             // translate remainder of crd to central cell along a-axis
-            lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+            lbound = (crd[1] - crd[2] * b_ax_zfactor) * a_ax_yfactor + crd[2] * a_ax_zfactor;
             ubound = lbound + box[0];
             if (crd[0] < lbound) {
                 crd[0] += box[0];

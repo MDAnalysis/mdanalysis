@@ -84,6 +84,26 @@ def test_transform_StoR_pass(coord_dtype):
     assert_allclose(original_r, test_r)
 
 
+# Triclinic boxes with both b_x and c_y non-zero, see Issue #4906
+SKEWED_TRICLINIC_BOXES = (
+    # truncated octahedron
+    np.array([97.16, 97.16, 97.16, 109.47, 109.47, 109.47], dtype=np.float32),
+    # LAMMPS cell from Issue #4906
+    np.array(
+        [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+        dtype=np.float32,
+    ),
+    np.array([26.24, 27.86, 34.66, 106.56, 77.20, 79.13], dtype=np.float32),
+)
+
+
+def _skewed_box_coords(box, n, seed):
+    """Random coordinates spread over the box and its neighbouring images"""
+    rng = np.random.default_rng(seed)
+    frac = rng.uniform(-1.5, 2.5, size=(n, 3))
+    return (frac @ mdamath.triclinic_vectors(box)).astype(np.float32)
+
+
 class TestCappedDistances(object):
 
     npoints_1 = (1, 100)
@@ -121,6 +141,38 @@ class TestCappedDistances(object):
     method_1 = ("bruteforce", "pkdtree", "nsgrid")
 
     min_cutoff_1 = (None, 0.1)
+
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
+    def test_capped_distance_skewed_triclinic(self, box, method):
+        # Issue #4906: pkdtree and nsgrid missed pairs in skewed boxes
+        width = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * width
+        a = _skewed_box_coords(box, 1000, seed=1)
+        b = _skewed_box_coords(box, 1000, seed=2)
+
+        def pairs(m):
+            p = distances.capped_distance(
+                a, b, cutoff, box=box, method=m, return_distances=False
+            )
+            return {tuple(x) for x in p}
+
+        assert pairs(method) == pairs("bruteforce")
+
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
+    def test_self_capped_distance_skewed_triclinic(self, box, method):
+        width = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * width
+        a = _skewed_box_coords(box, 1000, seed=3)
+
+        def pairs(m):
+            p = distances.self_capped_distance(
+                a, cutoff, box=box, method=m, return_distances=False
+            )
+            return {tuple(sorted(x)) for x in p}
+
+        assert pairs(method) == pairs("bruteforce")
 
     def test_capped_distance_noresults(self):
         point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
@@ -1786,6 +1838,16 @@ class Test_apply_PBC(object):
         # Assert all result coordinates lie strictly within the primary image:
         assert np.all(relres >= 0.0)
         assert np.all(relres < 1.0)
+
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    def test_coords_in_central_image_skewed_tric(self, backend, box):
+        # Issue #4906: boxes where both b_x and c_y are non-zero were wrapped
+        # to just outside the primary image along a.
+        coords = _skewed_box_coords(box, 1000, seed=4906)
+        res = distances.apply_PBC(coords, box, backend=backend)
+        relres = distances.transform_RtoS(res, box)
+        assert np.all(relres >= -1e-6)
+        assert np.all(relres < 1.0 + 1e-6)
 
 
 @pytest.mark.parametrize("backend", ["serial", "openmp"])
