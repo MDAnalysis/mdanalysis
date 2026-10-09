@@ -127,20 +127,21 @@
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.19. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.26. Utility functions for the TPR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.27. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.28. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMCIFParser.html">5.15. MMCIF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.16. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.17. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.18. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.19. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.20. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.23. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.24. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.25. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.26. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.27. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.28. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.29. MDAnalysis topology tables</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
@@ -199,8 +200,8 @@ in there being a single residue and segment to which all atoms belong.
 In the event that this happens, a UserWarning will always be issued.</p>
 <p>The following table lists the currently supported topology formats along with
 the attributes they provide.</p>
-<span id="supported-topology-formats"></span><table class="docutils align-default" id="id19">
-<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id19" title="Link to this table"></a></caption>
+<span id="supported-topology-formats"></span><table class="docutils align-default" id="id20">
+<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id20" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>extension</p></th>
@@ -413,7 +414,26 @@ masses, and charges if possible. Also reads bonds,
 angles, and dihedrals.
 <a class="reference internal" href="GSDParser.html#module-MDAnalysis.topology.GSDParser" title="MDAnalysis.topology.GSDParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GSDParser</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>MMTF <a class="footnote-reference brackets" href="#a" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+<tr class="row-even"><td><p>MMCIF <a class="footnote-reference brackets" href="#a" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+<td><p>cif,
+mmcif</p></td>
+<td><p>ids, names,
+types, altLocs,
+chainids,
+elements, masses,
+formalcharges,
+occupancies,
+tempfactors,
+record_types,
+resids, resnames,
+resnums, icodes,
+segids</p></td>
+<td><p>macromolecular structures in the <a class="reference external" href="https://mmcif.wwpdb.org/">PDBx/mmCIF</a>
+format, as distributed by, e.g., the RCSB PDB
+(requires the <a class="reference external" href="https://gemmi.readthedocs.io/">gemmi</a> package);
+<a class="reference internal" href="MMCIFParser.html#module-MDAnalysis.topology.MMCIFParser" title="MDAnalysis.topology.MMCIFParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.MMCIFParser</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>MMTF <a class="footnote-reference brackets" href="#a" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
 <td><p>mmtf</p></td>
 <td><p>altLocs,
 tempfactors,
@@ -427,7 +447,7 @@ segids, models</p></td>
 efficient compact format for biomolecular
 structures.</p></td>
 </tr>
-<tr class="row-odd"><td><p>FHIAIMS <a class="footnote-reference brackets" href="#a" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+<tr class="row-even"><td><p>FHIAIMS <a class="footnote-reference brackets" href="#a" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
 <td><p>in</p></td>
 <td><p>names</p></td>
 <td><p><a class="reference external" href="https://aimsclub.fhi-berlin.mpg.de/">FHI-AIMS</a> File Parser.  Reads only the labels from
@@ -439,7 +459,7 @@ atoms and constructs minimal topology data.
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="a" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id6">6</a>,<a role="doc-backlink" href="#id7">7</a>,<a role="doc-backlink" href="#id9">8</a>,<a role="doc-backlink" href="#id10">9</a>,<a role="doc-backlink" href="#id11">10</a>,<a role="doc-backlink" href="#id12">11</a>,<a role="doc-backlink" href="#id13">12</a>,<a role="doc-backlink" href="#id14">13</a>,<a role="doc-backlink" href="#id15">14</a>,<a role="doc-backlink" href="#id16">15</a>,<a role="doc-backlink" href="#id17">16</a>,<a role="doc-backlink" href="#id18">17</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id6">6</a>,<a role="doc-backlink" href="#id7">7</a>,<a role="doc-backlink" href="#id9">8</a>,<a role="doc-backlink" href="#id10">9</a>,<a role="doc-backlink" href="#id11">10</a>,<a role="doc-backlink" href="#id12">11</a>,<a role="doc-backlink" href="#id13">12</a>,<a role="doc-backlink" href="#id14">13</a>,<a role="doc-backlink" href="#id15">14</a>,<a role="doc-backlink" href="#id16">15</a>,<a role="doc-backlink" href="#id17">16</a>,<a role="doc-backlink" href="#id18">17</a>,<a role="doc-backlink" href="#id19">18</a>)</span>
 <p>This format can also be used to provide <em>coordinates</em> so that
 it is possible to create a full
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Universe</span></code></a> by simply providing

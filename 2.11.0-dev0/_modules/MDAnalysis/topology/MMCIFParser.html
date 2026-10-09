@@ -1,0 +1,457 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.topology.MMCIFParser &mdash; MDAnalysis 2.11.0-dev0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4fe0e2e2"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.11.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.11.0-dev0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">19. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.topology.MMCIFParser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.topology.MMCIFParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="sd">"""</span>
+<span class="sd">MMCIF Topology Parser</span>
+<span class="sd">=====================</span>
+
+<span class="sd">.. versionadded:: 2.11.0</span>
+
+<span class="sd">Read topology information from mmCIF/PDBx coordinate files using the</span>
+<span class="sd">`Gemmi library &lt;https://gemmi.readthedocs.io&gt;`_.</span>
+
+
+
+<span class="sd">mmCIF files contain topology information about the molecules in the</span>
+<span class="sd">structure. For each atom the following attributes are read and stored</span>
+<span class="sd">in the relevant topology attributes:</span>
+
+<span class="sd">    - :class:`MDAnalysis.core.topologyattrs.AtomAttr` subclasses:</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.AltLocs`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Atomids`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Atomnames`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Atomtypes`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.ChainIDs`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Elements`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.FormalCharges`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Masses`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Occupancies`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.RecordTypes`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Tempfactors`</span>
+<span class="sd">    - :class:`MDAnalysis.core.topologyattrs.ResidueAttr` subclasses:</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Resnums`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.ICodes`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Resids`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Resnames`</span>
+<span class="sd">    - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.Segids`</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: MMCIFParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">gemmi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates.MMCIF</span><span class="w"> </span><span class="kn">import</span> <span class="n">HAS_GEMMI</span><span class="p">,</span> <span class="n">_read_gemmi_structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..guesser.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYMB2Z</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AltLocs</span><span class="p">,</span>
+    <span class="n">Atomids</span><span class="p">,</span>
+    <span class="n">Atomnames</span><span class="p">,</span>
+    <span class="n">Atomtypes</span><span class="p">,</span>
+    <span class="n">ChainIDs</span><span class="p">,</span>
+    <span class="n">Elements</span><span class="p">,</span>
+    <span class="n">FormalCharges</span><span class="p">,</span>
+    <span class="n">ICodes</span><span class="p">,</span>
+    <span class="n">Masses</span><span class="p">,</span>
+    <span class="n">Occupancies</span><span class="p">,</span>
+    <span class="n">RecordTypes</span><span class="p">,</span>
+    <span class="n">Resids</span><span class="p">,</span>
+    <span class="n">Resnames</span><span class="p">,</span>
+    <span class="n">Resnums</span><span class="p">,</span>
+    <span class="n">Segids</span><span class="p">,</span>
+    <span class="n">Tempfactors</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.topology.MMCIFParser"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MMCIFParser">
+<a class="viewcode-back" href="../../../documentation_pages/topology/MMCIFParser.html#MDAnalysis.topology.MMCIFParser.MMCIFParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MMCIFParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Parser that obtains a list of atoms from a standard MMCIF/PDBx file using</span>
+<span class="sd">    the `gemmi library &lt;https://gemmi.readthedocs.io&gt;`_.</span>
+
+<span class="sd">    The *filename* argument accepts a file path, a compressed ``.cif.gz`` file,</span>
+<span class="sd">    or a stream/file-like object.</span>
+
+<span class="sd">    Creates the following Attributes (if present):</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.AtomAttr` subclasses:</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.AltLocs`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Atomids`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Atomnames`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Atomtypes`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.ChainIDs`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Elements`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.FormalCharges`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Masses`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Occupancies`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.RecordTypes`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Tempfactors`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.ResidueAttr` subclasses:</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Resnums`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.ICodes`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Resids`</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Resnames`</span>
+<span class="sd">        - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:</span>
+<span class="sd">            - :class:`MDAnalysis.core.topologyattrs.Segids`</span>
+<span class="sd">    """</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"cif"</span><span class="p">,</span> <span class="s2">"cif.gz"</span><span class="p">,</span> <span class="s2">"mmcif"</span><span class="p">,</span> <span class="s2">"mmcif.gz"</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_GEMMI</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">"MMCIFParser: To read a Topology from an mmCIF file, "</span>
+                <span class="s2">"please install gemmi"</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MMCIFParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MMCIFParser.parse">
+<a class="viewcode-back" href="../../../documentation_pages/topology/MMCIFParser.html#MDAnalysis.topology.MMCIFParser.MMCIFParser.parse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Topology</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Read the file and return the structure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MDAnalysis Topology object</span>
+<span class="sd">        """</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_structure</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"MMCIF model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> contains </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span><span class="si">}</span><span class="s2"> different models, "</span>
+                <span class="s2">"but only the first one will be used to assign the topology"</span>
+            <span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># TODO: gemmi.FlatStructure provides vectorised column access to all atom</span>
+        <span class="c1"># fields and could replace the per-atom Python loop below for a speed-up</span>
+        <span class="c1"># on large structures. gemmi API is still not 100% there yes so worth revisiting</span>
+        <span class="c1"># later once it matures more</span>
+        <span class="n">altlocs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">serials</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">chainids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">formalcharges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">occupancies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tempfactors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">icodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">resids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">model</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+                <span class="k">match</span> <span class="n">residue</span><span class="o">.</span><span class="n">het_flag</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="s2">"A"</span><span class="p">:</span>
+                        <span class="n">rec</span> <span class="o">=</span> <span class="s2">"ATOM"</span>
+                    <span class="k">case</span> <span class="s2">"H"</span><span class="p">:</span>
+                        <span class="n">rec</span> <span class="o">=</span> <span class="s2">"HETATM"</span>
+                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                        <span class="c1"># Intentionally strict: this also rejects the "\0"</span>
+                        <span class="c1"># (unspecified) het_flag, so an mmCIF lacking the</span>
+                        <span class="c1"># ``group_PDB`` field will fail to parse.</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">"Found an atom that is neither ATOM nor HETATM"</span>
+                        <span class="p">)</span>
+                <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="p">:</span>
+                    <span class="n">altlocs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">altloc</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">has_altloc</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+                    <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">serial</span><span class="p">)</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">chainids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">formalcharges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
+                    <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+                    <span class="n">occupancies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">occ</span><span class="p">)</span>
+                    <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+                    <span class="n">tempfactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">b_iso</span><span class="p">)</span>
+                    <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">seqid</span><span class="o">.</span><span class="n">icode</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">seqid</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+                    <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># As in PDBParser: feed atomtypes the raw element column, but</span>
+        <span class="c1"># validate elements against known symbols before storing them</span>
+        <span class="n">validated_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span><span class="p">:</span>
+                <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Unknown element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> found for some atoms. "</span>
+                    <span class="sa">f</span><span class="s2">"These have been given an empty element record. "</span>
+                    <span class="sa">f</span><span class="s2">"If needed they can be guessed using "</span>
+                    <span class="sa">f</span><span class="s2">"universe.guess_TopologyAttrs(context='default',"</span>
+                    <span class="s2">" to_guess=['elements'])."</span>
+                <span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+                <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+
+        <span class="c1"># Atom Attributes</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">AltLocs</span><span class="p">(</span><span class="n">altlocs</span><span class="p">),</span>
+            <span class="n">Atomids</span><span class="p">(</span><span class="n">serials</span><span class="p">),</span>
+            <span class="n">Atomnames</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
+            <span class="n">Atomtypes</span><span class="p">(</span><span class="n">elements</span><span class="p">),</span>
+            <span class="c1"># ----------------------------</span>
+            <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainids</span><span class="p">),</span>
+            <span class="n">Elements</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">),</span>
+            <span class="n">FormalCharges</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">),</span>
+            <span class="n">Masses</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span>
+            <span class="c1"># ----------------------------</span>
+            <span class="n">Occupancies</span><span class="p">(</span><span class="n">occupancies</span><span class="p">),</span>
+            <span class="n">RecordTypes</span><span class="p">(</span><span class="n">record_types</span><span class="p">),</span>
+            <span class="n">Tempfactors</span><span class="p">(</span><span class="n">tempfactors</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">altlocs</span><span class="p">)</span>
+
+        <span class="c1"># Residue Attributes</span>
+        <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resnames</span><span class="p">)</span>
+        <span class="n">icodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">icodes</span><span class="p">)</span>
+        <span class="n">chainids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chainids</span><span class="p">)</span>
+        <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">(</span><span class="n">icodes</span><span class="p">))</span>
+        <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+
+        <span class="c1"># Segment Attributes</span>
+        <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">chainids</span><span class="p">,),</span> <span class="p">(</span><span class="n">chainids</span><span class="p">,))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
+        <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Topology</span><span class="p">(</span>
+            <span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">n_residues</span><span class="p">,</span>
+            <span class="n">n_segments</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+            <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Structure"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_read_gemmi_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.11.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

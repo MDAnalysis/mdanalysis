@@ -116,20 +116,21 @@
 <li class="toctree-l2"><a class="reference internal" href="topology/MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topology/MMTFParser.html">5.13. MMTF Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topology/MOL2Parser.html">5.14. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/PDBParser.html">5.15. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/PDBQTParser.html">5.17. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/PQRParser.html">5.18. PQR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/PSFParser.html">5.19. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/TXYZParser.html">5.22. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/XYZParser.html">5.23. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/base.html">5.24. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/core.html">5.25. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/tpr_util.html">5.26. Utility functions for the TPR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/guessers.html">5.27. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topology/tables.html">5.28. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/MMCIFParser.html">5.15. MMCIF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PDBParser.html">5.16. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.17. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PDBQTParser.html">5.18. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PQRParser.html">5.19. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PSFParser.html">5.20. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TXYZParser.html">5.23. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/XYZParser.html">5.24. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/base.html">5.25. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/core.html">5.26. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/tpr_util.html">5.27. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/guessers.html">5.28. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/tables.html">5.29. MDAnalysis topology tables</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guesser_modules.html">6. Guesser modules</a></li>
@@ -180,7 +181,7 @@ files. MDAnalysis uses topology files to identify atoms and bonds
 between the atoms. It can use topology files from MD packages such as
 CHARMM’s and NAMD’s PSF format or Amber’s PRMTOP files. In addition,
 it can also glean atom information from single frame coordinate files
-such the PDB, CRD, or PQR formats (see the <a class="reference internal" href="topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a>).</p>
+such the PDB, CRD, MMCIF, or PQR formats (see the <a class="reference internal" href="topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a>).</p>
 <p>Typically, MDAnalysis recognizes formats by the file extension and
 hence most users probably do not need to concern themselves with
 classes and functions described here. However, if MDAnalysis does not
@@ -204,15 +205,16 @@ topology file format in the <em>topology_format</em> keyword argument to
 <li class="toctree-l1"><a class="reference internal" href="topology/MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology/MMTFParser.html">5.13. MMTF Topology Parser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology/MOL2Parser.html">5.14. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">5.15. PDB Topology Parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PDBQTParser.html">5.17. PDBQT topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">5.18. PQR topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">5.19. PSF topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/TXYZParser.html">5.22. TXYZ topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/XYZParser.html">5.23. XYZ Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/MMCIFParser.html">5.15. MMCIF Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">5.16. PDB Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.17. Extended PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBQTParser.html">5.18. PDBQT topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">5.19. PQR topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">5.20. PSF topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TXYZParser.html">5.23. TXYZ topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/XYZParser.html">5.24. XYZ Topology Parser</a></li>
 </ul>
 </div>
 <p class="rubric">Topology core modules</p>
@@ -221,11 +223,11 @@ contain functions and classes that are used in the implementation of
 the topology readers.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="topology/base.html">5.24. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/core.html">5.25. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/tpr_util.html">5.26. Utility functions for the TPR topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/guessers.html">5.27. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">5.28. MDAnalysis topology tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/base.html">5.25. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/core.html">5.26. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tpr_util.html">5.27. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/guessers.html">5.28. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">5.29. MDAnalysis topology tables</a></li>
 </ul>
 </div>
 </section>
