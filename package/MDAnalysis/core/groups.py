@@ -1601,6 +1601,9 @@ class GroupBase(_MutableBase):
         rotateby : rotate around given axis and angle
         MDAnalysis.lib.transformations : module of all coordinate transforms
 
+
+        .. versionchanged:: 2.11.0
+           Also rotate velocities and forces if present in Timestep.
         """
         R = np.asarray(R)
         point = np.asarray(point)
@@ -1610,11 +1613,19 @@ class GroupBase(_MutableBase):
         require_translation = bool(np.count_nonzero(point))
         if require_translation:
             atomgroup.translate(-point)
-        x = atomgroup.universe.trajectory.ts.positions
+        ts = atomgroup.universe.trajectory.ts
+        R_T = R.T
+        x = ts.positions
         idx = atomgroup.indices
-        x[idx] = np.dot(x[idx], R.T)
+        x[idx] = np.dot(x[idx], R_T)
         if require_translation:
             atomgroup.translate(point)
+        if ts.has_velocities:
+            v = ts.velocities
+            v[idx] = np.dot(v[idx], R_T)
+        if ts.has_forces:
+            f = ts.forces
+            f[idx] = np.dot(f[idx], R_T)
 
         return self
 
@@ -1652,6 +1663,9 @@ class GroupBase(_MutableBase):
         MDAnalysis.lib.transformations.rotation_matrix :
             calculate :math:`\mathsf{R}`
 
+
+        .. versionchanged:: 2.11.0
+           Also rotate velocities and forces if present in Timestep.
         """
         alpha = np.radians(angle)
         axis = np.asarray(axis)

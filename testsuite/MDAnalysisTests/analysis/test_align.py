@@ -31,6 +31,7 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
+from MDAnalysis.lib import transformations
 from MDAnalysisTests.datafiles import (
     PSF,
     DCD,
@@ -821,3 +822,45 @@ def test_alignto_reorder_atomgroups():
     ref = u.atoms[[3, 2, 1, 0]]
     rmsd = align.alignto(mobile, ref, select="bynum 1-4")
     assert_allclose(rmsd, (0.0, 0.0))
+
+
+def test_alignto_rotates_velocities_and_forces():
+    mobile = mda.Universe.empty(
+        4, trajectory=True, velocities=True, forces=True
+    )
+    reference = mda.Universe.empty(4, trajectory=True)
+
+    mobile.add_TopologyAttr("masses", [1.0, 1.0, 1.0, 1.0])
+    reference.add_TopologyAttr("masses", [1.0, 1.0, 1.0, 1.0])
+
+    ref_pos = np.array(
+        [[1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0]], dtype=np.float64
+    )
+    reference.atoms.positions = ref_pos
+
+    angle = 23
+    known_R = transformations.rotation_matrix(np.deg2rad(angle), [-1, 2, -3])[
+        :3, :3
+    ]
+    mobile.atoms.positions = np.dot(ref_pos, known_R.T)
+
+    rng = np.random.RandomState(0)
+    orig_v = rng.random((4, 3))
+    orig_f = rng.random((4, 3))
+    mobile.atoms.velocities = orig_v.copy()
+    mobile.atoms.forces = orig_f.copy()
+
+    mobile_centered = (
+        mobile.atoms.positions - mobile.atoms.center_of_geometry()
+    )
+    ref_centered = ref_pos - ref_pos.mean(axis=0)
+    expected_R, _ = align.rotation_matrix(mobile_centered, ref_centered)
+
+    align.alignto(mobile, reference)
+
+    assert_allclose(
+        mobile.atoms.velocities, np.dot(orig_v, expected_R.T), atol=1e-6
+    )
+    assert_allclose(
+        mobile.atoms.forces, np.dot(orig_f, expected_R.T), atol=1e-6
+    )

@@ -2084,7 +2084,7 @@ class Masses(AtomAttr):
            is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
-        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(wrap=wrap))
+        e_val, e_vec = np.linalg.eigh(atomgroup.moment_of_inertia(wrap=wrap))
 
         # Sort
         indices = np.argsort(e_val)[::-1]
