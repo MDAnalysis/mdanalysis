@@ -329,3 +329,24 @@ class TestMergeTopology(object):
         assert len(u_merge.atoms.angles) == 0
         assert len(u_merge.atoms.dihedrals) == 0
         assert len(u_merge.atoms.impropers) == 0
+
+    def test_merge_with_cmaps(self, u):
+        # cmaps are a connection attribute like bonds/angles, so Merge() must
+        # route them through the connection path rather than treating them as a
+        # plain array (Issue #3672).
+        u.add_TopologyAttr(
+            "cmaps", [[0, 1, 2, 3, 4], [100, 101, 102, 103, 104]]
+        )
+
+        ag1 = u.atoms[:20]
+        ag2 = u.atoms[100:110]
+        u_merge = MDAnalysis.Merge(ag1, ag2)
+
+        # Both cmaps lie entirely within their atomgroup, so both survive and
+        # are renumbered against the merged universe (ag2 is offset by len(ag1)).
+        assert hasattr(u_merge.atoms, "cmaps")
+        assert len(u_merge.atoms.cmaps) == 2
+        merged = sorted(
+            tuple(int(i) for i in c.indices) for c in u_merge.atoms.cmaps
+        )
+        assert merged == [(0, 1, 2, 3, 4), (20, 21, 22, 23, 24)]

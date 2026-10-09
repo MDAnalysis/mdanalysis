@@ -51,7 +51,8 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR2023_bonded, TPR2024_4_bonded,
                                         TPR2025_0_bonded, TPR2024_bonded,
                                         TPR2026_0_bonded,
-                                        TPR_NNPOT_2025_0, TPR_NNPOT_2026_0)
+                                        TPR_NNPOT_2025_0, TPR_NNPOT_2026_0,
+                                        TPR_linear_angle)
 from numpy.testing import assert_equal
 
 # fmt: on
@@ -438,3 +439,12 @@ def test_resids(resid_from_one, resid_addition):
         resids,
         err_msg="tpr_resid_from_one kwarg not switching resids",
     )
+
+
+def test_gh_5361():
+    # GROMACS linear angle potential handling with CO2 example
+    u = mda.Universe(TPR_linear_angle)
+    actual = u.angles.to_indices()
+    expected = [[1, 0, 2]]
+    assert_equal(u.atoms.names, ["C", "O1", "O2"])
+    assert_equal(actual, expected)

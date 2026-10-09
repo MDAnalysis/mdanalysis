@@ -21,6 +21,7 @@ from MDAnalysis.analysis.density import DensityAnalysis
 from MDAnalysis.analysis.lineardensity import LinearDensity
 from MDAnalysis.analysis.polymer import PersistenceLength
 from MDAnalysis.analysis.rdf import InterRDF, InterRDF_s
+from MDAnalysis.analysis.atomicdistances import AtomicDistances
 from MDAnalysis.lib.util import is_installed
 
 
@@ -216,4 +217,12 @@ def client_InterRDF_s(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
 def client_DistanceMatrix(request):
+    return request.param
+
+
+# MDAnalysis.analysis.atomicdistances
+
+
+@pytest.fixture(scope="module", params=params_for_cls(AtomicDistances))
+def client_AtomicDistances(request):
     return request.param

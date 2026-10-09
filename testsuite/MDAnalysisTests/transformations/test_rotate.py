@@ -182,6 +182,32 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
+def test_rotateby_velocities_forces():
+    u = mda.Universe.empty(2, trajectory=True, velocities=True, forces=True)
+    u.atoms.positions = np.array([[1, 0, 0], [-1, 0, 0]])
+    u.atoms.velocities = np.array([[1, 0, 0], [0, 1, 0]])
+    u.atoms.forces = np.array([[0, 0, 1], [1, 1, 0]])
+    ts = u.trajectory.ts
+
+    orig_v = ts.velocities.copy()
+    orig_f = ts.forces.copy()
+
+    axis = [-1, 2, -3]
+    point = [0, 0, 0]
+    angle = 23
+    matrix = rotation_matrix(np.deg2rad(angle), axis, point)
+    rotation = matrix[:3, :3].T
+
+    transformed_ts = rotateby(angle, axis, point=point)(ts)
+
+    assert_array_almost_equal(
+        transformed_ts.velocities, np.dot(orig_v, rotation), decimal=6
+    )
+    assert_array_almost_equal(
+        transformed_ts.forces, np.dot(orig_f, rotation), decimal=6
+    )
+
+
 @pytest.mark.parametrize(
     "ag",
     (

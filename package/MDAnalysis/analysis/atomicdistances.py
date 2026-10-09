@@ -114,7 +114,7 @@ from MDAnalysis.lib.distances import calc_bonds
 from MDAnalysis.analysis.results import Results
 
 import logging
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.atomicdistances")
 
@@ -147,14 +147,26 @@ class AtomicDistances(AnalysisBase):
 
     .. versionadded:: 2.5.0
     .. versionchanged:: 2.11.0
-       Distance data are now made available in :attr:`results.distances` instead
-       of :attr:`results` and :attr:`results` is now a
-       :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue
-       (see `Issue #4819`_) in a *backwards-incompatible* manner.
 
+       *  Distance data are now made available in :attr:`results.distances` instead
+          of :attr:`results` and :attr:`results` is now a
+          :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue
+          (see `Issue #4819`_) in a *backwards-incompatible* manner.
+       *  Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+          backends; use the new method :meth:`get_supported_backends` to see all
+          supported backends.
     .. _`Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819
-
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
         # check ag1 and ag2 have the same number of atoms
@@ -184,4 +196,11 @@ class AtomicDistances(AnalysisBase):
         box = self._ag1.dimensions if self._pbc else None
         self.results.distances[self._frame_index] = calc_bonds(
             self._ag1.positions, self._ag2.positions, box
+        )
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "distances": ResultsGroup.ndarray_vstack,  # Get distances
+            }
         )
