@@ -396,7 +396,7 @@ class InterRDF(AnalysisBase):
             # Average number density
             self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
-            
+
             # Save the average density so it can be accessed by the user
             self.results.density = N / box_vol
 
