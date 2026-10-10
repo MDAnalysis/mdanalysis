@@ -361,7 +361,7 @@ class InterRDF(AnalysisBase):
         count, _ = np.histogram(dist, **self.rdf_settings)
         self.results.count += count
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             self.results.volume_cum += self._ts.volume
 
     def _get_aggregator(self):
@@ -381,7 +381,7 @@ class InterRDF(AnalysisBase):
             vols = np.power(self.results.edges, 3)
             norm *= 4 / 3 * np.pi * np.diff(vols)
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Number of each selection
             nA = len(self.g1)
             nB = len(self.g2)
@@ -396,7 +396,12 @@ class InterRDF(AnalysisBase):
             # Average number density
             self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
-            norm *= N / box_vol
+            
+            # Save the average density so it can be accessed by the user
+            self.results.density = N / box_vol
+
+            if self.norm == "rdf":
+                norm *= self.results.density
 
         self.results.rdf = self.results.count / norm
 
@@ -742,7 +747,7 @@ class InterRDF_s(AnalysisBase):
             idx2s = pairs[:, 1]
             self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             self.results.volume_cum += self._ts.volume
 
     def _conclude(self):
