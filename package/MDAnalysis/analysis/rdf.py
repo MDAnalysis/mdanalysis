@@ -330,7 +330,7 @@ class InterRDF(AnalysisBase):
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
         # Set the max range to filter the search radius
@@ -721,7 +721,7 @@ class InterRDF_s(AnalysisBase):
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
@@ -757,10 +757,12 @@ class InterRDF_s(AnalysisBase):
             vols = np.power(self.results.edges, 3)
             norm *= 4 / 3 * np.pi * np.diff(vols)
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Average number density
             self.volume_cum = self.results.volume_cum
-            norm *= 1 / (self.volume_cum / self.n_frames)
+            self.results.density = self.n_frames / self.volume_cum
+            if self.norm == "rdf":
+                norm *= self.results.density
 
         # Empty lists to restore indices, RDF
         self.results.indices = []
