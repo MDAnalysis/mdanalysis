@@ -397,8 +397,13 @@ class InterRDF(AnalysisBase):
             self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
 
-            # Save the average density so it can be accessed by the user
-            self.results.density = N / box_vol
+            # Save the average density if a non-zero box volume is available
+            if box_vol > 0:
+                self.results.density = N / box_vol
+                self.results.rho = self.results.density
+            else:
+                self.results.density = None
+                self.results.rho = None
 
             if self.norm == "rdf":
                 norm *= self.results.density
@@ -760,7 +765,13 @@ class InterRDF_s(AnalysisBase):
         if self.norm in ["rdf", "density"]:
             # Average number density
             self.volume_cum = self.results.volume_cum
-            self.results.density = self.n_frames / self.volume_cum
+            if self.volume_cum > 0:
+                self.results.density = self.n_frames / self.volume_cum
+                self.results.rho = self.results.density
+            else:
+                self.results.density = None
+                self.results.rho = None
+
             if self.norm == "rdf":
                 norm *= self.results.density
 
