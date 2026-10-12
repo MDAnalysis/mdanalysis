@@ -681,6 +681,9 @@ class NCDFReader(base.ReaderBase):
         self._current_frame = -1
 
     def _read_next_timestep(self, ts=None):
+        if ts:
+            warnings.warn("ts argument to _read_next_timestep is deprecated as of 2.7.0 and will be removed in 3.0.0, see #3928") 
+
         if ts is None:
             ts = self.ts
         try:
