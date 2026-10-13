@@ -82,6 +82,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Faster residue building in topology parsers (`change_squash`, 18x) and
+   ITP atom id lookup (30x) (PR #XXXX)
  * Faster `GNMAnalysis` Kirchhoff matrix (25x) and `HydrogenBondAnalysis`
    (8x for `run()`, 2x for `lifetime()`) (PR #XXXX)
  * Faster `DefaultGuesser` angle, dihedral and improper guessing (20-100x),
