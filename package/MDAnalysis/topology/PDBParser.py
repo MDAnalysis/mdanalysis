@@ -53,10 +53,11 @@ numbers up to 99,999.
 .. Note::
 
    You can also use :mod:`~MDAnalysis.topology.MMCIFParser` to parse PDB files
-   that you're having trouble parsing with the standard PDB parser. For example::
+   that you're having trouble parsing with the standard PDB parser, such as
+   files with residue numbers above 9999 in hybrid-36. For example::
 
        import MDAnalysis as mda
-       u = mda.Universe("problematic.pdb", topology_format="MMCIF")
+       u = mda.Universe("problematic.pdb", format="pdb_gemmi")
 
    ``MMCIFParser`` uses the `gemmi <https://gemmi.readthedocs.io>`_ library,
    which is developed together with RCSB and may handle edge cases better.

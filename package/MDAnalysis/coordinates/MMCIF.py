@@ -35,6 +35,10 @@ Basic usage
     # or from a compressed file
     u = mda.Universe("structure.cif.gz")
 
+    # PDB files can also be read with gemmi, e.g. for residue numbers
+    # above 9999 written in hybrid-36
+    u = mda.Universe("structure.pdb", format="pdb_gemmi")
+
 See Also
 --------
 * `wwPDB MMCIF Resources <http://mmcif.wwpdb.org>`_
@@ -142,7 +146,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
     .. versionadded:: 2.11.0
     """
 
-    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz", "pdb_gemmi"]
     units = {"time": None, "length": "Angstrom"}
 
     def __init__(self, filename, **kwargs):

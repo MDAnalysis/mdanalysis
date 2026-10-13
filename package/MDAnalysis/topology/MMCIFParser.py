@@ -8,7 +8,8 @@ MMCIF Topology Parser
 .. versionadded:: 2.11.0
 
 Read topology information from mmCIF/PDBx coordinate files using the
-`Gemmi library <https://gemmi.readthedocs.io>`_.
+`Gemmi library <https://gemmi.readthedocs.io>`_. PDB files can be read the
+same way with ``format="pdb_gemmi"``.
 
 
 
@@ -128,7 +129,7 @@ class MMCIFParser(TopologyReaderBase):
             - :class:`MDAnalysis.core.topologyattrs.Segids`
     """
 
-    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz", "pdb_gemmi"]
 
     def __init__(self, filename):
         if not HAS_GEMMI:
