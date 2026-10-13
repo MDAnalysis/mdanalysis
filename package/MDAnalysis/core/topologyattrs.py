@@ -3238,6 +3238,21 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                 bd[a].append((b, t, g, o))
         return bd
 
+    @property
+    @cached("arrays")
+    def _arrays(self):
+        """Lazily built arrays of connection values, types, guessed and order"""
+        n = len(self.values)
+        values = np.array(self.values, dtype=np.int32).reshape(
+            n, self._n_atoms
+        )
+        # fromiter keeps tuple-valued types as single objects
+        types, guessed, order = (
+            np.fromiter(x, dtype=object, count=n)
+            for x in (self.types, self._guessed, self.order)
+        )
+        return values, types, guessed, order
+
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
 
@@ -3251,13 +3266,33 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         ag : AtomGroup
 
         """
+        ix = ag.ix
+        if isinstance(ix, np.ndarray) and len(ix) * 64 > len(self.values):
+            # large groups: select from the full connection arrays at once
+            # rather than looking up every atom in the per-atom dict
+            values, types, guessed, order = self._arrays
+            inag = np.zeros(ag.universe._topology.n_atoms, dtype=bool)
+            inag[ix] = True
+            sel = np.flatnonzero(inag[values].any(axis=1))
+            sel = sel[np.lexsort(values[sel].T[::-1])]
+            bond_idx = values[sel]
+            # duplicate connections are ordered by type etc. below
+            if not (bond_idx[1:] == bond_idx[:-1]).all(axis=1).any():
+                return TopologyGroup(
+                    bond_idx,
+                    ag.universe,
+                    self.singular[:-1],
+                    types[sel],
+                    guessed[sel],
+                    order[sel],
+                )
         try:
             unique_bonds = set(
-                itertools.chain(*[self._bondDict[a] for a in ag.ix])
+                itertools.chain(*[self._bondDict[a] for a in ix])
             )
         except TypeError:
             # maybe we got passed an Atom
-            unique_bonds = self._bondDict[ag.ix]
+            unique_bonds = self._bondDict[ix]
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
         bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
@@ -3283,11 +3318,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                 self.types.append(t)
                 self._guessed.append(g)
                 self.order.append(o)
-        # kill the old cache of bond Dict
-        try:
-            del self._cache["bd"]
-        except KeyError:
-            pass
+        # kill the old caches of bond Dict and arrays
+        self._cache.pop("bd", None)
+        self._cache.pop("arrays", None)
 
     @_check_connection_values
     def _delete_bonds(self, values):
@@ -3316,11 +3349,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             arr = np.array(getattr(self, attr), dtype="object")
             new = np.delete(arr, idx)
             setattr(self, attr, list(new))
-        # kill the old cache of bond Dict
-        try:
-            del self._cache["bd"]
-        except KeyError:
-            pass
+        # kill the old caches of bond Dict and arrays
+        self._cache.pop("bd", None)
+        self._cache.pop("arrays", None)
 
 
 class Bonds(_Connection):
@@ -3363,7 +3394,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        return self.universe._fragdict[self.ix].ix
+        return int(self.universe._fragments[0][self.ix])
 
     @cached("fragindices", universe_validation=True)
     def fragindices(self):
@@ -3379,8 +3410,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        fragdict = self.universe._fragdict
-        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.intp)
+        return self.universe._fragments[0][self.ix]
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
@@ -3397,7 +3427,8 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        return self.universe._fragdict[self.ix].fragment
+        fragindices, frags = self.universe._fragments
+        return frags[fragindices[self.ix]]
 
     @cached("fragments", universe_validation=True)
     def fragments(self):
@@ -3424,11 +3455,11 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        fragdict = self.universe._fragdict
+        fragindices, frags = self.universe._fragments
         return tuple(
             sorted(
-                set(fragdict[aix].fragment for aix in self.ix),
-                key=lambda x: x[0].ix,
+                (frags[i] for i in unique_int_1d(fragindices[self.ix])),
+                key=lambda x: x.ix[0],
             )
         )
 
