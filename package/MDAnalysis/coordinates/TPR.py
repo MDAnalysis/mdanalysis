@@ -74,6 +74,8 @@ class TPRReader(base.SingleFrameReaderBase):
     """Class supporting read in of positions and velocities from GROMACS TPR files.
 
     .. versionadded:: 2.10.0
+    .. versionchanged:: 2.11.0
+       Read unit cell dimensions from TPR file.
     """
     format = "TPR"
     units = {"length": "nm", "velocity": "nm/ps"}
