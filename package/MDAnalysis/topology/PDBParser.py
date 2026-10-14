@@ -79,7 +79,7 @@ structures. They can give different topologies for the same file:
      - only the first model is read (with a warning)
    * - ``CONECT`` records
      - read as bonds
-     - ignored
+     - read as bonds
    * - Segment IDs
      - from the segment identifier (columns 73-76), falling back to chain IDs
      - always from chain IDs; blank chain IDs give empty segids

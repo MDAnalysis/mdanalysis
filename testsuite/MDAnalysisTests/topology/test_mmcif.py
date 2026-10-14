@@ -8,6 +8,7 @@ from MDAnalysis.lib import util
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
+from MDAnalysisTests.datafiles import CONECT, PDB_multiframe
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
@@ -260,3 +261,37 @@ def test_pdb_gemmi_hybrid36_resids():
     pdb = util.NamedStream(StringIO("\n".join(lines) + "\nEND\n"), "water.pdb")
     u = mda.Universe(pdb, format="pdb_gemmi")
     assert_equal(u.residues.resids, [9999, 10000, 10001])
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize("filename", [CONECT, PDB_multiframe])
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_pdb_gemmi_conect_bonds(filename):
+    u_gemmi = mda.Universe(filename, format="pdb_gemmi")
+    u_pdb = mda.Universe(filename)
+    # bonds are matched by atom serial since gemmi may reorder atoms
+    gemmi_bonds = {tuple(sorted(b.atoms.ids)) for b in u_gemmi.bonds}
+    pdb_bonds = {tuple(sorted(b.atoms.ids)) for b in u_pdb.bonds}
+    assert len(gemmi_bonds) > 0
+    assert gemmi_bonds == pdb_bonds
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_mmcif_no_bonds():
+    u = mda.Universe(f"{MMCIF_FOLDER}/1BD2.cif.gz")
+    assert not hasattr(u.atoms, "bonds")
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_pdb_gemmi_conect_duplicate_serials():
+    record = (
+        "ATOM  {:5d}  C   UNK A   1    {:8.3f}   0.000   0.000"
+        "  1.00  0.00           C"
+    )
+    lines = [record.format(serial, x) for x, serial in enumerate([1, 1, 2])]
+    lines.append("CONECT    1    2")
+    pdb = util.NamedStream(StringIO("\n".join(lines) + "\nEND\n"), "dup.pdb")
+    with pytest.warns(UserWarning, match="bonds will not be parsed"):
+        u = mda.Universe(pdb, format="pdb_gemmi")
+    assert not hasattr(u.atoms, "bonds")
