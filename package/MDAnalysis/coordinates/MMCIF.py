@@ -60,7 +60,7 @@ from ..lib import util
 from . import base
 
 if TYPE_CHECKING:
-    from gemmi import Model, Structure
+    from gemmi import Structure
 
 try:
     import gemmi
@@ -113,21 +113,20 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
             raise e
 
 
-def _get_coordinates(model: "Model") -> np.ndarray:
-    """Get coordinates of all atoms in the `gemmi.Model` object.
+def _get_coordinates(structure: "Structure") -> np.ndarray:
+    """Get coordinates of all atoms in a single-model `gemmi.Structure`.
 
     Parameters
     ----------
-    model
-        input ``gemmi.Model``, e.g. ``gemmi.read_structure('file.cif')[0]``
+    structure
+        input ``gemmi.Structure`` holding only one model; ``gemmi.FlatStructure``
+        includes atoms from every model, so extra models must be removed first
 
     Returns
     -------
         np.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.
     """
-    return np.array(
-        [[*at.pos.tolist()] for chain in model for res in chain for at in res]
-    )
+    return np.asarray(gemmi.FlatStructure(structure).pos)
 
 
 class MMCIFReader(base.SingleFrameReaderBase):
@@ -167,9 +166,9 @@ class MMCIFReader(base.SingleFrameReaderBase):
             )
             warnings.warn(wmsg)
             logger.warning(wmsg)
+            del structure[1:]
 
-        model = structure[0]
-        coords = _get_coordinates(model)
+        coords = _get_coordinates(structure)
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):

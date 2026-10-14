@@ -81,6 +81,24 @@ from .base import TopologyReaderBase, change_squash
 logger = logging.getLogger("MDAnalysis.topology.MMCIFParser")
 
 
+def _factorize(column: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Split a fixed-width bytes column into an index per entry and the
+    distinct decoded strings, sorting the bytes as unsigned integers"""
+    column = np.ascontiguousarray(column)
+    codes, nmidx = np.unique(
+        column.view(f"u{column.dtype.itemsize}"), return_inverse=True
+    )
+    return nmidx, codes.view(column.dtype).astype(str).astype(object)
+
+
+def _dedupe(nmidx: np.ndarray, values) -> tuple[np.ndarray, np.ndarray]:
+    """Merge distinct values that became equal after being transformed"""
+    values, remap = np.unique(
+        np.asarray(values, dtype=object), return_inverse=True
+    )
+    return remap[nmidx], values
+
+
 class MMCIFParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard MMCIF/PDBx file using
     the `gemmi library <https://gemmi.readthedocs.io>`_.
@@ -137,54 +155,32 @@ class MMCIFParser(TopologyReaderBase):
             )
             warnings.warn(wmsg)
             logger.warning(wmsg)
-        model = structure[0]
+            del structure[1:]
 
-        # TODO: gemmi.FlatStructure provides vectorised column access to all atom
-        # fields and could replace the per-atom Python loop below for a speed-up
-        # on large structures. gemmi API is still not 100% there yes so worth revisiting
-        # later once it matures more
-        altlocs = []
-        serials = []
-        names = []
-        chainids = []
-        elements = []
-        formalcharges = []
-        weights = []
-        occupancies = []
-        record_types = []
-        tempfactors = []
-        icodes = []
-        resids = []
-        resnames = []
+        import gemmi
 
-        for chain in model:
-            for residue in chain:
-                match residue.het_flag:
-                    case "A":
-                        rec = "ATOM"
-                    case "H":
-                        rec = "HETATM"
-                    case _:
-                        # Intentionally strict: this also rejects the "\0"
-                        # (unspecified) het_flag, so an mmCIF lacking the
-                        # ``group_PDB`` field will fail to parse.
-                        raise ValueError(
-                            "Found an atom that is neither ATOM nor HETATM"
-                        )
-                for atom in residue:
-                    altlocs.append(atom.altloc if atom.has_altloc() else "")
-                    serials.append(atom.serial)
-                    names.append(atom.name)
-                    chainids.append(chain.name)
-                    elements.append(atom.element.name)
-                    formalcharges.append(atom.charge)
-                    weights.append(atom.element.weight)
-                    occupancies.append(atom.occ)
-                    record_types.append(rec)
-                    tempfactors.append(atom.b_iso)
-                    icodes.append(residue.seqid.icode.strip())
-                    resids.append(residue.seqid.num)
-                    resnames.append(residue.name)
+        flat = gemmi.FlatStructure(structure)
+        flat.strings_as_numbers = False
+
+        # String columns are factorized in bulk into (per-atom index, distinct
+        # values) pairs, the layout MDAnalysis interns strings in anyway
+        het_idx, het_flags = _factorize(np.asarray(flat.het_flags).view("S1"))
+        # Intentionally strict: this also rejects the "\0" (unspecified)
+        # het_flag, so an mmCIF lacking the ``group_PDB`` field will fail
+        # to parse.
+        if not set(het_flags) <= {"A", "H"}:
+            raise ValueError("Found an atom that is neither ATOM nor HETATM")
+        record_types = np.where(het_flags == "A", "ATOM", "HETATM")
+
+        # gemmi stores "no altloc" as "\0", which numpy decodes to ""
+        altlocs = _factorize(np.asarray(flat.altlocs).view("S1"))
+        names = _factorize(np.asarray(flat.atom_names))
+        chain_idx, chainids = _factorize(np.asarray(flat.chain_ids))
+        elem_idx, elements = _factorize(np.asarray(flat.element_names))
+        resname_idx, resnames = _factorize(np.asarray(flat.residue_names))
+        icode_idx, icodes = _factorize(np.asarray(flat.icodes).view("S1"))
+        icode_idx, icodes = _dedupe(icode_idx, [c.strip() for c in icodes])
+        resids = np.asarray(flat.resnums)
 
         # As in PDBParser: feed atomtypes the raw element column, but
         # validate elements against known symbols before storing them
@@ -205,41 +201,37 @@ class MMCIFParser(TopologyReaderBase):
 
         # Atom Attributes
         attrs = [
-            AltLocs(altlocs),
-            Atomids(serials),
-            Atomnames(names),
-            Atomtypes(elements),
+            AltLocs._from_lookup(*altlocs),
+            Atomids(np.asarray(flat.serials)),
+            Atomnames._from_lookup(*names),
+            Atomtypes._from_lookup(elem_idx, elements),
             # ----------------------------
-            ChainIDs(chainids),
-            Elements(validated_elements),
-            FormalCharges(formalcharges),
-            Masses(weights),
+            ChainIDs._from_lookup(chain_idx, chainids),
+            Elements._from_lookup(*_dedupe(elem_idx, validated_elements)),
+            FormalCharges(np.asarray(flat.charge)),
+            Masses(np.asarray(flat.element_weights)),
             # ----------------------------
-            Occupancies(occupancies),
-            RecordTypes(record_types),
-            Tempfactors(tempfactors),
+            Occupancies(np.asarray(flat.occ)),
+            RecordTypes._from_lookup(het_idx, record_types),
+            Tempfactors(np.asarray(flat.b_iso)),
         ]
-        n_atoms = len(altlocs)
+        n_atoms = len(resids)
 
         # Residue Attributes
-        resids = np.array(resids)
-        resnames = np.array(resnames)
-        icodes = np.array(icodes)
-        chainids = np.array(chainids)
-        residx, (resids, resnames, icodes, chainids) = change_squash(
-            (resids, resnames, icodes, chainids),
-            (resids, resnames, icodes, chainids),
+        residx, (resids, resname_idx, icode_idx, chain_idx) = change_squash(
+            (resids, resname_idx, icode_idx, chain_idx),
+            (resids, resname_idx, icode_idx, chain_idx),
         )
         attrs.append(Resids(resids))
-        attrs.append(Resnames(resnames))
+        attrs.append(Resnames._from_lookup(resname_idx, resnames))
         attrs.append(Resnums(resids.copy()))
-        attrs.append(ICodes(icodes))
+        attrs.append(ICodes._from_lookup(icode_idx, icodes))
         n_residues = len(resids)
 
         # Segment Attributes
-        segidx, (segids,) = change_squash((chainids,), (chainids,))
-        attrs.append(Segids(segids))
-        n_segments = len(segids)
+        segidx, (chain_idx,) = change_squash((chain_idx,), (chain_idx,))
+        attrs.append(Segids._from_lookup(chain_idx, chainids))
+        n_segments = len(chain_idx)
 
         return Topology(
             n_atoms,
