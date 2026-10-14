@@ -69,8 +69,11 @@ Notes
 * The MDAnalysis :class:`MOL2Reader` and :class:`MOL2Writer` only handle the
   MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
   currently read or preserved on writing.
-* As the CRYSIN record type is not parsed / written, MOL2 systems always have
-  dimensions set to ``None`` and dimensionless MOL2 files are written.
+* The MDAnalysis :class:`MOL2Reader` reads unit cell dimensions from the
+  @<TRIPOS>CRYSIN record. The space group and setting information (the 7th
+  and 8th fields) are currently ignored. The unit cell is interpreted in the
+  common crystallographic convention with box vector **a** parallel to the x-axis,
+  **b** in the xy-plane, and **c** having a positive z-component.
 
 
 MOL2 format notes
@@ -246,6 +249,10 @@ class MOL2Reader(base.ReaderBase):
                 self.ts.data[sect] = sections[sect]
             except KeyError:
                 pass
+        if "crysin" in sections:
+            line = sections["crysin"][0].strip()
+            dims = line.split()[:6]
+            self.ts.dimensions = np.array(dims, dtype=np.float32)
 
         self.ts.positions = np.array(coords, dtype=np.float32)
 

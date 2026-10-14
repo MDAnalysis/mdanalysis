@@ -195,6 +195,17 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.wrap(compound="residues")
 
+    def time_asunique_no_sorted(self, num_atoms):
+        """Benchmark asunique() operation on
+        atomgroup without sorting"""
+        self.ag.asunique(sorted=False)
+
+    def time_asunique_sorted(self, num_atoms):
+        """Benchmark asunique() operation on
+        atomgroup with sorting"""
+        self.ag.asunique(sorted=True)
+
+
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis
     atomgroup attributes.

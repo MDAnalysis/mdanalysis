@@ -39,7 +39,9 @@ authors.py
 *.DS_Store
 # ignore files from tests
 .hypothesis/
-# ignore results from asv
+# ignore folders from asv
+benchmarks/env
+benchmarks/html
 benchmarks/results
 
 # duecredit

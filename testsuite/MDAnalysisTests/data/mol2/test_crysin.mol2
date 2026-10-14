@@ -1,0 +1,10 @@
+@<TRIPOS>MOLECULE
+test_structure
+ 1 0 0 0 0
+SMALL
+USER_CHARGES
+@<TRIPOS>ATOM
+      1 C          0.0000      0.0000      0.0000 C.3     1  ALA        0.0000
+@<TRIPOS>CRYSIN
+   40.0000   50.0000   60.0000   90.0000   90.0000   90.0000    1    1
+@<TRIPOS>END

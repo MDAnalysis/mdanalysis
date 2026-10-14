@@ -55,6 +55,12 @@ jobs:
               full-deps: false
               codecov: true
               cython: "cython<3.1"
+            - name: ubuntu_arm
+              os: ubuntu-24.04-arm
+              python-version: "3.13"
+              full-deps: false
+              codecov: false
+              cython: "cython>3.1"
             - name: numpy_min
               os: ubuntu-latest
               python-version: "3.11"
@@ -73,7 +79,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -87,10 +93,8 @@ jobs:
         create-args: >-
           python=${{ matrix.python-version }}
           pip
-        # using jaime's shim to avoid pulling down the cudatoolkit
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -158,7 +162,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v2
@@ -167,7 +171,6 @@ jobs:
         create-args: >-
           python=3.11
           pip
-        # using jaime's shim to avoid pulling down the cudatoolkit
         condarc: |
           channels:
             - conda-forge
@@ -256,9 +259,9 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.11
 

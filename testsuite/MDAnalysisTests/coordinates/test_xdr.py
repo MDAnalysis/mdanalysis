@@ -22,12 +22,13 @@
 #
 import pytest
 from unittest.mock import patch
+from packaging.version import Version
 
 import re
 import os
 import shutil
 import sys
-from filelock import FileLock
+import filelock
 from pathlib import Path
 
 import numpy as np
@@ -1028,7 +1029,7 @@ class _GromacsReader_offsets(object):
         ref_offset = trajectory._xdr.offsets
         # Mock filelock acquire to raise an error
         with patch.object(
-            FileLock, "acquire", side_effect=PermissionError
+            filelock.FileLock, "acquire", side_effect=PermissionError
         ):  # Simulate failure
             with pytest.warns(UserWarning, match="Cannot write lock"):
                 reader = self._reader(filename)
@@ -1048,21 +1049,32 @@ class _GromacsReader_offsets(object):
             False,
         )
 
+    @pytest.mark.xfail(
+        Version(filelock.__version__) < Version("3.29.5"),
+        reason="unsecure version of filelock",
+    )
     def test_offset_lock_created(self):
         lock_file_path = XDR.offsets_filename(self.filename, ending="lock")
 
-        with FileLock(lock_file_path) as lock:
+        with filelock.FileLock(lock_file_path) as lock:
             # Lock acquired in context manager, so lock file should exist
             assert lock.is_locked
             assert os.path.exists(lock_file_path)
 
-            # Explicitly release lock, file should be deleted on UNIX
-            lock.release()
-            assert not lock.is_locked
-            if not sys.platform.startswith("win"):
-                # As of filelock>=3.21.0, filelock explicitly deletes lockfile
-                # upon release on UNIX. filelock does not do that on windows.
-                assert not os.path.exists(lock_file_path)
+        # released lock
+        assert not lock.is_locked
+
+        # validate the expected behavior of how filelock handles lock files for
+        # released locks:
+        if sys.platform.startswith("win"):
+            # on Windows, the lockfile remained (filelock ~3.21.0) but recent
+            # versions (at least 3.29.7) appear to remove the lockfile
+            assert not os.path.exists(lock_file_path)
+        else:
+            # for filelock>=3.21.0,<3.29.5, the lockfile was deleted on POSIX,
+            # but this can lead to race conditions. Secure versions of filelock
+            # keep the lockfile (see GH tox-dev/filelock#574)
+            assert os.path.exists(lock_file_path)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
