@@ -224,6 +224,24 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.topology.MMCIFParser"</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_factorize</span><span class="p">(</span><span class="n">column</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Split a fixed-width bytes column into an index per entry and the</span>
+<span class="sd">    distinct decoded strings, sorting the bytes as unsigned integers"""</span>
+    <span class="n">column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+    <span class="n">codes</span><span class="p">,</span> <span class="n">nmidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="si">}</span><span class="s2">"</span><span class="p">),</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">nmidx</span><span class="p">,</span> <span class="n">codes</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dedupe</span><span class="p">(</span><span class="n">nmidx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Merge distinct values that became equal after being transformed"""</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">remap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">remap</span><span class="p">[</span><span class="n">nmidx</span><span class="p">],</span> <span class="n">values</span>
+
+
 <div class="viewcode-block" id="MMCIFParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MMCIFParser.html#MDAnalysis.topology.MMCIFParser.MMCIFParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MMCIFParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
@@ -284,54 +302,32 @@
             <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">structure</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-        <span class="c1"># TODO: gemmi.FlatStructure provides vectorised column access to all atom</span>
-        <span class="c1"># fields and could replace the per-atom Python loop below for a speed-up</span>
-        <span class="c1"># on large structures. gemmi API is still not 100% there yes so worth revisiting</span>
-        <span class="c1"># later once it matures more</span>
-        <span class="n">altlocs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">serials</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">chainids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">formalcharges</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">occupancies</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">tempfactors</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">icodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">resids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">gemmi</span>
 
-        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">model</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-                <span class="k">match</span> <span class="n">residue</span><span class="o">.</span><span class="n">het_flag</span><span class="p">:</span>
-                    <span class="k">case</span> <span class="s2">"A"</span><span class="p">:</span>
-                        <span class="n">rec</span> <span class="o">=</span> <span class="s2">"ATOM"</span>
-                    <span class="k">case</span> <span class="s2">"H"</span><span class="p">:</span>
-                        <span class="n">rec</span> <span class="o">=</span> <span class="s2">"HETATM"</span>
-                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-                        <span class="c1"># Intentionally strict: this also rejects the "\0"</span>
-                        <span class="c1"># (unspecified) het_flag, so an mmCIF lacking the</span>
-                        <span class="c1"># ``group_PDB`` field will fail to parse.</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">"Found an atom that is neither ATOM nor HETATM"</span>
-                        <span class="p">)</span>
-                <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="p">:</span>
-                    <span class="n">altlocs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">altloc</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">has_altloc</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
-                    <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">serial</span><span class="p">)</span>
-                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">chainids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">formalcharges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
-                    <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
-                    <span class="n">occupancies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">occ</span><span class="p">)</span>
-                    <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
-                    <span class="n">tempfactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">b_iso</span><span class="p">)</span>
-                    <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">seqid</span><span class="o">.</span><span class="n">icode</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                    <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">seqid</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
-                    <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">flat</span> <span class="o">=</span> <span class="n">gemmi</span><span class="o">.</span><span class="n">FlatStructure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">flat</span><span class="o">.</span><span class="n">strings_as_numbers</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># String columns are factorized in bulk into (per-atom index, distinct</span>
+        <span class="c1"># values) pairs, the layout MDAnalysis interns strings in anyway</span>
+        <span class="n">het_idx</span><span class="p">,</span> <span class="n">het_flags</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">het_flags</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s2">"S1"</span><span class="p">))</span>
+        <span class="c1"># Intentionally strict: this also rejects the "\0" (unspecified)</span>
+        <span class="c1"># het_flag, so an mmCIF lacking the ``group_PDB`` field will fail</span>
+        <span class="c1"># to parse.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">het_flags</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Found an atom that is neither ATOM nor HETATM"</span><span class="p">)</span>
+        <span class="n">record_types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">het_flags</span> <span class="o">==</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"ATOM"</span><span class="p">,</span> <span class="s2">"HETATM"</span><span class="p">)</span>
+
+        <span class="c1"># gemmi stores "no altloc" as "\0", which numpy decodes to ""</span>
+        <span class="n">altlocs</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">altlocs</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s2">"S1"</span><span class="p">))</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">atom_names</span><span class="p">))</span>
+        <span class="n">chain_idx</span><span class="p">,</span> <span class="n">chainids</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">chain_ids</span><span class="p">))</span>
+        <span class="n">elem_idx</span><span class="p">,</span> <span class="n">elements</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">element_names</span><span class="p">))</span>
+        <span class="n">resname_idx</span><span class="p">,</span> <span class="n">resnames</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">residue_names</span><span class="p">))</span>
+        <span class="n">icode_idx</span><span class="p">,</span> <span class="n">icodes</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">icodes</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s2">"S1"</span><span class="p">))</span>
+        <span class="n">icode_idx</span><span class="p">,</span> <span class="n">icodes</span> <span class="o">=</span> <span class="n">_dedupe</span><span class="p">(</span><span class="n">icode_idx</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">icodes</span><span class="p">])</span>
+        <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">resnums</span><span class="p">)</span>
 
         <span class="c1"># As in PDBParser: feed atomtypes the raw element column, but</span>
         <span class="c1"># validate elements against known symbols before storing them</span>
@@ -352,41 +348,37 @@
 
         <span class="c1"># Atom Attributes</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">AltLocs</span><span class="p">(</span><span class="n">altlocs</span><span class="p">),</span>
-            <span class="n">Atomids</span><span class="p">(</span><span class="n">serials</span><span class="p">),</span>
-            <span class="n">Atomnames</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
-            <span class="n">Atomtypes</span><span class="p">(</span><span class="n">elements</span><span class="p">),</span>
+            <span class="n">AltLocs</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="o">*</span><span class="n">altlocs</span><span class="p">),</span>
+            <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">serials</span><span class="p">)),</span>
+            <span class="n">Atomnames</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="o">*</span><span class="n">names</span><span class="p">),</span>
+            <span class="n">Atomtypes</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">elem_idx</span><span class="p">,</span> <span class="n">elements</span><span class="p">),</span>
             <span class="c1"># ----------------------------</span>
-            <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainids</span><span class="p">),</span>
-            <span class="n">Elements</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">),</span>
-            <span class="n">FormalCharges</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">),</span>
-            <span class="n">Masses</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span>
+            <span class="n">ChainIDs</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">chain_idx</span><span class="p">,</span> <span class="n">chainids</span><span class="p">),</span>
+            <span class="n">Elements</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="o">*</span><span class="n">_dedupe</span><span class="p">(</span><span class="n">elem_idx</span><span class="p">,</span> <span class="n">validated_elements</span><span class="p">)),</span>
+            <span class="n">FormalCharges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">charge</span><span class="p">)),</span>
+            <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">element_weights</span><span class="p">)),</span>
             <span class="c1"># ----------------------------</span>
-            <span class="n">Occupancies</span><span class="p">(</span><span class="n">occupancies</span><span class="p">),</span>
-            <span class="n">RecordTypes</span><span class="p">(</span><span class="n">record_types</span><span class="p">),</span>
-            <span class="n">Tempfactors</span><span class="p">(</span><span class="n">tempfactors</span><span class="p">),</span>
+            <span class="n">Occupancies</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">occ</span><span class="p">)),</span>
+            <span class="n">RecordTypes</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">het_idx</span><span class="p">,</span> <span class="n">record_types</span><span class="p">),</span>
+            <span class="n">Tempfactors</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">b_iso</span><span class="p">)),</span>
         <span class="p">]</span>
-        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">altlocs</span><span class="p">)</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
 
         <span class="c1"># Residue Attributes</span>
-        <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
-        <span class="n">resnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resnames</span><span class="p">)</span>
-        <span class="n">icodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">icodes</span><span class="p">)</span>
-        <span class="n">chainids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chainids</span><span class="p">)</span>
-        <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">chainids</span><span class="p">),</span>
+        <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resname_idx</span><span class="p">,</span> <span class="n">icode_idx</span><span class="p">,</span> <span class="n">chain_idx</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resname_idx</span><span class="p">,</span> <span class="n">icode_idx</span><span class="p">,</span> <span class="n">chain_idx</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resname_idx</span><span class="p">,</span> <span class="n">icode_idx</span><span class="p">,</span> <span class="n">chain_idx</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">resname_idx</span><span class="p">,</span> <span class="n">resnames</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">(</span><span class="n">icodes</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">icode_idx</span><span class="p">,</span> <span class="n">icodes</span><span class="p">))</span>
         <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
 
         <span class="c1"># Segment Attributes</span>
-        <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">chainids</span><span class="p">,),</span> <span class="p">(</span><span class="n">chainids</span><span class="p">,))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
-        <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+        <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">chain_idx</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">chain_idx</span><span class="p">,),</span> <span class="p">(</span><span class="n">chain_idx</span><span class="p">,))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="o">.</span><span class="n">_from_lookup</span><span class="p">(</span><span class="n">chain_idx</span><span class="p">,</span> <span class="n">chainids</span><span class="p">))</span>
+        <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain_idx</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Topology</span><span class="p">(</span>
             <span class="n">n_atoms</span><span class="p">,</span>

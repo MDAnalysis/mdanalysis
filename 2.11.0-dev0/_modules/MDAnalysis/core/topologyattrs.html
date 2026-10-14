@@ -1026,6 +1026,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_lookup</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">nmidx</span><span class="p">,</span> <span class="n">name_lookup</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create the attribute from precomputed interning arrays</span>
+
+<span class="sd">        Skips the per-value loop of ``__init__``, for parsers that can</span>
+<span class="sd">        factorize a column in bulk (e.g. with :func:`numpy.unique`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nmidx : numpy.ndarray</span>
+<span class="sd">          index into `name_lookup` for each object</span>
+<span class="sd">        name_lookup : numpy.ndarray</span>
+<span class="sd">          the distinct string values, without duplicates</span>
+
+<span class="sd">        .. versionadded:: 2.11.0</span>
+<span class="sd">        """</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">)}</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">nmidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">attr</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newval</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Append new value to the TopologyAttr</span>
 

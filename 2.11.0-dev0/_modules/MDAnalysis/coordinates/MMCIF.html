@@ -203,7 +203,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">gemmi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Structure</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">gemmi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">gemmi</span>
@@ -256,21 +256,20 @@
             <span class="k">raise</span> <span class="n">e</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_coordinates</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="s2">"Model"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Get coordinates of all atoms in the `gemmi.Model` object.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_coordinates</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="s2">"Structure"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Get coordinates of all atoms in a single-model `gemmi.Structure`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    model</span>
-<span class="sd">        input ``gemmi.Model``, e.g. ``gemmi.read_structure('file.cif')[0]``</span>
+<span class="sd">    structure</span>
+<span class="sd">        input ``gemmi.Structure`` holding only one model; ``gemmi.FlatStructure``</span>
+<span class="sd">        includes atoms from every model, so extra models must be removed first</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        np.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.</span>
 <span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[[</span><span class="o">*</span><span class="n">at</span><span class="o">.</span><span class="n">pos</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">model</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">chain</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gemmi</span><span class="o">.</span><span class="n">FlatStructure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="MMCIFReader">
@@ -312,9 +311,9 @@
             <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">structure</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-        <span class="n">model</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">cell_dims</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">])):</span>
