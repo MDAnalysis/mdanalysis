@@ -120,6 +120,10 @@ def test_density(u, sels, density, value, client_InterRDF_s):
     kwargs = {"density": density} if density is not None else {}
     rdf = InterRDF_s(u, sels, **kwargs).run(**client_InterRDF_s)
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
+    assert hasattr(rdf.results, "density")
+    assert rdf.results.density is not None
+    assert rdf.results.density > 0
+    assert rdf.results.rho == rdf.results.density
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(

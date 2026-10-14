@@ -171,3 +171,24 @@ def test_backend(sels, backend):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
     assert_allclose(max(rdf.results.rdf), 4)
+
+
+def test_exposed_density(sels, client_InterRDF):
+    s1, s2 = sels
+    # When norm is "rdf"
+    rdf = InterRDF(s1, s2, norm="rdf").run(**client_InterRDF)
+    assert hasattr(rdf.results, "density")
+    assert rdf.results.density is not None
+    assert rdf.results.density > 0
+    assert rdf.results.rho == rdf.results.density
+
+    # When norm is "density"
+    rdf_dense = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert hasattr(rdf_dense.results, "density")
+    assert rdf_dense.results.density is not None
+    assert rdf_dense.results.density > 0
+    assert rdf_dense.results.rho == rdf_dense.results.density
+
+    # When norm is "none"
+    rdf_none = InterRDF(s1, s2, norm="none").run(**client_InterRDF)
+    assert not hasattr(rdf_none.results, "density")
