@@ -20,6 +20,13 @@ The rules for this file:
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
          raulloiscuns, Aryaman-Chaudhri, sici17
 
+Fixes
+ * Universe.empty now raises a ValueError if atom_resindex or residue_segindex
+   contains out-of-bounds indices (Issue #5223)
+
+02/11/2026 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
+         spyke7, talagayev, tanii1125, BradyAJohnston, Akshat Raj
+
  * 2.11.0
 
 Fixes
