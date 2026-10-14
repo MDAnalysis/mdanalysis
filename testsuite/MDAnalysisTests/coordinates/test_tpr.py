@@ -610,5 +610,3 @@ def test_tpr_box_vectors_unit_conversion():
     assert_allclose(dims_ang[:3], dims_nm[:3] * 10, rtol=1e-5)
     # angles are unchanged
     assert_allclose(dims_ang[3:], dims_nm[3:], rtol=1e-5)
-
-
