@@ -9,7 +9,8 @@ MMCIF Topology Parser
 
 Read topology information from mmCIF/PDBx coordinate files using the
 `Gemmi library <https://gemmi.readthedocs.io>`_. PDB files can be read the
-same way with ``format="pdb_gemmi"``.
+same way with ``format="pdb_gemmi"``; see :ref:`PDB-gemmi-backend` for how
+this differs from the default :mod:`~MDAnalysis.topology.PDBParser`.
 
 
 

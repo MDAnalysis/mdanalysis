@@ -35,9 +35,12 @@ Basic usage
     # or from a compressed file
     u = mda.Universe("structure.cif.gz")
 
-    # PDB files can also be read with gemmi, e.g. for residue numbers
-    # above 9999 written in hybrid-36
+    # PDB files can also be read with gemmi
     u = mda.Universe("structure.pdb", format="pdb_gemmi")
+
+Reading PDB files with gemmi behaves differently from the default PDB reader,
+for example only the first ``MODEL`` is read. See :ref:`PDB-gemmi-backend`
+for when to choose which.
 
 See Also
 --------
