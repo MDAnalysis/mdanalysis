@@ -409,9 +409,7 @@ def test_no_initial_hbonds_VE():
 def test_skip_run_without_initial_hbonds():
     u = _three_atom_universe([10.0, 10.0, -2.0, 10.0])
     hbond = _three_atom_autocorrel(u, nruns=2, sample_time=2.0, nsamples=2)
-    with pytest.warns(
-        RuntimeWarning, match=r"1 of 2 runs .*"
-    ):
+    with pytest.warns(RuntimeWarning, match=r"1 of 2 runs .*"):
         hbond.run()
     assert_almost_equal(hbond.solution["results"], [1.0, 0.0])
 
