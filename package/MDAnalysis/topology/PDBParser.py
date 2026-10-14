@@ -83,9 +83,18 @@ structures. They can give different topologies for the same file:
    * - Segment IDs
      - from the segment identifier (columns 73-76), falling back to chain IDs
      - always from chain IDs; blank chain IDs give empty segids
-   * - Residue numbers above 9999 written in hybrid-36 (``A000`` = 10000)
-     - not decoded, resids are wrong
+   * - Residue numbers above 9999 written in `hybrid-36`_ (``A000`` = 10000)
+     - not decoded: set to 1 with a warning, so neighbouring residues are
+       merged into one
      - decoded correctly
+   * - Residue numbers above 9999 written in hexadecimal (``A000`` = 10000,
+       as written by e.g. OpenMM and VMD)
+     - not decoded: set to 1 with a warning, so neighbouring residues are
+       merged into one
+     - decoded as if they were hybrid-36, which gives the right number of
+       residues but different resids from the ones written once the
+       hexadecimal and hybrid-36 digits diverge (``A010`` is 10016 in
+       hexadecimal but 10036 in hybrid-36)
    * - Residue numbers that wrap around after 9999 (as written by many
        simulation packages)
      - unwrapped into increasing resids
@@ -107,10 +116,11 @@ structures. They can give different topologies for the same file:
      - requires gemmi
 
 As a rule of thumb, use ``pdb_gemmi`` for single-model experimental structures,
-in particular when they contain hybrid-36 residue numbers. Keep the default for
-files written by simulation packages, multi-model trajectories, files where
-``CONECT`` records or segment IDs matter, and any PDB file used as the
-topology for a trajectory.
+in particular when they contain hybrid-36 residue numbers, or files with
+hexadecimal residue numbers where the residues must be kept apart but the exact
+resids do not matter. Keep the default for other files written by simulation
+packages, multi-model trajectories, files where ``CONECT`` records or segment
+IDs matter, and any PDB file used as the topology for a trajectory.
 
 .. warning::
 
@@ -121,6 +131,8 @@ topology for a trajectory.
 
 Writing PDB files always uses :class:`~MDAnalysis.coordinates.PDB.PDBWriter`,
 whichever backend was used for reading.
+
+.. _hybrid-36: http://cci.lbl.gov/hybrid_36/
 
 See Also
 --------
