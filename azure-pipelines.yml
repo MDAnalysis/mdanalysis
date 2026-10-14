@@ -114,6 +114,7 @@ jobs:
       tidynamics>=1.0.0
       imdclient>=0.2.2
       pytng>=0.3.4
+      gemmi>=0.7.3
 
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
