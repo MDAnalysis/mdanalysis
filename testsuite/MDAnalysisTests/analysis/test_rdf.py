@@ -192,3 +192,15 @@ def test_exposed_density(sels, client_InterRDF):
     # When norm is "none"
     rdf_none = InterRDF(s1, s2, norm="none").run(**client_InterRDF)
     assert not hasattr(rdf_none.results, "density")
+
+
+def test_density_zero_box(u, client_InterRDF):
+    trajectory_data = np.tile(u.atoms.positions, (NFRAMES, 1, 1))
+    dimensions_data = np.zeros((NFRAMES, 6))
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
+    s1 = u.select_atoms("name OW")
+    s2 = u.select_atoms("name HW1 HW2")
+    rdf = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert hasattr(rdf.results, "density")
+    assert rdf.results.density is None
+    assert rdf.results.rho is None

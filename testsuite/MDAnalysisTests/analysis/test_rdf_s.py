@@ -202,3 +202,17 @@ def test_nested_array_sum():
 
     assert np.array_equal(result[0], arr_1 + arr_3)
     assert np.array_equal(result[1], arr_2 + arr_4)
+
+
+def test_density_zero_box(client_InterRDF_s):
+    u = mda.Universe(GRO_MEMPROT, in_memory=True)
+    trajectory_data = np.tile(u.atoms.positions, (2, 1, 1))
+    dimensions_data = np.zeros((2, 6))
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
+    s1 = u.select_atoms("name ZND and resid 289")
+    s2 = u.select_atoms("name OD1 and resid 51")
+    ags = [[s1, s2]]
+    rdf = InterRDF_s(u, ags, norm="density").run(**client_InterRDF_s)
+    assert hasattr(rdf.results, "density")
+    assert rdf.results.density is None
+    assert rdf.results.rho is None
