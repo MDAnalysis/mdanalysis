@@ -366,3 +366,60 @@ def test_donors_nobonds():
 
     with pytest.raises(mda.NoDataError):
         find_hydrogen_donors(u.atoms)
+
+
+def _three_atom_universe(acceptor_x):
+    """
+    Donor (x=1), hydrogen (x=0), acceptor at x=acceptor_x[frame].
+    """
+    coordinates = np.array(
+        [
+            [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [x, 0.0, 0.0]]
+            for x in acceptor_x
+        ],
+        dtype=np.float32,
+    )
+    u = mda.Universe.empty(3, trajectory=True)
+    u.load_new(coordinates)
+    return u
+
+
+def _three_atom_autocorrel(u, nruns, sample_time, nsamples):
+    return HBAC(
+        u,
+        hydrogens=u.atoms[[1]],
+        donors=u.atoms[[0]],
+        acceptors=u.atoms[[2]],
+        bond_type="continuous",
+        sample_time=sample_time,
+        nruns=nruns,
+        nsamples=nsamples,
+        pbc=False,
+    )
+
+
+def test_no_initial_hbonds_VE():
+    u = _three_atom_universe([10.0, 10.0])
+    hbond = _three_atom_autocorrel(u, nruns=1, sample_time=1.0, nsamples=1)
+    with pytest.raises(ValueError, match="No hydrogen bonds"):
+        hbond.run()
+    assert hbond.solution["results"] is None
+
+
+def test_skip_run_without_initial_hbonds():
+    u = _three_atom_universe([10.0, 10.0, -2.0, 10.0])
+    hbond = _three_atom_autocorrel(u, nruns=2, sample_time=2.0, nsamples=2)
+    with pytest.warns(
+        RuntimeWarning, match=r"1 of 2 runs .*start frames: \[0\]"
+    ):
+        hbond.run()
+    assert_almost_equal(hbond.solution["results"], [1.0, 0.0])
+
+
+def test_skip_first_run_shorter_remaining_run():
+    u = _three_atom_universe([10.0, 10.0, -2.0, 10.0])
+    hbond = _three_atom_autocorrel(u, nruns=2, sample_time=3.0, nsamples=3)
+    with pytest.warns(RuntimeWarning, match="skipped"):
+        hbond.run()
+    assert_almost_equal(hbond.solution["results"], [1.0, 0.0])
+    assert len(hbond.solution["time"]) == 2

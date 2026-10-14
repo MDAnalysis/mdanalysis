@@ -407,6 +407,11 @@ class HydrogenBondAutoCorrel(object):
         ----------
         force : bool, optional
             Will overwrite previous results if they exist
+
+        Raises
+        ------
+        ValueError
+            If there are no hydrogen bonds at the first frame of any run
         """
         # if results exist, don't waste any time
         if self.solution["results"] is not None and not force:
@@ -418,6 +423,7 @@ class HydrogenBondAutoCorrel(object):
         )
         # for normalising later
         counter = np.zeros_like(main_results, dtype=np.float32)
+        skipped = []
 
         for i, (start, stop) in ProgressBar(
             enumerate(zip(self._starts, self._stops)),
@@ -427,6 +433,9 @@ class HydrogenBondAutoCorrel(object):
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
+            if results is None:
+                skipped.append(int(start))
+                continue
 
             nresults = len(results)
             if nresults == len(main_results):
@@ -436,6 +445,21 @@ class HydrogenBondAutoCorrel(object):
                 main_results[:nresults] += results
                 counter[:nresults] += 1.0
 
+        if skipped:
+            if len(skipped) == len(self._starts):
+                raise ValueError(
+                    f"No hydrogen bonds found at the first frame of any run,"
+                    " so the autocorrelation is undefined."
+                )
+            warnings.warn(
+                f"{len(skipped)} of {len(self._starts)} runs had no hydrogen bonds at their first frame and were skipped",
+                RuntimeWarning,
+            )
+
+        # dropping trailing points which have no contribution
+        n_valid = np.count_nonzero(counter)
+        main_results = main_results[:n_valid]
+        counter = counter[:n_valid]
         main_results /= counter
 
         self.solution["time"] = (
@@ -477,6 +501,9 @@ class HydrogenBondAutoCorrel(object):
         aidx = aidx[idx2]
 
         nbonds = len(hidx)  # number of hbonds at t=0
+        if nbonds == 0:
+            return None
+
         results = np.zeros_like(
             np.arange(start, stop, self._skip), dtype=np.float32
         )
