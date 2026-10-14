@@ -1,0 +1,6 @@
+# Ensure all line endings for text files are LF (UNIX, Python default) and not CRLF (Windows/DOS default)
+* text=auto eol=lf
+
+# ignore all data files from testsuite/MDAnalysisTests/data/
+testsuite/MDAnalysisTests/data/* -text
+testsuite/MDAnalysisTests/data/**/* -text

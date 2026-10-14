@@ -433,6 +433,9 @@ class DefaultGuesser(GuesserBase):
         else:
             atomtypes = self.guess_types(atom_types=atoms.names)
 
+        # vdwradii keys are uppercase, so normalize atomtypes to match
+        atomtypes = np.char.upper(np.asarray(atomtypes, dtype=str))
+
         # check that all types have a defined vdw
         if not all(val in vdwradii for val in set(atomtypes)):
             raise ValueError(

@@ -128,6 +128,7 @@ class GSDReader(base.ReaderBase):
         self.open_trajectory()
 
     def _read_frame(self, frame):
+        frame = int(frame)
         try:
             myframe = self._file[frame]
         except IndexError:

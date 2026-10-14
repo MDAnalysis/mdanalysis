@@ -1424,8 +1424,19 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         --------
         :mod:`MDAnalysis.transformations`
 
+        Raises
+        ------
+        TypeError
+            If any transformation is not callable
+
         """
 
+        for transform in transformations:
+            if not callable(transform):
+                raise TypeError(
+                    "All transformations must be callable; "
+                    f"got object of type {type(transform)}"
+                )
         try:
             self.transformations = transformations
         except ValueError:

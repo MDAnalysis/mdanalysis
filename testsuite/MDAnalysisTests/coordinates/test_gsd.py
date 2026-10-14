@@ -22,6 +22,7 @@
 #
 import os
 
+import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
 
@@ -73,3 +74,19 @@ class TestGSDReader:
     def test_gsd_data_step(self, GSD_U):
         assert GSD_U.trajectory[0].data["step"] == 0
         assert GSD_U.trajectory[1].data["step"] == 500
+
+    def test_gsd_indexing_with_numpy_int(self, GSD_U):
+        traj = GSD_U.trajectory
+        ts = traj[np.int64(0)]
+        assert ts.frame == 0
+        assert_almost_equal(
+            ts.positions[0],
+            [-5.4000001, -10.19999981, -10.19999981],
+            err_msg="positions changed unexpectedly at frame 0",
+        )
+        frame_idx = np.int64(1)
+        traj._read_frame(frame_idx)
+        assert traj.ts.frame == 1
+        for i in range(len(traj)):
+            ts = traj[np.int64(i)]
+            assert ts.frame == i

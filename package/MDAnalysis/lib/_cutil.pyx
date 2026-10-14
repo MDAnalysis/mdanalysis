@@ -37,7 +37,7 @@ from cython.operator cimport dereference as deref
 
 cnp.import_array()
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
+__all__ = ['unique_int_1d', 'inverse_int_index', 'make_whole', 'find_fragments',
            '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
@@ -91,6 +91,65 @@ def unique_int_1d(cnp.intp_t[:] values):
 
     return np.array(result)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def inverse_int_index(cnp.intp_t[:] values,
+                      cnp.intp_t[:] unique_vals):
+    r"""Construct an inverse index array (mask) mapping values to unique_vals.
+
+    The returned mask contains the indices such that:
+    
+    .. math::
+        \text{unique\_vals}[\text{mask}] == \text{values}
+
+    Parameters
+    ----------
+    values : numpy.ndarray
+        1D array of integers (can contain duplicates).
+    unique_vals : numpy.ndarray
+        1D array of unique integers corresponding to the elements in `values`.
+
+    Returns
+    -------
+    numpy.ndarray
+        An integer array `mask` of the same length as `values`, where 
+        ``mask[i]`` is the index of ``values[i]`` in `unique_vals`.
+
+
+    Notes
+    -----
+
+
+    .. versionadded:: 2.11.0
+
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib._cutil import inverse_int_index
+    >>> vals = np.array([1, 5, 3, 3, 6], dtype=np.intp)
+    >>> uniq = np.array([1, 5, 3, 6], dtype=np.intp)
+    >>> mask = inverse_int_index(vals, uniq)
+    >>> mask
+    array([0, 1, 2, 2, 3])
+    >>> np.all(uniq[mask] == vals)
+    True
+    """
+
+    cdef Py_ssize_t n = values.shape[0]
+    cdef Py_ssize_t m = unique_vals.shape[0]
+    cdef Py_ssize_t i
+
+    cdef dict lookup = {}
+    cdef cnp.intp_t[:] mask = np.empty(n, dtype=np.intp)
+
+    for i in range(m):
+        lookup[unique_vals[i]] = i
+
+    for i in range(n):
+        mask[i] = lookup[values[i]]
+
+    return np.array(mask)
 
 @cython.boundscheck(False)
 def _in2d(cnp.intp_t[:, :] arr1, cnp.intp_t[:, :] arr2):
