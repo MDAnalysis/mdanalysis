@@ -816,6 +816,21 @@ def test_no_coordinate_info():
         )
 
 
+def test_missing_convention_in_timestep():
+    # LAMMPSDUMP contains only scaled coords (xs ys zs). Requesting the
+    # "unscaled" convention should raise a ValueError because x y z columns
+    # are absent from the timestep.
+    with pytest.raises(
+        ValueError,
+        match="No coordinates following convention unscaled found in timestep",
+    ):
+        mda.Universe(
+            LAMMPSDUMP,
+            format="LAMMPSDUMP",
+            lammps_coordinate_convention="unscaled",
+        )
+
+
 class TestCoordinateMatches(object):
     @pytest.fixture()
     def universes(self):
