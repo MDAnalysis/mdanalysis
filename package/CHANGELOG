@@ -20,6 +20,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fixed HydrogenBondAutoCorrel.run() returning NaN when a run starts without hydrogen bonds.
+   Such runs are now skipped with a RuntimeWarning, and a ValueError is raised if all runs
+   are skipped (Issue #5483, PR #5492)
  * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
  * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
    results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
