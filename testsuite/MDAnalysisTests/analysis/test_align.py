@@ -607,6 +607,48 @@ class TestAlign(object):
         ).run()
         assert aligner.mobile.n_atoms == universe.atoms.n_atoms
 
+    def test_AlignTraj_subselection_non_overlapping(
+        self, universe, reference, tmpdir
+    ):
+        # Test case where fit selection A and output subselection B are disjoint
+        sel_fit = "name CA and resid 1-20"
+        sel_out = "name CA and resid 50-70"
+        fit_atoms = universe.select_atoms(sel_fit)
+        out_atoms = universe.select_atoms(sel_out)
+        # Ensure selections are non-overlapping / disjoint
+        assert len(set(fit_atoms.indices) & set(out_atoms.indices)) == 0
+
+        sub_outfile = str(tmpdir.join("sub_disjoint.dcd"))
+        full_outfile = str(tmpdir.join("full_disjoint.dcd"))
+        reference.trajectory[-1]
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select=sel_fit,
+            subselection=sel_out,
+            filename=sub_outfile,
+        ).run()
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select=sel_fit,
+            filename=full_outfile,
+        ).run()
+
+        sub_u = mda.Merge(out_atoms)
+        sub_u.load_new(sub_outfile)
+        full_u = mda.Universe(PSF, full_outfile)
+
+        assert sub_u.atoms.n_atoms == out_atoms.n_atoms
+        for ts_sub, ts_full in zip(sub_u.trajectory, full_u.trajectory):
+            assert_allclose(
+                sub_u.atoms.positions,
+                full_u.select_atoms(sel_out).positions,
+                atol=1.5e-3,
+            )
+
     def test_AlignTraj_subselection_invalid(self, universe, reference):
         with pytest.raises(
             TypeError, match="subselection must be a selection string"

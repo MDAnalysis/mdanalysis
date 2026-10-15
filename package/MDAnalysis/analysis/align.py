@@ -796,9 +796,28 @@ class AlignTraj(AnalysisBase):
             Universe containing trajectory to be fitted to reference
         reference : Universe
             Universe containing trajectory frame to be used as reference
-        select : str (optional)
-            Set as default to all, is used for Universe.select_atoms to choose
-            subdomain to be fitted against
+        select : str or dict or tuple (optional)
+            The selection to operate on; can be one of:
+
+            1. any valid selection string for
+               :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
+               produces identical selections in `mobile` and `reference`; or
+
+            2. a dictionary ``{'mobile': sel1, 'reference': sel2}`` where *sel1*
+               and *sel2* are valid selection strings that are applied to
+               `mobile` and `reference` respectively (the
+               :func:`MDAnalysis.analysis.align.fasta2select` function returns
+               such a dictionary based on a sequence alignment); or
+
+            3. a tuple ``(sel1, sel2)``
+
+            When using 2. or 3. with *sel1* and *sel2* then these selection
+            strings are applied to `mobile` and `reference` respectively and
+            should generate *groups of equivalent atoms*. *sel1* and *sel2* can
+            each also be a *list of selection strings* to generate a
+            :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order
+            as described under :ref:`ordered-selections-label`. Default is
+            ``"all"``.
         filename : str (optional)
             Provide a filename for results to be written to
         prefix : str (optional)
