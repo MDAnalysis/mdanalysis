@@ -411,7 +411,11 @@ class HydrogenBondAutoCorrel(object):
         Raises
         ------
         ValueError
-            If there are no hydrogen bonds at the first frame of any run
+            If all runs start without hydrogen bonds (no hydrogen bonds at
+            the first frame of any run), so that the autocorrelation is
+            undefined.
+
+            .. versionadded:: 2.11.0
         """
         # if results exist, don't waste any time
         if self.solution["results"] is not None and not force:
@@ -448,11 +452,13 @@ class HydrogenBondAutoCorrel(object):
         if skipped:
             if len(skipped) == len(self._starts):
                 raise ValueError(
-                    f"No hydrogen bonds found at the first frame of any run,"
+                    "No hydrogen bonds found at the first frame of any run,"
                     " so the autocorrelation is undefined."
                 )
             warnings.warn(
-                f"{len(skipped)} of {len(self._starts)} runs had no hydrogen bonds at their first frame and were skipped",
+                f"{len(skipped)} of {len(self._starts)} runs had no "
+                "hydrogen bonds at their first frame and were skipped.\n"
+                f"Skipped start frames: {skipped}",
                 RuntimeWarning,
             )
 

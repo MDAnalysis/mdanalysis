@@ -23,9 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts without hydrogen bonds.
-   Such runs are now skipped with a RuntimeWarning, and a ValueError is raised if all runs
-   are skipped (Issue #5483, PR #5492)
+ * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts
+   without hydrogen bonds. Such runs are now skipped with a RuntimeWarning,
+   and a ValueError is raised if all runs are skipped (Issue #5483, PR #5492)
  * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
    as frame masks instead of integer frame indices (Issue #5472)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical

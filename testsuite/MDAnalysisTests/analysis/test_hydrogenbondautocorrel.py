@@ -409,8 +409,11 @@ def test_no_initial_hbonds_VE():
 def test_skip_run_without_initial_hbonds():
     u = _three_atom_universe([10.0, 10.0, -2.0, 10.0])
     hbond = _three_atom_autocorrel(u, nruns=2, sample_time=2.0, nsamples=2)
-    with pytest.warns(RuntimeWarning, match=r"1 of 2 runs .*"):
+    with pytest.warns(RuntimeWarning) as record:
         hbond.run()
+    message = str(record[0].message)
+    assert "1 of 2 runs" in message
+    assert "Skipped start frames: [0]" in message
     assert_almost_equal(hbond.solution["results"], [1.0, 0.0])
 
 
