@@ -225,8 +225,6 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
     const double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
     const double bi7 = -box[7] * bi4 * bi8;
     // variables and constants for single box shifts:
-    const double a_ax_yfactor = (double) box[3] * bi4;;
-    const double a_ax_zfactor = (double) box[6] * bi8;
     const double b_ax_zfactor = (double) box[7] * bi8;
 
 
@@ -294,7 +292,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
             }
             if (!msr) {
                 // translate remainder of crd to central cell along a-axis
-                lbound = (crd[1] - crd[2] * b_ax_zfactor) * a_ax_yfactor + crd[2] * a_ax_zfactor;
+                lbound = -(crd[1] * bi3 + crd[2] * bi6) * box[0];
                 ubound = lbound + box[0];
                 if (crd[0] < lbound) {
                     crd[0] += box[0];
@@ -356,7 +354,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
                 crd[1] -= box[4];
             }
             // translate remainder of crd to central cell along a-axis
-            lbound = (crd[1] - crd[2] * b_ax_zfactor) * a_ax_yfactor + crd[2] * a_ax_zfactor;
+            lbound = -(crd[1] * bi3 + crd[2] * bi6) * box[0];
             ubound = lbound + box[0];
             if (crd[0] < lbound) {
                 crd[0] += box[0];

@@ -104,6 +104,11 @@ def _skewed_box_coords(box, n, seed):
     return (frac @ mdamath.triclinic_vectors(box)).astype(np.float32)
 
 
+def _away_from_cutoff(pairs, dists, cutoff, tol=1e-4):
+    """Drop pairs so close to the cutoff that rounding can decide them"""
+    return pairs[np.abs(dists - cutoff) > tol]
+
+
 class TestCappedDistances(object):
 
     npoints_1 = (1, 100)
@@ -146,31 +151,27 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
     def test_capped_distance_skewed_triclinic(self, box, method):
         # Issue #4906: pkdtree and nsgrid missed pairs in skewed boxes
-        width = mdamath.triclinic_vectors(box).diagonal().min()
-        cutoff = 0.1 * width
+        min_diag = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * min_diag
         a = _skewed_box_coords(box, 1000, seed=1)
         b = _skewed_box_coords(box, 1000, seed=2)
 
         def pairs(m):
-            p = distances.capped_distance(
-                a, b, cutoff, box=box, method=m, return_distances=False
-            )
-            return {tuple(x) for x in p}
+            p, d = distances.capped_distance(a, b, cutoff, box=box, method=m)
+            return {tuple(x) for x in _away_from_cutoff(p, d, cutoff)}
 
         assert pairs(method) == pairs("bruteforce")
 
     @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
     @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
     def test_self_capped_distance_skewed_triclinic(self, box, method):
-        width = mdamath.triclinic_vectors(box).diagonal().min()
-        cutoff = 0.1 * width
+        min_diag = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * min_diag
         a = _skewed_box_coords(box, 1000, seed=3)
 
         def pairs(m):
-            p = distances.self_capped_distance(
-                a, cutoff, box=box, method=m, return_distances=False
-            )
-            return {tuple(sorted(x)) for x in p}
+            p, d = distances.self_capped_distance(a, cutoff, box=box, method=m)
+            return {tuple(sorted(x)) for x in _away_from_cutoff(p, d, cutoff)}
 
         assert pairs(method) == pairs("bruteforce")
 

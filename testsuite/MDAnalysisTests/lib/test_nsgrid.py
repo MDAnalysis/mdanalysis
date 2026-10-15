@@ -525,17 +525,22 @@ def test_issue_4906(box):
     cutoff = 0.1 * box[:3].min()
 
     dists = mda.lib.distances.distance_array(coords, coords, box=box)
+    # skip pairs so close to the cutoff that rounding can decide them
+    ambiguous = np.abs(dists - cutoff) <= 1e-4
+
+    def found(results):
+        pairs = results.get_pairs()
+        return {tuple(p) for p in pairs if not ambiguous[p[0], p[1]]}
 
     searcher = nsgrid.FastNS(cutoff, coords, box)
-    pairs = searcher.self_search().get_pairs()
     i, j = np.triu_indices(len(coords), k=1)
-    within = dists[i, j] <= cutoff
+    within = (dists[i, j] <= cutoff) & ~ambiguous[i, j]
     expected = set(zip(i[within], j[within]))
-    assert {tuple(sorted(p)) for p in pairs} == expected
+    pairs = {tuple(sorted(p)) for p in found(searcher.self_search())}
+    assert pairs == expected
 
-    pairs = searcher.search(coords).get_pairs()
-    i, j = np.nonzero(dists <= cutoff)
-    assert {tuple(p) for p in pairs} == set(zip(i, j))
+    i, j = np.nonzero((dists <= cutoff) & ~ambiguous)
+    assert found(searcher.search(coords)) == set(zip(i, j))
 
 
 def high_mem_tests_enabled():

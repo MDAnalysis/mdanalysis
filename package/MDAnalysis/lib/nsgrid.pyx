@@ -193,6 +193,10 @@ cdef class FastNS(object):
 
     .. versionchanged::  1.0.2
        Rewrote to fix bugs with triclinic boxes
+    .. versionchanged:: 2.11.0
+       Fixed missed neighbours in triclinic boxes where both the *x*
+       component of the second box vector and the *y* component of the third
+       are non-zero (Issue #4906).
     """
     cdef readonly double cutoff
     cdef float[:, ::1] coords_bbox
@@ -299,6 +303,8 @@ cdef class FastNS(object):
            the maximum allowable cutoff given the box shape and size
         """
         cdef float cutoff, min_cellsize, max_cutoff
+        cdef double ax, bx, by, cx, cy, cz, volume
+        cdef double widths[3]
         cdef int i
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -332,11 +338,22 @@ cdef class FastNS(object):
 
         # Cells must be at least `cutoff` thick perpendicular to each pair of
         # box faces, so size the grid by the box's perpendicular widths.
-        tv = np.asarray(self.triclinic_dimensions, dtype=np.float64).reshape(3, 3)
-        volume = abs(np.linalg.det(tv))
-        widths = [volume / np.linalg.norm(np.cross(tv[1], tv[2])),
-                  volume / np.linalg.norm(np.cross(tv[2], tv[0])),
-                  volume / np.linalg.norm(np.cross(tv[0], tv[1]))]
+        # The box matrix is lower triangular, so width = volume / face area
+        # has a closed form.
+        ax = self.triclinic_dimensions[XX]
+        bx = self.triclinic_dimensions[XY]
+        by = self.triclinic_dimensions[YY]
+        cx = self.triclinic_dimensions[XZ]
+        cy = self.triclinic_dimensions[YZ]
+        cz = self.triclinic_dimensions[ZZ]
+        volume = ax * by * cz
+        widths[0] = widths[1] = widths[2] = 0.0
+        # invalid boxes give an all-zero matrix, leave widths at zero
+        if volume > 0:
+            widths[0] = volume / math.sqrt((by * cz) ** 2 + (bx * cz) ** 2
+                                           + (bx * cy - by * cx) ** 2)
+            widths[1] = by * cz / math.sqrt(cy * cy + cz * cz)
+            widths[2] = cz
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
         min_cellsize = cutoff + 0.001
