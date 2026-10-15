@@ -8,7 +8,9 @@ MMCIF Topology Parser
 .. versionadded:: 2.11.0
 
 Read topology information from mmCIF/PDBx coordinate files using the
-`Gemmi library <https://gemmi.readthedocs.io>`_.
+`Gemmi library <https://gemmi.readthedocs.io>`_. PDB files can be read the
+same way with ``format="pdb_gemmi"``; see :ref:`PDB-gemmi-backend` for how
+this differs from the default :mod:`~MDAnalysis.topology.PDBParser`.
 
 
 
@@ -35,6 +37,8 @@ in the relevant topology attributes:
         - :class:`MDAnalysis.core.topologyattrs.Resnames`
     - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:
         - :class:`MDAnalysis.core.topologyattrs.Segids`
+    - :class:`MDAnalysis.core.topologyattrs.Bonds`, from ``CONECT`` records
+      when reading PDB files with ``format="pdb_gemmi"``
 
 Classes
 -------
@@ -63,6 +67,7 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
+    Bonds,
     ChainIDs,
     Elements,
     FormalCharges,
@@ -99,6 +104,39 @@ def _dedupe(nmidx: np.ndarray, values) -> tuple[np.ndarray, np.ndarray]:
     return remap[nmidx], values
 
 
+def _conect_bonds(structure: "Structure", serials: np.ndarray) -> Bonds | None:
+    """Bonds from the ``CONECT`` records gemmi keeps for PDB files
+
+    Records are keyed by atom serial, so bonds are unaffected by gemmi
+    regrouping atoms into residues. Returns ``None`` when there are no
+    ``CONECT`` records, which is always the case for mmCIF files.
+    """
+    conect = structure.conect_map
+    if not conect:
+        return None
+    if len(np.unique(serials)) != len(serials):
+        warnings.warn(
+            "Invalid atom serials were present, bonds will not be parsed"
+        )
+        return None
+    mapping = {serial: i for i, serial in enumerate(serials.tolist())}
+    bonds = set()
+    unmapped = False
+    for atom, partners in conect.items():
+        for partner in partners:
+            try:
+                bonds.add(tuple(sorted((mapping[atom], mapping[partner]))))
+            except KeyError:
+                unmapped = True
+    if unmapped:
+        # e.g. CONECT records to TER entries, which are not atoms
+        warnings.warn(
+            "PDB file contained CONECT records to serials that are not "
+            "atoms. These are not included in bonds."
+        )
+    return Bonds(sorted(bonds))
+
+
 class MMCIFParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard MMCIF/PDBx file using
     the `gemmi library <https://gemmi.readthedocs.io>`_.
@@ -126,9 +164,11 @@ class MMCIFParser(TopologyReaderBase):
             - :class:`MDAnalysis.core.topologyattrs.Resnames`
         - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:
             - :class:`MDAnalysis.core.topologyattrs.Segids`
+        - :class:`MDAnalysis.core.topologyattrs.Bonds`, from ``CONECT``
+          records when reading PDB files with ``format="pdb_gemmi"``
     """
 
-    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz", "pdb_gemmi"]
 
     def __init__(self, filename):
         if not HAS_GEMMI:
@@ -216,6 +256,10 @@ class MMCIFParser(TopologyReaderBase):
             Tempfactors(np.asarray(flat.b_iso)),
         ]
         n_atoms = len(resids)
+
+        bonds = _conect_bonds(structure, np.asarray(flat.serials))
+        if bonds is not None:
+            attrs.append(bonds)
 
         # Residue Attributes
         residx, (resids, resname_idx, icode_idx, chain_idx) = change_squash(
