@@ -103,6 +103,24 @@ def test_types_from_elements():
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_unknown_elements():
+    # 5PTI is a joint X-ray/neutron structure: 229 deuterium (D) atoms and
+    # one unknown (X) atom, neither of which MDAnalysis knows as an element
+    with pytest.warns(UserWarning, match="Unknown element") as record:
+        u = mda.Universe(f"{MMCIF_FOLDER}/5PTI.cif.gz")
+    assert {str(w.message).split()[2] for w in record} >= {"D", "X"}
+
+    unknown = u.atoms[u.atoms.elements == ""]
+    assert len(unknown) == 230
+    # types keep the raw element column
+    assert set(unknown.types) == {"D", "X"}
+    # both unknowns intern to a single "" entry, so lookups find all of them
+    elements = u._topology.elements
+    assert len(set(elements.name_lookup)) == len(elements.name_lookup)
+    assert (elements.nmidx == elements.namedict[""]).sum() == 230
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_altlocs():
     # gemmi stores absent altlocs as "\0", which must not leak into the
     # topology (it ends up in written PDB files otherwise)

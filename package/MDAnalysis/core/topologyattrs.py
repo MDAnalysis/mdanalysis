@@ -784,6 +784,30 @@ class _StringInternerMixin:
         self.name_lookup = np.array(name_lookup, dtype=object)
         self.values = self.name_lookup[self.nmidx]
 
+    @classmethod
+    def _from_lookup(cls, nmidx, name_lookup, guessed=False):
+        """Create the attribute from precomputed interning arrays
+
+        Skips the per-value loop of ``__init__``, for parsers that can
+        factorize a column in bulk (e.g. with :func:`numpy.unique`).
+
+        Parameters
+        ----------
+        nmidx : numpy.ndarray
+          index into `name_lookup` for each object
+        name_lookup : numpy.ndarray
+          the distinct string values, without duplicates
+
+        .. versionadded:: 2.11.0
+        """
+        attr = cls.__new__(cls)
+        attr._guessed = guessed
+        attr.name_lookup = np.asarray(name_lookup, dtype=object)
+        attr.namedict = {name: i for i, name in enumerate(attr.name_lookup)}
+        attr.nmidx = np.asarray(nmidx, dtype=int)
+        attr.values = attr.name_lookup[attr.nmidx]
+        return attr
+
     def _add_new(self, newval):
         """Append new value to the TopologyAttr
 
