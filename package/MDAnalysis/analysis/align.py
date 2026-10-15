@@ -164,7 +164,8 @@ and analyzing a specific sub-system or domain (e.g. a solute protein or a
 binding domain). Understanding the trade-offs between memory consumption,
 disk I/O, and CPU performance is key to selecting the right workflow:
 
-1. **Lazy disk iteration vs in-memory representation (`in_memory`)**:
+1. **Lazy disk iteration vs in-memory representation** (``in_memory``):
+
    - By default (``in_memory=False``), MDAnalysis loads frames lazily
      one-by-one from disk into memory. This uses minimal constant RAM, making
      it suitable for very large trajectories or memory-constrained
@@ -173,17 +174,18 @@ disk I/O, and CPU performance is key to selecting the right workflow:
      in-memory numpy array
      (:class:`~MDAnalysis.coordinates.memory.MemoryReader`), enabling fast
      in-place transformations without writing to disk. However, this
-     requires approximately :math:`N_{\\text{frames}} \\times N_{\\text{atoms}} \\times 3 \\times 4\\text{ bytes}`
+     requires at least :math:`N_{\\text{frames}} \\times N_{\\text{atoms}} \\times 3 \\times 4\\text{ bytes}`
      (or 8 bytes for double precision) of RAM. For a system with 500,000
      atoms and 10,000 frames, holding the entire trajectory in RAM would
      require ~60 GB.
 
-2. **Aligning only a sub-system with `subselection`**:
+2. **Aligning only a sub-system with** ``subselection``:
+
    By default, :class:`AlignTraj` computes the optimal rotation/translation
-   matrix using the atoms in `select`, but applies the transformation and
-   writes out coordinates for all atoms in the universe (:attr:`mobile.atoms`).
+   matrix using the atoms in ``select``, but applies the transformation and
+   writes out coordinates for all atoms in the universe (``mobile.atoms``).
    If you only need the aligned coordinates of a sub-domain (e.g. ``protein``),
-   use the `subselection` keyword::
+   use the ``subselection`` keyword::
 
       >>> aligner = align.AlignTraj(
       ...     trj, ref, select="protein and name CA", subselection="protein",
@@ -196,6 +198,7 @@ disk I/O, and CPU performance is key to selecting the right workflow:
    size and disk write overhead.
 
 3. **In-memory alignment of sub-systems without writing files**:
+
    If you want the speed benefits of an in-memory trajectory without the huge
    RAM footprint of solvent atoms, extract the sub-system into an in-memory
    Universe using :func:`~MDAnalysis.core.universe.Merge` and
@@ -826,8 +829,7 @@ class AlignTraj(AnalysisBase):
             Apply the transformation and write out only this selection.
 
             ``None`` [default]
-                Apply to and write ``mobile.universe.atoms`` (i.e., all atoms
-                in the context of `mobile`).
+                Apply to and write ``mobile.atoms``.
             *selection-string*
                 Apply to and write ``mobile.select_atoms(selection-string)``.
             :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -865,11 +867,19 @@ class AlignTraj(AnalysisBase):
             positions will be written to upon running RMSD alignment
 
 
+        Raises
+        ------
+        TypeError
+            If `subselection` is not a selection string, an
+            :class:`~MDAnalysis.core.groups.AtomGroup`, a
+            :class:`~MDAnalysis.core.universe.Universe`, or ``None``.
+
+
         Notes
         -----
         - If set to ``verbose=False``, it is recommended to wrap the statement
-           in a ``try ...  finally`` to guarantee restoring of the log level in
-           the case of an exception.
+          in a ``try ...  finally`` to guarantee restoring of the log level in
+          the case of an exception.
         - The ``in_memory`` option changes the `mobile` universe to an
           in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
           for the remainder of the Python session. If ``mobile.trajectory`` is
@@ -937,11 +947,7 @@ class AlignTraj(AnalysisBase):
 
         # store reference to mobile atoms
         if subselection is None:
-            self.mobile = (
-                mobile.universe.atoms
-                if hasattr(mobile, "universe")
-                else mobile.atoms
-            )
+            self.mobile = mobile.atoms
         elif isinstance(subselection, str):
             self.mobile = mobile.select_atoms(subselection)
         else:
