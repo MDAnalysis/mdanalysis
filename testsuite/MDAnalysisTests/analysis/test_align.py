@@ -559,7 +559,9 @@ class TestAlign(object):
         reference.trajectory[-1]
         sub_sel = "resid 1-50"
         universe.trajectory[0]
-        orig_non_sub = universe.select_atoms("not (resid 1-50)").positions.copy()
+        orig_non_sub = universe.select_atoms(
+            "not (resid 1-50)"
+        ).positions.copy()
 
         aligner = align.AlignTraj(
             universe,
@@ -591,6 +593,19 @@ class TestAlign(object):
             universe.select_atoms("not (resid 1-50)").positions,
             orig_non_sub,
         )
+
+    def test_AlignTraj_subselection_universe(
+        self, universe, reference, tmpdir
+    ):
+        outfile = str(tmpdir.join("sub_u_align.dcd"))
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=universe,
+            filename=outfile,
+        ).run()
+        assert aligner.mobile.n_atoms == universe.atoms.n_atoms
 
     def test_AlignTraj_subselection_invalid(self, universe, reference):
         with pytest.raises(
