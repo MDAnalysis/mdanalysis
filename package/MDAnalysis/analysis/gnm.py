@@ -257,9 +257,10 @@ class GNMAnalysis(AnalysisBase):
        supported backends.
 
     .. versionchanged:: 2.11.0
-       Fixed incorrect stacking of results from multiprocessing. Results now
-       correctly use ``np.vstack`` for reducing the eigenvectors from multiple
-       workers.
+       Fixed incorrect stacking of results from multiprocessing. Previously
+       ``results.eigenvectors`` would silently return an array of the wrong
+       shape. It now correctly use ``np.vstack`` for reducing the eigenvectors
+       from multiple workers.
     """
 
     _analysis_algorithm_is_parallelizable = True
