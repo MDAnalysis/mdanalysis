@@ -256,7 +256,7 @@ class GNMAnalysis(AnalysisBase):
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
 
-    .. versionchanged: 2.11.0
+    .. versionchanged:: 2.11.0
        Fixed incorrect stacking of results from multiprocessing. Results now
        correctly use ``np.vstack`` for reducing the eigenvectors from multiple
        workers.
