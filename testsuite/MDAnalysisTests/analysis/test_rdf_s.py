@@ -123,7 +123,6 @@ def test_density(u, sels, density, value, client_InterRDF_s):
     assert hasattr(rdf.results, "density")
     assert rdf.results.density is not None
     assert rdf.results.density > 0
-    assert rdf.results.rho == rdf.results.density
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
@@ -215,4 +214,3 @@ def test_density_zero_box(client_InterRDF_s):
     rdf = InterRDF_s(u, ags, norm="density").run(**client_InterRDF_s)
     assert hasattr(rdf.results, "density")
     assert rdf.results.density is None
-    assert rdf.results.rho is None

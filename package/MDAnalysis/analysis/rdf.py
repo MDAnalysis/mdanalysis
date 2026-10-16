@@ -229,6 +229,13 @@ class InterRDF(AnalysisBase):
            This attribute will be removed in 3.0.0.
            Use :attr:`results.count` instead.
 
+    results.density : float
+       The average number density :math:`\rho` used for normalizing the RDF
+       (or ``None`` if box volume is not available). This attribute only
+       exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.11.0
+
     Example
     -------
     First create the :class:`InterRDF` object, by supplying two
@@ -400,10 +407,8 @@ class InterRDF(AnalysisBase):
             # Save the average density if a non-zero box volume is available
             if box_vol > 0:
                 self.results.density = N / box_vol
-                self.results.rho = self.results.density
             else:
                 self.results.density = None
-                self.results.rho = None
 
             if self.norm == "rdf":
                 norm *= self.results.density
@@ -591,6 +596,13 @@ class InterRDF_s(AnalysisBase):
             This attribute will be removed in 3.0.0.
             Use :attr:`results.cdf` instead.
 
+    results.density : float
+        The average number density :math:`\rho` used for normalizing the RDF
+        (or ``None`` if box volume is not available). This attribute only
+        exists if `norm` is ``"rdf"`` or ``"density"``.
+
+        .. versionadded:: 2.11.0
+
     Example
     -------
     First create the :class:`InterRDF_s` object, by supplying one Universe and
@@ -767,10 +779,8 @@ class InterRDF_s(AnalysisBase):
             self.volume_cum = self.results.volume_cum
             if self.volume_cum > 0:
                 self.results.density = self.n_frames / self.volume_cum
-                self.results.rho = self.results.density
             else:
                 self.results.density = None
-                self.results.rho = None
 
             if self.norm == "rdf":
                 norm *= self.results.density
