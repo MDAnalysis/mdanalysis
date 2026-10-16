@@ -377,7 +377,7 @@ class GNMAnalysis(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "eigenvectors": ResultsGroup.ndarray_hstack,
+                "eigenvectors": ResultsGroup.ndarray_vstack,
                 "eigenvalues": ResultsGroup.ndarray_hstack,
                 "times": ResultsGroup.ndarray_hstack,
             }
