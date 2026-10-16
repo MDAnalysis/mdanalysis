@@ -201,4 +201,3 @@ def test_density_zero_box(u, client_InterRDF):
     rdf = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
     assert hasattr(rdf.results, "density")
     assert rdf.results.density is None
-
