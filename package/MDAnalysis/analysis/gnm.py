@@ -255,6 +255,11 @@ class GNMAnalysis(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
+
+    .. versionchanged: 2.11.0
+       Fixed incorrect stacking of results from multiprocessing. Results now
+       correctly use ``np.vstack`` for reducing the eigenvectors from multiple
+       workers.
     """
 
     _analysis_algorithm_is_parallelizable = True
