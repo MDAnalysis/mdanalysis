@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from MDAnalysisTests.visualization.test_streamlines import univ
 import os
 from unittest.mock import patch
 
@@ -233,3 +234,10 @@ def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
         ], atol=1e-3, rtol=0
     )
     # fmt: on
+
+def test_gnm_odd_frames_per_worker(universe):
+    # explicit test for #5494 wrong shape being returned and a
+    # crash if uneven frames split between workers
+    gnm = mda.analysis.gnm.GNMAnalysis(universe)
+    results = gnm.run(stop=9, backend="multiprocessing", n_workers=2).results
+    assert results.eigenvectors.shape == (9, 214)
