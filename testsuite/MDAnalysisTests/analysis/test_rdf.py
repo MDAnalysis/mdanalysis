@@ -171,3 +171,66 @@ def test_backend(sels, backend):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
     assert_allclose(max(rdf.results.rdf), 4)
+
+
+def test_exposed_density(sels, client_InterRDF):
+    s1, s2 = sels
+    # When norm is "rdf"
+    rdf = InterRDF(s1, s2, norm="rdf").run(**client_InterRDF)
+    assert not hasattr(rdf.results, "density")
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    assert hasattr(rdf.results, "density_a")
+    assert hasattr(rdf.results, "density_b")
+    assert rdf.results.box_volume > 0
+    assert_allclose(rdf.results.density_a, len(s1) / rdf.results.box_volume)
+    assert_allclose(rdf.results.density_b, len(s2) / rdf.results.box_volume)
+    assert_allclose(
+        rdf.results.normalization_density,
+        (len(s1) * len(s2)) / rdf.results.box_volume,
+    )
+
+    # When norm is "density"
+    rdf_dense = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert not hasattr(rdf_dense.results, "density")
+    assert hasattr(rdf_dense.results, "box_volume")
+    assert hasattr(rdf_dense.results, "normalization_density")
+    assert hasattr(rdf_dense.results, "density_a")
+    assert hasattr(rdf_dense.results, "density_b")
+    assert rdf_dense.results.box_volume > 0
+    assert_allclose(
+        rdf_dense.results.density_a, len(s1) / rdf_dense.results.box_volume
+    )
+    assert_allclose(
+        rdf_dense.results.density_b, len(s2) / rdf_dense.results.box_volume
+    )
+    assert_allclose(
+        rdf_dense.results.normalization_density,
+        (len(s1) * len(s2)) / rdf_dense.results.box_volume,
+    )
+
+    # When norm is "none"
+    rdf_none = InterRDF(s1, s2, norm="none").run(**client_InterRDF)
+    assert not hasattr(rdf_none.results, "density")
+    assert not hasattr(rdf_none.results, "box_volume")
+    assert not hasattr(rdf_none.results, "normalization_density")
+    assert not hasattr(rdf_none.results, "density_a")
+    assert not hasattr(rdf_none.results, "density_b")
+
+
+def test_density_zero_box(u, client_InterRDF):
+    trajectory_data = np.tile(u.atoms.positions, (NFRAMES, 1, 1))
+    dimensions_data = np.zeros((NFRAMES, 6))
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
+    s1 = u.select_atoms("name OW")
+    s2 = u.select_atoms("name HW1 HW2")
+    rdf = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert not hasattr(rdf.results, "density")
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    assert hasattr(rdf.results, "density_a")
+    assert hasattr(rdf.results, "density_b")
+    assert rdf.results.box_volume is None
+    assert rdf.results.normalization_density is None
+    assert rdf.results.density_a is None
+    assert rdf.results.density_b is None
