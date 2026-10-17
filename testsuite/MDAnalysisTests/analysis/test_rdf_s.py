@@ -198,3 +198,14 @@ def test_nested_array_sum():
 
     assert np.array_equal(result[0], arr_1 + arr_3)
     assert np.array_equal(result[1], arr_2 + arr_4)
+
+
+@pytest.mark.parametrize("n_pairs", [1, 2, 3])
+def test_n_pairs(u, sels, n_pairs, client_InterRDF_s):
+    # a third pair of groups: the second pair reversed
+    ags = (sels + [sels[1][::-1]])[:n_pairs]
+    ref = InterRDF_s(u, ags).run()
+    rdf = InterRDF_s(u, ags).run(**client_InterRDF_s)
+    assert len(rdf.results.count) == n_pairs
+    for a, b in zip(ref.results.count, rdf.results.count):
+        assert_almost_equal(a, b)
