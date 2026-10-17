@@ -85,6 +85,10 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * `AlignTraj` now accepts a `subselection` keyword argument (a selection
+   string or AtomGroup) that restricts which atoms are written to the output
+   trajectory, enabling a performance/memory trade-off when only a subset
+   of atoms is of interest (Issue #5380, PR #5464)
  * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
