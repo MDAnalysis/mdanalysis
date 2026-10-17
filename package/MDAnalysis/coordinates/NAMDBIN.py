@@ -148,4 +148,4 @@ class NAMDBINWriter(base.WriterBase):
             # Write NUMATOMS
             namdbin.write(pack("i", n_atoms))
             # Write Coordinate
-            namdbin.write(pack("{:d}d".format(len(coor)), *coor))
+            namdbin.write(np.asarray(coor, dtype=np.float64).tobytes())
