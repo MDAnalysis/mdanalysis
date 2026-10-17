@@ -306,10 +306,12 @@ class DefaultGuesser(GuesserBase):
         if indices_to_guess is not None:
             atom_types = atom_types[indices_to_guess]
 
-        return np.array(
-            [self.guess_atom_element(atom) for atom in atom_types],
-            dtype=object,
-        )
+        # guess each distinct name once
+        guesses = {}
+        for atom in atom_types:
+            if atom not in guesses:
+                guesses[atom] = self.guess_atom_element(atom)
+        return np.array([guesses[atom] for atom in atom_types], dtype=object)
 
     def guess_atom_element(self, atomname):
         """Guess the element of the atom from the name.
@@ -459,20 +461,17 @@ class DefaultGuesser(GuesserBase):
         # to speed up checking, calculate what the largest possible bond
         # atom that would warrant attention.
         # then use this to quickly mask distance results later
-        max_vdw = max([vdwradii[t] for t in atomtypes])
-
-        bonds = []
+        unique_types, type_idx = np.unique(atomtypes, return_inverse=True)
+        radii = np.array([vdwradii[t] for t in unique_types])[type_idx]
+        max_vdw = radii.max()
 
         pairs, dist = distances.self_capped_distance(
             coords, max_cutoff=2.0 * max_vdw, min_cutoff=lower_bound, box=box
         )
-        for idx, (i, j) in enumerate(pairs):
-            d = (
-                vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]
-            ) * fudge_factor
-            if dist[idx] < d:
-                bonds.append((atoms[i].index, atoms[j].index))
-        return tuple(bonds)
+        bonded = (
+            dist < (radii[pairs[:, 0]] + radii[pairs[:, 1]]) * fudge_factor
+        )
+        return tuple(map(tuple, atoms.ix[pairs[bonded]].tolist()))
 
     def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
@@ -499,8 +498,6 @@ class DefaultGuesser(GuesserBase):
         """
         from ..core.universe import Universe
 
-        angles_found = set()
-
         if bonds is None:
             if hasattr(self._universe.atoms, "bonds"):
                 bonds = self._universe.atoms.bonds
@@ -513,21 +510,17 @@ class DefaultGuesser(GuesserBase):
                 )
                 bonds = temp_u.atoms.bonds
 
-        for b in bonds:
-            for atom in b:
-                other_a = b.partner(atom)  # who's my friend currently in Bond
-                for other_b in atom.bonds:
-                    if other_b != b:  # if not the same bond I start as
-                        third_a = other_b.partner(atom)
-                        desc = tuple(
-                            [other_a.index, atom.index, third_a.index]
-                        )
-                        # first index always less than last
-                        if desc[0] > desc[-1]:
-                            desc = desc[::-1]
-                        angles_found.add(desc)
-
-        return tuple(angles_found)
+        bix, neighbours = _connection_indices(bonds, 2)
+        if len(bix) == 0:
+            return ()
+        # each bond (i, j) is extended at both ends: (j, i, k) and (i, j, k)
+        centre = np.concatenate([bix[:, 0], bix[:, 1]])
+        other = np.concatenate([bix[:, 1], bix[:, 0]])
+        row, third = neighbours(centre)
+        keep = third != other[row]  # not the bond we started from
+        row, third = row[keep], third[keep]
+        found = np.column_stack([other[row], centre[row], third])
+        return _unique_connections(found)
 
     def guess_dihedrals(self, angles=None):
         """Given a list of Angles, find all dihedrals that exist between atoms.
@@ -566,24 +559,17 @@ class DefaultGuesser(GuesserBase):
 
                 angles = temp_u.atoms.angles
 
-        dihedrals_found = set()
-
-        for b in angles:
-            a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
-            # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
-            # search the first and last atom of each angle
-            for atom, prefix in zip(
-                [b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]
-            ):
-                for other_b in atom.bonds:
-                    if not other_b.partner(atom) in b:
-                        third_a = other_b.partner(atom)
-                        desc = prefix + (third_a.index,)
-                        if desc[0] > desc[-1]:
-                            desc = desc[::-1]
-                        dihedrals_found.add(desc)
-
-        return tuple(dihedrals_found)
+        aix, neighbours = _connection_indices(angles, 3)
+        if len(aix) == 0:
+            return ()
+        # extend each angle at its first atom, (a2, a1, a0, x), and at its
+        # last atom, (a0, a1, a2, x)
+        prefix = np.concatenate([aix[:, ::-1], aix])
+        row, fourth = neighbours(prefix[:, -1])
+        prefix = prefix[row]
+        keep = (prefix != fourth[:, None]).all(axis=1)
+        found = np.column_stack([prefix[keep], fourth[keep]])
+        return _unique_connections(found)
 
     def guess_improper_dihedrals(self, angles=None):
         """Given a list of Angles, find all improper dihedrals
@@ -620,24 +606,16 @@ class DefaultGuesser(GuesserBase):
 
                 angles = temp_u.atoms.angles
 
-        dihedrals_found = set()
-
-        for b in angles:
-            atom = b[1]  # select middle atom in angle
-            # start of improper tuple
-            a_tup = tuple([b[a].index for a in [1, 2, 0]])
-            # if searching with b[1], want tuple of (b[1], b[2], b[0], +new)
-            # search the first and last atom of each angle
-            for other_b in atom.bonds:
-                other_atom = other_b.partner(atom)
-                # if this atom isn't in the angle I started with
-                if other_atom not in b:
-                    desc = a_tup + (other_atom.index,)
-                    if desc[0] > desc[-1]:
-                        desc = desc[::-1]
-                    dihedrals_found.add(desc)
-
-        return tuple(dihedrals_found)
+        aix, neighbours = _connection_indices(angles, 3)
+        if len(aix) == 0:
+            return ()
+        # extend each angle (a0, a1, a2) at its middle atom: (a1, a2, a0, x)
+        prefix = aix[:, [1, 2, 0]]
+        row, fourth = neighbours(prefix[:, 0])
+        prefix = prefix[row]
+        keep = (prefix != fourth[:, None]).all(axis=1)
+        found = np.column_stack([prefix[keep], fourth[keep]])
+        return _unique_connections(found)
 
     def guess_atom_charge(self, atoms):
         """Guess atom charge from the name.
@@ -688,3 +666,64 @@ class DefaultGuesser(GuesserBase):
             ],
             dtype=np.float32,
         )
+
+
+def _connection_indices(connections, n_atoms):
+    """Atom indices of `connections` and a bonded-neighbour lookup.
+
+    Parameters
+    ----------
+    connections : TopologyGroup or iterable of TopologyObject
+        bonds or angles to extend
+    n_atoms : int
+        number of atoms per connection
+
+    Returns
+    -------
+    indices : numpy.ndarray
+        ``(n_connections, n_atoms)`` atom indices
+    neighbours : callable
+        ``neighbours(atoms)`` returns ``(row, neighbour)`` arrays: for every
+        bond of ``atoms[row]`` in the whole universe, the other atom
+    """
+    try:
+        indices, universe = connections.indices, connections.universe
+    except AttributeError:
+        connections = list(connections)
+        if not connections:
+            return np.empty((0, n_atoms), dtype=np.intp), None
+        indices = np.array([c.indices for c in connections])
+        universe = connections[0].universe
+    if len(indices) == 0:
+        return np.empty((0, n_atoms), dtype=np.intp), None
+    indices = np.asarray(indices, dtype=np.intp)
+
+    try:
+        values = universe._topology.bonds.values
+    except AttributeError:
+        raise NoDataError(
+            "This Universe does not contain bonds information"
+        ) from None
+    values = np.array(values, dtype=np.intp).reshape(-1, 2)
+    # sparse (CSR) neighbour list over all bonds in the universe
+    src = np.concatenate([values[:, 0], values[:, 1]])
+    dst = np.concatenate([values[:, 1], values[:, 0]])
+    nbrs = dst[np.argsort(src, kind="stable")]
+    degree = np.bincount(src, minlength=universe._topology.n_atoms)
+    start = np.cumsum(degree) - degree
+
+    def neighbours(atoms):
+        deg = degree[atoms]
+        row = np.repeat(np.arange(len(atoms)), deg)
+        offset = np.arange(len(row)) - np.repeat(np.cumsum(deg) - deg, deg)
+        return row, nbrs[start[atoms][row] + offset]
+
+    return indices, neighbours
+
+
+def _unique_connections(found):
+    """Orient each connection so the first index is lower than the last
+    and return the distinct connections as a tuple of tuples."""
+    flip = found[:, 0] > found[:, -1]
+    found[flip] = found[flip, ::-1]
+    return tuple(set(map(tuple, found.tolist())))
