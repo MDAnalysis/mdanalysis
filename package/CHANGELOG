@@ -18,7 +18,7 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17
+         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora
 
  * 2.11.0
 
@@ -26,6 +26,9 @@ Fixes
  * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts
    without hydrogen bonds. Such runs are now skipped with a RuntimeWarning,
    and a ValueError is raised if all runs are skipped (Issue #5483, PR #5492)
+ * `GNMAnalysis` silently and wrongly reduced the split `eigenvectors` array
+   via hstack instead of vstack when using multiprocessing, and would raise
+   an error with uneven split of frames across workers (Issue #5494, PR #5495)
  * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
    as frame masks instead of integer frame indices (Issue #5472)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
