@@ -229,10 +229,36 @@ class InterRDF(AnalysisBase):
            This attribute will be removed in 3.0.0.
            Use :attr:`results.count` instead.
 
-    results.density : float
-       The average number density :math:`\rho` used for normalizing the RDF
-       (or ``None`` if box volume is not available). This attribute only
-       exists if `norm` is ``"rdf"`` or ``"density"``.
+    results.normalization_density : float
+       The pair normalization density :math:`N_{\text{pairs}} / \langle V \rangle`
+       used to normalize the RDF (or ``None`` if box volume is not available),
+       where :math:`\langle V \rangle` is the average box volume and
+       :math:`N_{\text{pairs}} = N_a N_b - N_{\text{excl}}`.
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.11.0
+
+    results.box_volume : float
+       The average box volume :math:`\langle V \rangle` across analyzed frames
+       (or ``None`` if box volume is not available).
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.11.0
+
+    results.density_a : float
+       The bulk number density :math:`\rho_a = N_a / \langle V \rangle` of the
+       first selection `g1` (or ``None`` if box volume is not available).
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.11.0
+
+    results.density_b : float
+       The bulk number density :math:`\rho_b = N_b / \langle V \rangle` of the
+       second selection `g2` (or ``None`` if box volume is not available).
+       This corresponds to the bulk density :math:`\rho` appearing in the
+       equations for :ref:`cumulative coordination counts<equation-countab>`
+       and :ref:`radial densities<equation-nab>`.
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
        .. versionadded:: 2.11.0
 
@@ -400,18 +426,23 @@ class InterRDF(AnalysisBase):
                 nblocks = nA / xA
                 N -= xA * xB * nblocks
 
-            # Average number density
+            # Average box volume and densities
             self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
 
-            # Save the average density if a non-zero box volume is available
             if box_vol > 0:
-                self.results.density = N / box_vol
+                self.results.box_volume = box_vol
+                self.results.normalization_density = N / box_vol
+                self.results.density_a = nA / box_vol
+                self.results.density_b = nB / box_vol
             else:
-                self.results.density = None
+                self.results.box_volume = None
+                self.results.normalization_density = None
+                self.results.density_a = None
+                self.results.density_b = None
 
             if self.norm == "rdf":
-                norm *= self.results.density
+                norm *= self.results.normalization_density
 
         self.results.rdf = self.results.count / norm
 
@@ -596,10 +627,18 @@ class InterRDF_s(AnalysisBase):
             This attribute will be removed in 3.0.0.
             Use :attr:`results.cdf` instead.
 
-    results.density : float
-        The average number density :math:`\rho` used for normalizing the RDF
-        (or ``None`` if box volume is not available). This attribute only
-        exists if `norm` is ``"rdf"`` or ``"density"``.
+    results.normalization_density : float
+        The normalization density :math:`1 / \langle V \rangle` used for
+        normalizing site-specific pair RDFs (or ``None`` if box volume is not
+        available), where :math:`\langle V \rangle` is the average box volume.
+        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+        .. versionadded:: 2.11.0
+
+    results.box_volume : float
+        The average box volume :math:`\langle V \rangle` across analyzed frames
+        (or ``None`` if box volume is not available).
+        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
         .. versionadded:: 2.11.0
 
@@ -775,15 +814,18 @@ class InterRDF_s(AnalysisBase):
             norm *= 4 / 3 * np.pi * np.diff(vols)
 
         if self.norm in ["rdf", "density"]:
-            # Average number density
+            # Average box volume and normalization density
             self.volume_cum = self.results.volume_cum
             if self.volume_cum > 0:
-                self.results.density = self.n_frames / self.volume_cum
+                box_vol = self.volume_cum / self.n_frames
+                self.results.box_volume = box_vol
+                self.results.normalization_density = 1.0 / box_vol
             else:
-                self.results.density = None
+                self.results.box_volume = None
+                self.results.normalization_density = None
 
             if self.norm == "rdf":
-                norm *= self.results.density
+                norm *= self.results.normalization_density
 
         # Empty lists to restore indices, RDF
         self.results.indices = []
