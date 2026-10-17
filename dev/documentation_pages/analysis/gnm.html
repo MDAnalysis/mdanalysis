@@ -290,6 +290,12 @@ store results as attributes <code class="docutils literal notranslate"><span cla
 backends; use the new method <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis.get_supported_backends" title="MDAnalysis.analysis.gnm.GNMAnalysis.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> to see all
 supported backends.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Fixed incorrect stacking of results from multiprocessing. Previously
+<code class="docutils literal notranslate"><span class="pre">results.eigenvectors</span></code> would silently return an array of the wrong
+shape. It now correctly use <code class="docutils literal notranslate"><span class="pre">np.vstack</span></code> for reducing the eigenvectors
+from multiple workers.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">
 <span class="sig-name descname"><span class="pre">generate_kirchoff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_kirchoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Link to this definition"></a></dt>

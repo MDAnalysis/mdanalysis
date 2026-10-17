@@ -406,6 +406,12 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Fixed incorrect stacking of results from multiprocessing. Previously</span>
+<span class="sd">       ``results.eigenvectors`` would silently return an array of the wrong</span>
+<span class="sd">       shape. It now correctly use ``np.vstack`` for reducing the eigenvectors</span>
+<span class="sd">       from multiple workers.</span>
 <span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
@@ -534,7 +540,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">"eigenvectors"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
+                <span class="s2">"eigenvectors"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
                 <span class="s2">"eigenvalues"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
                 <span class="s2">"times"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
             <span class="p">}</span>
