@@ -85,6 +85,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Faster `GNMAnalysis` Kirchhoff matrix (25x) and `HydrogenBondAnalysis`
+   (8x for `run()`, 2x for `lifetime()`) (PR #XXXX)
  * Faster `DefaultGuesser` angle, dihedral and improper guessing (20-100x),
    bond guessing (2.6x) and type guessing (28x) (PR #XXXX)
  * Faster `AtomGroup.bonds`/`angles`/`dihedrals` (up to 14x), `fragments`
