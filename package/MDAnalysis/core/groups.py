@@ -3614,7 +3614,7 @@ class AtomGroup(GroupBase):
         }
 
         if level == "atom":
-            return [self.universe.atoms[[a.ix]] for a in self]
+            return [self.universe.atoms[[ix]] for ix in self.ix]
 
         # higher level groupings
         try:
@@ -3632,10 +3632,13 @@ class AtomGroup(GroupBase):
             )
             raise ValueError(errmsg) from None
 
-        return [
-            self[levelindices == index]
-            for index in unique_int_1d(levelindices)
-        ]
+        # group atom positions by level index, keeping their order
+        _, inverse = np.unique(levelindices, return_inverse=True)
+        order = np.argsort(inverse, kind="stable")
+        bounds = np.cumsum(np.bincount(inverse))[:-1]
+        return (
+            [self[ix] for ix in np.split(order, bounds)] if len(self) else []
+        )
 
     def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
         """Guess bonds, angles, and dihedrals between the atoms in this
