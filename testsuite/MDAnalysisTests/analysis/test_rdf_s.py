@@ -124,7 +124,9 @@ def test_density(u, sels, density, value, client_InterRDF_s):
     assert hasattr(rdf.results, "box_volume")
     assert hasattr(rdf.results, "normalization_density")
     assert rdf.results.box_volume > 0
-    assert_allclose(rdf.results.normalization_density, 1.0 / rdf.results.box_volume)
+    assert_allclose(
+        rdf.results.normalization_density, 1.0 / rdf.results.box_volume
+    )
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(

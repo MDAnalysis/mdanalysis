@@ -198,8 +198,12 @@ def test_exposed_density(sels, client_InterRDF):
     assert hasattr(rdf_dense.results, "density_a")
     assert hasattr(rdf_dense.results, "density_b")
     assert rdf_dense.results.box_volume > 0
-    assert_allclose(rdf_dense.results.density_a, len(s1) / rdf_dense.results.box_volume)
-    assert_allclose(rdf_dense.results.density_b, len(s2) / rdf_dense.results.box_volume)
+    assert_allclose(
+        rdf_dense.results.density_a, len(s1) / rdf_dense.results.box_volume
+    )
+    assert_allclose(
+        rdf_dense.results.density_b, len(s2) / rdf_dense.results.box_volume
+    )
     assert_allclose(
         rdf_dense.results.normalization_density,
         (len(s1) * len(s2)) / rdf_dense.results.box_volume,
