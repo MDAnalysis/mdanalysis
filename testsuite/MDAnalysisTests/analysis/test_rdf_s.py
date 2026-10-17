@@ -45,7 +45,7 @@ def sels(u):
     )
     s3 = u.select_atoms("name ZND and (resid 291 or resid 292)")
     s4 = u.select_atoms("(name OD1 or name OD2) and sphzone 5.0 (resid 291)")
-    ags = [[s1, s2], [s3, s4]]
+    ags = [[s1, s2], [s3, s4], [s4, s3]]
     return ags
 
 
@@ -77,7 +77,7 @@ def test_count_size(rdf):
     # 2 elements in rdf.results.count[1]
     # 2 elements in rdf.results.count[1][0]
     # 2 elements in rdf.results.count[1][1]
-    assert len(rdf.results.count) == 2
+    assert len(rdf.results.count) == 3
     assert len(rdf.results.count[0]) == 1
     assert len(rdf.results.count[0][0]) == 2
     assert len(rdf.results.count[1]) == 2
@@ -202,8 +202,7 @@ def test_nested_array_sum():
 
 @pytest.mark.parametrize("n_pairs", [1, 2, 3])
 def test_n_pairs(u, sels, n_pairs, client_InterRDF_s):
-    # a third pair of groups: the second pair reversed
-    ags = (sels + [sels[1][::-1]])[:n_pairs]
+    ags = sels[:n_pairs]
     ref = InterRDF_s(u, ags).run()
     rdf = InterRDF_s(u, ags).run(**client_InterRDF_s)
     assert len(rdf.results.count) == n_pairs
