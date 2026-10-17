@@ -233,3 +233,11 @@ def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
         ], atol=1e-3, rtol=0
     )
     # fmt: on
+
+
+def test_gnm_odd_frames_per_worker(universe):
+    # explicit test for #5494 wrong shape being returned and a
+    # crash if uneven frames split between workers
+    gnm = mda.analysis.gnm.GNMAnalysis(universe)
+    results = gnm.run(stop=9, backend="multiprocessing", n_workers=2).results
+    assert results.eigenvectors.shape == (9, 214)

@@ -23,6 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `GNMAnalysis` silently and wrongly reduced the split `eigenvectors` array
+   via hstack instead of vstack when using multiprocessing, and would raise
+   an error with uneven split of frames across workers (Issue #5494, PR #5495)
  * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
    as frame masks instead of integer frame indices (Issue #5472)
  * Mass (u) has been added to MDAnalysis base units and clarified that physical
