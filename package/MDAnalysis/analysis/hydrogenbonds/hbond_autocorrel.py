@@ -283,6 +283,7 @@ class HydrogenBondAutoCorrel(object):
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
 
+
     .. versionchanged:: 1.0.0
       ``save_results()`` method was removed. You can instead use ``np.savez()``
       on :attr:`HydrogenBondAutoCorrel.solution['time']` and
