@@ -283,7 +283,7 @@ class HydrogenBondAutoCorrel(object):
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
 
-    ..versionchanged: 1.0.0
+    .. versionchanged:: 1.0.0
       ``save_results()`` method was removed. You can instead use ``np.savez()``
       on :attr:`HydrogenBondAutoCorrel.solution['time']` and
       :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
@@ -415,7 +415,11 @@ class HydrogenBondAutoCorrel(object):
             the first frame of any run), so that the autocorrelation is
             undefined.
 
-            .. versionadded:: 2.11.0
+
+        .. versionchanged:: 2.11.0
+          Runs without hydrogen bonds at their first frame are skipped
+          with a warning instead of giving NaN. A :exc:`ValueError` is
+          raised if all runs are skipped.
         """
         # if results exist, don't waste any time
         if self.solution["results"] is not None and not force:
