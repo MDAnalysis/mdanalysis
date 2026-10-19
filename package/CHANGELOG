@@ -23,6 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `InterRDF_s` with a parallel backend returned wrong counts for one
+   pair of groups and failed for more than two (`nested_array_sum`
+   summed exactly two pairs) (Issue #5496, PR #5497)
  * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts
    without hydrogen bonds. Such runs are now skipped with a RuntimeWarning,
    and a ValueError is raised if all runs are skipped (Issue #5483, PR #5492)

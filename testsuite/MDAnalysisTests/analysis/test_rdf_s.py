@@ -45,7 +45,7 @@ def sels(u):
     )
     s3 = u.select_atoms("name ZND and (resid 291 or resid 292)")
     s4 = u.select_atoms("(name OD1 or name OD2) and sphzone 5.0 (resid 291)")
-    ags = [[s1, s2], [s3, s4]]
+    ags = [[s1, s2], [s3, s4], [s4, s3]]
     return ags
 
 
@@ -70,19 +70,15 @@ def test_range(u, sels, client_InterRDF_s):
 
 
 def test_count_size(rdf):
-    # ZND vs OD1 & OD2
-    # should see 2 elements in rdf.results.count
-    # 1 element in rdf.results.count[0]
-    # 2 elements in rdf.results.count[0][0]
-    # 2 elements in rdf.results.count[1]
-    # 2 elements in rdf.results.count[1][0]
-    # 2 elements in rdf.results.count[1][1]
-    assert len(rdf.results.count) == 2
+    assert len(rdf.results.count) == 3
     assert len(rdf.results.count[0]) == 1
     assert len(rdf.results.count[0][0]) == 2
     assert len(rdf.results.count[1]) == 2
     assert len(rdf.results.count[1][0]) == 2
     assert len(rdf.results.count[1][1]) == 2
+    assert len(rdf.results.count[2]) == 2
+    assert len(rdf.results.count[2][0]) == 2
+    assert len(rdf.results.count[2][1]) == 2
 
 
 def test_count(rdf):
@@ -198,3 +194,13 @@ def test_nested_array_sum():
 
     assert np.array_equal(result[0], arr_1 + arr_3)
     assert np.array_equal(result[1], arr_2 + arr_4)
+
+
+@pytest.mark.parametrize("n_pairs", [1, 2, 3])
+def test_n_pairs(u, sels, n_pairs, client_InterRDF_s):
+    ags = sels[:n_pairs]
+    ref = InterRDF_s(u, ags).run()
+    rdf = InterRDF_s(u, ags).run(**client_InterRDF_s)
+    assert len(rdf.results.count) == n_pairs
+    for a, b in zip(ref.results.count, rdf.results.count):
+        assert_almost_equal(a, b)
