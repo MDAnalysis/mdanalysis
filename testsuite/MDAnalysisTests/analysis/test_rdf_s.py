@@ -70,19 +70,15 @@ def test_range(u, sels, client_InterRDF_s):
 
 
 def test_count_size(rdf):
-    # ZND vs OD1 & OD2
-    # should see 2 elements in rdf.results.count
-    # 1 element in rdf.results.count[0]
-    # 2 elements in rdf.results.count[0][0]
-    # 2 elements in rdf.results.count[1]
-    # 2 elements in rdf.results.count[1][0]
-    # 2 elements in rdf.results.count[1][1]
     assert len(rdf.results.count) == 3
     assert len(rdf.results.count[0]) == 1
     assert len(rdf.results.count[0][0]) == 2
     assert len(rdf.results.count[1]) == 2
     assert len(rdf.results.count[1][0]) == 2
     assert len(rdf.results.count[1][1]) == 2
+    assert len(rdf.results.count[2]) == 2
+    assert len(rdf.results.count[2][0]) == 2
+    assert len(rdf.results.count[2][1]) == 2
 
 
 def test_count(rdf):
