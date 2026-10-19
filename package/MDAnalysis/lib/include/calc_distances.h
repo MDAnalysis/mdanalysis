@@ -218,14 +218,14 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
     }
 
     // constants for multi-box shifts:
-    const double bi0 = 1.0 / (double) box[0];
-    const double bi4 = 1.0 / (double) box[4];
-    const double bi8 = 1.0 / (double) box[8];
-    const double bi3 = -box[3] * bi0 * bi4;
-    const double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
-    const double bi7 = -box[7] * bi4 * bi8;
+    const double bi0 = 1.0 / (double) box[0];                  // 1/a_x
+    const double bi4 = 1.0 / (double) box[4];                  // 1/b_y
+    const double bi8 = 1.0 / (double) box[8];                  // 1/c_z
+    const double bi3 = -box[3] * bi0 * bi4;                    // -b_x / (a_x * b_y)
+    const double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;   // (-b_x * c_y / (a_x * c_z) - c_x / a_x) / c_z
+    const double bi7 = -box[7] * bi4 * bi8;                    // -c_y / (b_y * c_z)
     // variables and constants for single box shifts:
-    const double b_ax_zfactor = (double) box[7] * bi8;
+    const double b_ax_zfactor = (double) box[7] * bi8;         // c_y / c_z
 
 
    /*
@@ -245,7 +245,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
         int msr = 0;
         float crd[3];
         double lbound, ubound;
-        
+
         crd[0] = coords[i][0];
         crd[1] = coords[i][1];
         crd[2] = coords[i][2];

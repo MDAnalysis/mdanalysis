@@ -196,7 +196,7 @@ cdef class FastNS(object):
     .. versionchanged:: 2.11.0
        Fixed missed neighbours in triclinic boxes where both the *x*
        component of the second box vector and the *y* component of the third
-       are non-zero (Issue #4906).
+       are non-zero or more than one angle is non-90º (Issue #4906).
     """
     cdef readonly double cutoff
     cdef float[:, ::1] coords_bbox
@@ -290,6 +290,8 @@ cdef class FastNS(object):
 
     cdef float _prepare_box(self, box, bint pbc):
         """
+        Set up the cell grid and calculate the maximum allowable cutoff.
+
         Parameters
         ----------
         box : numpy ndarray shape=(6,)
@@ -301,6 +303,11 @@ cdef class FastNS(object):
         -------
         max_cutoff : float
            the maximum allowable cutoff given the box shape and size
+
+
+        .. versionchanged:: 2.11.0
+           Fixed calculation of the cell size for triclinic boxes where
+           more than one angle is non-90º (Issue #4906).
         """
         cdef float cutoff, min_cellsize, max_cutoff
         cdef double ax, bx, by, cx, cy, cz, volume
@@ -441,7 +448,39 @@ cdef class FastNS(object):
         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
 
     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
-        """Calculate cell coordinate for coord"""
+        r"""Calculate cell coordinate for coord.
+
+        Parameters
+        ----------
+        coord : numpy.ndarray float of shape (3,)
+            Coordinate to calculate the cell coordinate for
+        xyz : numpy.ndarray int of shape (3,)
+            Cell coordinate for the given coordinate
+
+        Returns
+        -------
+        xyz : numpy.ndarray int of shape (3,)
+            Cell coordinate for the given coordinate
+
+        Background
+        ----------
+        The fractional coordinates :math:`\mathbf{s} = (s_a, s_b, s_c)` for a
+        point :math:`\mathbf{r} = (x, y, z)` in a general triclinic box with
+        box vectors :math:`\mathbf{a} = (a_x, 0, 0)`, :math:`\mathbf{b} = (b_x, b_y, 0)`,
+        and :math:`\mathbf{c} = (c_x, c_y, c_z)` are given by:
+
+        .. math::
+           \begin{align*}
+           s_c &= \frac{z}{c_z}\\
+           s_b &= \frac{y - s_c c_y}{b_y}\\
+           s_a &= \frac{x - s_b b_x - s_c c_x}{a_x}
+           \end{align*}
+
+
+        .. versionchanged:: 2.11.0
+           Fixed calculation of cell coordinate for triclinic boxes with both
+           :math:`b_x` and :math:`c_y` non-zero (Issue #4906).
+        """
         # This assumes coordinate is inside the primary unit cell
         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
         # y with the c-vector contribution removed, needed for both y and x

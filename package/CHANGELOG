@@ -23,12 +23,24 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Fixed `capped_distance` and `self_capped_distance` (and hence bond
-   guessing, selections and other users of the `nsgrid` and `pkdtree`
-   methods) missing pairs within the cutoff in triclinic boxes where both
-   b_x and c_y are non-zero, e.g. truncated octahedra; `apply_PBC` also
-   wrapped some coordinates in such boxes to just outside the primary
-   image (Issue #4906)
+ * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
+   `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
+   and `self_capped_distance`):
+   - `apply_PBC()`, `AtomGroup.wrap()`/`pack_into_box()`, `center*(wrap=True)`,
+     `AtomGroup.unwrap()` with `reference="com"`/`"cog"` and the
+     `transformations.wrap` transformation could leave atoms (or compound
+     centers) outside the primary unit cell in boxes with both b_x and c_y
+     non-zero (e.g. truncated octahedra); they were shifted by whole box
+     vectors, so periodic distances were unaffected, but results that depend on
+     absolute wrapped positions (e.g. dipole moments, densities, written
+     coordinates) may change.
+   - `capped_distance()` and `self_capped_distance()` with the `nsgrid` or
+     `pkdtree` methods (and hence bond guessing, distance-based selections)
+     could miss pairs within the cutoff; `nsgrid` was affected in triclinic
+     boxes with two or more non-90º angles (e.g. rhombic dodecahedron),
+     `pkdtree` in boxes with both b_x and c_y non-zero (e.g. truncated
+     octahedron).
+   (Issue #4906, PR #5496)
  * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts
    without hydrogen bonds. Such runs are now skipped with a RuntimeWarning,
    and a ValueError is raised if all runs are skipped (Issue #5483, PR #5492)

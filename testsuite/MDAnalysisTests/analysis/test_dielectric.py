@@ -41,7 +41,8 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=False).run()
-        # reference values changed after the apply_PBC fix for Issue #4906
+        # reference values depend on correct PBC handling
+        # (reference values changed after the apply_PBC fix for Issue #4906)
         assert_allclose(eps.results["eps_mean"], 630.326, rtol=1e-03)
 
     def test_broken_repaired_molecules(self, ag):
