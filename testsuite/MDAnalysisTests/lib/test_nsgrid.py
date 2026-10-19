@@ -94,7 +94,8 @@ def test_nsgrid_badcutoff(universe, cutoff, match):
 
 
 def test_ns_grid_noneighbor(universe):
-    """Check that grid search returns empty lists/arrays when there is no neighbors"""
+    """Check that grid search returns empty lists/arrays when there is no
+    neighbors"""
     ref_id = 0
     cutoff = 0.5
 
@@ -367,7 +368,8 @@ def test_nsgrid_probe_close_to_box_boundary():
 
 def test_zero_max_dist():
     # see issue #2656
-    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite subboxes)
+    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite
+    # subboxes)
     ref = np.array([1.0, 1.0, 1.0], dtype=np.float32)
     conf = np.array([2.0, 1.0, 1.0], dtype=np.float32)
 
@@ -512,12 +514,14 @@ def test_issue_2670():
         [97.16, 97.16, 97.16, 109.47, 109.47, 109.47],
         # LAMMPS cell from Issue #4906
         [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+        # rhombic dodecahedron
+        [50.0, 50.0, 50.0, 60.0, 60.0, 90.0],
     ],
 )
 def test_issue_4906(box):
-    # In boxes with both b_x and c_y non-zero, atoms were binned into the
-    # wrong cells and cells could be thinner than the cutoff, so neighbours
-    # within the cutoff were missed.
+    # In boxes with both b_x and c_y non-zero, or more than one non-90º angle,
+    # atoms were binned into the wrong cells and cells could be thinner than
+    # the cutoff, so neighbours were missed.
     box = np.array(box, dtype=np.float32)
     rng = np.random.default_rng(4906)
     frac = rng.uniform(0, 1, size=(1000, 3))
