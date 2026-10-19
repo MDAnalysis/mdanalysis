@@ -508,17 +508,32 @@ def test_issue_2670():
 
 
 @pytest.mark.parametrize(
-    "box",
+    "box, cutoff",
     [
-        # truncated octahedron
-        [97.16, 97.16, 97.16, 109.47, 109.47, 109.47],
-        # LAMMPS cell from Issue #4906
-        [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
-        # rhombic dodecahedron
-        [50.0, 50.0, 50.0, 60.0, 60.0, 90.0],
+        # Each cutoff lies where the old cell sizing made cells thinner than
+        # the cutoff (perpendicular thickness given for the old code).
+        pytest.param(
+            [97.16, 97.16, 97.16, 109.47, 109.47, 109.47],
+            10.0,
+            id="truncated-octahedron",
+        ),
+        pytest.param(
+            [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+            1.6,
+            id="lammps-issue-4906",
+        ),
+        pytest.param(
+            # with random coordinates the missed pairs are too rare to
+            # fail reliably with the old code (although it does w/ this seed)
+            # see test_issue_4906_cell_thickness for a test that is guaranteed
+            # to fail.
+            [50.0, 50.0, 50.0, 60.0, 60.0, 90.0],
+            6.0,
+            id="rhombic-dodecahedron",
+        ),
     ],
 )
-def test_issue_4906(box):
+def test_issue_4906(box, cutoff):
     # In boxes with both b_x and c_y non-zero, or more than one non-90º angle,
     # atoms were binned into the wrong cells and cells could be thinner than
     # the cutoff, so neighbours were missed.
@@ -526,7 +541,6 @@ def test_issue_4906(box):
     rng = np.random.default_rng(4906)
     frac = rng.uniform(0, 1, size=(1000, 3))
     coords = (frac @ mda.lib.mdamath.triclinic_vectors(box)).astype(np.float32)
-    cutoff = 0.1 * box[:3].min()
 
     dists = mda.lib.distances.distance_array(coords, coords, box=box)
     # skip pairs so close to the cutoff that rounding can decide them
@@ -545,6 +559,29 @@ def test_issue_4906(box):
 
     i, j = np.nonzero((dists <= cutoff) & ~ambiguous)
     assert found(searcher.search(coords)) == set(zip(i, j))
+
+
+def test_issue_4906_cell_thickness():
+    # Check the fix for placing atoms in the wrong cells; b_x = 0, so only the
+    # cell sizing matters. This test engineers pairs just inside the cutoff
+    # along the face normals, with cutoff so chose that the incorrect code
+    # gives cells that are too thin.
+    box = np.array([50.0, 50.0, 50.0, 60.0, 60.0, 90.0], dtype=np.float32)
+    cutoff = 6.18
+    tv = mda.lib.mdamath.triclinic_vectors(box).astype(np.float64)
+    rng = np.random.default_rng(4906)
+    n = 2000
+    p = rng.uniform(0, 1, size=(n, 3)) @ tv
+    # unit normals of the bc and ca faces
+    normals = np.array([np.cross(tv[1], tv[2]), np.cross(tv[2], tv[0])])
+    normals /= np.linalg.norm(normals, axis=1)[:, None]
+    q = p + 0.99 * cutoff * normals[rng.integers(0, 2, n)]
+    coords = np.concatenate([p, q]).astype(np.float32)
+
+    pairs = nsgrid.FastNS(cutoff, coords, box).self_search().get_pairs()
+    found = {tuple(sorted(pair)) for pair in pairs}
+    missing = [k for k in range(n) if (k, k + n) not in found]
+    assert not missing
 
 
 def high_mem_tests_enabled():
