@@ -228,40 +228,28 @@
 
 <div class="viewcode-block" id="nested_array_sum">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.nested_array_sum">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">nested_array_sum</span><span class="p">(</span><span class="n">arrs</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">"""Custom aggregator for nested arrays</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">nested_array_sum</span><span class="p">(</span><span class="n">arrs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Sum the count arrays of each pair of groups across workers</span>
 
-<span class="sd">    This function takes a nested list or tuple of NumPy arrays, flattens it</span>
-<span class="sd">    into a single list, and aggregates the elements at alternating indices</span>
-<span class="sd">    into two separate arrays. The first array accumulates elements at even</span>
-<span class="sd">    indices, while the second accumulates elements at odd indices.</span>
+<span class="sd">    Aggregator for :attr:`InterRDF_s.results.count` in parallel runs.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    arrs : list</span>
-<span class="sd">        List of arrays or nested lists of arrays</span>
+<span class="sd">    arrs : list of list of numpy.ndarray</span>
+<span class="sd">        One list per worker, holding a count array for each pair of</span>
+<span class="sd">        groups in ``ags``</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    list of ndarray</span>
-<span class="sd">        A list containing two NumPy arrays:</span>
-<span class="sd">        - The first array is the sum of all elements at even indices</span>
-<span class="sd">          in the sum of flattened arrays.</span>
-<span class="sd">        - The second array is the sum of all elements at odd indices</span>
-<span class="sd">          in the sum of flattened arrays.</span>
+<span class="sd">    list of numpy.ndarray</span>
+<span class="sd">        For each pair of groups, the sum of its arrays over the workers</span>
+
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Sums any number of pairs of groups (only two were summed</span>
+<span class="sd">       correctly before).</span>
 <span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">arr</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">sublist</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">arr</span><span class="p">]</span>
-
-    <span class="n">flat</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span>
-    <span class="n">aggregated_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="n">aggregated_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">flat</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">]</span>  <span class="c1"># 0, 2, 4, ...</span>
-        <span class="n">aggregated_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">flat</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 1, 3, 5, ...</span>
-    <span class="k">return</span> <span class="n">aggregated_arr</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">arrs</span><span class="p">)]</span></div>
 
 
 
