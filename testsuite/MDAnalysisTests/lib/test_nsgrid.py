@@ -508,17 +508,21 @@ def test_issue_2670():
 
 
 @pytest.mark.parametrize(
-    "box",
+    "box, cutoff_frac",
     [
         # truncated octahedron
-        [97.16, 97.16, 97.16, 109.47, 109.47, 109.47],
+        ([97.16, 97.16, 97.16, 109.47, 109.47, 109.47], 0.1),
         # LAMMPS cell from Issue #4906
-        [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
-        # rhombic dodecahedron
-        [50.0, 50.0, 50.0, 60.0, 60.0, 90.0],
+        (
+            [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+            0.1,
+        ),
+        # rhombic dodecahedron: the old cutoff / sin(angle) cell sizing only
+        # gave cells thinner than the cutoff for some cutoffs, e.g. 10.8
+        ([50.0, 50.0, 50.0, 60.0, 60.0, 90.0], 0.216),
     ],
 )
-def test_issue_4906(box):
+def test_issue_4906(box, cutoff_frac):
     # In boxes with both b_x and c_y non-zero, or more than one non-90º angle,
     # atoms were binned into the wrong cells and cells could be thinner than
     # the cutoff, so neighbours were missed.
@@ -526,7 +530,7 @@ def test_issue_4906(box):
     rng = np.random.default_rng(4906)
     frac = rng.uniform(0, 1, size=(1000, 3))
     coords = (frac @ mda.lib.mdamath.triclinic_vectors(box)).astype(np.float32)
-    cutoff = 0.1 * box[:3].min()
+    cutoff = cutoff_frac * box[:3].min()
 
     dists = mda.lib.distances.distance_array(coords, coords, box=box)
     # skip pairs so close to the cutoff that rounding can decide them
