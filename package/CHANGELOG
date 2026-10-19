@@ -18,11 +18,15 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora
+         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora,
+         dhrubchatterjee16-lang
 
  * 2.11.0
 
 Fixes
+  * `check_box()` now accepts an optional `dtype` keyword argument (defaulting
+    to `numpy.float32`) to allow callers to request a box array with higher
+    precision like `numpy.float64` (Issue #3500)
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):
