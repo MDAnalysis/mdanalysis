@@ -2258,6 +2258,10 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Fixed wrapping in triclinic boxes where both the *x* component of the</span>
+<span class="sd">       second box vector and the *y* component of the third are non-zero</span>
+<span class="sd">       (Issue #4906).</span>
 <span class="sd">    """</span>
     <span class="c1"># coords is an array, the check_coords decorator made sure of that.</span>
     <span class="c1"># Mypy, however, is not aware of that so we have to tell it explicitly.</span>

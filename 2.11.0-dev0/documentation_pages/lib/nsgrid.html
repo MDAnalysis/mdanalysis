@@ -228,6 +228,11 @@ if pbc is set to <code class="docutils literal notranslate"><span class="pre">Tr
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.2: </span>Rewrote to fix bugs with triclinic boxes</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Fixed missed neighbours in triclinic boxes where both the <em>x</em>
+component of the second box vector and the <em>y</em> component of the third
+are non-zero or more than one angle is non-90º (Issue #4906).</p>
+</div>
 <p>If box is not supplied, the range of coordinates i.e.
 <code class="docutils literal notranslate"><span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]</span> <span class="pre">-</span> <span class="pre">[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin]</span></code> should be used
 to construct a pseudo box. Subsequently, the origin should also be
