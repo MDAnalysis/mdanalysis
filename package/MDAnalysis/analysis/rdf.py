@@ -83,40 +83,28 @@ from ..lib import distances
 from .base import AnalysisBase, ResultsGroup
 
 
-def nested_array_sum(arrs):
-    r"""Custom aggregator for nested arrays
+def nested_array_sum(arrs: list[list[np.ndarray]]) -> list[np.ndarray]:
+    r"""Sum the count arrays of each pair of groups across workers
 
-    This function takes a nested list or tuple of NumPy arrays, flattens it
-    into a single list, and aggregates the elements at alternating indices
-    into two separate arrays. The first array accumulates elements at even
-    indices, while the second accumulates elements at odd indices.
+    Aggregator for :attr:`InterRDF_s.results.count` in parallel runs.
 
     Parameters
     ----------
-    arrs : list
-        List of arrays or nested lists of arrays
+    arrs : list of list of numpy.ndarray
+        One list per worker, holding a count array for each pair of
+        groups in ``ags``
 
     Returns
     -------
-    list of ndarray
-        A list containing two NumPy arrays:
-        - The first array is the sum of all elements at even indices
-          in the sum of flattened arrays.
-        - The second array is the sum of all elements at odd indices
-          in the sum of flattened arrays.
+    list of numpy.ndarray
+        For each pair of groups, the sum of its arrays over the workers
+
+
+    .. versionchanged:: 2.11.0
+       Sums any number of pairs of groups (only two were summed
+       correctly before).
     """
-
-    def flatten(arr):
-        if isinstance(arr, (list, tuple)):
-            return [item for sublist in arr for item in flatten(sublist)]
-        return [arr]
-
-    flat = flatten(arrs)
-    aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
-    for i in range(len(flat) // 2):
-        aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
-        aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
-    return aggregated_arr
+    return [np.sum(counts, axis=0) for counts in zip(*arrs)]
 
 
 class InterRDF(AnalysisBase):
