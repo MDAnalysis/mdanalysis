@@ -105,13 +105,6 @@ cdef extern from "calc_distances.h" nogil:
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 
 
-cdef inline float fmax(float a, float b):
-    if a > b:
-        return a
-    else:
-        return b
-
-
 cdef inline float fmin(float a, float b):
     if a < b:
         return a
@@ -200,6 +193,10 @@ cdef class FastNS(object):
 
     .. versionchanged::  1.0.2
        Rewrote to fix bugs with triclinic boxes
+    .. versionchanged:: 2.11.0
+       Fixed missed neighbours in triclinic boxes where both the *x*
+       component of the second box vector and the *y* component of the third
+       are non-zero or more than one angle is non-90º (Issue #4906).
     """
     cdef readonly double cutoff
     cdef float[:, ::1] coords_bbox
@@ -293,6 +290,8 @@ cdef class FastNS(object):
 
     cdef float _prepare_box(self, box, bint pbc):
         """
+        Set up the cell grid and calculate the maximum allowable cutoff.
+
         Parameters
         ----------
         box : numpy ndarray shape=(6,)
@@ -304,8 +303,15 @@ cdef class FastNS(object):
         -------
         max_cutoff : float
            the maximum allowable cutoff given the box shape and size
+
+
+        .. versionchanged:: 2.11.0
+           Fixed calculation of the cell size for triclinic boxes where
+           more than one angle is non-90º (Issue #4906).
         """
-        cdef float cutoff, min_cellsize, max_cutoff, new_cellsize
+        cdef float cutoff, min_cellsize, max_cutoff
+        cdef double ax, bx, by, cx, cy, cz, volume
+        cdef double widths[3]
         cdef int i
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -337,22 +343,31 @@ cdef class FastNS(object):
         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
         max_cutoff /= 2
 
-        # for triclinic cells, we need to worry about the shortest path across the cells
-        min_cellsize = cutoff
-        if self.triclinic:
-            for i in range(3, 6):
-                # cutoff/sin(theta) to elongate the XX/YY/ZZ dimension to make smallest diagonal large enough
-                new_cellsize = cutoff / degsin(self.dimensions[i])
-                min_cellsize = fmax(new_cellsize, min_cellsize)
-
+        # Cells must be at least `cutoff` thick perpendicular to each pair of
+        # box faces, so size the grid by the box's perpendicular widths.
+        # The box matrix is lower triangular, so width = volume / face area
+        # has a closed form.
+        ax = self.triclinic_dimensions[XX]
+        bx = self.triclinic_dimensions[XY]
+        by = self.triclinic_dimensions[YY]
+        cx = self.triclinic_dimensions[XZ]
+        cy = self.triclinic_dimensions[YZ]
+        cz = self.triclinic_dimensions[ZZ]
+        volume = ax * by * cz
+        widths[0] = widths[1] = widths[2] = 0.0
+        # invalid boxes give an all-zero matrix, leave widths at zero
+        if volume > 0:
+            widths[0] = volume / math.sqrt((by * cz) ** 2 + (bx * cz) ** 2
+                                           + (bx * cy - by * cx) ** 2)
+            widths[1] = by * cz / math.sqrt(cy * cy + cz * cz)
+            widths[2] = cz
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
-        min_cellsize += 0.001
+        min_cellsize = cutoff + 0.001
         # If the cell size is too small, indexing overflow will occur. Limit the number
         # of cells in any dimension to the cube root of the maximum of 32 bit integer values.
-        self.ncells[0] = <int> min(math.floor(self.triclinic_dimensions[XX] / min_cellsize), MAX_GRID_DIM)
-        self.ncells[1] = <int> min(math.floor(self.triclinic_dimensions[YY] / min_cellsize), MAX_GRID_DIM)
-        self.ncells[2] = <int> min(math.floor(self.triclinic_dimensions[ZZ] / min_cellsize), MAX_GRID_DIM)
+        for i in range(3):
+            self.ncells[i] = <int> min(math.floor(widths[i] / min_cellsize), MAX_GRID_DIM)
 
         self.pbc = pbc
         # If there aren't enough cells in a given dimension it's equivalent to one
@@ -433,11 +448,45 @@ cdef class FastNS(object):
         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
 
     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
-        """Calculate cell coordinate for coord"""
+        r"""Calculate cell coordinate for coord.
+
+        Parameters
+        ----------
+        coord : numpy.ndarray float of shape (3,)
+            Coordinate to calculate the cell coordinate for
+        xyz : numpy.ndarray int of shape (3,)
+            Cell coordinate for the given coordinate
+
+        Returns
+        -------
+        xyz : numpy.ndarray int of shape (3,)
+            Cell coordinate for the given coordinate
+
+        Background
+        ----------
+        The fractional coordinates :math:`\mathbf{s} = (s_a, s_b, s_c)` for a
+        point :math:`\mathbf{r} = (x, y, z)` in a general triclinic box with
+        box vectors :math:`\mathbf{a} = (a_x, 0, 0)`, :math:`\mathbf{b} = (b_x, b_y, 0)`,
+        and :math:`\mathbf{c} = (c_x, c_y, c_z)` are given by:
+
+        .. math::
+           \begin{align*}
+           s_c &= \frac{z}{c_z}\\
+           s_b &= \frac{y - s_c c_y}{b_y}\\
+           s_a &= \frac{x - s_b b_x - s_c c_x}{a_x}
+           \end{align*}
+
+
+        .. versionchanged:: 2.11.0
+           Fixed calculation of cell coordinate for triclinic boxes with both
+           :math:`b_x` and :math:`c_y` non-zero (Issue #4906).
+        """
         # This assumes coordinate is inside the primary unit cell
         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
-        xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])
-        xyz[0] = <int> ((coord[0] - coord[1] * self.cellsize[XY]
+        # y with the c-vector contribution removed, needed for both y and x
+        cdef double y = coord[1] - coord[2] * self.cellsize[YZ]
+        xyz[1] = <int> (y / self.cellsize[YY])
+        xyz[0] = <int> ((coord[0] - y * self.cellsize[XY]
                          - coord[2] * self.cellsize[XZ]) / self.cellsize[XX])
         # Make sure cell coordinate indices are within the primary unit cell
         # (better safe than sorry):

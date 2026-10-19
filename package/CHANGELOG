@@ -23,6 +23,24 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
+   `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
+   and `self_capped_distance`):
+   - `apply_PBC()`, `AtomGroup.wrap()`/`pack_into_box()`, `center*(wrap=True)`,
+     `AtomGroup.unwrap()` with `reference="com"`/`"cog"` and the
+     `transformations.wrap` transformation could leave atoms (or compound
+     centers) outside the primary unit cell in boxes with both b_x and c_y
+     non-zero (e.g. truncated octahedra); they were shifted by whole box
+     vectors, so periodic distances were unaffected, but results that depend on
+     absolute wrapped positions (e.g. dipole moments, densities, written
+     coordinates) may change.
+   - `capped_distance()` and `self_capped_distance()` with the `nsgrid` or
+     `pkdtree` methods (and hence bond guessing, distance-based selections)
+     could miss pairs within the cutoff; `nsgrid` was affected in triclinic
+     boxes with two or more non-90º angles (e.g. rhombic dodecahedron),
+     `pkdtree` in boxes with both b_x and c_y non-zero (e.g. truncated
+     octahedron).
+   (Issue #4906, PR #5496)
  * `InterRDF_s` with a parallel backend returned wrong counts for one
    pair of groups and failed for more than two (`nested_array_sum`
    summed exactly two pairs) (Issue #5496, PR #5497)
