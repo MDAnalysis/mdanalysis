@@ -145,7 +145,6 @@ Functions
 """
 
 import warnings
-from typing import Optional, Union
 
 import numpy as np
 
@@ -312,7 +311,7 @@ class DSSP(AnalysisBase):
 
     def __init__(
         self,
-        atoms: Union[Universe, AtomGroup],
+        atoms: Universe | AtomGroup,
         guess_hydrogens: bool = True,
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
@@ -326,7 +325,7 @@ class DSSP(AnalysisBase):
         super().__init__(ag.universe.trajectory)
 
         # define necessary selections
-        self._heavy_atoms: dict[str, "AtomGroup"] = {
+        self._heavy_atoms: dict[str, AtomGroup] = {
             t: ag.atoms[
                 np.isin(
                     ag.names, t.split()
@@ -335,7 +334,7 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._donor_mask: np.ndarray | None = ag.residues.resnames != "PRO"
         self._box = self._trajectory.ts.dimensions
         if self._box is not None and np.allclose(
             self._box, [1, 1, 1, 90, 90, 90]
@@ -345,38 +344,40 @@ class DSSP(AnalysisBase):
                 "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
                 "periodic boundary conditions in DSSP calculations"
             )
-        self._hydrogens: list["AtomGroup"] = [
-            res.atoms.select_atoms(f"name {hydrogen_name}")
-            for res in ag.residues
+        # hydrogens of each residue (among all of its atoms, not only those in
+        # ag), found with one selection: residue positions in ag.residues
+        # (sorted by resindex), then the number per residue and the first one
+        # of each residue that has any, in atom order
+        residues = ag.residues
+        hydrogens = residues.atoms.select_atoms(f"name {hydrogen_name}")
+        h_residue = np.searchsorted(residues.resindices, hydrogens.resindices)
+        n_hydrogens = np.bincount(h_residue, minlength=len(residues))
+        self._has_hydrogen: np.ndarray = n_hydrogens > 0
+        self._first_hydrogens: AtomGroup = hydrogens[
+            np.unique(h_residue, return_index=True)[1]
         ]
-        # can't do it the other way because I need missing values to exist
-        # so that I could fill them in later
         if not self._guess_hydrogens:
-            # zip() assumes that _heavy_atoms and _hydrogens is ordered in the
-            # same way. This is true as long as the original AtomGroup ag is
-            # sorted. With the hard-coded protein selection for ag this is always
-            # true but if the code on L277 ever changes, make sure to sort first!
-            for calpha, hydrogen in zip(
-                self._heavy_atoms["CA"][1:], self._hydrogens[1:]
-            ):
-                if (calpha.resname != "PRO" and len(hydrogen) != 1) or (
-                    calpha.resname == "PRO" and hydrogen
-                ):
-                    raise ValueError(
-                        (
-                            f"Residue {calpha.residue} contains wrong number of hydrogens: "
-                            "exactly 1 hydrogen is expected for non-PRO residues, and "
-                            "zero hydrogens for PRO residues."
-                        )
-                    )
+            # pairs the k-th CA atom with the k-th residue. This assumes that
+            # both are ordered in the same way, which holds as long as ag is
+            # sorted (it is, from the hard-coded protein selection above)
+            calphas = self._heavy_atoms["CA"]
+            n = min(len(calphas), len(residues))
+            is_pro = calphas.resnames[1:n] == "PRO"
+            counts = n_hydrogens[1:n]
+            wrong = np.flatnonzero(np.where(is_pro, counts != 0, counts != 1))
+            if wrong.size:
+                residue = calphas[wrong[0] + 1].residue
+                raise ValueError(
+                    f"Residue {residue} contains wrong number of hydrogens: "
+                    "exactly 1 hydrogen is expected for non-PRO residues, and "
+                    "zero hydrogens for PRO residues."
+                )
 
         positions = [group.positions for group in self._heavy_atoms.values()]
-        if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
+        if len({arr.shape[0] for arr in positions}) != 1:
             raise ValueError(
-                (
-                    "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
-                    " Please select appropriate AtomGroup manually."
-                )
+                "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
+                " Please select appropriate AtomGroup manually."
             )
 
         if len(ag.residues) < 6:
@@ -413,14 +414,14 @@ class DSSP(AnalysisBase):
                 coords.swapaxes(0, 1)
             )
 
-            h_coords = np.array(
-                [
-                    group.positions[0] if group else guessed_h_coords[idx]
-                    for idx, group in enumerate(self._hydrogens)
-                ]
-            )
-            h_coords = np.expand_dims(h_coords, axis=0)
-            coords = np.vstack([coords, h_coords])
+            # the first hydrogen of each residue that has one; a residue
+            # without one takes the guessed hydrogen of the same index
+            has = self._has_hydrogen
+            h_coords = np.empty((len(has), 3), dtype=coords.dtype)
+            h_coords[has] = self._first_hydrogens.positions
+            missing = np.flatnonzero(~has)
+            h_coords[missing] = guessed_h_coords[missing]
+            coords = np.vstack([coords, h_coords[np.newaxis]])
 
         coords = coords.swapaxes(0, 1)
         return coords
