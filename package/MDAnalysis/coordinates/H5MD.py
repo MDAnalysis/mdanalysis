@@ -46,11 +46,19 @@ Units are read from the attributes of the position, velocity, force, and time
 datasets provided by the H5MD file. The unit string is translated from `H5MD
 notation`_ to `MDAnalysis notation`_. If MDAnalysis does not recognize the unit
 (likely because that unit string is not defined in :mod:`MDAnalysis.units`)
-provided, a :exc:`RuntimeError` is raised.  If no units are provided,
-MDAnalysis stores a value of ``None`` for each unit.  If the H5MD file does not
-contain units and ``convert_units=True``, MDAnalysis will raise a
-:exc:`ValueError`. To load a universe from an H5MD file with no units defined,
-set ``convert_units=False``.
+provided, a :exc:`RuntimeError` is raised.
+
+The H5MD specification makes the ``unit`` attribute optional, so a file may
+leave out units for some or all datasets. Files written by LAMMPS, for
+example, never contain units. If no unit is provided for a quantity,
+MDAnalysis stores a value of ``None`` for that unit and reads the data
+*without conversion*, i.e., the values are assumed to already be in
+MDAnalysis base units. When ``convert_units=True`` (the default), a
+:exc:`UserWarning` lists the quantities that could not be converted. Check
+that the units of such files (e.g., the LAMMPS ``units`` style used in the
+simulation) match the MDAnalysis base units, or convert the data yourself.
+Set ``convert_units=False`` to read all data without conversion and without
+the warning.
 
 :class:`H5MDWriter` detects the native units of the parent trajectory and
 writes the trajectory with those units, unless one of `timeunit`,
@@ -212,6 +220,7 @@ import warnings
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
+from .. import units
 from ..exceptions import NoDataError
 from ..due import due, Doi
 from MDAnalysis.lib.util import store_init_arguments
@@ -337,6 +346,10 @@ class H5MDReader(base.ReaderBase):
        ``velocity``, or ``force`` groups.
     .. versionchanged:: 2.5.0
        Add correct handling of simple cuboid boxes
+    .. versionchanged:: 2.11.0
+       Datasets without a ``unit`` attribute are read without conversion and
+       a warning is issued instead of raising a :exc:`ValueError` when
+       ``convert_units=True`` (Issue #4722).
 
     """
 
@@ -426,8 +439,6 @@ class H5MDReader(base.ReaderBase):
         ValueError
             when ``n_atoms`` changes values between timesteps
         ValueError
-            when ``convert_units=True`` but the H5MD file contains no units
-        ValueError
             when dimension of unitcell is not 3
         ValueError
             when an MPI communicator object is passed to the reader
@@ -435,6 +446,13 @@ class H5MDReader(base.ReaderBase):
         NoDataError
             when the H5MD file has no 'position', 'velocity', or
             'force' group
+
+        Warns
+        -----
+        UserWarning
+            when ``convert_units=True`` but the H5MD file does not provide
+            units for some of its datasets, which are then read without
+            conversion
 
         """
         if not HAS_H5PY:
@@ -512,13 +530,15 @@ class H5MDReader(base.ReaderBase):
 
         for group, unit in _group_unit_dict.items():
             self._translate_h5md_units(group, unit)
-            self._check_units(group, unit)
+        self._check_units()
 
     def _translate_h5md_units(self, group, unit):
         """stores the translated unit string into the units dictionary"""
 
-        errmsg = "{} unit '{}' is not recognized by H5MDReader. Please raise"
-        " an issue in https://github.com/MDAnalysis/mdanalysis/issues"
+        errmsg = (
+            "{} unit '{}' is not recognized by H5MDReader. Please raise"
+            " an issue in https://github.com/MDAnalysis/mdanalysis/issues"
+        )
 
         # doing time unit separately because time has to fish for
         # first available parent group - either position, velocity, or force
@@ -582,25 +602,44 @@ class H5MDReader(base.ReaderBase):
                             )
                         ) from None
 
-    def _check_units(self, group, unit):
-        """Raises error if no units are provided from H5MD file
-        and convert_units=True"""
+    def _check_units(self):
+        """Warns if ``convert_units=True`` but the H5MD file does not
+        provide units for some of its datasets
+
+        The ``unit`` attribute is optional in the H5MD standard, so data
+        without units are read without conversion (Issue #4722).
+        """
 
         if not self.convert_units:
             return
 
-        errmsg = "H5MD file must have readable units if ``convert_units`` is"
-        " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
-        " Set ``convert_units=False`` to load Universe without units."
+        missing = []
+        if self.units["time"] is None:
+            missing.append("time")
+        if self.units["length"] is None and (
+            self._has["position"] or "edges" in self._particle_group["box"]
+        ):
+            missing.append("length")
+        for group in ("velocity", "force"):
+            if self._has[group] and self.units[group] is None:
+                missing.append(group)
 
-        if unit == "time":
-            if self.units["time"] is None:
-                raise ValueError(errmsg)
-
-        else:
-            if self._has[group]:
-                if self.units[unit] is None:
-                    raise ValueError(errmsg)
+        if missing:
+            # MDANALYSIS_BASE_UNITS stores the velocity unit as "speed"
+            base_keys = {"velocity": "speed"}
+            base_units = ", ".join(
+                f"{unit} "
+                f"({units.MDANALYSIS_BASE_UNITS[base_keys.get(unit, unit)]})"
+                for unit in missing
+            )
+            warnings.warn(
+                "H5MD file does not provide units for: "
+                f"{', '.join(missing)}. These data are read without "
+                "conversion and are assumed to be in MDAnalysis base units: "
+                f"{base_units}. Files written by LAMMPS, for example, do not "
+                "contain units. Set ``convert_units=False`` to silence this "
+                "warning."
+            )
 
     @staticmethod
     def _format_hint(thing):
@@ -780,23 +819,27 @@ class H5MDReader(base.ReaderBase):
         are not given in MDAnalysis standard units
 
         See https://userguide.mdanalysis.org/1.0.0/units.html
+
+        Quantities without a unit in the H5MD file are not converted.
         """
 
-        self.ts.time = self.convert_time_from_native(self.ts.time)
+        if self.units["time"] is not None:
+            self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if (
-            "edges" in self._particle_group["box"]
-            and self.ts.dimensions is not None
-        ):
-            self.convert_pos_from_native(self.ts.dimensions[:3])
+        if self.units["length"] is not None:
+            if (
+                "edges" in self._particle_group["box"]
+                and self.ts.dimensions is not None
+            ):
+                self.convert_pos_from_native(self.ts.dimensions[:3])
 
-        if self._has["position"]:
-            self.convert_pos_from_native(self.ts.positions)
+            if self._has["position"]:
+                self.convert_pos_from_native(self.ts.positions)
 
-        if self._has["velocity"]:
+        if self._has["velocity"] and self.units["velocity"] is not None:
             self.convert_velocities_from_native(self.ts.velocities)
 
-        if self._has["force"]:
+        if self._has["force"] and self.units["force"] is not None:
             self.convert_forces_from_native(self.ts.forces)
 
     def _read_next_timestep(self):

@@ -23,6 +23,12 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `H5MDReader` can now read H5MD files without `unit` attributes (which are
+   optional in the H5MD standard, e.g., files written by LAMMPS) when
+   `convert_units=True` (the default): data without units are read without
+   conversion and a warning is issued instead of raising a ValueError. Also
+   fixed truncated error messages for missing and unrecognized units
+   (Issue #4722)
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):

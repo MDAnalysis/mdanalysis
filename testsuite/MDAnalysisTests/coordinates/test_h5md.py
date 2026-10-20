@@ -3,6 +3,7 @@ from numpy.testing import assert_almost_equal, assert_equal, assert_allclose
 import numpy as np
 import sys
 import os
+import warnings
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 
@@ -362,7 +363,8 @@ class TestH5MDReaderWithRealTrajectory(object):
                     "unit"
                 ] = "random string"
         with pytest.raises(
-            RuntimeError, match=" is not recognized by H5MDReader."
+            RuntimeError,
+            match=" is not recognized by H5MDReader. Please raise an issue",
         ):
             u = mda.Universe(TPR_xvf, outfile)
 
@@ -449,20 +451,8 @@ class TestH5MDReaderWithRealTrajectory(object):
         ):
             u = mda.Universe(TPR_xvf, outfile)
 
-    def test_no_convert_units(self, h5md_file, outfile):
-        with h5md_file as f:
-            with h5py.File(outfile, "w") as g:
-                f.copy(source="particles", dest=g)
-                f.copy(source="h5md", dest=g)
-                groups = ["position", "velocity", "force"]
-                for name in groups:
-                    del g["particles/trajectory"][name]["value"].attrs["unit"]
-                del g["particles/trajectory/position/time"].attrs["unit"]
-        u = mda.Universe(TPR_xvf, outfile, convert_units=False)
-        for unit in u.trajectory.units:
-            assert_equal(u.trajectory.units[unit], None)
-
-    def test_no_units_but_convert_units_true_error(self, h5md_file, outfile):
+    @pytest.fixture()
+    def outfile_no_units(self, h5md_file, outfile):
         with h5md_file as f:
             with h5py.File(outfile, "w") as g:
                 f.copy(source="particles", dest=g)
@@ -472,10 +462,58 @@ class TestH5MDReaderWithRealTrajectory(object):
                     del g["particles/trajectory"][name]["value"].attrs["unit"]
                 del g["particles/trajectory/position/time"].attrs["unit"]
                 del g["particles/trajectory/box/edges/value"].attrs["unit"]
-        with pytest.raises(
-            ValueError, match="H5MD file must have readable units if"
+        return outfile
+
+    def test_no_convert_units(self, outfile_no_units):
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            u = mda.Universe(TPR_xvf, outfile_no_units, convert_units=False)
+        for unit in u.trajectory.units:
+            assert_equal(u.trajectory.units[unit], None)
+
+    def test_no_units_but_convert_units_true_warns(self, outfile_no_units):
+        # Issue #4722: the unit attribute is optional in the H5MD standard
+        # (e.g., LAMMPS never writes it) so data are read without conversion
+        with pytest.warns(
+            UserWarning,
+            match="H5MD file does not provide units for: time, length, "
+            "velocity, force",
         ):
-            u = mda.Universe(TPR_xvf, outfile, convert_units=True)
+            u = mda.Universe(TPR_xvf, outfile_no_units, convert_units=True)
+        ref = mda.Universe(TPR_xvf, outfile_no_units, convert_units=False)
+        for unit in u.trajectory.units:
+            assert_equal(u.trajectory.units[unit], None)
+        for ts, ref_ts in zip(u.trajectory, ref.trajectory):
+            assert_equal(ts.time, ref_ts.time)
+            assert_equal(ts.dimensions, ref_ts.dimensions)
+            assert_equal(ts.positions, ref_ts.positions)
+            assert_equal(ts.velocities, ref_ts.velocities)
+            assert_equal(ts.forces, ref_ts.forces)
+
+    def test_partial_units(self, h5md_file, universe, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, "w") as g:
+                f.copy(source="particles", dest=g)
+                f.copy(source="h5md", dest=g)
+                del g["particles/trajectory/force/value"].attrs["unit"]
+        with pytest.warns(
+            UserWarning, match="H5MD file does not provide units for: force\\."
+        ):
+            u = mda.Universe(TPR_xvf, outfile)
+        raw = mda.Universe(TPR_xvf, outfile, convert_units=False)
+        assert_equal(
+            u.trajectory.units, {**universe.trajectory.units, "force": None}
+        )
+        for ts, ref_ts, raw_ts in zip(
+            u.trajectory, universe.trajectory, raw.trajectory
+        ):
+            # quantities with units are still converted
+            assert_almost_equal(ts.time, ref_ts.time, self.prec)
+            assert_almost_equal(ts.dimensions, ref_ts.dimensions, self.prec)
+            assert_almost_equal(ts.positions, ref_ts.positions, self.prec)
+            assert_almost_equal(ts.velocities, ref_ts.velocities, self.prec)
+            # forces without units are left as they are in the file
+            assert_equal(ts.forces, raw_ts.forces)
 
     @pytest.mark.xfail(reason="Issue #2884")
     def test_open_filestream(self, h5md_file, universe):
