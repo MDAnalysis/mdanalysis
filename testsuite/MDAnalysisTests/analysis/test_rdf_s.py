@@ -116,18 +116,14 @@ def test_density(u, sels, density, value, client_InterRDF_s):
     kwargs = {"density": density} if density is not None else {}
     rdf = InterRDF_s(u, sels, **kwargs).run(**client_InterRDF_s)
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
-    assert not hasattr(rdf.results, "density")
     assert hasattr(rdf.results, "box_volume")
     assert hasattr(rdf.results, "normalization_density")
-    assert rdf.results.box_volume > 0
-    assert_allclose(
-        rdf.results.normalization_density, 1.0 / rdf.results.box_volume
-    )
+    expected_box_vol = sum(ts.volume for ts in u.trajectory) / len(u.trajectory)
+    assert_allclose(rdf.results.box_volume, expected_box_vol)
+    assert_allclose(rdf.results.normalization_density, 1.0 / expected_box_vol)
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
-        s2 = u.select_atoms(
-            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
-        )
+        s2 = u.select_atoms("name OD1 and resid 51 and sphzone 5.0 (resid 289)")
         rdf_ref = InterRDF(s1, s2).run(**client_InterRDF_s)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
@@ -150,9 +146,7 @@ def test_norm(u, sels, norm, value, client_InterRDF_s):
     assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if norm == "rdf":
         s1 = u.select_atoms("name ZND and resid 289")
-        s2 = u.select_atoms(
-            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
-        )
+        s2 = u.select_atoms("name OD1 and resid 51 and sphzone 5.0 (resid 289)")
         rdf_ref = InterRDF(s1, s2).run(**client_InterRDF_s)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
@@ -212,7 +206,6 @@ def test_density_zero_box(client_InterRDF_s):
     s2 = u.select_atoms("name OD1 and resid 51")
     ags = [[s1, s2]]
     rdf = InterRDF_s(u, ags, norm="density").run(**client_InterRDF_s)
-    assert not hasattr(rdf.results, "density")
     assert hasattr(rdf.results, "box_volume")
     assert hasattr(rdf.results, "normalization_density")
     assert rdf.results.box_volume is None

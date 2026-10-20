@@ -221,7 +221,7 @@ class InterRDF(AnalysisBase):
        The pair normalization density :math:`N_{\text{pairs}} / \langle V \rangle`
        used to normalize the RDF (or ``None`` if box volume is not available),
        where :math:`\langle V \rangle` is the average box volume and
-       :math:`N_{\text{pairs}} = N_a N_b - N_{\text{excl}}`.
+       :math:`N_{\text{pairs}} = N_1 N_2 - N_{\text{excl}}`.
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
        .. versionadded:: 2.11.0
@@ -233,15 +233,15 @@ class InterRDF(AnalysisBase):
 
        .. versionadded:: 2.11.0
 
-    results.density_a : float
-       The bulk number density :math:`\rho_a = N_a / \langle V \rangle` of the
+    results.density_1 : float
+       The bulk number density :math:`\rho_1 = N_1 / \langle V \rangle` of the
        first selection `g1` (or ``None`` if box volume is not available).
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
        .. versionadded:: 2.11.0
 
-    results.density_b : float
-       The bulk number density :math:`\rho_b = N_b / \langle V \rangle` of the
+    results.density_2 : float
+       The bulk number density :math:`\rho_2 = N_2 / \langle V \rangle` of the
        second selection `g2` (or ``None`` if box volume is not available).
        This corresponds to the bulk density :math:`\rho` appearing in the
        equations for :ref:`cumulative coordination counts<equation-countab>`
@@ -336,8 +336,7 @@ class InterRDF(AnalysisBase):
 
         if self.norm not in ["rdf", "density", "none"]:
             raise ValueError(
-                f"'{self.norm}' is an invalid norm. "
-                "Use 'rdf', 'density' or 'none'."
+                f"'{self.norm}' is an invalid norm. " "Use 'rdf', 'density' or 'none'."
             )
 
         self.backend = backend
@@ -421,13 +420,13 @@ class InterRDF(AnalysisBase):
             if box_vol > 0:
                 self.results.box_volume = box_vol
                 self.results.normalization_density = N / box_vol
-                self.results.density_a = nA / box_vol
-                self.results.density_b = nB / box_vol
+                self.results.density_1 = nA / box_vol
+                self.results.density_2 = nB / box_vol
             else:
                 self.results.box_volume = None
                 self.results.normalization_density = None
-                self.results.density_a = None
-                self.results.density_b = None
+                self.results.density_1 = None
+                self.results.density_2 = None
 
             if self.norm == "rdf":
                 norm *= self.results.normalization_density
@@ -724,9 +723,7 @@ class InterRDF_s(AnalysisBase):
         backend="serial",
         **kwargs,
     ):
-        super(InterRDF_s, self).__init__(
-            ags[0][0].universe.trajectory, **kwargs
-        )
+        super(InterRDF_s, self).__init__(ags[0][0].universe.trajectory, **kwargs)
 
         warnings.warn(
             "The `u` attribute is superflous and will be removed "
@@ -740,8 +737,7 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm not in ["rdf", "density", "none"]:
             raise ValueError(
-                f"'{self.norm}' is an invalid norm. "
-                "Use 'rdf', 'density' or 'none'."
+                f"'{self.norm}' is an invalid norm. " "Use 'rdf', 'density' or 'none'."
             )
 
         if density:
