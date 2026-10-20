@@ -126,6 +126,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Optimized boolean array indexing for trajectory readers by using
+   `np.flatnonzero` instead of `np.arange` allocation, significantly improving
+   performance and reducing memory overhead (Issue #1982)
  * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
