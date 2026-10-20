@@ -40,6 +40,8 @@ Deprecations
  * 2.11.0
 
 Fixes
+ * DSSP uses each frame's box for periodic boundary conditions, not the box
+   of the frame at construction for every frame (Issue #5508, PR #5509)
  * DSSP treats residues that start a chain (the first residue, and any
    residue more than 2.5 Å from the C atom of the residue before it: another
    chain or a gap) as DSSP does: they are no hydrogen bond donors and are
