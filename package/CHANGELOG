@@ -23,6 +23,11 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * DSSP treats residues that start a chain (the first residue, and any
+   residue more than 2.5 Å from the C atom of the residue before it: another
+   chain or a gap) as DSSP does: they are no hydrogen bond donors and are
+   not checked for a single hydrogen with ``guess_hydrogens=False``, which
+   rejected every system with more than one chain (Issue #XXXX, PR #XXXX)
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):
