@@ -265,3 +265,22 @@ def test_chain_breaks_do_not_donate(guess_hydrogens):
     hbond_map = get_hbond_map(dssp._get_coords(), donor_mask=dssp._donor_mask)
     # rows: donor residues (NH)
     assert not hbond_map[starts].any()
+
+
+def test_box_of_each_frame(client_DSSP):
+    # the protein is split across the box in TPR/XTC; frame 0 is made whole
+    # and given a large box, so a run constructed at frame 0 must still use
+    # the real box of every later frame
+    u = mda.Universe(TPR, XTC)
+    protein = u.select_atoms("protein")
+    coords = np.array([u.atoms.positions for _ in u.trajectory])
+    boxes = np.array([ts.dimensions for ts in u.trajectory])
+    u.trajectory[0]
+    coords[0, protein.ix] = protein.unwrap(compound="fragments")
+    boxes[0, :3] = 1000.0
+    u.load_new(coords, format="MEMORY", dimensions=boxes)
+    run = DSSP(u).run(**client_DSSP, stop=4)
+    for k in range(4):
+        u.trajectory[k]
+        alone = DSSP(u).run(start=k, stop=k + 1)
+        np.testing.assert_equal(run.results.dssp[k], alone.results.dssp[0])
