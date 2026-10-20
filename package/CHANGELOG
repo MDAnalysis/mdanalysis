@@ -23,6 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fixed the H5MDReader error messages for missing or unrecognized units,
+   which were cut off after their first line and did not tell users to set
+   ``convert_units=False`` (part of Issue #4722)
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):

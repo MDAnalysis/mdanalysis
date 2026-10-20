@@ -473,7 +473,11 @@ class TestH5MDReaderWithRealTrajectory(object):
                 del g["particles/trajectory/position/time"].attrs["unit"]
                 del g["particles/trajectory/box/edges/value"].attrs["unit"]
         with pytest.raises(
-            ValueError, match="H5MD file must have readable units if"
+            ValueError,
+            match=(
+                "H5MD file must have readable units if.*"
+                "Set ``convert_units=False``"
+            ),
         ):
             u = mda.Universe(TPR_xvf, outfile, convert_units=True)
 

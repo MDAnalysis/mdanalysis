@@ -517,8 +517,10 @@ class H5MDReader(base.ReaderBase):
     def _translate_h5md_units(self, group, unit):
         """stores the translated unit string into the units dictionary"""
 
-        errmsg = "{} unit '{}' is not recognized by H5MDReader. Please raise"
-        " an issue in https://github.com/MDAnalysis/mdanalysis/issues"
+        errmsg = (
+            "{} unit '{}' is not recognized by H5MDReader. Please raise"
+            " an issue in https://github.com/MDAnalysis/mdanalysis/issues"
+        )
 
         # doing time unit separately because time has to fish for
         # first available parent group - either position, velocity, or force
@@ -589,9 +591,12 @@ class H5MDReader(base.ReaderBase):
         if not self.convert_units:
             return
 
-        errmsg = "H5MD file must have readable units if ``convert_units`` is"
-        " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
-        " Set ``convert_units=False`` to load Universe without units."
+        errmsg = (
+            "H5MD file must have readable units if ``convert_units`` is"
+            " set to ``True``. MDAnalysis sets ``convert_units=True`` by"
+            " default. Set ``convert_units=False`` to load Universe without"
+            " units."
+        )
 
         if unit == "time":
             if self.units["time"] is None:
