@@ -106,7 +106,9 @@ def test_exclusion(sels, client_InterRDF):
     assert rdf.results.count.sum() == 4 * NFRAMES
 
 
-@pytest.mark.parametrize("attr, count", [("residue", 8), ("segment", 0), ("chain", 8)])
+@pytest.mark.parametrize(
+    "attr, count", [("residue", 8), ("segment", 0), ("chain", 8)]
+)
 def test_ignore_same_residues(sels, attr, count, client_InterRDF):
     # should see two distances with 4 counts each
     s1, s2 = sels
