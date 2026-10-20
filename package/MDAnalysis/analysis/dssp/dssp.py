@@ -163,8 +163,8 @@ due.cite(
 
 del Doi
 
-#: Longest C-N distance (in Å) between consecutive residues that still counts
-#: as a peptide bond; a longer one starts a new chain (the value used by DSSP)
+# Longest C-N distance (in Å) between consecutive residues that still counts
+# as a peptide bond; a longer one starts a new chain (the value used by DSSP)
 MAX_PEPTIDE_BOND_LENGTH = 2.5
 
 
