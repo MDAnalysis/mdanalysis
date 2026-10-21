@@ -22,25 +22,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>12. Core modules &mdash; MDAnalysis 2.10.0 documentation</title>
+  <title>13. Core modules &mdash; MDAnalysis 2.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=67920a36"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=1647406f"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 2.10.0 documentation"
+          title="Search within MDAnalysis 2.11.0 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="12.1. Core functions of MDAnalysis" href="core/init.html" />
-    <link rel="prev" title="11.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" href="auxiliary/EDR.html" /> 
+    <link rel="next" title="13.1. Core functions of MDAnalysis" href="core/init.html" />
+    <link rel="prev" title="12.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" href="auxiliary/EDR.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -67,7 +67,7 @@
   
   
     <div class="version">
-      2.10.0
+      2.11.0
     </div>
   
 
@@ -105,34 +105,35 @@
 <li class="toctree-l1"><a class="reference internal" href="guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">12. Core modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="core/init.html">12.1. Core functions of MDAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#important-objects-for-users">12.2. Important objects for users</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="core/universe.html">12.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="core/groups.html">12.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">13. Core modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/init.html">13.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-objects-for-users">13.2. Important objects for users</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core/universe.html">13.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core/groups.html">13.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#topology-system">12.3. Topology system</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="core/topology.html">12.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="core/topologyobjects.html">12.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="core/topologyattrs.html">12.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#topology-system">13.3. Topology system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core/topology.html">13.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core/topologyobjects.html">13.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core/topologyattrs.html">13.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#selection-system">12.4. Selection system</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="core/selection.html">12.4.1. Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selection-system">13.4. Selection system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core/selection.html">13.4.1. Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -150,7 +151,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">12. </span>Core modules</li>
+      <li class="breadcrumb-item active"><span class="section-number">13. </span>Core modules</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/documentation_pages/core_modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -161,7 +162,7 @@
            <div itemprop="articleBody">
              
   <section id="core-modules">
-<h1><span class="section-number">12. </span>Core modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h1>
+<h1><span class="section-number">13. </span>Core modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h1>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core</span></code> modules contain functionality essential for
 MDAnalysis, such as the central data structures in
 <a class="reference internal" href="core/universe.html#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a> and <a class="reference internal" href="core/groups.html#module-MDAnalysis.core.groups" title="MDAnalysis.core.groups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a> or
@@ -169,30 +170,30 @@ the selection definitions and parsing in
 <a class="reference internal" href="core/selection.html#module-MDAnalysis.core.selection" title="MDAnalysis.core.selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core/init.html">12.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/init.html">13.1. Core functions of MDAnalysis</a></li>
 </ul>
 </div>
 <section id="important-objects-for-users">
-<h2><span class="section-number">12.2. </span>Important objects for users<a class="headerlink" href="#important-objects-for-users" title="Link to this heading"></a></h2>
+<h2><span class="section-number">13.2. </span>Important objects for users<a class="headerlink" href="#important-objects-for-users" title="Link to this heading"></a></h2>
 <p>All users of MDAnalysis need to understand the two most important
 classes in this section, namely the
 <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> and the
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core/universe.html">12.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="core/groups.html">12.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/universe.html">13.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/groups.html">13.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
 </ul>
 </div>
 </section>
 <section id="topology-system">
-<span id="topology-system-label"></span><h2><span class="section-number">12.3. </span>Topology system<a class="headerlink" href="#topology-system" title="Link to this heading"></a></h2>
+<span id="topology-system-label"></span><h2><span class="section-number">13.3. </span>Topology system<a class="headerlink" href="#topology-system" title="Link to this heading"></a></h2>
 <p>The topology system is primarily of interest to developers.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core/topology.html">12.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="core/topologyobjects.html">12.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="core/topologyattrs.html">12.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/topology.html">13.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/topologyobjects.html">13.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/topologyattrs.html">13.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
 </ul>
 </div>
 <div class="admonition seealso">
@@ -202,11 +203,11 @@ Parsers</span></a></p>
 </div>
 </section>
 <section id="selection-system">
-<h2><span class="section-number">12.4. </span>Selection system<a class="headerlink" href="#selection-system" title="Link to this heading"></a></h2>
+<h2><span class="section-number">13.4. </span>Selection system<a class="headerlink" href="#selection-system" title="Link to this heading"></a></h2>
 <p>The selection system is primarily of interest to developers.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core/selection.html">12.4.1. Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/selection.html">13.4.1. Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -216,14 +217,14 @@ Parsers</span></a></p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="auxiliary/EDR.html" class="btn btn-neutral float-left" title="11.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="core/init.html" class="btn btn-neutral float-right" title="12.1. Core functions of MDAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="auxiliary/EDR.html" class="btn btn-neutral float-left" title="12.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core/init.html" class="btn btn-neutral float-right" title="13.1. Core functions of MDAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
@@ -250,7 +251,7 @@ Parsers</span></a></p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        2.10.0
+        2.11.0
       <span class="fa fa-caret-down"></span>
     </span>
 

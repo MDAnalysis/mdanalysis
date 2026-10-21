@@ -22,25 +22,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>14.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 2.10.0 documentation</title>
+  <title>15.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 2.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=67920a36"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=1647406f"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 2.10.0 documentation"
+          title="Search within MDAnalysis 2.11.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="14.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" />
-    <link rel="prev" title="14.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" /> 
+    <link rel="next" title="15.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" />
+    <link rel="prev" title="15.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -67,7 +67,7 @@
   
   
     <div class="version">
-      2.10.0
+      2.11.0
     </div>
   
 
@@ -105,42 +105,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">14.1. Overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">14.2. List of modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="distances.html">14.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">14.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">14.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">14.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">14.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">14.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">14.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">14.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#requirements">14.2.8.1. Requirements</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functions">14.2.8.2. Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">15.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">15.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">15.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">15.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">15.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">15.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">15.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">15.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">15.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">15.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">15.2.8.1. Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">15.2.8.2. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">14.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="util.html">14.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html">14.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#autocorrelation-function">14.2.12. Autocorrelation Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#intermittency-function">14.2.13. Intermittency Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">14.2.14. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">15.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">15.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html">15.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">15.2.12. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">14.3. Low level file formats</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#libmdanalysis">14.4. Libmdanalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">15.3. Low level file formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#libmdanalysis">15.4. Libmdanalysis</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -158,8 +157,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">14. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">14.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></li>
+          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">15. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">15.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/lib/transformations.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -170,7 +169,7 @@
            <div itemprop="articleBody">
              
   <section id="homogeneous-transformation-matrices-and-quaternions-mdanalysis-lib-transformations">
-<span id="module-MDAnalysis.lib.transformations"></span><h1><span class="section-number">14.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <a class="reference internal" href="#module-MDAnalysis.lib.transformations" title="MDAnalysis.lib.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><a class="headerlink" href="#homogeneous-transformation-matrices-and-quaternions-mdanalysis-lib-transformations" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.lib.transformations"></span><h1><span class="section-number">15.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <a class="reference internal" href="#module-MDAnalysis.lib.transformations" title="MDAnalysis.lib.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><a class="headerlink" href="#homogeneous-transformation-matrices-and-quaternions-mdanalysis-lib-transformations" title="Link to this heading"></a></h1>
 <p>A library for calculating 4x4 matrices for translating, rotating, reflecting,
 scaling, shearing, projecting, orthogonalizing, and superimposing arrays of
 3D homogeneous coordinates as well as for converting between rotation matrices,
@@ -189,7 +188,7 @@ Laboratory for Fluorescence Dynamics, University of California, Irvine</p>
 </dd>
 </dl>
 <section id="requirements">
-<h2><span class="section-number">14.2.8.1. </span>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<h2><span class="section-number">15.2.8.1. </span>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.python.org">Python 2.6 or 3.1</a></p></li>
 <li><p><a class="reference external" href="http://numpy.scipy.org">Numpy 1.4</a></p></li>
@@ -244,14 +243,14 @@ by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Ry</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Rz</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">zaxis</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">Rx</span><span class="p">,</span> <span class="n">Ry</span><span class="p">,</span> <span class="n">Rz</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">euler</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">euler</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="s1">'rxyz'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">([</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">],</span> <span class="n">euler</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Re</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Re</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="s1">'rxyz'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Re</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="s1">'rxyz'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span><span class="p">,</span> <span class="s1">'rxyz'</span><span class="p">))</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qx</span> <span class="o">=</span> <span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qy</span> <span class="o">=</span> <span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
@@ -273,7 +272,7 @@ by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</p></li>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">shear</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s1">'sxyz'</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">))</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M1</span><span class="p">)</span>
@@ -282,7 +281,7 @@ by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</p></li>
 </div>
 </section>
 <section id="functions">
-<h2><span class="section-number">14.2.8.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<h2><span class="section-number">15.2.8.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Transformations library moved from MDAnalysis.core.transformations to
 MDAnalysis.lib.transformations</p>
@@ -291,7 +290,7 @@ MDAnalysis.lib.transformations</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.transformations.Arcball">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.transformations.</span></span><span class="sig-name descname"><span class="pre">Arcball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.transformations.</span></span><span class="sig-name descname"><span class="pre">Arcball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball" title="Link to this definition"></a></dt>
 <dd><p>Virtual Trackball Control.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.transformations</span><span class="w"> </span><span class="kn">import</span> <span class="n">Arcball</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -661,14 +660,14 @@ point, normal, direction, perspective, and pseudo.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="mdamath.html" class="btn btn-neutral float-left" title="14.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="qcprot.html" class="btn btn-neutral float-right" title="14.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mdamath.html" class="btn btn-neutral float-left" title="15.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="qcprot.html" class="btn btn-neutral float-right" title="15.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
@@ -695,7 +694,7 @@ point, normal, direction, perspective, and pseudo.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        2.10.0
+        2.11.0
       <span class="fa fa-caret-down"></span>
     </span>
 

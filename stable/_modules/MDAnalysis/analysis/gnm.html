@@ -21,20 +21,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDAnalysis.analysis.gnm &mdash; MDAnalysis 2.10.0 documentation</title>
+  <title>MDAnalysis.analysis.gnm &mdash; MDAnalysis 2.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=67920a36"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=1647406f"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 2.10.0 documentation"
+          title="Search within MDAnalysis 2.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -64,7 +64,7 @@
   
   
     <div class="version">
-      2.10.0
+      2.11.0
     </div>
   
 
@@ -102,16 +102,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -166,7 +167,7 @@
 <span class="c1"># Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)</span>
 <span class="c1"># Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame</span>
 <span class="c1"># Copyright 2011; Consider under GPL v2 or later</span>
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`</span>
 <span class="sd">==============================================================================</span>
 
@@ -189,14 +190,14 @@
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    u = MDAnalysis.Universe(PSF, DCD)</span>
-<span class="sd">    C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector=&quot;output.txt&quot;)</span>
+<span class="sd">    C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")</span>
 
 <span class="sd">    C.run()</span>
 <span class="sd">    output = zip(*C.results)</span>
 
-<span class="sd">    with open(&quot;eigenvalues.dat&quot;, &quot;w&quot;) as outputfile:</span>
+<span class="sd">    with open("eigenvalues.dat", "w") as outputfile:</span>
 <span class="sd">        for item in output[1]:</span>
-<span class="sd">            outputfile.write(item + &quot;\n&quot;)</span>
+<span class="sd">            outputfile.write(item + "\n")</span>
 
 
 <span class="sd">The results are found in :attr:`GNMAnalysis.results`, which can be</span>
@@ -227,7 +228,7 @@
 <span class="sd">.. versionchanged:: 0.16.0</span>
 <span class="sd">   removed unused function :func:`backup_file`</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -239,7 +240,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.GNM&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"MDAnalysis.analysis.GNM"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_dsq</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
@@ -250,7 +251,7 @@
 <div class="viewcode-block" id="generate_grid">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.generate_grid">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple grid search.</span>
+<span class="w">    </span><span class="sd">"""Simple grid search.</span>
 
 <span class="sd">    An alternative to searching the entire list of each atom; divide the</span>
 <span class="sd">    structure into `cutoff` sized boxes This way, for each particle you only need</span>
@@ -267,7 +268,7 @@
 <span class="sd">        find particles with distance less than `cutoff` from each other; the</span>
 <span class="sd">        grid will consist of boxes with sides of at least length `cutoff`</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
 
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">T</span>
@@ -295,7 +296,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">neighbour_generator</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    return atom pairs that are in neighboring regions of space from a verlet-grid</span>
 
 <span class="sd">    Parameters</span>
@@ -309,7 +310,7 @@
 <span class="sd">    ------</span>
 <span class="sd">    i_atom, j_atom</span>
 <span class="sd">        indices of close atom pairs</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
     <span class="n">n_x</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
     <span class="n">n_y</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -336,7 +337,7 @@
 <div class="viewcode-block" id="order_list">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.order_list">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">order_list</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)"""</span>
     <span class="n">ordered</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="n">unordered</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="n">ordered</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
@@ -350,7 +351,7 @@
 <div class="viewcode-block" id="GNMAnalysis">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GNMAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic tool for GNM analysis.</span>
+<span class="w">    </span><span class="sd">"""Basic tool for GNM analysis.</span>
 
 <span class="sd">    Each frame is treated as a novel structure and the GNM</span>
 <span class="sd">    calculated.  By default, this stores the dominant eigenvector</span>
@@ -405,7 +406,13 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Fixed incorrect stacking of results from multiprocessing. Previously</span>
+<span class="sd">       ``results.eigenvectors`` would silently return an array of the wrong</span>
+<span class="sd">       shape. It now correctly use ``np.vstack`` for reducing the eigenvectors</span>
+<span class="sd">       from multiple workers.</span>
+<span class="sd">    """</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -413,13 +420,13 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"multiprocessing"</span><span class="p">,</span> <span class="s2">"dask"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">"protein and name CA"</span><span class="p">,</span>
         <span class="n">cutoff</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
         <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">Bonus_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -443,20 +450,20 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_output</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends time, eigenvalues and eigenvectors to results.</span>
+<span class="w">        </span><span class="sd">"""Appends time, eigenvalues and eigenvectors to results.</span>
 
 <span class="sd">        This generates the output by adding eigenvalue and</span>
 <span class="sd">        eigenvector data to an appendable object and optionally</span>
 <span class="sd">        printing some of the results to file. This is the function</span>
 <span class="sd">        to replace if you want to generate a more complex set of</span>
 <span class="sd">        outputs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">list_map</span> <span class="o">=</span> <span class="n">order_list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ReportVector</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ReportVector</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">oup</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ReportVector</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">oup</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]]):</span>
                     <span class="nb">print</span><span class="p">(</span>
-                        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="s2">""</span><span class="p">,</span>
                         <span class="n">counter</span><span class="p">,</span>
                         <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                         <span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
@@ -470,7 +477,7 @@
 <div class="viewcode-block" id="GNMAnalysis.generate_kirchoff">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the Kirchhoff matrix of contacts.</span>
+<span class="w">        </span><span class="sd">"""Generate the Kirchhoff matrix of contacts.</span>
 
 <span class="sd">        This generates the neighbour matrix by generating a grid of</span>
 <span class="sd">        near-neighbours and then calculating which are are within</span>
@@ -480,7 +487,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        array</span>
 <span class="sd">                the resulting Kirchhoff matrix</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">positions</span>
 
         <span class="c1"># add the com from each bonus group to the ca_positions list</span>
@@ -511,8 +518,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SVD with cutoff </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="si">}</span><span class="s2"> failed to converge. &quot;</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Skip frame at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"SVD with cutoff </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="si">}</span><span class="s2"> failed to converge. "</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"Skip frame at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">."</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span>
@@ -533,9 +540,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;eigenvectors&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
-                <span class="s2">&quot;eigenvalues&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
-                <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
+                <span class="s2">"eigenvectors"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
+                <span class="s2">"eigenvalues"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
+                <span class="s2">"times"</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -544,7 +551,7 @@
 <div class="viewcode-block" id="closeContactGNMAnalysis">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">closeContactGNMAnalysis</span><span class="p">(</span><span class="n">GNMAnalysis</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;GNMAnalysis only using close contacts.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""GNMAnalysis only using close contacts.</span>
 
 <span class="sd">    This is a version of the GNM where the Kirchoff matrix is</span>
 <span class="sd">    constructed from the close contacts between individual atoms</span>
@@ -561,8 +568,8 @@
 <span class="sd">          Gaussian network model.</span>
 <span class="sd">    ReportVector : str (optional)</span>
 <span class="sd">          filename to write eigenvectors to, by default no output is written</span>
-<span class="sd">    weights : {&quot;size&quot;, None} (optional)</span>
-<span class="sd">          If set to &quot;size&quot; (the default) then weight the contact by</span>
+<span class="sd">    weights : {"size", None} (optional)</span>
+<span class="sd">          If set to "size" (the default) then weight the contact by</span>
 <span class="sd">          :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the</span>
 <span class="sd">          number of atoms in the residues :math:`i` and :math:`j` that contain</span>
 <span class="sd">          the atoms that form a contact.</span>
@@ -589,7 +596,7 @@
 <span class="sd">       Made :meth:`generate_output` a private method :meth:`_generate_output`.</span>
 
 <span class="sd">    .. deprecated:: 0.16.0</span>
-<span class="sd">       Instead of ``MassWeight=True`` use ``weights=&quot;size&quot;``.</span>
+<span class="sd">       Instead of ``MassWeight=True`` use ``weights="size"``.</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       MassWeight option (see above deprecation entry).</span>
@@ -599,15 +606,15 @@
 <span class="sd">       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and</span>
 <span class="sd">       store results as attributes ``times``, ``eigenvalues`` and</span>
 <span class="sd">       ``eigenvectors`` of the `results` attribute.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">"protein"</span><span class="p">,</span>
         <span class="n">cutoff</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
         <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s2">"size"</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">closeContactGNMAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">ReportVector</span>
@@ -625,7 +632,7 @@
 
         <span class="c1"># cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])</span>
         <span class="n">inv_sqrt_res_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">))</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="s2">"size"</span><span class="p">:</span>
             <span class="n">inv_sqrt_res_sizes</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">]</span>
             <span class="p">)</span>
@@ -657,7 +664,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
@@ -684,7 +691,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        2.10.0
+        2.11.0
       <span class="fa fa-caret-down"></span>
     </span>
 

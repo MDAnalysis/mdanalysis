@@ -21,20 +21,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDAnalysis.analysis.backends &mdash; MDAnalysis 2.10.0 documentation</title>
+  <title>MDAnalysis.analysis.backends &mdash; MDAnalysis 2.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=67920a36"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=1647406f"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 2.10.0 documentation"
+          title="Search within MDAnalysis 2.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -64,7 +64,7 @@
   
   
     <div class="version">
-      2.10.0
+      2.11.0
     </div>
   
 
@@ -102,16 +102,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -140,7 +141,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for MDAnalysis.analysis.backends</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Analysis backends --- :mod:`MDAnalysis.analysis.backends`</span>
+<span></span><span class="sd">"""Analysis backends --- :mod:`MDAnalysis.analysis.backends`</span>
 <span class="sd">============================================================</span>
 
 <span class="sd">.. versionadded:: 2.8.0</span>
@@ -176,7 +177,7 @@
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
@@ -186,7 +187,7 @@
 <div class="viewcode-block" id="BackendBase">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendBase</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for backend implementation.</span>
+<span class="w">    </span><span class="sd">"""Base class for backend implementation.</span>
 
 <span class="sd">    Initializes an instance and performs checks for its validity, such as</span>
 <span class="sd">    ``n_workers`` and possibly other ones.</span>
@@ -230,7 +231,7 @@
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">=</span> <span class="n">n_workers</span>
@@ -239,7 +240,7 @@
 <div class="viewcode-block" id="BackendBase._get_checks">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendBase._get_checks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dictionary with ``condition: error_message`` pairs that ensure the</span>
+<span class="w">        </span><span class="sd">"""Get dictionary with ``condition: error_message`` pairs that ensure the</span>
 <span class="sd">        validity of the backend instance</span>
 
 <span class="sd">        Returns</span>
@@ -247,18 +248,18 @@
 <span class="sd">        dict</span>
 <span class="sd">            dictionary with ``condition: error_message`` pairs that will get</span>
 <span class="sd">            checked during ``_validate()`` run</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span>
-            <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;n_workers should be positive integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"n_workers should be positive integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">"</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="BackendBase._get_warnings">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendBase._get_warnings">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dictionary with ``condition: warning_message`` pairs that ensure</span>
+<span class="w">        </span><span class="sd">"""Get dictionary with ``condition: warning_message`` pairs that ensure</span>
 <span class="sd">        the good usage of the backend instance</span>
 
 <span class="sd">        Returns</span>
@@ -266,21 +267,21 @@
 <span class="sd">        dict</span>
 <span class="sd">            dictionary with ``condition: warning_message`` pairs that will get</span>
 <span class="sd">            checked during ``_validate()`` run</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BackendBase._validate">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendBase._validate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check correctness (e.g. ``dask`` is installed if using ``backend=&#39;dask&#39;``)</span>
+<span class="w">        </span><span class="sd">"""Check correctness (e.g. ``dask`` is installed if using ``backend='dask'``)</span>
 <span class="sd">        and good usage (e.g. ``n_workers=1`` if backend is serial) of the backend</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            if one of the conditions in :meth:`_get_checks` is ``True``</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_checks</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -292,7 +293,7 @@
 <div class="viewcode-block" id="BackendBase.apply">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendBase.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">computations</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;map function `func` to all tasks in the `computations` list</span>
+<span class="w">        </span><span class="sd">"""map function `func` to all tasks in the `computations` list</span>
 
 <span class="sd">        Main method that will get called when using an instance of</span>
 <span class="sd">        ``BackendBase``.  It is equivalent to running ``[func(item) for item in</span>
@@ -310,7 +311,7 @@
 <span class="sd">        list</span>
 <span class="sd">            list of results of the function</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
@@ -319,7 +320,7 @@
 <div class="viewcode-block" id="BackendSerial">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendSerial">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendSerial</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A built-in backend that does serial execution of the function, without any</span>
+<span class="w">    </span><span class="sd">"""A built-in backend that does serial execution of the function, without any</span>
 <span class="sd">    parallelization.</span>
 
 <span class="sd">    Parameters</span>
@@ -330,12 +331,12 @@
 
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BackendSerial._get_warnings">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendSerial._get_warnings">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dictionary with ``condition: warning_message`` pairs that ensure</span>
+<span class="w">        </span><span class="sd">"""Get dictionary with ``condition: warning_message`` pairs that ensure</span>
 <span class="sd">        the good usage of the backend instance. Here, it checks if the number</span>
 <span class="sd">        of workers is not 1, otherwise gives warning.</span>
 
@@ -344,17 +345,17 @@
 <span class="sd">        dict</span>
 <span class="sd">            dictionary with ``condition: warning_message`` pairs that will get</span>
 <span class="sd">            checked during ``_validate()`` run</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span>
-            <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;n_workers is ignored when executing with backend=&#39;serial&#39;&quot;</span>
+            <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">"n_workers is ignored when executing with backend='serial'"</span>
         <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="BackendSerial.apply">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendSerial.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">computations</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Serially applies `func` to each task object in ``computations``.</span>
 
 <span class="sd">        Parameters</span>
@@ -368,7 +369,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            list of results of the function</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">computations</span><span class="p">]</span></div>
 </div>
 
@@ -377,7 +378,7 @@
 <div class="viewcode-block" id="BackendMultiprocessing">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendMultiprocessing">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendMultiprocessing</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A built-in backend that executes a given function using the</span>
+<span class="w">    </span><span class="sd">"""A built-in backend that executes a given function using the</span>
 <span class="sd">    :meth:`multiprocessing.Pool.map &lt;multiprocessing.pool.Pool.map&gt;` method.</span>
 
 <span class="sd">    Parameters</span>
@@ -400,12 +401,12 @@
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BackendMultiprocessing.apply">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendMultiprocessing.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">computations</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies `func` to each object in ``computations`` using `multiprocessing`&#39;s `Pool.map`.</span>
+<span class="w">        </span><span class="sd">"""Applies `func` to each object in ``computations`` using `multiprocessing`'s `Pool.map`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -418,7 +419,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            list of results of the function</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 
         <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
@@ -431,11 +432,11 @@
 <div class="viewcode-block" id="BackendDask">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendDask">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendDask</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A built-in backend that executes a given function with *dask*.</span>
+<span class="w">    </span><span class="sd">"""A built-in backend that executes a given function with *dask*.</span>
 
 <span class="sd">    Execution is performed with the :func:`dask.compute` function of</span>
 <span class="sd">    :class:`dask.delayed.Delayed` object (created with</span>
-<span class="sd">    :func:`dask.delayed.delayed`) with ``scheduler=&#39;processes&#39;`` and</span>
+<span class="sd">    :func:`dask.delayed.delayed`) with ``scheduler='processes'`` and</span>
 <span class="sd">    ``chunksize=1`` (this ensures uniform distribution of tasks among</span>
 <span class="sd">    processes). Requires the `dask package &lt;https://docs.dask.org/en/stable/&gt;`_</span>
 <span class="sd">    to be `installed &lt;https://docs.dask.org/en/stable/install.html&gt;`_.</span>
@@ -462,12 +463,12 @@
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BackendDask.apply">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendDask.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">computations</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies `func` to each object in ``computations``.</span>
+<span class="w">        </span><span class="sd">"""Applies `func` to each object in ``computations``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -480,14 +481,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            list of results of the function</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">dask.delayed</span><span class="w"> </span><span class="kn">import</span> <span class="n">delayed</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
 
         <span class="n">computations</span> <span class="o">=</span> <span class="p">[</span><span class="n">delayed</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">computations</span><span class="p">]</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
             <span class="n">computations</span><span class="p">,</span>
-            <span class="n">scheduler</span><span class="o">=</span><span class="s2">&quot;processes&quot;</span><span class="p">,</span>
+            <span class="n">scheduler</span><span class="o">=</span><span class="s2">"processes"</span><span class="p">,</span>
             <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span>
         <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -497,7 +498,7 @@
 <div class="viewcode-block" id="BackendDask._get_checks">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/backends.html#MDAnalysis.analysis.backends.BackendDask._get_checks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dictionary with ``condition: error_message`` pairs that ensure the</span>
+<span class="w">        </span><span class="sd">"""Get dictionary with ``condition: error_message`` pairs that ensure the</span>
 <span class="sd">        validity of the backend instance. Here checks if ``dask`` module is</span>
 <span class="sd">        installed in the environment.</span>
 
@@ -506,12 +507,12 @@
 <span class="sd">        dict</span>
 <span class="sd">            dictionary with ``condition: error_message`` pairs that will get</span>
 <span class="sd">            checked during ``_validate()`` run</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">base_checks</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_checks</span><span class="p">()</span>
         <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">is_installed</span><span class="p">(</span><span class="s2">&quot;dask&quot;</span><span class="p">):</span> <span class="p">(</span>
-                <span class="s2">&quot;module &#39;dask&#39; is missing. Please install &#39;dask&#39;: &quot;</span>
-                <span class="s2">&quot;https://docs.dask.org/en/stable/install.html&quot;</span>
+            <span class="n">is_installed</span><span class="p">(</span><span class="s2">"dask"</span><span class="p">):</span> <span class="p">(</span>
+                <span class="s2">"module 'dask' is missing. Please install 'dask': "</span>
+                <span class="s2">"https://docs.dask.org/en/stable/install.html"</span>
             <span class="p">)</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">base_checks</span> <span class="o">|</span> <span class="n">checks</span></div>
@@ -526,7 +527,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
@@ -553,7 +554,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        2.10.0
+        2.11.0
       <span class="fa fa-caret-down"></span>
     </span>
 

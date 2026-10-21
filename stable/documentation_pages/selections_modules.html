@@ -22,25 +22,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10. Selection exporters &mdash; MDAnalysis 2.10.0 documentation</title>
+  <title>11. Selection exporters &mdash; MDAnalysis 2.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=67920a36"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=1647406f"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 2.10.0 documentation"
+          title="Search within MDAnalysis 2.11.0 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="10.2.1. VMD selections" href="selections/vmd.html" />
-    <link rel="prev" title="9.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="transformations/boxdimensions.html" /> 
+    <link rel="next" title="11.2.1. VMD selections" href="selections/vmd.html" />
+    <link rel="prev" title="10.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="transformations/boxdimensions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -67,7 +67,7 @@
   
   
     <div class="version">
-      2.10.0
+      2.11.0
     </div>
   
 
@@ -105,32 +105,33 @@
 <li class="toctree-l1"><a class="reference internal" href="guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">10. Selection exporters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-write-selections">10.1. How to write selections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">10.1.1. Single AtomGroup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">10.1.2. Multiple selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">11. Selection exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-write-selections">11.1. How to write selections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">11.1.1. Single AtomGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">11.1.2. Multiple selections</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#selection-writers">10.2. Selection writers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="selections/vmd.html">10.2.1. VMD selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/pymol.html">10.2.2. PyMOL selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/gromacs.html">10.2.3. Gromacs selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/charmm.html">10.2.4. CHARMM selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/jmol.html">10.2.5. Jmol selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/base.html">10.2.6. Base classes for the selection writers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selection-writers">11.2. Selection writers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="selections/vmd.html">11.2.1. VMD selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/pymol.html">11.2.2. PyMOL selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/gromacs.html">11.2.3. Gromacs selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/charmm.html">11.2.4. CHARMM selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/jmol.html">11.2.5. Jmol selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/base.html">11.2.6. Base classes for the selection writers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_modules.html">12. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -148,7 +149,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">10. </span>Selection exporters</li>
+      <li class="breadcrumb-item active"><span class="section-number">11. </span>Selection exporters</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/documentation_pages/selections_modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -159,7 +160,7 @@
            <div itemprop="articleBody">
              
   <section id="selection-exporters">
-<span id="id1"></span><h1><span class="section-number">10. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Link to this heading"></a></h1>
+<span id="id1"></span><h1><span class="section-number">11. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Link to this heading"></a></h1>
 <p>The classes in this module allow writing a selection to a file that can be read by
 <em>another program</em> to select the atoms in a MDAnalysis
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>. Such cross-package interoperability
@@ -208,9 +209,9 @@ module <a class="reference internal" href="selections/jmol.html#module-MDAnalysi
 </tbody>
 </table>
 <section id="how-to-write-selections">
-<h2><span class="section-number">10.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Link to this heading"></a></h2>
 <section id="single-atomgroup">
-<h3><span class="section-number">10.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Link to this heading"></a></h3>
+<h3><span class="section-number">11.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Link to this heading"></a></h3>
 <p>The typical situation is that one has an
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and wants to work with the
 same selection of atoms in a different package, for example, to
@@ -218,8 +219,8 @@ visualize the atoms in <a class="reference external" href="http://www.ks.uiuc.ed
 <code class="docutils literal notranslate"><span class="pre">g</span></code> in the example below) and then use its
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method with the
 appropriate <em>file extension</em> (see <a class="reference internal" href="#supported-selection-exporters"><span class="std std-ref">Table of supported exporters and recognized file name extensions.</span></a> for the recognized <em>extension</em>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&quot;)</span>
-<span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;selections.vmd&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mda_protein&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">'protein")</span>
+<span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"selections.vmd"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"mda_protein"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, sourcing the file <code class="docutils literal notranslate"><span class="pre">selections.vmd</span></code> (written in Tcl) defines
@@ -233,7 +234,7 @@ Representations</span> window in the list <span class="guilabel">Selections: Sin
 “mda_protein”.</p>
 </section>
 <section id="multiple-selections">
-<h3><span class="section-number">10.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Link to this heading"></a></h3>
+<h3><span class="section-number">11.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method can take
 additional keyword arguments, including <code class="docutils literal notranslate"><span class="pre">mode</span></code>. The default is
 <code class="docutils literal notranslate"><span class="pre">mode=&quot;w&quot;</span></code>, which will overwrite the provided file. If <code class="docutils literal notranslate"><span class="pre">mode=&quot;a&quot;</span></code>
@@ -244,11 +245,11 @@ context manager and write each <code class="xref py py-class docutils literal no
 context. For example, to write multiple groups that were selected to
 mark different parts of a lipid bilayer to <a class="reference external" href="http://www.gromacs.org">Gromacs</a> index file named
 “leaflets.ndx”:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">gromacs</span><span class="o">.</span><span class="n">SelectionWriter</span><span class="p">(</span><span class="s1">&#39;leaflets.ndx&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ndx</span><span class="p">:</span>
-    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;upper_sat&#39;</span><span class="p">)</span>
-    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lower_sat&#39;</span><span class="p">)</span>
-    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;upper_unsat&#39;</span><span class="p">)</span>
-    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lower_unsat&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">gromacs</span><span class="o">.</span><span class="n">SelectionWriter</span><span class="p">(</span><span class="s1">'leaflets.ndx'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">ndx</span><span class="p">:</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'upper_sat'</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'lower_sat'</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'upper_unsat'</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'lower_unsat'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>There is a separate <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> for each format, as
@@ -256,20 +257,20 @@ described next.</p>
 </section>
 </section>
 <section id="selection-writers">
-<h2><span class="section-number">10.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Link to this heading"></a></h2>
 <p>There exist different <a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriterBase</span></code></a>
 classes for different packages. The
 <a class="reference internal" href="#MDAnalysis.selections.get_writer" title="MDAnalysis.selections.get_writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_writer()</span></code></a> function can automatically pick
 the appropriate one, based on the file name extension in the <a class="reference internal" href="#supported-selection-exporters"><span class="std std-ref">Table of supported exporters and recognized file name extensions.</span></a>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.selections.get_writer">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.</span></span><span class="sig-name descname"><span class="pre">get_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultformat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><span class="pre">SelectionWriterBase</span></a></span></span><a class="reference internal" href="../_modules/MDAnalysis/selections.html#get_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.get_writer" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.</span></span><span class="sig-name descname"><span class="pre">get_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultformat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><span class="pre">SelectionWriterBase</span></a></span></span><a class="reference internal" href="../_modules/MDAnalysis/selections.html#get_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.get_writer" title="Link to this definition"></a></dt>
 <dd><p>Return a SelectionWriter for <cite>filename</cite> or a <cite>defaultformat</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – name of the output file; the extension is used to guess the file format</p></li>
-<li><p><strong>defaultformat</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – if <cite>filename</cite> does not have an extension, use <cite>defaultformat</cite> instead</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – name of the output file; the extension is used to guess the file format</p></li>
+<li><p><strong>defaultformat</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – if <cite>filename</cite> does not have an extension, use <cite>defaultformat</cite> instead</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -279,7 +280,7 @@ the appropriate one, based on the file name extension in the <a class="reference
 <dd class="field-odd"><p><cite>type</cite></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – for any format that is not defined</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.15)"><strong>NotImplementedError</strong></a> – for any format that is not defined</p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,12 +289,12 @@ the appropriate one, based on the file name extension in the <a class="reference
 <p>Each module implements a <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> for a specific format.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="selections/vmd.html">10.2.1. VMD selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/pymol.html">10.2.2. PyMOL selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/gromacs.html">10.2.3. Gromacs selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/charmm.html">10.2.4. CHARMM selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/jmol.html">10.2.5. Jmol selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/base.html">10.2.6. Base classes for the selection writers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/vmd.html">11.2.1. VMD selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/pymol.html">11.2.2. PyMOL selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/gromacs.html">11.2.3. Gromacs selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/charmm.html">11.2.4. CHARMM selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/jmol.html">11.2.5. Jmol selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/base.html">11.2.6. Base classes for the selection writers</a></li>
 </ul>
 </div>
 </section>
@@ -303,14 +304,14 @@ the appropriate one, based on the file name extension in the <a class="reference
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="transformations/boxdimensions.html" class="btn btn-neutral float-left" title="9.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="selections/vmd.html" class="btn btn-neutral float-right" title="10.2.1. VMD selections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="transformations/boxdimensions.html" class="btn btn-neutral float-left" title="10.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="selections/vmd.html" class="btn btn-neutral float-right" title="11.2.1. VMD selections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
@@ -337,7 +338,7 @@ the appropriate one, based on the file name extension in the <a class="reference
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        2.10.0
+        2.11.0
       <span class="fa fa-caret-down"></span>
     </span>
 
