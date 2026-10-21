@@ -232,7 +232,9 @@ class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
         assert_equal(
             attr.get_residues(DummyGroup([2, 1])),
-            np.array([self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]),
+            np.array(
+                [self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]
+            ),
         )
 
     def test_get_segments(self, attr):
@@ -278,7 +280,9 @@ class TestResidueAttr(TopologyAttrMixin):
             setattr(res, self.attrclass.singular, self.values[:2])
 
     def test_get_atoms(self, attr):
-        assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]])
+        assert_equal(
+            attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]]
+        )
 
     def test_get_atom(self, universe):
         attr = getattr(universe.atoms[0], self.attrclass.singular)
@@ -368,7 +372,9 @@ class TestSegmentAttr(TopologyAttrMixin):
             setattr(seg, "segid", [1, 2, 3])
 
     def test_get_atoms(self, attr):
-        assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]])
+        assert_equal(
+            attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]]
+        )
 
     def test_get_residues(self, attr):
         assert_equal(
@@ -381,7 +387,9 @@ class TestSegmentAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_equal(attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]])
+        assert_equal(
+            attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]]
+        )
 
     def test_set_segments_singular(self, attr):
         dg = DummyGroup([0, 1])
@@ -428,7 +436,9 @@ class TestAttr(object):
 
     def test_principal_axes_handedness(self, universe_pa):
         e_vec = universe_pa.atoms.principal_axes()
-        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
+        assert_almost_equal(
+            np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0
+        )
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()
@@ -709,7 +719,9 @@ class TestStringInterning:
 
         assert_equal(attr.values, ref.values)
         assert attr.values.dtype == ref.values.dtype
-        assert all(attr.name_lookup[i] == nm for nm, i in attr.namedict.items())
+        assert all(
+            attr.name_lookup[i] == nm for nm, i in attr.namedict.items()
+        )
 
         u = mda.Universe.empty(n_atoms=5)
         u.add_TopologyAttr(attr)
@@ -788,7 +800,9 @@ class TestDtypeChecks:
         universe.add_TopologyAttr("segids", ["SEG1", "SEG2"])
         universe.add_TopologyAttr("resids", [1, 2, 3])
         universe.add_TopologyAttr("charges", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        universe.add_TopologyAttr("masses", [12.0, 12.0, 14.0, 16.0, 12.0, 12.0])
+        universe.add_TopologyAttr(
+            "masses", [12.0, 12.0, 14.0, 16.0, 12.0, 12.0]
+        )
         universe.add_TopologyAttr(
             "aromaticities", [False, False, False, False, False, False]
         )
