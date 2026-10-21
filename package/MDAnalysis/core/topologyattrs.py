@@ -91,7 +91,10 @@ def _check_dtype(attr, group, values):
     is_iter = iterable(values)
     attr_name = attr.singular if is_component else attr.attrname
 
-    if isinstance(attr, _StringInternerMixin) or getattr(attr, "dtype", None) == "U1":
+    if (
+        isinstance(attr, _StringInternerMixin)
+        or getattr(attr, "dtype", None) == "U1"
+    ):
         kind = "str"
         type_desc = "a string"
         plural_desc = "strings"
@@ -119,13 +122,13 @@ def _check_dtype(attr, group, values):
             if kind == "str":
                 valid = np.issubdtype(values.dtype, np.str_)
             elif kind == "int":
-                valid = np.issubdtype(values.dtype, np.integer) and not np.issubdtype(
-                    values.dtype, np.bool_
-                )
+                valid = np.issubdtype(
+                    values.dtype, np.integer
+                ) and not np.issubdtype(values.dtype, np.bool_)
             elif kind == "float":
-                valid = np.issubdtype(values.dtype, np.number) and not np.issubdtype(
-                    values.dtype, np.bool_
-                )
+                valid = np.issubdtype(
+                    values.dtype, np.number
+                ) and not np.issubdtype(values.dtype, np.bool_)
             else:  # bool
                 valid = np.issubdtype(values.dtype, np.bool_)
         else:
@@ -147,7 +150,9 @@ def _check_dtype(attr, group, values):
                 valid = all(isinstance(v, (bool, np.bool_)) for v in values)
 
         if not valid:
-            raise TypeError(f"All values for {attr_name} must be {plural_desc}")
+            raise TypeError(
+                f"All values for {attr_name} must be {plural_desc}"
+            )
     else:
         if kind == "str":
             valid = isinstance(values, str)
@@ -156,9 +161,9 @@ def _check_dtype(attr, group, values):
                 values, (bool, np.bool_)
             )
         elif kind == "float":
-            valid = isinstance(values, (int, float, np.number)) and not isinstance(
-                values, (bool, np.bool_)
-            )
+            valid = isinstance(
+                values, (int, float, np.number)
+            ) and not isinstance(values, (bool, np.bool_))
         else:  # bool
             valid = isinstance(values, (bool, np.bool_))
 
@@ -478,7 +483,9 @@ class _TopologyAttrMeta(type):
             if dtype is not None:
                 per_obj = classdict.get("per_object", bases[0].per_object)
                 try:
-                    selection.gen_selection_class(singular, attrname, dtype, per_obj)
+                    selection.gen_selection_class(
+                        singular, attrname, dtype, per_obj
+                    )
                 except ValueError:
                     msg = (
                         "A selection keyword could not be "
@@ -556,7 +563,9 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         raise NotImplementedError("No default values")
 
     @classmethod
-    def from_blank(cls, n_atoms=None, n_residues=None, n_segments=None, values=None):
+    def from_blank(
+        cls, n_atoms=None, n_residues=None, n_segments=None, values=None
+    ):
         """Create a blank version of this TopologyAttribute
 
         Parameters
@@ -931,7 +940,9 @@ class _StringInternerMixin:
                     newnames.append(val)
                     newidx[i] = nextidx
 
-        self.nmidx[ag.ix] = newidx  # newidx either single value or same size array
+        self.nmidx[ag.ix] = (
+            newidx  # newidx either single value or same size array
+        )
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
@@ -1054,7 +1065,8 @@ class Atomnames(AtomStringAttr):
 
         keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
         keep_res = [
-            all(sum(r.atoms.names == n) == 1 for n in ncac_names) for r in residues
+            all(sum(r.atoms.names == n) == 1 for n in ncac_names)
+            for r in residues
         ]
         keep = np.array(keep_prev) & np.array(keep_res)
         keep[invalid] = False
@@ -1245,7 +1257,8 @@ class Atomnames(AtomStringAttr):
 
         keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
         keep_res = [
-            all(sum(r.atoms.names == n) == 1 for n in ncac_names) for r in residues
+            all(sum(r.atoms.names == n) == 1 for n in ncac_names)
+            for r in residues
         ]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
@@ -1357,9 +1370,12 @@ class Atomnames(AtomStringAttr):
 
         nxtatoms = [ca_name, n_name]
         resatoms = [ca_name, c_name]
-        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms) for r in nxt]
+        keep_nxt = [
+            all(sum(r.atoms.names == n) == 1 for n in nxtatoms) for r in nxt
+        ]
         keep_res = [
-            all(sum(r.atoms.names == n) == 1 for n in resatoms) for r in residues
+            all(sum(r.atoms.names == n) == 1 for n in resatoms)
+            for r in residues
         ]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
@@ -1861,9 +1877,13 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
 
-        com = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
+        com = atomgroup.center_of_mass(
+            wrap=wrap, unwrap=unwrap, compound=compound
+        )
         if compound != "group":
-            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+            com = (com * group.masses[:, None]).sum(
+                axis=0
+            ) / group.masses.sum()
 
         if wrap:
             pos = atomgroup.pack_into_box(inplace=False) - com
@@ -1994,7 +2014,9 @@ class Masses(AtomAttr):
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
+        com = atomgroup.center_of_mass(
+            wrap=wrap, unwrap=unwrap, compound=compound
+        )
 
         if compound == "group":
             if wrap:
@@ -2129,7 +2151,8 @@ class Masses(AtomAttr):
             )
         else:
             shape = (3.0 / 2.0) * (
-                np.sum((eig_vals - np.mean(eig_vals)) ** 2) / np.sum(eig_vals) ** 2
+                np.sum((eig_vals - np.mean(eig_vals)) ** 2)
+                / np.sum(eig_vals) ** 2
             )
 
         return shape
@@ -2213,7 +2236,9 @@ class Masses(AtomAttr):
         # print "axis = %r, angle = %f deg" % (ax, angle)
         return group.rotateby(angle, ax)
 
-    transplants[GroupBase].append(("align_principal_axis", align_principal_axis))
+    transplants[GroupBase].append(
+        ("align_principal_axis", align_principal_axis)
+    )
 
 
 # TODO: update docs to property doc
@@ -2370,7 +2395,9 @@ class Charges(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
-    def dipole_vector(group, wrap=False, unwrap=False, compound="group", center="mass"):
+    def dipole_vector(
+        group, wrap=False, unwrap=False, compound="group", center="mass"
+    ):
         r"""Dipole vector of the group.
 
         .. math::
@@ -2436,7 +2463,9 @@ class Charges(AtomAttr):
 
         if center == "mass":
             masses = atomgroup.masses
-            ref = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
+            ref = atomgroup.center_of_mass(
+                wrap=wrap, unwrap=unwrap, compound=compound
+            )
         elif center == "charge":
             ref = atomgroup.center_of_charge(
                 wrap=wrap, unwrap=unwrap, compound=compound
@@ -2462,7 +2491,9 @@ class Charges(AtomAttr):
                 )
             else:
                 recenteredpos = atomgroup.positions - ref
-            dipole_vector = np.einsum("ij,ij->j", recenteredpos, charges[:, np.newaxis])
+            dipole_vector = np.einsum(
+                "ij,ij->j", recenteredpos, charges[:, np.newaxis]
+            )
         else:
             atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
@@ -2546,9 +2577,13 @@ class Charges(AtomAttr):
         dipole_vector = atomgroup.dipole_vector(**kwargs)
 
         if len(dipole_vector.shape) > 1:
-            dipole_moment = np.sqrt(np.einsum("ij,ij->i", dipole_vector, dipole_vector))
+            dipole_moment = np.sqrt(
+                np.einsum("ij,ij->i", dipole_vector, dipole_vector)
+            )
         else:
-            dipole_moment = np.sqrt(np.einsum("i,i->", dipole_vector, dipole_vector))
+            dipole_moment = np.sqrt(
+                np.einsum("i,i->", dipole_vector, dipole_vector)
+            )
 
         return dipole_moment
 
@@ -2641,7 +2676,9 @@ class Charges(AtomAttr):
 
         if center == "mass":
             masses = atomgroup.masses
-            ref = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
+            ref = atomgroup.center_of_mass(
+                wrap=wrap, unwrap=unwrap, compound=compound
+            )
         elif center == "charge":
             ref = atomgroup.center_of_charge(
                 wrap=wrap, unwrap=unwrap, compound=compound
@@ -2759,7 +2796,9 @@ class Charges(AtomAttr):
         if len(quad_tensor.shape) == 2:
             quad_moment = __quadrupole_moment(quad_tensor)
         else:
-            quad_moment = np.array([__quadrupole_moment(x) for x in quad_tensor])
+            quad_moment = np.array(
+                [__quadrupole_moment(x) for x in quad_tensor]
+            )
 
         return quad_moment
 
@@ -3083,7 +3122,9 @@ class Resnames(ResidueStringAttr):
                 )
             )
         try:
-            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
+            sequence = "".join(
+                [convert_aa_code(r) for r in self.residues.resnames]
+            )
         except KeyError as err:
             errmsg = (
                 f"AtomGroup contains a residue name '{err.message}' that"
@@ -3216,13 +3257,14 @@ def _check_connection_values(func):
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
         if not all(
-            len(x) == self._n_atoms and all(isinstance(y, (int, np.integer)) for y in x)
+            len(x) == self._n_atoms
+            and all(isinstance(y, (int, np.integer)) for y in x)
             for x in values
         ):
             raise ValueError(
-                ("{} must be an iterable of tuples with {}" " atom indices").format(
-                    self.attrname, self._n_atoms
-                )
+                (
+                    "{} must be an iterable of tuples with {}" " atom indices"
+                ).format(self.attrname, self._n_atoms)
             )
         clean = []
         for v in values:
@@ -3300,7 +3342,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b, t, g, o in zip(self.values, self.types, self._guessed, self.order):
+        for b, t, g, o in zip(
+            self.values, self.types, self._guessed, self.order
+        ):
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -3319,7 +3363,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
         """
         try:
-            unique_bonds = set(itertools.chain(*[self._bondDict[a] for a in ag.ix]))
+            unique_bonds = set(
+                itertools.chain(*[self._bondDict[a] for a in ag.ix])
+            )
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
