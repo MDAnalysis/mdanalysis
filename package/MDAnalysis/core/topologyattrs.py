@@ -85,6 +85,75 @@ from .groups import (
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
+def _check_dtype(attr, group, values):
+    """Check that values match the expected dtype of the TopologyAttr."""
+    is_component = isinstance(group, ComponentBase)
+    is_iter = iterable(values)
+    attr_name = attr.singular if is_component else attr.attrname
+
+    # String attributes (either _StringInternerMixin or dtype == "U1" or object)
+    if isinstance(attr, _StringInternerMixin) or getattr(attr, "dtype", None) == "U1":
+        if is_iter:
+            if len(values) == 0:
+                return
+            if isinstance(values, np.ndarray) and np.issubdtype(values.dtype, np.str_):
+                return
+            if not all(isinstance(v, str) for v in values):
+                raise TypeError(f"All values for {attr_name} must be strings")
+        else:
+            if not isinstance(values, str):
+                raise TypeError(f"{attr_name} must be a string")
+        return
+
+    dtype = getattr(attr, "dtype", None)
+    if dtype is None:
+        return
+
+    try:
+        is_int = np.issubdtype(dtype, np.integer)
+        is_float = np.issubdtype(dtype, np.floating)
+        is_bool = np.issubdtype(dtype, np.bool_)
+    except TypeError:
+        return
+
+    if is_int:
+        if is_iter:
+            if len(values) == 0:
+                return
+            if isinstance(values, np.ndarray):
+                if not (np.issubdtype(values.dtype, np.integer) and not np.issubdtype(values.dtype, np.bool_)):
+                    raise TypeError(f"All values for {attr_name} must be integers")
+            elif not all(isinstance(v, (int, np.integer)) and not isinstance(v, (bool, np.bool_)) for v in values):
+                raise TypeError(f"All values for {attr_name} must be integers")
+        else:
+            if not (isinstance(values, (int, np.integer)) and not isinstance(values, (bool, np.bool_))):
+                raise TypeError(f"{attr_name} must be an integer")
+    elif is_float:
+        if is_iter:
+            if len(values) == 0:
+                return
+            if isinstance(values, np.ndarray):
+                if not (np.issubdtype(values.dtype, np.number) and not np.issubdtype(values.dtype, np.bool_)):
+                    raise TypeError(f"All values for {attr_name} must be numbers")
+            elif not all(isinstance(v, (int, float, np.number)) and not isinstance(v, (bool, np.bool_)) for v in values):
+                raise TypeError(f"All values for {attr_name} must be numbers")
+        else:
+            if not (isinstance(values, (int, float, np.number)) and not isinstance(values, (bool, np.bool_))):
+                raise TypeError(f"{attr_name} must be a number")
+    elif is_bool:
+        if is_iter:
+            if len(values) == 0:
+                return
+            if isinstance(values, np.ndarray):
+                if not np.issubdtype(values.dtype, np.bool_):
+                    raise TypeError(f"All values for {attr_name} must be booleans")
+            elif not all(isinstance(v, (bool, np.bool_)) for v in values):
+                raise TypeError(f"All values for {attr_name} must be booleans")
+        else:
+            if not isinstance(values, (bool, np.bool_)):
+                raise TypeError(f"{attr_name} must be a boolean")
+
+
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
 
@@ -151,6 +220,7 @@ def _check_length(func):
                         lenvalues=val_len,
                     )
                 )
+        _check_dtype(attr, group, values)
         # if everything went OK, continue with the function
         return func(attr, group, values)
 
@@ -842,9 +912,11 @@ class _StringInternerMixin:
                 newidx = len(self.namedict)
                 self.namedict[values] = newidx
                 newnames.append(values)
-        else:
+        elif iterable(values):
             newidx = np.zeros_like(values, dtype=int)
             for i, val in enumerate(values):
+                if not isinstance(val, str):
+                    raise TypeError("All values must be strings")
                 try:
                     newidx[i] = self.namedict[val]
                 except KeyError:
@@ -852,6 +924,10 @@ class _StringInternerMixin:
                     self.namedict[val] = nextidx
                     newnames.append(val)
                     newidx[i] = nextidx
+        else:
+            raise TypeError(
+                f"Values must be a string or iterable of strings, got {type(values).__name__}"
+            )
 
         self.nmidx[ag.ix] = (
             newidx  # newidx either single value or same size array
