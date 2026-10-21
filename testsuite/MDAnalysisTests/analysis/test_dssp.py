@@ -6,7 +6,11 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysis.analysis.dssp import DSSP, assign, translate
-from MDAnalysis.analysis.dssp.pydssp_numpy import _get_hydrogen_atom_position
+from MDAnalysis.analysis.dssp.pydssp_numpy import (
+    _get_hydrogen_atom_position,
+    get_hbond_map,
+)
+from MDAnalysis.coordinates.memory import MemoryReader
 
 from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
@@ -63,9 +67,11 @@ def test_donor_mask_proline_indices():
     resnames = u.select_atoms("protein").residues.resnames
     is_pro = resnames == "PRO"
 
-    # donor_mask should be False at proline positions and True at non-proline positions
+    # donor_mask should be False at proline positions and True at non-proline
+    # positions, except the first residue (a chain start)
     assert np.all(~dssp._donor_mask[is_pro])
-    assert np.all(dssp._donor_mask[~is_pro])
+    assert np.all(dssp._donor_mask[1:][~is_pro[1:]])
+    assert not dssp._donor_mask[0]
 
 
 def test_donor_mask_none():
@@ -211,3 +217,51 @@ def test_coords_with_hydrogens_match_per_residue_lookup():
         h.positions[0] if h else guessed[k] for k, h in enumerate(hydrogens)
     ]
     np.testing.assert_equal(coords[:, 4], expected)
+
+
+def _protein_copies(copies, gap=100.0):
+    """``copies`` of the TPR/XTC protein as one system without a box, each
+    shifted by ``gap`` A along x, with all frames of the trajectory (made
+    whole: the protein is split across the box)"""
+    protein = mda.Universe(TPR, XTC).select_atoms("protein")
+    u = mda.Merge(*[protein] * copies)
+    frames = np.array([protein.unwrap() for _ in protein.universe.trajectory])
+    coords = np.concatenate([frames] * copies, axis=1)
+    coords[:, :, 0] += np.repeat(np.arange(copies) * gap, protein.n_atoms)
+    u.load_new(coords.astype(np.float32), format=MemoryReader)
+    return u
+
+
+@pytest.mark.parametrize("guess_hydrogens", [True, False])
+def test_multiple_chains(guess_hydrogens, client_DSSP):
+    # the N-terminal residue of the second chain (MET, with hydrogens H1-H3)
+    # used to fail the check of one hydrogen per residue
+    single = DSSP(_protein_copies(1), guess_hydrogens=guess_hydrogens)
+    double = DSSP(_protein_copies(2), guess_hydrogens=guess_hydrogens)
+    n_residues = len(single._chain_start)
+    np.testing.assert_equal(
+        np.flatnonzero(double._chain_start), [0, n_residues]
+    )
+    expected = single.run(**client_DSSP).results.dssp
+    result = double.run(**client_DSSP).results.dssp
+    np.testing.assert_equal(result[:, :n_residues], expected)
+    np.testing.assert_equal(result[:, n_residues:], expected)
+
+
+@pytest.mark.parametrize("guess_hydrogens", [True, False])
+def test_chain_breaks_do_not_donate(guess_hydrogens):
+    # residues after a gap have no peptide bond to the residue before them,
+    # so they start a chain and are no hydrogen-bond donors
+    protein = mda.Universe(TPR, XTC).select_atoms("protein")
+    after_gaps = [30, 80, 133]
+    keep = np.setdiff1d(
+        np.arange(protein.n_residues),
+        np.concatenate([np.arange(r - 3, r) for r in after_gaps]),
+    )
+    dssp = DSSP(protein.residues[keep].atoms, guess_hydrogens=guess_hydrogens)
+    starts = [0] + [int(np.flatnonzero(keep == r)[0]) for r in after_gaps]
+    np.testing.assert_equal(np.flatnonzero(dssp._chain_start), starts)
+    assert not dssp._donor_mask[starts].any()
+    hbond_map = get_hbond_map(dssp._get_coords(), donor_mask=dssp._donor_mask)
+    # rows: donor residues (NH)
+    assert not hbond_map[starts].any()

@@ -151,6 +151,7 @@ import numpy as np
 from MDAnalysis import AtomGroup, Universe
 
 from ...due import Doi, due
+from ...lib.distances import calc_bonds
 from ..base import AnalysisBase, ResultsGroup
 
 due.cite(
@@ -161,6 +162,10 @@ due.cite(
 )
 
 del Doi
+
+# Longest C-N distance (in Å) between consecutive residues that still counts
+# as a peptide bond; a longer one starts a new chain (the value used by DSSP)
+MAX_PEPTIDE_BOND_LENGTH = 2.5
 
 
 try:  # pragma: no cover
@@ -221,7 +226,7 @@ class DSSP(AnalysisBase):
         atom makes, and a N-H bond length of 1.01 A.
         If ``guess_hydrogens`` is False, hydrogen atom positions on N atoms
         will be parsed from the trajectory, except for the "hydrogen" atom
-        positions on PRO residues, and an N-terminal residue.
+        positions on PRO residues, and the first residue of each chain.
     heavyatom_names : tuple[str], default ("N", "CA", "C", "O O1 OT1")
         selection names that will be used to select "N", "CA", "C" and "O"
         atom coordinates for the secondary structure determination. The last
@@ -297,6 +302,15 @@ class DSSP(AnalysisBase):
        Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly
        forbidden to participate in the hydrogen bond network). Previous version could yield
        wrong assignment of prolines.
+
+    .. versionchanged:: 2.11.0
+       Residues that start a chain (the first residue, and every residue whose
+       N atom is more than 2.5 Å from the C atom of the residue before it, the
+       start of another chain or a gap) are no hydrogen bond donors, as in
+       DSSP, and are not checked for a single hydrogen with
+       ``guess_hydrogens=False``. Before, systems with more than one chain
+       failed that check, and the hydrogen guessed for a residue after a gap
+       could form spurious hydrogen bonds.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -334,7 +348,6 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._donor_mask: np.ndarray | None = ag.residues.resnames != "PRO"
         self._box = self._trajectory.ts.dimensions
         if self._box is not None and np.allclose(
             self._box, [1, 1, 1, 90, 90, 90]
@@ -344,6 +357,30 @@ class DSSP(AnalysisBase):
                 "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
                 "periodic boundary conditions in DSSP calculations"
             )
+
+        positions = [group.positions for group in self._heavy_atoms.values()]
+        if len({arr.shape[0] for arr in positions}) != 1:
+            raise ValueError(
+                "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
+                " Please select appropriate AtomGroup manually."
+            )
+
+        # chain starts: the first residue, and every residue whose N is not
+        # bonded to the C of the residue before it (the start of another
+        # chain, or a gap), judged on the current frame. As in DSSP, they do
+        # not donate hydrogen bonds: they have no peptide bond from which to
+        # guess the position of their hydrogen
+        n_positions, c_positions = positions[0], positions[2]
+        peptide_bonds = calc_bonds(
+            c_positions[:-1], n_positions[1:], box=self._box
+        )
+        self._chain_start: np.ndarray = np.concatenate(
+            [[True], peptide_bonds > MAX_PEPTIDE_BOND_LENGTH]
+        )
+        self._donor_mask: np.ndarray | None = (
+            ag.residues.resnames != "PRO"
+        ) & ~self._chain_start
+
         # hydrogens of each residue (among all of its atoms, not only those in
         # ag), found with one selection: residue positions in ag.residues
         # (sorted by resindex), then the number per residue and the first one
@@ -359,26 +396,24 @@ class DSSP(AnalysisBase):
         if not self._guess_hydrogens:
             # pairs the k-th CA atom with the k-th residue. This assumes that
             # both are ordered in the same way, which holds as long as ag is
-            # sorted (it is, from the hard-coded protein selection above)
+            # sorted (it is, from the hard-coded protein selection above).
+            # Chain starts are not checked: they do not donate hydrogen bonds,
+            # and N-terminal residues have several hydrogens on N.
             calphas = self._heavy_atoms["CA"]
             n = min(len(calphas), len(residues))
-            is_pro = calphas.resnames[1:n] == "PRO"
-            counts = n_hydrogens[1:n]
-            wrong = np.flatnonzero(np.where(is_pro, counts != 0, counts != 1))
+            is_pro = calphas.resnames[:n] == "PRO"
+            counts = n_hydrogens[:n]
+            wrong = np.flatnonzero(
+                np.where(is_pro, counts != 0, counts != 1)
+                & ~self._chain_start[:n]
+            )
             if wrong.size:
-                residue = calphas[wrong[0] + 1].residue
+                residue = calphas[wrong[0]].residue
                 raise ValueError(
                     f"Residue {residue} contains wrong number of hydrogens: "
                     "exactly 1 hydrogen is expected for non-PRO residues, and "
                     "zero hydrogens for PRO residues."
                 )
-
-        positions = [group.positions for group in self._heavy_atoms.values()]
-        if len({arr.shape[0] for arr in positions}) != 1:
-            raise ValueError(
-                "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
-                " Please select appropriate AtomGroup manually."
-            )
 
         if len(ag.residues) < 6:
             raise ValueError(
