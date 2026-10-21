@@ -20,9 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""Tests for MDAnalysis.core.topologyattrs objects.
+"""Tests for MDAnalysis.core.topologyattrs objects."""
 
-"""
 import numpy as np
 
 from numpy.testing import (
@@ -233,9 +232,7 @@ class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
         assert_equal(
             attr.get_residues(DummyGroup([2, 1])),
-            np.array(
-                [self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]
-            ),
+            np.array([self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]),
         )
 
     def test_get_segments(self, attr):
@@ -281,9 +278,7 @@ class TestResidueAttr(TopologyAttrMixin):
             setattr(res, self.attrclass.singular, self.values[:2])
 
     def test_get_atoms(self, attr):
-        assert_equal(
-            attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]]
-        )
+        assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]])
 
     def test_get_atom(self, universe):
         attr = getattr(universe.atoms[0], self.attrclass.singular)
@@ -306,9 +301,7 @@ class TestResidueAttr(TopologyAttrMixin):
 
     def test_set_residues_plural(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]), self.values[:3])
-        assert_equal(
-            attr.get_residues(DummyGroup([3, 0, 1])), self.values[:3]
-        )
+        assert_equal(attr.get_residues(DummyGroup([3, 0, 1])), self.values[:3])
 
     def test_set_residues_VE(self, attr):
         dg = DummyGroup([3, 0, 1])
@@ -375,9 +368,7 @@ class TestSegmentAttr(TopologyAttrMixin):
             setattr(seg, "segid", [1, 2, 3])
 
     def test_get_atoms(self, attr):
-        assert_equal(
-            attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]]
-        )
+        assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]])
 
     def test_get_residues(self, attr):
         assert_equal(
@@ -390,9 +381,7 @@ class TestSegmentAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_equal(
-            attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]]
-        )
+        assert_equal(attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]])
 
     def test_set_segments_singular(self, attr):
         dg = DummyGroup([0, 1])
@@ -439,9 +428,7 @@ class TestAttr(object):
 
     def test_principal_axes_handedness(self, universe_pa):
         e_vec = universe_pa.atoms.principal_axes()
-        assert_almost_equal(
-            np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0
-        )
+        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()
@@ -722,9 +709,7 @@ class TestStringInterning:
 
         assert_equal(attr.values, ref.values)
         assert attr.values.dtype == ref.values.dtype
-        assert all(
-            attr.name_lookup[i] == nm for nm, i in attr.namedict.items()
-        )
+        assert all(attr.name_lookup[i] == nm for nm, i in attr.namedict.items())
 
         u = mda.Universe.empty(n_atoms=5)
         u.add_TopologyAttr(attr)
@@ -804,6 +789,9 @@ class TestDtypeChecks:
         universe.add_TopologyAttr("resids", [1, 2, 3])
         universe.add_TopologyAttr("charges", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         universe.add_TopologyAttr("masses", [12.0, 12.0, 14.0, 16.0, 12.0, 12.0])
+        universe.add_TopologyAttr(
+            "aromaticities", [False, False, False, False, False, False]
+        )
         return universe
 
     @pytest.mark.parametrize("invalid", [1, 2.5, True, None])
@@ -811,7 +799,9 @@ class TestDtypeChecks:
         with pytest.raises(TypeError, match="must be a string"):
             u.atoms[0].name = invalid
 
-    @pytest.mark.parametrize("invalid", [[1, 2, 3], ["C", 1, "O"], np.array([1, 2, 3]), 1])
+    @pytest.mark.parametrize(
+        "invalid", [[1, 2, 3], ["C", 1, "O"], np.array([1, 2, 3]), 1]
+    )
     def test_string_attr_group_invalid(self, u, invalid):
         with pytest.raises(TypeError, match="must be (a string|strings)"):
             u.atoms[:3].names = invalid
@@ -821,7 +811,10 @@ class TestDtypeChecks:
         with pytest.raises(TypeError, match="must be an integer"):
             u.residues[0].resid = invalid
 
-    @pytest.mark.parametrize("invalid", [[1.5, 2.5], np.array([1.5, 2.5]), [1, "2"], [True, False], 2.5])
+    @pytest.mark.parametrize(
+        "invalid",
+        [[1.5, 2.5], np.array([1.5, 2.5]), [1, "2"], [True, False], 2.5],
+    )
     def test_int_attr_group_invalid(self, u, invalid):
         with pytest.raises(TypeError, match="must be (an integer|integers)"):
             u.residues[:2].resids = invalid
@@ -831,16 +824,40 @@ class TestDtypeChecks:
         with pytest.raises(TypeError, match="must be a number"):
             u.atoms[0].charge = invalid
 
-    @pytest.mark.parametrize("invalid", [["a", "b", "c"], [True, False, True], "positive"])
+    @pytest.mark.parametrize(
+        "invalid",
+        [
+            ["a", "b", "c"],
+            [True, False, True],
+            np.array([True, False, True]),
+            "positive",
+        ],
+    )
     def test_float_attr_group_invalid(self, u, invalid):
         with pytest.raises(TypeError, match="must be (a number|numbers)"):
             u.atoms[:3].charges = invalid
+
+    @pytest.mark.parametrize("invalid", [1, 0, "true", None])
+    def test_bool_attr_atom_invalid(self, u, invalid):
+        with pytest.raises(TypeError, match="must be a boolean"):
+            u.atoms[0].aromaticity = invalid
+
+    @pytest.mark.parametrize(
+        "invalid",
+        [[1, 0, 1], ["a", "b", "c"], np.array([1, 0, 1]), 1],
+    )
+    def test_bool_attr_group_invalid(self, u, invalid):
+        with pytest.raises(TypeError, match="must be (a boolean|booleans)"):
+            u.atoms[:3].aromaticities = invalid
 
     def test_valid_assignments(self, u):
         u.atoms[0].name = "N"
         assert u.atoms[0].name == "N"
 
         u.atoms[:3].names = ["C1", "C2", "C3"]
+        assert list(u.atoms[:3].names) == ["C1", "C2", "C3"]
+
+        u.atoms[:3].names = np.array(["C1", "C2", "C3"])
         assert list(u.atoms[:3].names) == ["C1", "C2", "C3"]
 
         u.atoms.names = "CA"
@@ -850,6 +867,9 @@ class TestDtypeChecks:
         assert u.residues[0].resid == 10
 
         u.residues[:2].resids = [100, 200]
+        assert list(u.residues[:2].resids) == [100, 200]
+
+        u.residues[:2].resids = np.array([100, 200])
         assert list(u.residues[:2].resids) == [100, 200]
 
         u.residues.resids = 1
@@ -862,3 +882,40 @@ class TestDtypeChecks:
         u.atoms[:2].charges = [-0.5, 0.5]
         assert_equal(u.atoms[:2].charges, [-0.5, 0.5])
 
+        u.atoms[:2].charges = np.array([-0.5, 0.5])
+        assert_equal(u.atoms[:2].charges, [-0.5, 0.5])
+
+        u.atoms.charges = 0.0
+        assert all(c == 0.0 for c in u.atoms.charges)
+
+        u.atoms[0].aromaticity = True
+        assert u.atoms[0].aromaticity == True
+
+        u.atoms[:3].aromaticities = [True, False, True]
+        assert list(u.atoms[:3].aromaticities) == [True, False, True]
+
+        u.atoms[:3].aromaticities = np.array([True, False, True])
+        assert list(u.atoms[:3].aromaticities) == [True, False, True]
+
+        u.atoms.aromaticities = True
+        assert all(a == True for a in u.atoms.aromaticities)
+
+    def test_unsupported_or_none_dtype_bypass(self, u):
+        from MDAnalysis.core.topologyattrs import _check_dtype, TopologyAttr
+
+        class DNone(TopologyAttr):
+            attrname = "dn"
+            singular = "d"
+
+            def __init__(self):
+                self.dtype = None
+
+        class DObj(TopologyAttr):
+            attrname = "do"
+            singular = "d"
+
+            def __init__(self):
+                self.dtype = object
+
+        _check_dtype(DNone(), u.atoms, [1, 2])
+        _check_dtype(DObj(), u.atoms, [1, 2])
