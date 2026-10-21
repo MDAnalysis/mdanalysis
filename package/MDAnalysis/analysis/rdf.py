@@ -224,21 +224,21 @@ class InterRDF(AnalysisBase):
        :math:`N_{\text{pairs}} = N_1 N_2 - N_{\text{excl}}`.
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-       .. versionadded:: 2.11.0
+       .. versionadded:: 2.12.0
 
     results.box_volume : float
        The average box volume :math:`\langle V \rangle` across analyzed frames
        (or ``None`` if box volume is not available).
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-       .. versionadded:: 2.11.0
+       .. versionadded:: 2.12.0
 
     results.density_1 : float
        The bulk number density :math:`\rho_1 = N_1 / \langle V \rangle` of the
        first selection `g1` (or ``None`` if box volume is not available).
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-       .. versionadded:: 2.11.0
+       .. versionadded:: 2.12.0
 
     results.density_2 : float
        The bulk number density :math:`\rho_2 = N_2 / \langle V \rangle` of the
@@ -248,7 +248,7 @@ class InterRDF(AnalysisBase):
        and :ref:`radial densities<equation-nab>`.
        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-       .. versionadded:: 2.11.0
+       .. versionadded:: 2.12.0
 
     Example
     -------
@@ -621,14 +621,14 @@ class InterRDF_s(AnalysisBase):
         available), where :math:`\langle V \rangle` is the average box volume.
         This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-        .. versionadded:: 2.11.0
+        .. versionadded:: 2.12.0
 
     results.box_volume : float
         The average box volume :math:`\langle V \rangle` across analyzed frames
         (or ``None`` if box volume is not available).
         This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
 
-        .. versionadded:: 2.11.0
+        .. versionadded:: 2.12.0
 
     Example
     -------
