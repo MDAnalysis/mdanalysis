@@ -329,14 +329,18 @@ def _build_stub(method_name, method, attribute_name):
         )
         raise NoDataError(message)
 
-    annotation = textwrap.dedent("""\
+    annotation = textwrap.dedent(
+        """\
         .. note::
 
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
 
-    """.format(attribute_name))
+    """.format(
+            attribute_name
+        )
+    )
     # The original docstring is assumed to be formatted with black
     # (i.e., *all text* lines are already indented, the first line
     # is a triple quote followed by newline)
