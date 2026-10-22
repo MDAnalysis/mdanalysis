@@ -222,6 +222,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.lib.distances import calc_bonds
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase, ResultsGroup
 
@@ -380,6 +381,8 @@ class Contacts(AnalysisBase):
        Introduced :meth:`get_supported_backends` allowing
        for parallel execution on :mod:`multiprocessing`
        and :mod:`dask` backends.
+    .. versionchanged:: 2.11.0
+       Added the `pairs` keyword to evaluate only the reference contact pairs.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -401,6 +404,7 @@ class Contacts(AnalysisBase):
         radius=4.5,
         pbc=True,
         kwargs=None,
+        pairs=False,
         **basekwargs,
     ):
         """
@@ -424,6 +428,20 @@ class Contacts(AnalysisBase):
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
+        pairs : bool (optional)
+            If ``True``, compute distances only for the atom pairs that are
+            in contact in each reference (using
+            :func:`~MDAnalysis.lib.distances.calc_bonds`) instead of the full
+            distance matrix of the two selections. This can be much faster
+            when the reference contacts are a small fraction of all possible
+            pairs (e.g. all heavy atoms of a protein) but is slower when most
+            pairs are in contact, when the selections are small, or when
+            several references share many pairs, because shared pairs are
+            recomputed for each reference. The results are the same as with
+            the default ``False``. The reference distances passed to a custom
+            `method` are computed once per run, so a `method` must not modify
+            its `r0` argument or rely on `initial_contacts` being changed
+            during a run. The default is ``False``.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -445,6 +463,7 @@ class Contacts(AnalysisBase):
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
 
         self.fraction_kwargs = kwargs if kwargs is not None else {}
+        self.pairs = pairs
 
         if method == "hard_cut":
             self.fraction_contacts = hard_cut_q
@@ -539,9 +558,25 @@ class Contacts(AnalysisBase):
 
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0) + 1))
+        if self.pairs:
+            # (row index, column index, reference distances) per reference,
+            # in the same order as boolean mask extraction
+            self._pairs = [
+                (*np.nonzero(contacts), r0[contacts])
+                for contacts, r0 in zip(self.initial_contacts, self.r0)
+            ]
 
     def _single_frame(self):
         self.results.timeseries[self._frame_index][0] = self._ts.frame
+
+        if self.pairs:
+            posA, posB = self.grA.positions, self.grB.positions
+            box = self._get_box(self._ts)
+            for k, (ia, ib, r0) in enumerate(self._pairs, 1):
+                r = calc_bonds(posA[ia], posB[ib], box=box)
+                q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
+                self.results.timeseries[self._frame_index][k] = q
+            return
 
         # compute distance array for a frame
         d = distance_array(

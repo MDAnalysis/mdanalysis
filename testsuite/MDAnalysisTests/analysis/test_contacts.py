@@ -452,6 +452,59 @@ class TestContacts(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
+    @pytest.mark.parametrize("method", ["hard_cut", "soft_cut", "radius_cut"])
+    @pytest.mark.parametrize("pbc", [True, False])
+    def test_pairs_matches_dense(self, universe, client_Contacts, method, pbc):
+        kwargs = dict(method=method, pbc=pbc)
+        dense = self._run_Contacts(universe, client_Contacts, **kwargs)
+        sparse = self._run_Contacts(
+            universe, client_Contacts, pairs=True, **kwargs
+        )
+        assert_allclose(
+            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+        )
+
+    def test_pairs_multiple_references_and_overlap(self, universe):
+        # same group on both sides: diagonal and both orientations included
+        ca = universe.select_atoms("name CA")
+        refs = [(ca, ca)]
+        universe.trajectory[-1]
+        refs.append((ca, ca))
+        universe.trajectory[0]
+        kw = dict(select=(ca, ca), refgroup=refs, radius=8, method="soft_cut")
+        dense = contacts.Contacts(universe, **kw).run(step=10)
+        sparse = contacts.Contacts(universe, pairs=True, **kw).run(step=10)
+        assert dense.results.timeseries.shape[1] == 3
+        assert_allclose(
+            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+        )
+
+    def test_pairs_custom_method(self, universe):
+        def method(r, r0, scale):
+            return scale * np.mean(r / r0)
+
+        kw = dict(method=method, kwargs={"scale": 2.0})
+        dense = self._run_Contacts(universe, {}, stop=5, **kw)
+        sparse = self._run_Contacts(universe, {}, stop=5, pairs=True, **kw)
+        assert_allclose(
+            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+        )
+
+    def test_pairs_rerun_after_mask_edit(self, universe):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
+        kw = dict(select=(acidic, basic), refgroup=(acidic, basic), radius=6.0)
+        dense = contacts.Contacts(universe, **kw)
+        sparse = contacts.Contacts(universe, pairs=True, **kw)
+        for c in (dense, sparse):
+            c.run(stop=3)
+            c.initial_contacts[0][:] = False
+            c.initial_contacts[0][0, 0] = True
+            c.run(stop=3)
+        assert_allclose(
+            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+        )
+
     @pytest.mark.parametrize(
         "datafiles, expected", [((PSF, DCD), 0), ([TPR, XTC], 41814)]
     )
