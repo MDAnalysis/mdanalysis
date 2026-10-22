@@ -14,6 +14,21 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
+??/??/?? BradyAJohnston
+
+ * 2.12.0
+
+Fixes
+
+Enhancements
+ * Added `chain` selection keyword as an alias of `chainID`, also usable in
+   `same chain as` selections
+
+Changes
+
+Deprecations
+
+
 10/21/26 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
