@@ -109,6 +109,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Faster PDB (CONECT records 8x, ATOM records 1.4-1.7x), MOL2 (13x) and
+   NAMDBIN (5x) writing, and LAMMPS dump reading (1.4-2.3x) (PR #XXXX)
  * Faster residue building in topology parsers (`change_squash`, 18x) and
    ITP atom id lookup (30x) (PR #XXXX)
  * Faster `GNMAnalysis` Kirchhoff matrix (25x) and `HydrogenBondAnalysis`
