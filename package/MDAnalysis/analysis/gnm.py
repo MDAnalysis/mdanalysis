@@ -93,6 +93,7 @@ import warnings
 import numpy as np
 
 from .base import AnalysisBase, ResultsGroup
+from ..lib.distances import self_capped_distance
 
 
 from MDAnalysis.analysis.base import Results
@@ -186,6 +187,22 @@ def neighbour_generator(positions, cutoff):
         for i_atom in atoms:
             for j_atom in all_atoms:
                 yield i_atom, j_atom
+
+
+def _contacts(positions, cutoff):
+    """Indices ``i < j`` of all pairs of `positions` closer than `cutoff`.
+
+    The squared distance is compared in the precision of `positions`, as
+    :func:`neighbour_generator` with :func:`_dsq` did.
+    """
+    # search slightly beyond the cutoff, then apply the exact test
+    pairs = self_capped_distance(
+        positions, max_cutoff=cutoff * 1.001, return_distances=False
+    )
+    pairs = np.sort(pairs, axis=1)
+    diff = positions[pairs[:, 0]] - positions[pairs[:, 1]]
+    close = (diff * diff).sum(axis=1) < cutoff**2
+    return pairs[close, 0], pairs[close, 1]
 
 
 def order_list(w):
@@ -342,17 +359,12 @@ class GNMAnalysis(AnalysisBase):
         natoms = len(positions)
         matrix = np.zeros((natoms, natoms), np.float64)
 
-        cutoffsq = self.cutoff**2
-
-        for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if (
-                j_atom > i_atom
-                and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq
-            ):
-                matrix[i_atom][j_atom] = -1.0
-                matrix[j_atom][i_atom] = -1.0
-                matrix[i_atom][i_atom] = matrix[i_atom][i_atom] + 1
-                matrix[j_atom][j_atom] = matrix[j_atom][j_atom] + 1
+        i_atom, j_atom = _contacts(positions, self.cutoff)
+        matrix[i_atom, j_atom] = -1.0
+        matrix[j_atom, i_atom] = -1.0
+        matrix[np.diag_indices(natoms)] = np.bincount(
+            np.concatenate([i_atom, j_atom]), minlength=natoms
+        )
 
         return matrix
 
@@ -466,7 +478,6 @@ class closeContactGNMAnalysis(GNMAnalysis):
         positions = self.ca.positions
         residue_index_map = self.ca.resindices.copy()
         matrix = np.zeros((nresidues, nresidues), dtype=np.float64)
-        cutoffsq = self.cutoff**2
 
         # cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])
         inv_sqrt_res_sizes = np.ones(len(self.ca.residues))
@@ -475,19 +486,13 @@ class closeContactGNMAnalysis(GNMAnalysis):
                 [r.atoms.n_atoms for r in self.ca.residues]
             )
 
-        for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if (
-                j_atom > i_atom
-                and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq
-            ):
-                iresidue = residue_index_map[i_atom]
-                jresidue = residue_index_map[j_atom]
-                contact = (
-                    inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue]
-                )
-                matrix[iresidue][jresidue] -= contact
-                matrix[jresidue][iresidue] -= contact
-                matrix[iresidue][iresidue] += contact
-                matrix[jresidue][jresidue] += contact
+        i_atom, j_atom = _contacts(positions, self.cutoff)
+        iresidue = residue_index_map[i_atom]
+        jresidue = residue_index_map[j_atom]
+        contact = inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue]
+        np.add.at(matrix, (iresidue, jresidue), -contact)
+        np.add.at(matrix, (jresidue, iresidue), -contact)
+        np.add.at(matrix, (iresidue, iresidue), contact)
+        np.add.at(matrix, (jresidue, jresidue), contact)
 
         return matrix

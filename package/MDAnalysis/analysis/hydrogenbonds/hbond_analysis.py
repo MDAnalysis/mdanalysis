@@ -246,7 +246,6 @@ from ..base import AnalysisBase, Results, ResultsGroup
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import (
     find_hydrogen_donors,
 )
@@ -661,6 +660,27 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         return " or ".join(group_list)
 
+    def _first_bonded(self, ix):
+        """Index of the first atom bonded to each atom in `ix`, as
+        ``Atom.bonded_atoms[0]`` would give, from the topology bonds."""
+        bonds = np.array(self.u._topology.bonds.values, dtype=np.intp)
+        # rank bonds as Atom.bonds sorts them, then list each bond under
+        # both of its atoms
+        bonds = bonds[np.lexsort((bonds[:, 1], bonds[:, 0]))]
+        atom = np.concatenate([bonds[:, 0], bonds[:, 1]])
+        partner = np.concatenate([bonds[:, 1], bonds[:, 0]])
+        rank = np.tile(np.arange(len(bonds)), 2)
+        order = np.lexsort((rank, atom))
+        atom, partner = atom[order], partner[order]
+        first = np.searchsorted(atom, ix)
+        unbonded = first == len(atom)
+        unbonded[~unbonded] = atom[first[~unbonded]] != ix[~unbonded]
+        if unbonded.any():
+            raise IndexError(
+                f"Atom {ix[unbonded][0]} selected as a hydrogen has no bonds"
+            )
+        return partner[first]
+
     def _get_dh_pairs(self):
         """Finds donor-hydrogen pairs.
 
@@ -690,11 +710,7 @@ class HydrogenBondAnalysis(AnalysisBase):
                 )
 
             hydrogens = self.u.select_atoms(self.hydrogens_sel)
-            donors = (
-                sum(h.bonded_atoms[0] for h in hydrogens)
-                if hydrogens
-                else AtomGroup([], self.u)
-            )
+            donors = self.u.atoms[self._first_bonded(hydrogens.ix)]
 
         # Otherwise, use d_h_cutoff as a cutoff distance
         else:
@@ -821,14 +837,12 @@ class HydrogenBondAnalysis(AnalysisBase):
         hbond_angles = d_h_a_angles[hbond_indices]
 
         # Store data on hydrogen bonds found at this frame
-        self.results.hbonds[0].extend(
-            np.full_like(hbond_donors, self._ts.frame)
-        )
-        self.results.hbonds[1].extend(hbond_donors.indices)
-        self.results.hbonds[2].extend(hbond_hydrogens.indices)
-        self.results.hbonds[3].extend(hbond_acceptors.indices)
-        self.results.hbonds[4].extend(hbond_distances)
-        self.results.hbonds[5].extend(hbond_angles)
+        self.results.hbonds[0].extend([self._ts.frame] * len(hbond_donors))
+        self.results.hbonds[1].extend(hbond_donors.indices.tolist())
+        self.results.hbonds[2].extend(hbond_hydrogens.indices.tolist())
+        self.results.hbonds[3].extend(hbond_acceptors.indices.tolist())
+        self.results.hbonds[4].extend(hbond_distances.tolist())
+        self.results.hbonds[5].extend(hbond_angles.tolist())
 
     def _conclude(self):
 
@@ -918,12 +932,17 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         # Extract the hydrogen bonds IDs only in the format
         # [set(superset(x1,x2), superset(x3,x4)), ..]
-        found_hydrogen_bonds = [set() for _ in self.frames]
-        for frame_index, frame in enumerate(self.frames):
-            for hbond in self.results.hbonds[
-                self.results.hbonds[:, 0] == frame
-            ]:
-                found_hydrogen_bonds[frame_index].add(frozenset(hbond[2:4]))
+        hbonds = self.results.hbonds
+        order = np.argsort(hbonds[:, 0], kind="stable")
+        frames = hbonds[order, 0]
+        pairs = hbonds[order, 2:4].tolist()
+        found_hydrogen_bonds = [
+            set(map(frozenset, pairs[start:stop]))
+            for start, stop in zip(
+                np.searchsorted(frames, self.frames, side="left"),
+                np.searchsorted(frames, self.frames, side="right"),
+            )
+        ]
 
         intermittent_hbonds = correct_intermittency(
             found_hydrogen_bonds, intermittency=intermittency
