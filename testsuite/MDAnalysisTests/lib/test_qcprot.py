@@ -43,7 +43,11 @@ class TestQCProt:
 
         assert r == pytest.approx(0.7174389197644676, abs=err)
         assert rot.dtype == dtype
-        assert_allclose(rot.reshape(3, 3), np.eye(3))
+        matrix = rot.reshape(3, 3)
+        assert_allclose(matrix @ matrix.T, np.eye(3), atol=err)
+        assert np.linalg.det(matrix) == pytest.approx(1.0, abs=err)
+        achieved = np.sqrt(np.mean(np.sum((a @ matrix.T - b)**2, axis=1)))
+        assert achieved == pytest.approx(r, abs=err)
 
     def test_regression(self, dtype):
         u = mda.Universe(PSF, DCD)
@@ -75,3 +79,4 @@ class TestQCProt:
         err = 0.001 if dtype is np.float32 else 0.000001
         assert r == pytest.approx(0.6057544485785074, abs=err)
         assert_allclose(rot, rot_ref, atol=err)
+
