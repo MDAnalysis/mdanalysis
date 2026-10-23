@@ -31,7 +31,7 @@ Deprecations
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora
+         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora, carlosvega
 
  * 2.11.0
 
@@ -122,6 +122,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added the `pairs` keyword to `analysis.contacts.Contacts` to evaluate only
+   the reference contact pairs instead of the full distance matrix; the
+   default is unchanged (PR #5515).
  * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
