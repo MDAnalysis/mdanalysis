@@ -142,6 +142,36 @@ cimport numpy as cnp
 cnp.import_array()
 cimport cython
 
+from libc.float cimport DBL_EPSILON
+from libc.math cimport isfinite
+cdef double _eigh_fallback(cython.floating[:] rot,
+                           cython.floating[:] A,
+                           cython.floating E0, int N):
+    cdef double sxx=A[0], sxy=A[1], sxz=A[2]
+    cdef double syx=A[3], syy=A[4], syz=A[5]
+    cdef double szx=A[6], szy=A[7], szz=A[8]
+    cdef double w, x, y, z
+    K = np.array([
+        [sxx+syy+szz, syz-szy, szx-sxz, sxy-syx],
+        [syz-szy, sxx-syy-szz, sxy+syx, sxz+szx],
+        [szx-sxz, sxy+syx, -sxx+syy-szz, syz+szy],
+        [sxy-syx, sxz+szx, syz+szy, -sxx-syy+szz]], dtype=np.float64)
+    if rot is None:
+        values = np.linalg.eigvalsh(K)
+    else:
+        values, vectors = np.linalg.eigh(K)
+        w, x, y, z = vectors[:, -1]
+        rot[0] = w*w+x*x-y*y-z*z
+        rot[1] = 2*(x*y+w*z)
+        rot[2] = 2*(x*z-w*y)
+        rot[3] = 2*(x*y-w*z)
+        rot[4] = w*w-x*x+y*y-z*z
+        rot[5] = 2*(y*z+w*x)
+        rot[6] = 2*(x*z+w*y)
+        rot[7] = 2*(y*z-w*x)
+        rot[8] = w*w-x*x-y*y+z*z
+    return np.sqrt(abs(2.0*(E0-values[-1])/N))
+
 from ..due import due, BibTeX, Doi
 
 # providing DOI for this citation doesnt seem to work (as of 22/04/18)
@@ -363,6 +393,9 @@ cpdef double FastCalcRMSDAndRotation(cython.floating[:] rot,
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0
+    cdef double numerator, denominator, derivative_scale
+    # Experimental relative threshold for cancellation in the derivative.
+    cdef double derivative_tol = 64.0 * sqrt(DBL_EPSILON)
     cdef double b, a, delta, rms, qsqr
     cdef double q1, q2, q3, q4, normq
     cdef double a11, a12, a13, a14, a21, a22, a23, a24
@@ -428,13 +461,21 @@ cpdef double FastCalcRMSDAndRotation(cython.floating[:] rot,
         x2 = mxEigenV*mxEigenV
         b = (x2 + C[2])*mxEigenV
         a = b + C[1]
-        delta = ((a*mxEigenV + C[0])/(2.0*x2*mxEigenV + b + a))
+        numerator = a*mxEigenV + C[0]
+        denominator = 2.0*x2*mxEigenV + b + a
+        derivative_scale = (4.0*fabs(x2*mxEigenV)
+                            + 2.0*fabs(C[2]*mxEigenV) + fabs(C[1]))
+        if fabs(denominator) <= derivative_tol * derivative_scale:
+            return _eigh_fallback(rot, A, E0, N)
+        delta = numerator / denominator
+        if not isfinite(delta):
+            return _eigh_fallback(rot, A, E0, N)
         mxEigenV -= delta
         if (fabs(mxEigenV - oldg) < fabs((evalprec)*mxEigenV)):
             break
 
-    # if (i == 50):
-    #   print "\nMore than %d iterations needed!\n" % (i)
+    else:
+        return _eigh_fallback(rot, A, E0, N)
 
     # the fabs() is to guard against extremely small,
     # but *negative* numbers due to floating point error
@@ -506,11 +547,8 @@ cpdef double FastCalcRMSDAndRotation(cython.floating[:] rot,
                 qsqr = q1*q1 + q2 *q2 + q3*q3 + q4*q4
 
                 if (qsqr < evecprec):
-                    # if qsqr is still too small, return the identity matrix. #
-                    rot[0] = rot[4] = rot[8] = 1.0
-                    rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
-
-                    return rms
+                    # Cofactors cannot provide a usable quaternion.
+                    return _eigh_fallback(rot, A, E0, N)
 
     normq = sqrt(qsqr)
     q1 /= normq
