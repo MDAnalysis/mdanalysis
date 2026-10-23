@@ -23,6 +23,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * QCP falls back to a symmetric eigendecomposition when Newton's update or
+   cofactor-based rotation recovery fails for collinear inputs
+   (Issues #945, #1747).
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):
@@ -3716,3 +3719,4 @@ Testsuite
 
 11/12/07 naveen
   * prepared for release outside lab
+
