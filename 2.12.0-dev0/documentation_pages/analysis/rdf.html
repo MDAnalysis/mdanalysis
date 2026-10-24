@@ -368,6 +368,75 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.result
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.normalization_density">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">normalization_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.normalization_density" title="Link to this definition"></a></dt>
+<dd><p>The pair normalization density <span class="math notranslate nohighlight">\(N_{\text{pairs}} / \langle V \rangle\)</span>
+used to normalize the RDF (or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not available),
+where <span class="math notranslate nohighlight">\(\langle V \rangle\)</span> is the average box volume and
+<span class="math notranslate nohighlight">\(N_{\text{pairs}} = N_1 N_2 - N_{\text{excl}}\)</span>.
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.box_volume">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">box_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.box_volume" title="Link to this definition"></a></dt>
+<dd><p>The average box volume <span class="math notranslate nohighlight">\(\langle V \rangle\)</span> across analyzed frames
+(or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not available).
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.density_1">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">density_1</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.density_1" title="Link to this definition"></a></dt>
+<dd><p>The bulk number density <span class="math notranslate nohighlight">\(\rho_1 = N_1 / \langle V \rangle\)</span> of the
+first selection <cite>g1</cite> (or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not available).
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.density_2">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">density_2</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.density_2" title="Link to this definition"></a></dt>
+<dd><p>The bulk number density <span class="math notranslate nohighlight">\(\rho_2 = N_2 / \langle V \rangle\)</span> of the
+second selection <cite>g2</cite> (or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not available).
+This corresponds to the bulk density <span class="math notranslate nohighlight">\(\rho\)</span> appearing in the
+equations for <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative coordination counts</span></a>
+and <a class="reference internal" href="#equation-nab"><span class="std std-ref">radial densities</span></a>.
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Example</p>
 <p>First create the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> object, by supplying two
 AtomGroups then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method</p>
@@ -653,6 +722,39 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.normalization_density">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">normalization_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.normalization_density" title="Link to this definition"></a></dt>
+<dd><p>The normalization density <span class="math notranslate nohighlight">\(1 / \langle V \rangle\)</span> used for
+normalizing site-specific pair RDFs (or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not
+available), where <span class="math notranslate nohighlight">\(\langle V \rangle\)</span> is the average box volume.
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.box_volume">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">box_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.box_volume" title="Link to this definition"></a></dt>
+<dd><p>The average box volume <span class="math notranslate nohighlight">\(\langle V \rangle\)</span> across analyzed frames
+(or <code class="docutils literal notranslate"><span class="pre">None</span></code> if box volume is not available).
+This attribute only exists if <cite>norm</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;rdf&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.12.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Example</p>
 <p>First create the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a> object, by supplying one Universe and
 one list of pairs of AtomGroups, then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code>
@@ -801,7 +903,7 @@ correctly before).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2026, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Ayush Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Mohammad Ayaan, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Akshit Boora, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Aryaman Chaudhri, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Shreejan Dolai, Jan Domanski, David L. Dotson, Mark D. Driver, Tanisha Dubey, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Harshit Gajjela, Sirsha Ganguly, Kushagar Garg, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Charity Grey, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Brady Johnston, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Olivier Languin--Cattoën, Alia Lescoulie, Jeremy M. G. Leung, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Shubham Mittal, Amarendra Mohan, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Pranay Pelapkar, Christian Pfaendner, Joshua L. Phillips, Khushi Phougat, Marcelo D. Poleto, Hannah Pollak, Pradyumn-cloud, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Sumit Saraswat, Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Francesco Siciliani, Karthikeyan Singaravelan, Tamandeep Singh, Kunj Sinha, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Sai Udayagiri, Parth Uppal, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Apoorva Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
