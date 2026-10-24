@@ -14,13 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, sumitsaraswat362
 
  * 2.12.0
 
 Fixes
 
 Enhancements
+ * InterRDF and InterRDF_s now expose computed average box volume and densities
+   as results.box_volume, results.normalization_density, and (for InterRDF)
+   results.density_1 and results.density_2 when norm is "rdf" or "density"
+   (Issue #5362, PR #5482)
 
 Changes
 
@@ -31,8 +35,7 @@ Deprecations
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora,
-         sumitsaraswat362
+         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora
 
  * 2.11.0
 
@@ -123,10 +126,6 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
- * InterRDF and InterRDF_s now expose computed average box volume and densities
-   as results.box_volume, results.normalization_density, and (for InterRDF)
-   results.density_1 and results.density_2 when norm is "rdf" or "density"
-   (Issue #5362, PR #5482)
  * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
