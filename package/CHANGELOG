@@ -14,7 +14,20 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2,
+??/??/?? IAlibay
+
+ * 2.12.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
+10/21/26 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
@@ -152,8 +165,6 @@ Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 
-Deprecations
-
 
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
@@ -232,7 +243,6 @@ Enhancements
    MDAnalysisTest.util (PR #5038)
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
 
-
 Changes
  * Output precision for LAMMPS Data files set to 10 decimals (PR #5053)
  * Support for Python 3.10 was removed, in line with SPEC0 (PR #5121).
@@ -242,7 +252,6 @@ Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)
-
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
