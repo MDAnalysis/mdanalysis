@@ -19,6 +19,9 @@ The rules for this file:
  * 2.12.0
 
 Fixes
+ * Fixed InterRDF(norm="density") returning n_A times the documented
+   single-particle density by dividing pair counts by the reference particle
+   count n_A (Issue #5519)
 
 Enhancements
  * InterRDF and InterRDF_s now expose computed average box volume and densities
