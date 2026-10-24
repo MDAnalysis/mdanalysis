@@ -36,6 +36,10 @@ Deprecations
  * 2.11.0
 
 Fixes
+ * Setting topology attributes (such as atom names, residue IDs, charges)
+   now validates that assigned values match the attribute's expected data type
+   and raises a clear TypeError rather than failing with confusing internal
+   errors or silently coercing invalid types (Issue #2764)
  * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
    `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
    and `self_capped_distance`):
