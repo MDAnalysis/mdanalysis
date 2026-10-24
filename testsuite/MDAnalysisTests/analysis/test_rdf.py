@@ -143,12 +143,21 @@ def test_rdf_attr_warning(sels, attr, client_InterRDF):
 
 
 @pytest.mark.parametrize(
-    "norm, value", [("density", 1.956823), ("rdf", 244602.88385), ("none", 4)]
+    "norm, value", [("density", 0.9784115), ("rdf", 244602.88385), ("none", 4)]
 )
 def test_norm(sels, norm, value, client_InterRDF):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm=norm).run(**client_InterRDF)
     assert_allclose(max(rdf.results.rdf), value)
+
+
+def test_density_matches_rdf_times_bulk_density(sels, client_InterRDF):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm="rdf").run(**client_InterRDF)
+    density = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert_allclose(
+        density.results.rdf, rdf.results.rdf * rdf.results.density_2
+    )
 
 
 @pytest.mark.parametrize(
