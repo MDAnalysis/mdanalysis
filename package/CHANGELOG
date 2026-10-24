@@ -14,13 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, sumitsaraswat362
 
  * 2.12.0
 
 Fixes
 
 Enhancements
+ * InterRDF and InterRDF_s now expose computed average box volume and densities
+   as results.box_volume, results.normalization_density, and (for InterRDF)
+   results.density_1 and results.density_2 when norm is "rdf" or "density"
+   (Issue #5362, PR #5482)
 
 Changes
 
