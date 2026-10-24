@@ -177,7 +177,7 @@ class DistanceMatrix(AnalysisBase):
         set to rms.rmsd().
     cutoff : float, optional
         Specify a given cutoff for metric values to be considered equal,
-        Default: 1EO-5
+        Default: 1e-5
     weights : array, optional
         Weights to be given to coordinates for metric calculation
     verbose : bool, optional
@@ -255,7 +255,7 @@ class DistanceMatrix(AnalysisBase):
         universe,
         select="all",
         metric=rmsd,
-        cutoff=1e0 - 5,
+        cutoff=1e-5,
         weights=None,
         **kwargs,
     ):
@@ -424,7 +424,8 @@ class DiffusionMap(object):
         self._eigenvals, self._eigenvectors = np.linalg.eig(self._diff)
         sort_idx = np.argsort(self._eigenvals)[::-1]
         self.eigenvalues = self._eigenvals[sort_idx]
-        self._eigenvectors = self._eigenvectors[sort_idx]
+        # np.linalg.eig returns eigenvector k as column k
+        self._eigenvectors = self._eigenvectors[:, sort_idx]
         self._calculated = True
         return self
 
@@ -444,6 +445,6 @@ class DiffusionMap(object):
         diffusion_space : array (n_frames, n_eigenvectors)
             The diffusion map embedding as defined by :footcite:p:`Ferguson2011`.
         """
-        return self._eigenvectors[1 : n_eigenvectors + 1,].T * (
+        return self._eigenvectors[:, 1 : n_eigenvectors + 1] * (
             self.eigenvalues[1 : n_eigenvectors + 1] ** time
         )

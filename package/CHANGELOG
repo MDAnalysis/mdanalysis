@@ -14,11 +14,23 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
+??/??/?? RitikaSen27
+??/??/?? IAlibay
 ??/??/?? IAlibay, sumitsaraswat362
 
  * 2.12.0
 
 Fixes
+ * Fixed `DiffusionMap.run()` sorting the eigenvectors by row instead of by
+   column, and `DiffusionMap.transform()` selecting rows instead of columns of
+   the eigenvector matrix. `numpy.linalg.eig` returns eigenvector k as column
+   k, so `_eigenvectors` now holds the eigenvectors as columns ordered by
+   decreasing eigenvalue and `transform()` embeds with the correct
+   eigenvectors. This changes the output of `DiffusionMap.transform()`
+   (Issue #5518)
+ * Fixed the default `cutoff` of `DistanceMatrix`, which was `1e0 - 5`
+   (i.e. -4.0) instead of `1e-5`, so that the filter for near-identical frames
+   never had any effect (Issue #5518)
 
 Enhancements
  * InterRDF and InterRDF_s now expose computed average box volume and densities
