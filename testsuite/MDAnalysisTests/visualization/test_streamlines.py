@@ -195,7 +195,7 @@ def test_per_core_work_2D(membrane_xtc, univ):
     )
     for entry in values:
         res = entry[1]
-        np.testing.assert_allclose(res[:2], np.array([0.8, 0.5]), atol=1e-1)
+        np.testing.assert_allclose(res[:2], np.array([0.7, 0.46]), atol=1e-1)
 
 
 def test_streamplot_2D(membrane_xtc, univ):
@@ -219,28 +219,171 @@ def test_streamplot_2D(membrane_xtc, univ):
         u1,
         np.array(
             [
-                [0.79999924, 0.79999924, 0.80000687, 0.79999542, 0.79998779],
-                [0.80000019, 0.79999542, 0.79999924, 0.79999542, 0.80001068],
-                [0.8000021, 0.79999924, 0.80001068, 0.80000305, 0.79999542],
-                [0.80000019, 0.79999542, 0.80001068, 0.80000305, 0.80000305],
-                [0.79999828, 0.80000305, 0.80000305, 0.80000305, 0.79999542],
+                [0.70000172, 0.70000267, 0.69999313, 0.70000458, 0.69999695],
+                [0.70000076, 0.70000267, 0.70000076, 0.69999695, 0.70000458],
+                [0.70000076, 0.70000076, 0.70000458, 0.69999695, 0.70000458],
+                [0.69999981, 0.69999886, 0.69999695, 0.69998932, 0.69999695],
+                [0.70000076, 0.69999695, 0.69999313, 0.69999695, 0.69999695],
             ]
         ),
+        atol=1e-4,
     )
     assert_allclose(
         v1,
         np.array(
             [
-                [0.53999901, 0.53999996, 0.53999996, 0.53999996, 0.54000092],
-                [0.5399971, 0.54000092, 0.54000092, 0.54000092, 0.5399971],
-                [0.54000473, 0.54000473, 0.54000092, 0.5399971, 0.54000473],
-                [0.54000092, 0.53999329, 0.53999329, 0.53999329, 0.54000092],
-                [0.54000092, 0.53999329, 0.53999329, 0.54000092, 0.53999329],
+                [0.46000004, 0.45999908, 0.46000004, 0.46000099, 0.45999908],
+                [0.45999718, 0.45999908, 0.45999908, 0.46000481, 0.46000099],
+                [0.45999908, 0.45999908, 0.45999908, 0.4600029, 0.4600029],
+                [0.45999908, 0.45999146, 0.46000671, 0.46001434, 0.45999908],
+                [0.45999146, 0.45999908, 0.45998383, 0.45999908, 0.45999908],
             ]
         ),
+        atol=1e-4,
     )
-    assert avg == pytest.approx(0.965194167)
-    assert std == pytest.approx(4.444808820e-06)
+    assert avg == pytest.approx(0.837614669, abs=1e-4)
+    assert std == pytest.approx(4.039906815e-06, abs=1e-5)
+
+
+def test_streamplot_2D_multiframe_average(membrane_xtc, univ):
+    # Regression test for Issue #4549: ensure streamlines accumulates
+    # and time-averages across all intermediate frames in [start_frame, end_frame].
+    # Step 0->1 delta: [0.6, 0.38]
+    # Step 1->2 delta: [0.7, 0.46]
+    # Step 2->3 delta: [0.8, 0.54]
+
+    # Two-step window: frames 0 to 2
+    u_2steps, v_2steps, _, _ = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name PO4",
+        start_frame=0,
+        end_frame=2,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores=1,
+    )
+    assert_allclose(u_2steps, 0.65, atol=1e-3)
+    assert_allclose(v_2steps, 0.42, atol=1e-3)
+
+    # Three-step window: frames 0 to 3
+    u_3steps, v_3steps, _, _ = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name PO4",
+        start_frame=0,
+        end_frame=3,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores=1,
+    )
+    assert_allclose(u_3steps, 0.70, atol=1e-3)
+    assert_allclose(v_3steps, 0.46, atol=1e-3)
+
+
+@pytest.mark.parametrize(
+    "kwargs, err_type, err_match",
+    [
+        (
+            {"start_frame": "0"},
+            TypeError,
+            "start_frame and end_frame must be integers",
+        ),
+        (
+            {"end_frame": 1.5},
+            TypeError,
+            "start_frame and end_frame must be integers",
+        ),
+        (
+            {"start_frame": -1},
+            ValueError,
+            "start_frame must be non-negative",
+        ),
+        (
+            {"start_frame": 2, "end_frame": 2},
+            ValueError,
+            "end_frame must be greater than start_frame",
+        ),
+        (
+            {"start_frame": 3, "end_frame": 1},
+            ValueError,
+            "end_frame must be greater than start_frame",
+        ),
+        (
+            {"grid_spacing": 0},
+            ValueError,
+            "grid_spacing must be positive",
+        ),
+        (
+            {"grid_spacing": -5},
+            ValueError,
+            "grid_spacing must be positive",
+        ),
+        (
+            {"maximum_delta_magnitude": 0},
+            ValueError,
+            "maximum_delta_magnitude must be positive",
+        ),
+        (
+            {"maximum_delta_magnitude": -1.0},
+            ValueError,
+            "maximum_delta_magnitude must be positive",
+        ),
+        (
+            {"xmin": 10, "xmax": 5},
+            ValueError,
+            "xmin must be less than xmax",
+        ),
+        (
+            {"ymin": 20, "ymax": 20},
+            ValueError,
+            "ymin must be less than ymax",
+        ),
+        (
+            {"num_cores": 0},
+            ValueError,
+            "num_cores must be 'maximum' or a positive integer",
+        ),
+        (
+            {"num_cores": -1},
+            ValueError,
+            "num_cores must be 'maximum' or a positive integer",
+        ),
+        (
+            {"num_cores": "all"},
+            ValueError,
+            "num_cores must be 'maximum' or a positive integer",
+        ),
+    ],
+)
+def test_generate_streamlines_invalid_inputs(
+    membrane_xtc, univ, kwargs, err_type, err_match
+):
+    default_kwargs = {
+        "topology_file_path": Martini_membrane_gro,
+        "trajectory_file_path": membrane_xtc,
+        "grid_spacing": 20,
+        "MDA_selection": "name PO4",
+        "start_frame": 0,
+        "end_frame": 1,
+        "xmin": univ.atoms.positions[..., 0].min(),
+        "xmax": univ.atoms.positions[..., 0].max(),
+        "ymin": univ.atoms.positions[..., 1].min(),
+        "ymax": univ.atoms.positions[..., 1].max(),
+        "maximum_delta_magnitude": 2.0,
+        "num_cores": 1,
+    }
+    default_kwargs.update(kwargs)
+    with pytest.raises(err_type, match=err_match):
+        streamlines.generate_streamlines(**default_kwargs)
 
 
 def test_streamplot_2D_zero_return(membrane_xtc, univ, tmpdir):

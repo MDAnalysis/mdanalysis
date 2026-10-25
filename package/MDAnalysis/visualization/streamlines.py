@@ -244,9 +244,17 @@ def per_core_work(
     )
     list_previous_frame_centroids = []
     list_previous_frame_indices = []
+    accumulated_xy_deltas = np.zeros(
+        (len(list_square_vertex_arrays_this_core), 2), dtype=float
+    )
+    num_steps = 0
+
     for ts in universe_object.trajectory:
         if ts.frame < start_frame:  # don't start until first specified frame
             continue
+        if ts.frame > end_frame:
+            break  # stop here
+
         relevant_particle_coordinate_array_xy = universe_object.select_atoms(
             MDA_selection
         ).positions[..., :-1]
@@ -276,30 +284,30 @@ def per_core_work(
                 )
             )
             # I need to write a velocity of zero if there are any 'empty' squares in either frame:
-            xy_deltas_to_write = []
+            xy_deltas_this_frame = []
             for square_1_centroid, square_2_centroid in zip(
                 list_centroids_this_frame_using_indices_from_last_frame,
                 list_previous_frame_centroids,
             ):
                 if square_1_centroid is None or square_2_centroid is None:
-                    xy_deltas_to_write.append([0, 0])
+                    xy_deltas_this_frame.append([0.0, 0.0])
                 else:
-                    xy_deltas_to_write.append(
+                    xy_deltas_this_frame.append(
                         np.subtract(
                             square_1_centroid, square_2_centroid
                         ).tolist()
                     )
 
-            # xy_deltas_to_write = np.subtract(np.array(
-            # list_centroids_this_frame_using_indices_from_last_frame),np.array(list_previous_frame_centroids))
-            xy_deltas_to_write = np.array(xy_deltas_to_write)
-            # now filter the array to only contain distances in the range [-8,8] as a placeholder for dealing with PBC
-            #  issues (Matthieu seemed to use a limit of 8 as well);
-            xy_deltas_to_write = np.clip(
-                xy_deltas_to_write,
+            xy_deltas_this_frame = np.array(xy_deltas_this_frame)
+            # now filter the array to only contain distances in the range [-maximum_delta_magnitude, maximum_delta_magnitude]
+            # as a placeholder for dealing with PBC issues:
+            xy_deltas_this_frame = np.clip(
+                xy_deltas_this_frame,
                 -maximum_delta_magnitude,
                 maximum_delta_magnitude,
             )
+            accumulated_xy_deltas += xy_deltas_this_frame
+            num_steps += 1
 
             # with the xy and dx,dy values calculated I need to set the values from this frame to previous frame
             # values in anticipation of the next frame:
@@ -313,9 +321,13 @@ def per_core_work(
                 list_centroids_in_squares_this_frame[:]
             )
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
-        if ts.frame > end_frame:
-            break  # stop here
-    return list(zip(reconstruction_index_list, xy_deltas_to_write.tolist()))
+
+    if num_steps > 0:
+        averaged_xy_deltas = accumulated_xy_deltas / num_steps
+    else:
+        averaged_xy_deltas = accumulated_xy_deltas
+
+    return list(zip(reconstruction_index_list, averaged_xy_deltas.tolist()))
 
 
 def generate_streamlines(
@@ -414,12 +426,31 @@ def generate_streamlines(
     MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d
 
     """
+    if not isinstance(start_frame, (int, np.integer)) or not isinstance(
+        end_frame, (int, np.integer)
+    ):
+        raise TypeError("start_frame and end_frame must be integers")
+    if start_frame < 0:
+        raise ValueError("start_frame must be non-negative")
+    if end_frame <= start_frame:
+        raise ValueError("end_frame must be greater than start_frame")
+    if grid_spacing <= 0:
+        raise ValueError("grid_spacing must be positive")
+    if maximum_delta_magnitude <= 0:
+        raise ValueError("maximum_delta_magnitude must be positive")
+    if xmin >= xmax:
+        raise ValueError("xmin must be less than xmax")
+    if ymin >= ymax:
+        raise ValueError("ymin must be less than ymax")
+    if num_cores != "maximum":
+        if not isinstance(num_cores, (int, np.integer)) or num_cores <= 0:
+            raise ValueError(
+                "num_cores must be 'maximum' or a positive integer"
+            )
+
     # work out the number of cores to use:
     if num_cores == "maximum":
         num_cores = multiprocessing.cpu_count()  # use all available cores
-    else:
-        num_cores = num_cores  # use the value specified by the user
-        # assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
     np.seterr(all="warn", over="raise")
     parent_list_deltas = []  # collect all data from child processes here
 
