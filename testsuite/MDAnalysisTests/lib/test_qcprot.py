@@ -46,7 +46,7 @@ class TestQCProt:
         matrix = rot.reshape(3, 3)
         assert_allclose(matrix @ matrix.T, np.eye(3), atol=err)
         assert np.linalg.det(matrix) == pytest.approx(1.0, abs=err)
-        achieved = np.sqrt(np.mean(np.sum((a @ matrix.T - b)**2, axis=1)))
+        achieved = np.sqrt(np.mean(np.sum((a @ matrix.T - b) ** 2, axis=1)))
         assert achieved == pytest.approx(r, abs=err)
 
     def test_regression(self, dtype):
@@ -79,4 +79,3 @@ class TestQCProt:
         err = 0.001 if dtype is np.float32 else 0.000001
         assert r == pytest.approx(0.6057544485785074, abs=err)
         assert_allclose(rot, rot_ref, atol=err)
-

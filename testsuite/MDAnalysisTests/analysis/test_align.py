@@ -58,8 +58,9 @@ def _assert_rotation_matches_rmsd(a, b, rotation, rmsd, weights):
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     weights = np.ones(len(a)) if weights is None else np.asarray(weights)
-    achieved = np.sqrt(np.average(
-        np.sum((a @ rotation.T - b)**2, axis=1), weights=weights))
+    achieved = np.sqrt(
+        np.average(np.sum((a @ rotation.T - b) ** 2, axis=1), weights=weights)
+    )
     assert_allclose(rotation @ rotation.T, np.eye(3), atol=1e-10)
     assert np.linalg.det(rotation) == pytest.approx(1.0, abs=1e-10)
     assert achieved == pytest.approx(rmsd, abs=1e-7)
@@ -875,4 +876,3 @@ def test_alignto_rotates_velocities_and_forces():
     assert_allclose(
         mobile.atoms.forces, np.dot(orig_f, expected_R.T), atol=1e-6
     )
-
