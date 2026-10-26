@@ -431,7 +431,7 @@ class InterRDF(AnalysisBase):
 
             if self.norm == "rdf":
                 norm *= self.results.normalization_density
-            elif self.norm == "density":
+            else:
                 norm *= nA
 
         self.results.rdf = self.results.count / norm
