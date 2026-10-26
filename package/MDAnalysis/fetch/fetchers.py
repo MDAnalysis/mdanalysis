@@ -552,7 +552,7 @@ class StaticFetcher(_BaseFetcher):
             for line in f:
 
                 # Pooch registry files can contain comments
-                if line.lstrip()[0] == "#":
+                if not line.strip() or line.lstrip().startswith("#"):
                     continue
 
                 key, value = line.strip().split()
