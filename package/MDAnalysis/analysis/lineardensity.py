@@ -194,6 +194,11 @@ class LinearDensity(AnalysisBase):
           on :mod:`multiprocessing` and :mod:`dask` backends.
        *  Removed undocumented and unused attribute :attr:`totalmass`.
 
+    .. versionchanged:: 2.12.0
+       Fixed floating point precision bug in bin calculation where dividing
+       box dimensions by certain decimal bin sizes truncated bin counts by 1
+       (Issue #4476).
+
     .. deprecated:: 2.2.0
        The `results` dictionary has been changed and the attributes
        :attr:`results.x.pos`, :attr:`results.x.pos_std`, :attr:`results.x.char`
@@ -236,7 +241,9 @@ class LinearDensity(AnalysisBase):
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
         # number of bins
-        bins = (self.dimensions // self.binsize).astype(int)
+        bins = np.maximum(
+            1, np.rint(self.dimensions / self.binsize).astype(int)
+        )
 
         # Here we choose a number of bins of the largest cell side so that
         # x, y and z values can use the same "coord" column in the output file

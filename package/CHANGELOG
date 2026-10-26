@@ -19,6 +19,8 @@ The rules for this file:
  * 2.12.0
 
 Fixes
+ * Fixed floating point precision issue in LinearDensity where bin count was
+   underestimated by 1 for certain decimal bin sizes (Issue #4476)
 
 Enhancements
  * InterRDF and InterRDF_s now expose computed average box volume and densities
