@@ -348,11 +348,10 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._box = self._trajectory.ts.dimensions
-        if self._box is not None and np.allclose(
-            self._box, [1, 1, 1, 90, 90, 90]
-        ):
-            self._box = None
+        # box of the current frame, for finding chain starts below; each
+        # frame is analysed with its own box (see _single_frame)
+        self._box = _periodic_box(self._trajectory.ts.dimensions)
+        if self._trajectory.ts.dimensions is not None and self._box is None:
             warnings.warn(
                 "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
                 "periodic boundary conditions in DSSP calculations"
@@ -466,7 +465,7 @@ class DSSP(AnalysisBase):
         dssp = assign(
             coords,
             donor_mask=self._donor_mask,
-            box=self._box,
+            box=_periodic_box(self._ts.dimensions),
             backend=self._backend,
         )
         self.results.dssp_ndarray.append(dssp)
@@ -480,6 +479,14 @@ class DSSP(AnalysisBase):
         return ResultsGroup(
             lookup={"dssp_ndarray": ResultsGroup.flatten_sequence},
         )
+
+
+def _periodic_box(dimensions: np.ndarray | None) -> np.ndarray | None:
+    """``dimensions`` of a frame, or None without a box or with the
+    placeholder box (1, 1, 1, 90, 90, 90) some formats write for none"""
+    if dimensions is None or np.allclose(dimensions, [1, 1, 1, 90, 90, 90]):
+        return None
+    return dimensions
 
 
 def translate(onehot: np.ndarray) -> np.ndarray:
