@@ -323,11 +323,9 @@ def per_core_work(
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
 
     if num_steps > 0:
-        averaged_xy_deltas = accumulated_xy_deltas / num_steps
-    else:
-        averaged_xy_deltas = accumulated_xy_deltas
+        accumulated_xy_deltas /= num_steps
 
-    return list(zip(reconstruction_index_list, averaged_xy_deltas.tolist()))
+    return list(zip(reconstruction_index_list, accumulated_xy_deltas.tolist()))
 
 
 def generate_streamlines(
@@ -442,15 +440,11 @@ def generate_streamlines(
         raise ValueError("xmin must be less than xmax")
     if ymin >= ymax:
         raise ValueError("ymin must be less than ymax")
-    if num_cores != "maximum":
-        if not isinstance(num_cores, (int, np.integer)) or num_cores <= 0:
-            raise ValueError(
-                "num_cores must be 'maximum' or a positive integer"
-            )
-
     # work out the number of cores to use:
     if num_cores == "maximum":
         num_cores = multiprocessing.cpu_count()  # use all available cores
+    elif not isinstance(num_cores, (int, np.integer)) or num_cores <= 0:
+        raise ValueError("num_cores must be 'maximum' or a positive integer")
     np.seterr(all="warn", over="raise")
     parent_list_deltas = []  # collect all data from child processes here
 

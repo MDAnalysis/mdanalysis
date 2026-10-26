@@ -197,6 +197,22 @@ def test_per_core_work_2D(membrane_xtc, univ):
         res = entry[1]
         np.testing.assert_allclose(res[:2], np.array([0.7, 0.46]), atol=1e-1)
 
+    # When start_frame exceeds trajectory length, num_steps == 0
+    zero_step_values = streamlines.per_core_work(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        list_square_vertex_arrays_this_core=list_square_vertex_arrays_per_core[
+            0
+        ],
+        MDA_selection="name PO4",
+        start_frame=100,
+        end_frame=105,
+        reconstruction_index_list=list_parent_index_values[0],
+        maximum_delta_magnitude=2.0,
+    )
+    for entry in zero_step_values:
+        np.testing.assert_allclose(entry[1], [0.0, 0.0])
+
 
 def test_streamplot_2D(membrane_xtc, univ):
     # regression test the data structures
@@ -430,6 +446,63 @@ def test_streamplot_2D_dual_core(membrane_xtc, univ, tmpdir):
     assert_allclose(v1, np.zeros((5, 5)))
     assert avg == approx(0.0)
     assert std == approx(0.0)
+
+
+def test_streamplot_2D_default_cores(membrane_xtc, univ):
+    # Test using default num_cores="maximum"
+    u1, v1, avg, std = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name POX",
+        start_frame=1,
+        end_frame=2,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+    )
+    assert_allclose(u1, np.zeros((5, 5)))
+    assert_allclose(v1, np.zeros((5, 5)))
+
+
+def test_streamplot_2D_frames_beyond_trajectory(membrane_xtc, univ):
+    # Test when start_frame is beyond trajectory length (0 steps evaluated)
+    u_past, v_past, _, _ = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name PO4",
+        start_frame=100,
+        end_frame=105,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores=1,
+    )
+    assert_allclose(u_past, np.zeros((5, 5)))
+    assert_allclose(v_past, np.zeros((5, 5)))
+
+    # Test when end_frame exceeds trajectory length (loop completes naturally)
+    u_end, v_end, _, _ = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name PO4",
+        start_frame=0,
+        end_frame=100,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores=1,
+    )
+    assert np.all(u_end > 0)
+    assert np.all(v_end > 0)
 
 
 def test_streamplot_3D(membrane_xtc, univ, tmpdir):
