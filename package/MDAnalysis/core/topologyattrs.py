@@ -85,6 +85,92 @@ from .groups import (
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
+def _check_dtype(attr, group, values):
+    """Check that values match the expected dtype of the TopologyAttr."""
+    is_component = isinstance(group, ComponentBase)
+    is_iter = iterable(values)
+    attr_name = attr.singular if is_component else attr.attrname
+
+    if (
+        isinstance(attr, _StringInternerMixin)
+        or getattr(attr, "dtype", None) == "U1"
+    ):
+        kind = "str"
+        type_desc = "a string"
+        plural_desc = "strings"
+    else:
+        dtype = getattr(attr, "dtype", None)
+        if dtype is None:
+            return
+        if np.issubdtype(dtype, np.integer):
+            kind = "int"
+            type_desc = "an integer"
+            plural_desc = "integers"
+        elif np.issubdtype(dtype, np.floating):
+            kind = "float"
+            type_desc = "a number"
+            plural_desc = "numbers"
+        elif np.issubdtype(dtype, np.bool_):
+            kind = "bool"
+            type_desc = "a boolean"
+            plural_desc = "booleans"
+        else:
+            return
+
+    if is_iter:
+        if isinstance(values, np.ndarray) and values.dtype != object:
+            if kind == "str":
+                valid = np.issubdtype(values.dtype, np.str_)
+            elif kind == "int":
+                valid = np.issubdtype(
+                    values.dtype, np.integer
+                ) and not np.issubdtype(values.dtype, np.bool_)
+            elif kind == "float":
+                valid = np.issubdtype(
+                    values.dtype, np.number
+                ) and not np.issubdtype(values.dtype, np.bool_)
+            else:  # bool
+                valid = np.issubdtype(values.dtype, np.bool_)
+        else:
+            if kind == "str":
+                valid = all(isinstance(v, str) for v in values)
+            elif kind == "int":
+                valid = all(
+                    isinstance(v, (int, np.integer))
+                    and not isinstance(v, (bool, np.bool_))
+                    for v in values
+                )
+            elif kind == "float":
+                valid = all(
+                    isinstance(v, (int, float, np.number))
+                    and not isinstance(v, (bool, np.bool_))
+                    for v in values
+                )
+            else:  # bool
+                valid = all(isinstance(v, (bool, np.bool_)) for v in values)
+
+        if not valid:
+            raise TypeError(
+                f"All values for {attr_name} must be {plural_desc}"
+            )
+    else:
+        if kind == "str":
+            valid = isinstance(values, str)
+        elif kind == "int":
+            valid = isinstance(values, (int, np.integer)) and not isinstance(
+                values, (bool, np.bool_)
+            )
+        elif kind == "float":
+            valid = isinstance(
+                values, (int, float, np.number)
+            ) and not isinstance(values, (bool, np.bool_))
+        else:  # bool
+            valid = isinstance(values, (bool, np.bool_))
+
+        if not valid:
+            raise TypeError(f"{attr_name} must be {type_desc}")
+
+
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
 
@@ -151,6 +237,7 @@ def _check_length(func):
                         lenvalues=val_len,
                     )
                 )
+        _check_dtype(attr, group, values)
         # if everything went OK, continue with the function
         return func(attr, group, values)
 
@@ -1947,7 +2034,7 @@ class Masses(AtomAttr):
                 recenteredpos = atomgroup.positions - com
             eig_vals = _gyration(recenteredpos, masses)
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 
@@ -2408,7 +2495,7 @@ class Charges(AtomAttr):
                 "ij,ij->j", recenteredpos, charges[:, np.newaxis]
             )
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 
@@ -2619,7 +2706,7 @@ class Charges(AtomAttr):
                 recenteredpos = atomgroup.positions - ref
             quad_tensor = __quadrupole_tensor(recenteredpos, charges)
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 
