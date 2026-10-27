@@ -197,7 +197,10 @@ class LinearDensity(AnalysisBase):
     .. versionchanged:: 2.12.0
        Fixed floating point precision bug in bin calculation where dividing
        box dimensions by certain decimal bin sizes truncated bin counts by 1
-       (Issue #4476).
+       (Issue #4476).  Also fixed grid-aligned edge effect where
+       ``np.linspace`` representation noise in histogram bin edges caused
+       systematic spike/dip artifacts in density profiles computed from
+       discrete-precision trajectory formats such as XTC.
 
     .. deprecated:: 2.2.0
        The `results` dictionary has been changed and the attributes
@@ -250,6 +253,18 @@ class LinearDensity(AnalysisBase):
         # x, y and z values can use the same "coord" column in the output file
         self.nbins = bins.max()
         slices_vol = self.volume / bins
+
+        # Construct theoretical histogram bin edges.
+        self._edges = np.linspace(0.0, max(self.dimensions), self.nbins + 1)
+        # Shift internal bin edges slightly to eliminate grid aliasing.
+        # In discrete trajectory formats (such as XTC with 0.01 A resolution),
+        # coordinates landing directly on float-truncated bin edges create
+        # artificial spike/dip dipole artifacts. Offsetting internal edges by
+        # an infinitesimal epsilon places boundaries strictly between grid
+        # points without altering physical slice volumes or outer boundaries.
+        self._hist_edges = self._edges.copy()
+        offset = min(1e-5, self.binsize * 1e-4)
+        self._hist_edges[1:-1] -= offset
 
         self.keys = [
             "mass_density",
@@ -346,8 +361,7 @@ class LinearDensity(AnalysisBase):
             hist, _ = np.histogram(
                 positions[:, idx],
                 weights=self.masses,
-                bins=self.nbins,
-                range=(0.0, max(self.dimensions)),
+                bins=self._hist_edges,
             )
 
             self.results[dim][key] += hist
@@ -356,16 +370,15 @@ class LinearDensity(AnalysisBase):
             key = "charge_density"
             key_std = "charge_density_stddev"
             # histogram for positions weighted on charges
-            hist, bin_edges = np.histogram(
+            hist, _ = np.histogram(
                 positions[:, idx],
                 weights=self.charges,
-                bins=self.nbins,
-                range=(0.0, max(self.dimensions)),
+                bins=self._hist_edges,
             )
 
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
-            self.results[dim]["hist_bin_edges"] = bin_edges
+            self.results[dim]["hist_bin_edges"] = self._edges
 
     def _conclude(self):
         avogadro = constants["N_Avogadro"]  # unit: mol^{-1}

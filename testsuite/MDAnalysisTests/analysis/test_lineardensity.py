@@ -375,3 +375,59 @@ def test_lineardensity_non_clean_bins(binsize, expected_nbins):
     assert ld.nbins == expected_nbins
     assert len(ld.results.x.hist_bin_edges) == expected_nbins + 1
     assert_allclose(ld.results.x.slice_volume, 8000.0 / expected_nbins)
+
+
+@pytest.mark.parametrize("binsize", [0.1, 0.25, 0.05])
+def test_lineardensity_no_grid_aliasing_spikes(binsize):
+    """Histogram bin edges must not produce spike/dip artifacts
+    when atom coordinates coincide with the discrete float grid.
+
+    Without the internal edge offset, histogram boundaries that
+    coincide with discrete coordinate lattice points can cause
+    atoms on boundaries to be systematically assigned to the
+    adjacent bin due to float precision, creating artificial
+    spike/dip dipole artifacts (Issue #4476).
+    """
+    box_len = 20.0
+    nbins = int(np.floor(box_len / binsize + 1e-12))
+    n_per_bin = int(binsize / 0.01)
+
+    # Place one atom at every 0.01 A position (XTC precision)
+    xs = np.arange(0.0, box_len, 0.01).astype(np.float32)
+    n_atoms = len(xs)
+
+    u = mda.Universe.empty(
+        n_atoms=n_atoms,
+        n_residues=1,
+        atom_resindex=[0] * n_atoms,
+    )
+    u.add_TopologyAttr("masses", np.ones(n_atoms))
+    u.add_TopologyAttr("charges", np.zeros(n_atoms))
+
+    coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
+    coords[0, :, 0] = xs
+    coords[0, :, 1] = 1.0
+    coords[0, :, 2] = 1.0
+
+    u.trajectory = get_reader_for(coords)(coords, order="fac", n_atoms=n_atoms)
+    u.trajectory[0].dimensions = np.array(
+        [box_len, box_len, box_len, 90.0, 90.0, 90.0]
+    )
+
+    ld = LinearDensity(u.atoms, binsize=binsize).run()
+
+    # With offset internal bin edges, every bin should get exactly
+    # n_per_bin atoms of unit mass, so mass_density should
+    # be uniform across all occupied bins (the x dimension).
+    x_mass = ld.results.x.mass_density[:nbins]
+    expected_val = x_mass.mean()
+    assert_allclose(
+        x_mass,
+        expected_val,
+        atol=expected_val * 0.01,
+        err_msg=(
+            f"Grid-aliasing spike detected at binsize={binsize}: "
+            f"min={x_mass.min()}, max={x_mass.max()}, "
+            f"expected uniform ~{expected_val}"
+        ),
+    )
