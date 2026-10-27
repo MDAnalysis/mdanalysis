@@ -305,13 +305,51 @@ def test_supported_backends():
     "binsize, expected_nbins",
     [
         (0.1, 200),
-        (0.08, 250),
         (0.2, 100),
         (0.05, 400),
+        (0.04, 500),
+        (0.02, 1000),
     ],
 )
 def test_lineardensity_floating_point_bins(binsize, expected_nbins):
-    """Test that decimal bin sizes do not lose bins due to float truncation (Issue #4476)"""
+    """Test that decimal bin sizes do not lose bins due to float truncation (Issue #4476)."""
+    n_atoms = 4
+    u = mda.Universe.empty(
+        n_atoms=n_atoms,
+        n_residues=1,
+        atom_resindex=[0] * n_atoms,
+    )
+    u.add_TopologyAttr("masses", np.ones(n_atoms))
+    u.add_TopologyAttr("charges", np.zeros(n_atoms))
+    coords = np.array(
+        [
+            [
+                [1.0, 1.0, 1.0],
+                [5.0, 5.0, 5.0],
+                [10.0, 10.0, 10.0],
+                [15.0, 15.0, 15.0],
+            ]
+        ]
+    )
+    u.trajectory = get_reader_for(coords)(coords, order="fac", n_atoms=n_atoms)
+    u.trajectory[0].dimensions = np.array([20.0, 20.0, 20.0, 90.0, 90.0, 90.0])
+
+    ld = LinearDensity(u.atoms, binsize=binsize).run()
+    assert ld.nbins == expected_nbins
+    assert len(ld.results.x.hist_bin_edges) == expected_nbins + 1
+    assert_allclose(ld.results.x.slice_volume, 8000.0 / expected_nbins)
+
+
+@pytest.mark.parametrize(
+    "binsize, expected_nbins",
+    [
+        (3.0, 6),
+        (7.0, 2),
+        (6.0, 3),
+    ],
+)
+def test_lineardensity_non_clean_bins(binsize, expected_nbins):
+    """Test that non-divisible bin sizes preserve floor division behavior (Issue #4476)."""
     n_atoms = 4
     u = mda.Universe.empty(
         n_atoms=n_atoms,

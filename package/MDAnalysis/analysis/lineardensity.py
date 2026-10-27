@@ -242,7 +242,8 @@ class LinearDensity(AnalysisBase):
         self.volume = np.prod(self.dimensions)
         # number of bins
         bins = np.maximum(
-            1, np.rint(self.dimensions / self.binsize).astype(int)
+            1,
+            np.floor(self.dimensions / self.binsize + 1e-12).astype(int),
         )
 
         # Here we choose a number of bins of the largest cell side so that
