@@ -837,11 +837,21 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             frame = self._apply_limits(frame)
             return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
-            if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
+            if (
+                isinstance(frame, np.ndarray) and np.issubdtype(frame.dtype, np.bool_)
+            ) or (
+                len(frame) != 0 and isinstance(frame[0], (bool, np.bool_))
+            ):
                 # Avoid having list of bools
                 frame = np.asarray(frame, dtype=bool)
+                if frame.ndim != 1 or len(frame) != len(self):
+                    raise IndexError(
+                        f"boolean index did not match indexed array along "
+                        f"dimension 0; dimension is {len(self)} but "
+                        f"corresponding boolean dimension is {len(frame)}"
+                    )
                 # Convert bool array to int array
-                frame = np.arange(len(self))[frame]
+                frame = np.flatnonzero(frame)
             return FrameIteratorIndices(self, frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
