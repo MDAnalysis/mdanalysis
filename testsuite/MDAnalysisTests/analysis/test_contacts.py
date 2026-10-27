@@ -261,7 +261,8 @@ class TestContacts(object):
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
         assert len(CA1.results.timeseries) == len(frames)
 
-    def test_villin_folded(self, client_Contacts):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_villin_folded(self, client_Contacts, compute_pairs_only):
         # one folded, one unfolded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_unfolded)
@@ -270,7 +271,11 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(
-            u, select=(sel, sel), refgroup=(grF, grF), method="soft_cut"
+            u,
+            select=(sel, sel),
+            refgroup=(grF, grF),
+            method="soft_cut",
+            compute_pairs_only=compute_pairs_only,
         )
         q.run(**client_Contacts)
 
@@ -279,7 +284,8 @@ class TestContacts(object):
             q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
         )
 
-    def test_villin_unfolded(self, client_Contacts):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_villin_unfolded(self, client_Contacts, compute_pairs_only):
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -288,7 +294,11 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(
-            u, select=(sel, sel), refgroup=(grF, grF), method="soft_cut"
+            u,
+            select=(sel, sel),
+            refgroup=(grF, grF),
+            method="soft_cut",
+            compute_pairs_only=compute_pairs_only,
         )
         q.run(**client_Contacts)
 
@@ -297,8 +307,15 @@ class TestContacts(object):
             q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
         )
 
-    def test_hard_cut_method(self, universe, client_Contacts):
-        ca = self._run_Contacts(universe, client_Contacts=client_Contacts)
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_hard_cut_method(
+        self, universe, client_Contacts, compute_pairs_only
+    ):
+        ca = self._run_Contacts(
+            universe,
+            client_Contacts=client_Contacts,
+            compute_pairs_only=compute_pairs_only,
+        )
         # fmt: off
         expected = [
             1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
@@ -328,7 +345,10 @@ class TestContacts(object):
             ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7
         )
 
-    def test_radius_cut_method(self, universe, client_Contacts):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_radius_cut_method(
+        self, universe, client_Contacts, compute_pairs_only
+    ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         r = contacts.distance_array(acidic.positions, basic.positions)
@@ -341,7 +361,10 @@ class TestContacts(object):
             )
 
         ca = self._run_Contacts(
-            universe, client_Contacts=client_Contacts, method="radius_cut"
+            universe,
+            client_Contacts=client_Contacts,
+            method="radius_cut",
+            compute_pairs_only=compute_pairs_only,
         )
         assert_array_equal(ca.results.timeseries[:, 1], expected)
 
@@ -349,11 +372,13 @@ class TestContacts(object):
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
 
-    def test_own_method(self, universe, client_Contacts):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_own_method(self, universe, client_Contacts, compute_pairs_only):
         ca = self._run_Contacts(
             universe,
             client_Contacts=client_Contacts,
             method=self._is_any_closer,
+            compute_pairs_only=compute_pairs_only,
         )
 
         # fmt: off
@@ -423,7 +448,10 @@ class TestContacts(object):
             ),
         ],
     )
-    def test_distance_box(self, pbc, expected, client_Contacts):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_distance_box(
+        self, pbc, expected, client_Contacts, compute_pairs_only
+    ):
         u = mda.Universe(TPR, XTC)
         sel_basic = "(resname ARG LYS)"
         sel_acidic = "(resname ASP GLU)"
@@ -436,6 +464,7 @@ class TestContacts(object):
             refgroup=(acidic, basic),
             radius=6.0,
             pbc=pbc,
+            compute_pairs_only=compute_pairs_only,
         )
         r.run(**client_Contacts)
         assert_allclose(
@@ -452,19 +481,7 @@ class TestContacts(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
-    @pytest.mark.parametrize("method", ["hard_cut", "soft_cut", "radius_cut"])
-    @pytest.mark.parametrize("pbc", [True, False])
-    def test_pairs_matches_dense(self, universe, client_Contacts, method, pbc):
-        kwargs = dict(method=method, pbc=pbc)
-        dense = self._run_Contacts(universe, client_Contacts, **kwargs)
-        sparse = self._run_Contacts(
-            universe, client_Contacts, pairs=True, **kwargs
-        )
-        assert_allclose(
-            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
-        )
-
-    def test_pairs_multiple_references_and_overlap(self, universe):
+    def test_compute_pairs_only_multiple_references(self, universe):
         # same group on both sides: diagonal and both orientations included
         ca = universe.select_atoms("name CA")
         refs = [(ca, ca)]
@@ -472,38 +489,40 @@ class TestContacts(object):
         refs.append((ca, ca))
         universe.trajectory[0]
         kw = dict(select=(ca, ca), refgroup=refs, radius=8, method="soft_cut")
-        dense = contacts.Contacts(universe, **kw).run(step=10)
-        sparse = contacts.Contacts(universe, pairs=True, **kw).run(step=10)
+        dense = contacts.Contacts(universe, compute_pairs_only=False, **kw)
+        dense.run(step=10)
+        pairs = contacts.Contacts(universe, compute_pairs_only=True, **kw)
+        pairs.run(step=10)
         assert dense.results.timeseries.shape[1] == 3
         assert_allclose(
-            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+            pairs.results.timeseries, dense.results.timeseries, rtol=1e-12
         )
 
-    def test_pairs_custom_method(self, universe):
-        def method(r, r0, scale):
-            return scale * np.mean(r / r0)
-
-        kw = dict(method=method, kwargs={"scale": 2.0})
-        dense = self._run_Contacts(universe, {}, stop=5, **kw)
-        sparse = self._run_Contacts(universe, {}, stop=5, pairs=True, **kw)
-        assert_allclose(
-            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
-        )
-
-    def test_pairs_rerun_after_mask_edit(self, universe):
+    @pytest.mark.parametrize("compute_pairs_only", [False, True])
+    def test_rerun_after_initial_contacts_edit(
+        self, universe, compute_pairs_only
+    ):
+        """initial_contacts is public: editing it between runs must be
+        honored by the next run (the pairs are rebuilt in each run)."""
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
-        kw = dict(select=(acidic, basic), refgroup=(acidic, basic), radius=6.0)
-        dense = contacts.Contacts(universe, **kw)
-        sparse = contacts.Contacts(universe, pairs=True, **kw)
-        for c in (dense, sparse):
-            c.run(stop=3)
-            c.initial_contacts[0][:] = False
-            c.initial_contacts[0][0, 0] = True
-            c.run(stop=3)
-        assert_allclose(
-            sparse.results.timeseries, dense.results.timeseries, rtol=1e-12
+        c = contacts.Contacts(
+            universe,
+            select=(acidic, basic),
+            refgroup=(acidic, basic),
+            radius=6.0,
+            method="radius_cut",
+            compute_pairs_only=compute_pairs_only,
         )
+        # the first run builds the pairs that the edit must invalidate
+        c.run(stop=3)
+        # keep a single contact; radius_cut_q then is 1 if it is within 6 A
+        c.initial_contacts[0][:] = False
+        c.initial_contacts[0][0, 0] = True
+        c.run(stop=3)
+        for ts in universe.trajectory[:3]:
+            r = contacts.distance_array(acidic.positions, basic.positions)
+            assert c.results.timeseries[ts.frame, 1] == float(r[0, 0] <= 6.0)
 
     @pytest.mark.parametrize(
         "datafiles, expected", [((PSF, DCD), 0), ([TPR, XTC], 41814)]
