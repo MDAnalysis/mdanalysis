@@ -257,16 +257,16 @@ def set_rmsd_matrix_elements(
         will be used to place both structures at their center of mass and
         compute the rotation matrix. In this case, both fit_coords and fit_weights
         must be specified.
-    coords : numpy.array
+    coords : numpy.ndarray
         Array of the ensemble coordinates
-    weights : numpy.array
+    weights : numpy.ndarray
         Array of atomic weights, having the same order as the
         coordinates array
     rmsdmat : encore.utils.TriangularMatrix
         Memory-shared triangular matrix object
-    fit_coords : numpy.array or None, optional
+    fit_coords : numpy.ndarray or None, optional
         Array of the coordinates used for fitting
-    fit_weights : numpy.array. optional
+    fit_weights : numpy.ndarray, optional
         Array of atomic weights, having the same order as the
         fit_coords array
     """

@@ -886,9 +886,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Returns
         -------
-        tau_timeseries : np.array
+        tau_timeseries : numpy.ndarray
             tau from 1 to `tau_max`
-        timeseries : np.array
+        timeseries : numpy.ndarray
             autcorrelation value for each value of `tau`
         """
 

@@ -56,7 +56,7 @@ def bootstrapped_matrix(matrix, ensemble_assignment):
     matrix : encore.utils.TriangularMatrix
         similarity/dissimilarity matrix
 
-    ensemble_assignment: numpy.array
+    ensemble_assignment: numpy.ndarray
         array of ensemble assignments. This array must be matrix.size long.
 
     Returns

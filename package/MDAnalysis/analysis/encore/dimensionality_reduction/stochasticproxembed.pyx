@@ -73,7 +73,7 @@ def StochasticProximityEmbedding(s, double rco, int dim, double maxlam, double m
 
     Returns
     -------
-    space : (float, numpy.array)
+    space : (float, numpy.ndarray)
         float is the final stress obtained; the array are the coordinates of
         the elements in the embedded space
     stressfreq : int

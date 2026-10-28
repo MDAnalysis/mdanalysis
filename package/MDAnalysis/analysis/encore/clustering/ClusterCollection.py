@@ -61,7 +61,7 @@ class Cluster(object):
     centroid : element object
         cluster centroid.
 
-    elements : numpy.array
+    elements : numpy.ndarray
         array containing the cluster elements.
     """
 
@@ -72,7 +72,7 @@ class Cluster(object):
         Parameters
         ----------
 
-        elem_list : numpy.array or None
+        elem_list : numpy.ndarray or None
             numpy array of cluster elements
 
         centroid : None or element object

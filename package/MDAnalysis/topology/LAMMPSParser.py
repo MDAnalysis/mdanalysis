@@ -409,7 +409,7 @@ class DATAParser(TopologyReaderBase):
         ----------
         datalines : list
           list of strings from file
-        order : np.array
+        order : numpy.ndarray
           array which rearranges the velocities into correct order
           (from argsort on atom ids)
 
