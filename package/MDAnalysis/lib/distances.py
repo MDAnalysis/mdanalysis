@@ -26,7 +26,7 @@
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
-arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
+arrays. Distance functions can accept a NumPy :class:`numpy.ndarray` or an
 :class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
 in parallel versions, which typically provide higher performance than the
 serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can
@@ -108,7 +108,7 @@ calculate the distances. Note that for functions listed in this table
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
    Distance functions can now accept an
-   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
+   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`numpy.ndarray`
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
 .. versionchanged:: 2.9.0

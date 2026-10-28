@@ -255,12 +255,12 @@ class ResultsGroup:
 
         Parameters
         ----------
-        arrs : list[np.ndarray]
+        arrs : list[numpy.ndarray]
             list of input arrays. Must have the same shape.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             sum of input arrays
         """
         return np.array(arrs).sum(axis=0)
@@ -271,12 +271,12 @@ class ResultsGroup:
 
         Parameters
         ----------
-        arrs : list[np.ndarray]
+        arrs : list[numpy.ndarray]
             list of input arrays. Must have the same shape.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             mean of input arrays
         """
         return np.array(arrs).mean(axis=0)
@@ -303,12 +303,12 @@ class ResultsGroup:
 
         Parameters
         ----------
-        arrs : list[np.ndarray]
+        arrs : list[numpy.ndarray]
             input numpy arrays
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             result of stacking
         """
         return np.hstack(arrs)
@@ -319,12 +319,12 @@ class ResultsGroup:
 
         Parameters
         ----------
-        arrs : list[np.ndarray]
+        arrs : list[numpy.ndarray]
             input numpy arrays
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             result of stacking
         """
         return np.vstack(arrs)

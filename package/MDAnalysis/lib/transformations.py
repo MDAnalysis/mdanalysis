@@ -1982,7 +1982,7 @@ def rotaxis(a, b):
 
     Returns
     -------
-    c : np.ndarray
+    c : numpy.ndarray
         vector to rotate a into b
 
 

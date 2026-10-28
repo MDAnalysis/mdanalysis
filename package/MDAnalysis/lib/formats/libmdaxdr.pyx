@@ -525,7 +525,7 @@ cdef class TRRFile(_XDRFile):
 
         Parameters
         ----------
-        positions : np.ndarray
+        positions : numpy.ndarray
             positions array to read positions into
 
         Returns
@@ -808,7 +808,7 @@ cdef class XTCFile(_XDRFile):
 
         Parameters
         ----------
-        positions : np.ndarray
+        positions : numpy.ndarray
            positions array to read positions into
 
         Returns

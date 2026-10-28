@@ -1109,7 +1109,7 @@ class Universe(object):
         topologyattr: TopologyAttr or string
           Either a MDAnalysis TopologyAttr object or the name of a possible
           topology attribute.
-        values: np.ndarray, optional
+        values: numpy.ndarray, optional
           If initiating an attribute from a string, the initial values to
           use.  If not supplied, the new TopologyAttribute will have empty
           or zero values.

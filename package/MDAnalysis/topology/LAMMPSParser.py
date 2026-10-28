@@ -415,7 +415,7 @@ class DATAParser(TopologyReaderBase):
 
         Returns
         -------
-        velocities : np.ndarray
+        velocities : numpy.ndarray
         """
         vel = np.zeros((len(datalines), 3), dtype=np.float32)
 

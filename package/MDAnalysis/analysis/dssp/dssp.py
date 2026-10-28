@@ -393,7 +393,7 @@ class DSSP(AnalysisBase):
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             coordinates of (N,CA,C,O,H) atoms
 
         Raises
@@ -473,12 +473,12 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    onehot : np.ndarray
+    onehot : numpy.ndarray
         input array of one-hot encoding in ('-', 'H', 'E') order
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         array of '-', 'H' and 'E' symbols with secondary structure
 
 

@@ -53,14 +53,14 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
 
     Parameters
     ----------
-    a : np.ndarray
+    a : numpy.ndarray
         input array
     window : int
         upsample window
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         unfolded array
     """
     return _unfold(_unfold(a, window, -2), window, -2)
@@ -83,13 +83,13 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in Angstrom, shape (n_residues, 4, 3),
         where second axes corresponds to (N, CA, C, O) atom coordinates
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         coordinates of additional hydrogens, shape (n_residues-1, 3)
 
     .. versionadded:: 2.8.0
@@ -132,7 +132,7 @@ def get_hbond_map(
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape
         (without or with hydrogens respectively), where ``n`` is number of residues.
         If hydrogens are not present, then ideal positions (see :func:_get_hydrogen_atom_positions)
@@ -166,7 +166,7 @@ def get_hbond_map(
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         output hbond map or energy depending on return_e param
 
 
@@ -267,7 +267,7 @@ def assign(
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
         without or with hydrogens, respectively. Second dimension `k` represents
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
@@ -295,7 +295,7 @@ def assign(
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
         representing loop, helix and sheet, respectively.
 

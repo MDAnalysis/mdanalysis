@@ -520,8 +520,8 @@ class AnalysisBase(object):
 
         Parameters
         ----------
-        indexed_frames : np.ndarray
-            np.ndarray of (n, 2) shape, where first column is frame iteration
+        indexed_frames : numpy.ndarray
+            numpy.ndarray of (n, 2) shape, where first column is frame iteration
             indices and second is frame numbers
 
         verbose : bool, optional
@@ -600,7 +600,7 @@ class AnalysisBase(object):
 
         Returns
         -------
-        computation_groups : list[np.ndarray]
+        computation_groups : list[numpy.ndarray]
             list of (n, 2) shaped np.ndarrays with frame indices and numbers
 
 
