@@ -202,9 +202,9 @@ class DefaultGuesser(GuesserBase):
 
         Parameters
         ----------
-        atom_types : Optional[np.ndarray]
+        atom_types : numpy.ndarray, optional
           Atom types/elements to guess masses from
-        indices_to_guess : Optional[np.ndarray]
+        indices_to_guess : numpy.ndarray, optional
           Mask array for partially guess masses for certain atoms
 
         Returns

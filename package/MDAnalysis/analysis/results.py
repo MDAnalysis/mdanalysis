@@ -186,7 +186,7 @@ class ResultsGroup:
     .. versionadded:: 2.8.0
     """
 
-    def __init__(self, lookup: dict[str, Callable] = None):
+    def __init__(self, lookup: dict[str, Callable] | None = None):
         self._lookup = lookup
 
     def merge(

@@ -65,7 +65,7 @@ import warnings
 from collections import defaultdict
 from contextlib import suppress
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List, Optional, Tuple
+from typing import ClassVar, Dict, List, Tuple
 
 import numpy as np
 
@@ -321,7 +321,7 @@ class MDAnalysisInferrer:
         return [v - current_v for v in expected_vs]
 
     def _standardize_patterns(
-        self, mol: "Chem.Mol", max_iter: Optional[int] = None
+        self, mol: "Chem.Mol", max_iter: int | None = None
     ) -> "Chem.Mol":
         """Standardizes functional groups
 
@@ -336,7 +336,7 @@ class MDAnalysisInferrer:
         ----------
         mol : rdkit.Chem.rdchem.RWMol
             The molecule to standardize
-        max_iter : Optional[int]
+        max_iter : int, optional
             Maximum number of iterations to standardize conjugated systems.
 
             .. deprecated:: 2.10.0
@@ -438,7 +438,7 @@ class MDAnalysisInferrer:
             Chem.KekulizeIfPossible(reactant)
 
     def _rebuild_conjugated_bonds(
-        self, mol: "Chem.Mol", max_iter: Optional[int] = None
+        self, mol: "Chem.Mol", max_iter: int | None = None
     ) -> None:
         """Rebuild conjugated bonds without negatively charged atoms at the
         beginning and end of the conjugated system
@@ -467,7 +467,7 @@ class MDAnalysisInferrer:
         ----------
         mol : rdkit.Chem.rdchem.RWMol
             The molecule to transform, modified inplace
-        max_iter : Optional[int]
+        max_iter : int, optional
             Maximum number of iterations to standardize conjugated systems.
 
             .. deprecated:: 2.10.0

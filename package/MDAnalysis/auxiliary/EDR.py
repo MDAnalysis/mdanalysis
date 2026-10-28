@@ -191,7 +191,7 @@ The actual data for each step is stored by instances of EDRStep.
 """
 from pathlib import Path
 import warnings
-from typing import Optional, Union, Dict, List
+from typing import Dict, List
 
 import numpy as np
 
@@ -234,7 +234,7 @@ class EDRStep(base.AuxStep):
     def __init__(
         self,
         time_selector: str = "Time",
-        data_selector: Optional[str] = None,
+        data_selector: str | None = None,
         **kwargs,
     ):
         super(EDRStep, self).__init__(
@@ -247,7 +247,7 @@ class EDRStep(base.AuxStep):
         time value of each step."""
         return self._select_data(key)
 
-    def _select_data(self, key: Union[str, None]) -> np.float64:
+    def _select_data(self, key: str | None) -> np.float64:
         if key is None:
             return
         try:
@@ -422,7 +422,7 @@ class EDRReader(base.AuxReader):
         return self.data_dict[self.time_selector]
 
     def get_data(
-        self, data_selector: Union[str, List[str], None] = None
+        self, data_selector: str | List[str] | None = None
     ) -> Dict[str, np.ndarray]:
         """Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
@@ -431,7 +431,7 @@ class EDRReader(base.AuxReader):
 
         Parameters
         ----------
-        data_selector: str, List[str], None
+        data_selector : str or list of str, optional
             Keys to be extracted from the auxiliary reader's data dictionary.
             If ``None``, returns all data found in :attr:`.data_dict`.
         Returns

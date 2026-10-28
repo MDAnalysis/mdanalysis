@@ -33,7 +33,7 @@ from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core.groups import AtomGroup, SegmentGroup, ResidueGroup
 import numpy.typing as npt
-from typing import Optional, Union, List
+from typing import List
 
 
 class AtomNeighborSearch(object):
@@ -45,7 +45,7 @@ class AtomNeighborSearch(object):
     """
 
     def __init__(
-        self, atom_group: AtomGroup, box: Optional[npt.ArrayLike] = None
+        self, atom_group: AtomGroup, box: npt.ArrayLike | None = None
     ) -> None:
         """
 
@@ -65,7 +65,7 @@ class AtomNeighborSearch(object):
 
     def search(
         self, atoms: AtomGroup, radius: float, level: str = "A"
-    ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
+    ) -> AtomGroup | ResidueGroup | SegmentGroup | None:
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
@@ -116,7 +116,7 @@ class AtomNeighborSearch(object):
 
     def _index2level(
         self, indices: List[int], level: str
-    ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
+    ) -> AtomGroup | ResidueGroup | SegmentGroup:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 

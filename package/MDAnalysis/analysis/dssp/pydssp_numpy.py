@@ -137,7 +137,7 @@ def get_hbond_map(
         (without or with hydrogens respectively), where ``n`` is number of residues.
         If hydrogens are not present, then ideal positions (see :func:_get_hydrogen_atom_positions)
         are used.
-    donor_mask : np.array
+    donor_mask : numpy.ndarray, optional
          Mask out any hydrogens that should not be considered (in particular HN
          in PRO). If ``None`` then all H will be used (behavior up to 2.10.0).
 
@@ -273,7 +273,7 @@ def assign(
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
         (when k=5).
 
-    donor_mask : np.array | None, optional
+    donor_mask : numpy.ndarray, optional
          Mask out any hydrogens that should not be considered (in particular HN
          in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
 

@@ -145,7 +145,6 @@ Functions
 """
 
 import warnings
-from typing import Optional, Union
 
 import numpy as np
 
@@ -210,7 +209,7 @@ class DSSP(AnalysisBase):
 
     Parameters
     ----------
-    atoms : Union[Universe, AtomGroup]
+    atoms : Universe or AtomGroup
         input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
@@ -312,10 +311,10 @@ class DSSP(AnalysisBase):
 
     def __init__(
         self,
-        atoms: Union[Universe, AtomGroup],
+        atoms: Universe | AtomGroup,
         guess_hydrogens: bool = True,
         *,
-        heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
+        heavyatom_names: tuple[str, ...] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
         backend: str = "serial",
     ):
@@ -335,7 +334,7 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._donor_mask: np.ndarray | None = ag.residues.resnames != "PRO"
         self._box = self._trajectory.ts.dimensions
         if self._box is not None and np.allclose(
             self._box, [1, 1, 1, 90, 90, 90]

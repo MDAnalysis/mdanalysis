@@ -90,7 +90,7 @@ case, :class:`ProtoReader` should be used.
 
 .. autoclass:: StreamReaderBase
    :members:
-   
+
 .. _WritersBase:
 
 Writers
@@ -129,7 +129,7 @@ import abc
 import numpy as np
 import numbers
 import warnings
-from typing import Any, Union, Optional, List, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 from .timestep import Timestep
 from . import core
@@ -141,11 +141,13 @@ from .. import (
 )
 from .. import units
 from ..auxiliary.base import AuxReader
-from ..auxiliary.core import auxreader
 from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
-from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import asiterable, store_init_arguments
 from ..lib.util import NamedStream
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..core.groups import AtomGroup
 
 
 class FrameIteratorBase(object):
@@ -991,16 +993,16 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def timeseries(self, asel: Optional['AtomGroup']=None,
-                   atomgroup: Optional['Atomgroup']=None,
-                   start: Optional[int]=None, stop: Optional[int]=None,
-                   step: Optional[int]=None,
-                   order: Optional[str]='fac') -> np.ndarray:
+    def timeseries(self, asel: 'AtomGroup | None'=None,
+                   atomgroup: 'AtomGroup | None'=None,
+                   start: int | None=None, stop: int | None=None,
+                   step: int | None=None,
+                   order: str = 'fac') -> np.ndarray:
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
         ----------
-        asel : AtomGroup (optional)
+        asel : AtomGroup, optional
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to ``None``, in which case the full set
             of coordinate data is returned.
@@ -1008,20 +1010,20 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             .. deprecated:: 2.7.0
                 asel argument will be renamed to atomgroup in 3.0.0
 
-        atomgroup: AtomGroup (optional)
+        atomgroup : AtomGroup, optional
             Same as `asel`, will replace `asel` in 3.0.0
-        start :  int (optional)
+        start : int, optional
             Begin reading the trajectory at frame index `start` (where 0 is the
             index of the first frame in the trajectory); the default
             ``None`` starts at the beginning.
-        stop : int (optional)
+        stop : int, optional
             End reading the trajectory at frame index `stop`-1, i.e, `stop` is
             excluded. The trajectory is read to the end with the default
             ``None``.
-        step : int (optional)
+        step : int, optional
             Step size for reading; the default ``None`` is equivalent to 1 and
             means to read every frame.
-        order : str (optional)
+        order : str
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
@@ -1080,9 +1082,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
-                      aux_spec: Union[str, Dict[str, str]] = None,
-                      auxdata: Union[str, AuxReader] = None,
-                      format: str = None,
+                      aux_spec: str | Dict[str, str] | None = None,
+                      auxdata: str | AuxReader | None = None,
+                      format: str | None = None,
                       **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
@@ -1896,7 +1898,7 @@ class StreamReaderBase(ReaderBase):
     ReaderBase : Base class for standard trajectory readers
 
 
-    .. versionadded:: 2.10.0 
+    .. versionadded:: 2.10.0
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -1939,15 +1941,15 @@ class StreamReaderBase(ReaderBase):
 
     def next(self):
         """Advance to the next timestep in the streaming trajectory.
-        
+
         Streaming readers process frames sequentially and cannot rewind
         once iteration completes. Use ``for ts in trajectory`` for iteration.
-        
+
         Returns
         -------
         Timestep
             The next timestep in the stream
-            
+
         Raises
         ------
         StopIteration
@@ -1968,7 +1970,7 @@ class StreamReaderBase(ReaderBase):
 
     def rewind(self):
         """Rewinding is not supported for streaming trajectories.
-        
+
         Streaming readers process data continuously from streams
         and cannot restart or go backward in the stream once consumed.
 
@@ -1986,11 +1988,11 @@ class StreamReaderBase(ReaderBase):
     # Incompatible methods
     def copy(self):
         """Reader copying is not supported for streaming trajectories.
-        
+
         Streaming readers maintain internal state and connection resources
         that cannot be duplicated. Each stream connection is unique and
         cannot be copied.
-        
+
         Raises
         ------
         RuntimeError
@@ -2002,11 +2004,11 @@ class StreamReaderBase(ReaderBase):
 
     def _reopen(self):
         """Prepare stream for iteration - can only be called once.
-        
+
         Streaming readers cannot be reopened once iteration begins.
         This method is called internally during iteration setup and
         will raise an error if called multiple times.
-        
+
         Raises
         ------
         RuntimeError
@@ -2021,20 +2023,20 @@ class StreamReaderBase(ReaderBase):
 
     def timeseries(self, **kwargs):
         """Timeseries extraction is not supported for streaming trajectories.
-        
+
         Streaming readers cannot randomly access frames or store bulk coordinate
         data in memory, which ``timeseries()`` requires. Use sequential frame
         iteration instead.
-                    
+
         Parameters
         ----------
         **kwargs
             Any keyword arguments (ignored, as method is not supported)
-            
+
         Raises
         ------
         RuntimeError
-            Always raised, as timeseries extraction is not supported for 
+            Always raised, as timeseries extraction is not supported for
             streaming trajectories
         """
         raise RuntimeError(
@@ -2087,17 +2089,17 @@ class StreamReaderBase(ReaderBase):
 
     def check_slice_indices(self, start, stop, step):
         """Check and validate slice indices for streaming trajectories.
-        
-        Streaming trajectories have fundamental constraints that differ from 
+
+        Streaming trajectories have fundamental constraints that differ from
         traditional trajectory files:
-        
+
         * **No start/stop indices**: Since streams process data continuously
           without knowing the total length, ``start`` and ``stop`` must be ``None``
         * **Step-only slicing**: Only the ``step`` parameter is meaningful,
           controlling how many frames to skip during iteration
         * **Forward-only**: ``step`` must be positive (> 0) as streams cannot
           be processed backward in time
-          
+
         Parameters
         ----------
         start : int or None
@@ -2105,35 +2107,35 @@ class StreamReaderBase(ReaderBase):
         stop : int or None
             Ending frame index. Must be ``None`` for streaming readers.
         step : int or None
-            Step size for iteration. Must be positive integer or ``None`` 
+            Step size for iteration. Must be positive integer or ``None``
             (equivalent to 1).
-            
+
         Returns
         -------
         tuple
             (start, stop, step) with validated values
-            
+
         Raises
         ------
         ValueError
-            If ``start`` or ``stop`` are not ``None``, or if ``step`` is 
+            If ``start`` or ``stop`` are not ``None``, or if ``step`` is
             not a positive integer.
-            
+
         Examples
         --------
         Valid streaming slices::
-        
+
             traj[:]        # All frames (step=None, equivalent to step=1)
-            traj[::2]      # Every 2nd frame 
+            traj[::2]      # Every 2nd frame
             traj[::10]     # Every 10th frame
-            
+
         Invalid streaming slices::
-        
+
             traj[5:]       # Cannot specify start index
-            traj[:100]     # Cannot specify stop index  
+            traj[:100]     # Cannot specify stop index
             traj[5:100:2]  # Cannot specify start or stop indices
             traj[::-1]     # Cannot go backwards (negative step)
-            
+
         See Also
         --------
         __getitem__
@@ -2173,7 +2175,7 @@ class StreamReaderBase(ReaderBase):
 
     def Writer(self, filename, **kwargs):
         """Writer creation is not supported for streaming trajectories.
-        
+
         Writer creation requires trajectory metadata that streaming readers
         cannot provide due to their sequential processing nature.
 
@@ -2183,7 +2185,7 @@ class StreamReaderBase(ReaderBase):
             Output filename (ignored, as method is not supported)
         **kwargs
             Additional keyword arguments (ignored, as method is not supported)
-            
+
         Raises
         ------
         RuntimeError
@@ -2197,18 +2199,18 @@ class StreamReaderBase(ReaderBase):
 
     def OtherWriter(self, filename, **kwargs):
         """Writer creation is not supported for streaming trajectories.
-        
+
         OtherWriter initialization requires frame-based parameters and trajectory
         indexing information. Streaming readers process data sequentially
         without meaningful frame indexing, making writer setup impossible.
-        
+
         Parameters
         ----------
         filename : str
             Output filename (ignored, as method is not supported)
         **kwargs
             Additional keyword arguments (ignored, as method is not supported)
-            
+
         Raises
         ------
         RuntimeError
@@ -2243,31 +2245,31 @@ class StreamReaderBase(ReaderBase):
 
 class StreamFrameIteratorSliced(FrameIteratorBase):
     """Iterator for sliced frames in a streamed trajectory.
-    
-    Created when slicing a streaming trajectory with a step parameter 
-    (e.g., ``trajectory[::n]``). Reads every nth frame from the continuous 
+
+    Created when slicing a streaming trajectory with a step parameter
+    (e.g., ``trajectory[::n]``). Reads every nth frame from the continuous
     stream, discarding intermediate frames for performance.
-    
+
     This differs from iterating over all frames (``trajectory[:]``) which uses
-    :class:`FrameIteratorAll` and processes every frame sequentially without 
+    :class:`FrameIteratorAll` and processes every frame sequentially without
     skipping.
-    
+
     Streaming constraints apply to the sliced iterator:
-    
+
     - Frames cannot be accessed randomly (no indexing support)
-    - The total number of frames is unknown until streaming ends  
+    - The total number of frames is unknown until streaming ends
     - Rewinding or restarting iteration is not possible
     - Only forward iteration with a fixed step size is supported
-    
+
     Parameters
     ----------
     trajectory : StreamReaderBase
-        The streaming trajectory reader to iterate over. Must be a 
+        The streaming trajectory reader to iterate over. Must be a
         stream-based reader that supports continuous data reading.
     step : int
-        Step size for iteration. Must be a positive integer. A step 
+        Step size for iteration. Must be a positive integer. A step
         of 1 reads every frame, step of 2 reads every other frame, etc.
-        
+
     See Also
     --------
     StreamReaderBase
@@ -2310,15 +2312,15 @@ class StreamFrameIteratorSliced(FrameIteratorBase):
     @property
     def step(self):
         """The step size for sliced frame iteration.
-        
-        Returns the step interval used when iterating through frames in a 
-        streaming trajectory. For example, a step of 2 means every second 
+
+        Returns the step interval used when iterating through frames in a
+        streaming trajectory. For example, a step of 2 means every second
         frame is processed, while a step of 1 processes every frame.
-        
+
         Returns
         -------
         int
             Step size for iteration. Always a positive integer greater than 0.
-            
+
         """
         return self._step

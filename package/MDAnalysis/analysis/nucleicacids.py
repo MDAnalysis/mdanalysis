@@ -63,7 +63,7 @@ Distances
 
 """
 
-from typing import List, Dict, Tuple, Union
+from typing import List, Tuple
 import warnings
 
 import numpy as np
@@ -76,8 +76,8 @@ from MDAnalysis.core.groups import Residue, ResidueGroup
 
 # Deprecation: In 3.0.0 change type to just
 # ResidueClass = ResidueGroup
-ResidueClass = Union[List[Residue], ResidueGroup]
-r"""A type alias for :code:`Union[List[Residue], ResidueGroup]`
+ResidueClass = List[Residue] | ResidueGroup
+r"""A type alias for :code:`List[Residue] | ResidueGroup`
 
 Used as an alias for methods where either class is acceptable.
 """

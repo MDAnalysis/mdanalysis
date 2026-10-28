@@ -89,7 +89,7 @@ References
 """
 
 import warnings
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 from MDAnalysis.coordinates import base
@@ -401,12 +401,12 @@ class TNGReader(base.ReaderBase):
         ts = self._read_next_timestep()
         return ts
 
-    def _read_next_timestep(self, ts: Optional[Timestep] = None) -> Timestep:
+    def _read_next_timestep(self, ts: Timestep | None = None) -> Timestep:
         """Read next frame into a timestep
 
         Parameters
         ----------
-        ts : Timestep
+        ts : Timestep, optional
             The timestep to read the data into
 
         Returns

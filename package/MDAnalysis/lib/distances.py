@@ -142,7 +142,7 @@ Functions
 import numpy as np
 import numpy.typing as npt
 
-from typing import Union, Optional, Callable
+from typing import Callable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -180,8 +180,8 @@ del importlib
 
 def _run(
     funcname: str,
-    args: Optional[tuple] = None,
-    kwargs: Optional[dict] = None,
+    args: tuple | None = None,
+    kwargs: dict | None = None,
     backend: str = "serial",
 ) -> Callable:
     """Helper function to select a backend function `funcname`."""
@@ -227,7 +227,7 @@ from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
 def _check_result_array(
-    result: Optional[npt.NDArray], shape: tuple
+    result: npt.NDArray | None, shape: tuple
 ) -> npt.NDArray:
     """Check if the result array is ok to use.
 
@@ -281,10 +281,10 @@ def _check_result_array(
     allow_atomgroup=True,
 )
 def distance_array(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    configuration: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
-    result: Optional[npt.NDArray] = None,
+    reference: "npt.NDArray | AtomGroup",
+    configuration: "npt.NDArray | AtomGroup",
+    box: npt.NDArray | None = None,
+    result: npt.NDArray | None = None,
     backend: str = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
@@ -396,9 +396,9 @@ def distance_array(
 
 @check_coords("reference", reduce_result_if_single=False, allow_atomgroup=True)
 def self_distance_array(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
-    result: Optional[npt.NDArray] = None,
+    reference: "npt.NDArray | AtomGroup",
+    box: npt.NDArray | None = None,
+    result: npt.NDArray | None = None,
     backend: str = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
@@ -512,14 +512,14 @@ def self_distance_array(
     allow_atomgroup=True,
 )
 def capped_distance(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    configuration: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
+    configuration: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    method: Optional[str] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    method: str | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
@@ -654,9 +654,9 @@ def _determine_method(
     reference: npt.NDArray,
     configuration: npt.NDArray,
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    method: Optional[str] = None,
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    method: str | None = None,
 ) -> Callable:
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
@@ -673,7 +673,7 @@ def _determine_method(
     min_cutoff : float, optional
         Minimum cutoff distance between `reference` and `configuration`
         coordinates.
-    box : numpy.ndarray
+    box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
@@ -739,13 +739,13 @@ def _determine_method(
     allow_atomgroup=True,
 )
 def _bruteforce_capped(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    configuration: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
+    configuration: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -843,13 +843,13 @@ def _bruteforce_capped(
     allow_atomgroup=True,
 )
 def _pkdtree_capped(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    configuration: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
+    configuration: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -955,12 +955,12 @@ def _pkdtree_capped(
     allow_atomgroup=True,
 )
 def _nsgrid_capped(
-    reference: Union[npt.NDArray, "AtomGroup"],
-    configuration: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
+    configuration: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
 ):
     """Capped distance evaluations using a grid-based search method.
 
@@ -1073,13 +1073,13 @@ def _nsgrid_capped(
     allow_atomgroup=True,
 )
 def self_capped_distance(
-    reference: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    method: Optional[str] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    method: str | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
@@ -1210,9 +1210,9 @@ def self_capped_distance(
 def _determine_method_self(
     reference: npt.NDArray,
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    method: Optional[str] = None,
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    method: str | None = None,
 ):
     """Guesses the fastest method for capped distance calculations based on the
     size of the `reference` coordinate set and the relative size of the target
@@ -1226,7 +1226,7 @@ def _determine_method_self(
         Maximum cutoff distance between `reference` coordinates.
     min_cutoff : float, optional
         Minimum cutoff distance between `reference` coordinates.
-    box : numpy.ndarray
+    box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
@@ -1283,12 +1283,12 @@ def _determine_method_self(
     allow_atomgroup=True,
 )
 def _bruteforce_capped_self(
-    reference: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -1378,12 +1378,12 @@ def _bruteforce_capped_self(
     allow_atomgroup=True,
 )
 def _pkdtree_capped_self(
-    reference: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
-    backend: Optional[str] = "serial",
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
+    backend: str | None = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -1478,11 +1478,11 @@ def _pkdtree_capped_self(
     allow_atomgroup=True,
 )
 def _nsgrid_capped_self(
-    reference: Union[npt.NDArray, "AtomGroup"],
+    reference: "npt.NDArray | AtomGroup",
     max_cutoff: float,
-    min_cutoff: Optional[float] = None,
-    box: Optional[npt.NDArray] = None,
-    return_distances: Optional[bool] = True,
+    min_cutoff: float | None = None,
+    box: npt.NDArray | None = None,
+    return_distances: bool = True,
 ):
     """Capped distance evaluations using a grid-based search method.
 
@@ -1676,10 +1676,10 @@ def transform_StoR(coords, box, backend="serial"):
 
 @check_coords("coords1", "coords2", allow_atomgroup=True)
 def calc_bonds(
-    coords1: Union[npt.NDArray, "AtomGroup"],
-    coords2: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
-    result: Optional[npt.NDArray] = None,
+    coords1: "npt.NDArray | AtomGroup",
+    coords2: "npt.NDArray | AtomGroup",
+    box: npt.NDArray | None = None,
+    result: npt.NDArray | None = None,
     backend: str = "serial",
 ) -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
@@ -1789,11 +1789,11 @@ def calc_bonds(
 
 @check_coords("coords1", "coords2", "coords3", allow_atomgroup=True)
 def calc_angles(
-    coords1: Union[npt.NDArray, "AtomGroup"],
-    coords2: Union[npt.NDArray, "AtomGroup"],
-    coords3: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
-    result: Optional[npt.NDArray] = None,
+    coords1: "npt.NDArray | AtomGroup",
+    coords2: "npt.NDArray | AtomGroup",
+    coords3: "npt.NDArray | AtomGroup",
+    box: npt.NDArray | None = None,
+    result: npt.NDArray | None = None,
     backend: str = "serial",
 ) -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
@@ -1912,12 +1912,12 @@ def calc_angles(
 
 @check_coords("coords1", "coords2", "coords3", "coords4", allow_atomgroup=True)
 def calc_dihedrals(
-    coords1: Union[npt.NDArray, "AtomGroup"],
-    coords2: Union[npt.NDArray, "AtomGroup"],
-    coords3: Union[npt.NDArray, "AtomGroup"],
-    coords4: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
-    result: Optional[npt.NDArray] = None,
+    coords1: "npt.NDArray | AtomGroup",
+    coords2: "npt.NDArray | AtomGroup",
+    coords3: "npt.NDArray | AtomGroup",
+    coords4: "npt.NDArray | AtomGroup",
+    box: npt.NDArray | None = None,
+    result: npt.NDArray | None = None,
     backend: str = "serial",
 ) -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
@@ -2050,8 +2050,8 @@ def calc_dihedrals(
 
 @check_coords("coords", allow_atomgroup=True)
 def apply_PBC(
-    coords: Union[npt.NDArray, "AtomGroup"],
-    box: Optional[npt.NDArray] = None,
+    coords: "npt.NDArray | AtomGroup",
+    box: npt.NDArray,
     backend: str = "serial",
 ) -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
