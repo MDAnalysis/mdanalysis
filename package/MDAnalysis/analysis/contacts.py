@@ -354,6 +354,13 @@ class Contacts(AnalysisBase):
     signature ``func(r, r0, **kwargs)`` and must be provided in the keyword
     argument `method`.
 
+    .. note::
+
+       With ``compute_pairs_only=True``, the reference distances are computed
+       once per run and the same `r0` array is passed to `method` in every
+       frame. A custom `method` must therefore not modify its `r0` argument
+       in place, and changes to ``initial_contacts`` only take effect in the
+       next call to ``run()``.
 
     .. rubric:: Evaluating only the reference contacts
 
@@ -445,16 +452,15 @@ class Contacts(AnalysisBase):
             If ``True``, compute distances only for the atom pairs that are
             in contact in each reference (using
             :func:`~MDAnalysis.lib.distances.calc_bonds`) instead of the full
-            distance matrix of the two selections. This can be much faster
+            distance matrix of the two selections. This is only a performance
+            option and does not change the results. It can be much faster
             when the reference contacts are a small fraction of all possible
             pairs (e.g. all heavy atoms of a protein) but is slower when most
             pairs are in contact, when the selections are small, or when
             several references share many pairs, because shared pairs are
-            recomputed for each reference. The results are the same as with
-            the default ``False``. The reference distances passed to a custom
-            `method` are computed once per run, so a `method` must not modify
-            its `r0` argument or rely on `initial_contacts` being changed
-            during a run. The default is ``False``.
+            recomputed for each reference. A custom `method` must not modify
+            its `r0` argument (see the note on the **Contact API** above).
+            The default is ``False``.
 
             .. versionadded:: 2.12.0
         verbose : bool (optional)
