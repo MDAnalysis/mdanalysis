@@ -109,6 +109,22 @@ in the dot point above, keywords will be automatically generated for any
 suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`. A list of
 `Defined topology attributes`_ is available in the User Guide.
 
+all
+    selects all atoms in the current group; the resulting
+    :class:`AtomGroup` is unique and sorted by index. If the group
+    already corresponds to ``Universe.atoms``, it is returned unchanged.
+
+    Example:
+
+    .. code-block:: python
+
+        >>> ag = u.atoms[[5, 10, 5, 9, 8, 11]]
+        >>> ag_all = ag.select_atoms("all")
+        >>> ag.ix
+        [5, 10, 5, 9, 8, 11]
+        >>> ag_all.ix  
+        [5, 8, 9, 10, 11]
+
 protein, backbone, nucleic, nucleicbackbone
     selects all atoms that belong to a standard set of residues; a protein
     is identfied by a hard-coded set of residue names so it  may not

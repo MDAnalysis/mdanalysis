@@ -132,6 +132,8 @@ MDAnalysisTests = [
     "data/*.txt",
     "data/dssp/*.pdb.gz",
     "data/dssp/*.pdb.dssp",
+    "data/mmcif/*.gz",
+    "data/mmcif/*.cif",
 ]
 
 [tool.pytest.ini_options]
@@ -161,8 +163,6 @@ extend-exclude = '''
 (
 testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py
-| testsuite/MDAnalysisTests/coordinates/test_mmcif\.py
-| testsuite/MDAnalysisTests/topology/test_mmcif\.py
 )
 '''
 required-version = '24'

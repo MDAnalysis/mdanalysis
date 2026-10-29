@@ -68,8 +68,10 @@ from MDAnalysisTests.datafiles import (
     TPR2020B2,
     INPCRD,
     TPR_gh_5145,
+    TPR_linear_angle,
 )
 import MDAnalysis as mda
+from MDAnalysis.coordinates.TPR import TPRReader
 
 
 import pytest
@@ -80,6 +82,18 @@ from numpy.testing import assert_allclose, assert_equal
 @pytest.mark.parametrize(
     "tpr_file, exp_first_atom, exp_last_atom, exp_shape, exp_vel_first_atom, exp_vel_last_atom",
     [
+        # NOTE: expected values are expressed in nm
+        # units and converted to Angstrom in the body
+        # of the test below, before assertions
+        # see gh-5361 for CO2/linear angle:
+        (
+            TPR_linear_angle,
+            [1.250, 1.250, 1.250],
+            [1.250, 1.260, 1.136],
+            (3, 3),
+            [0, 0, 0],
+            [0, 0, 0],
+        ),
         # this case is an alanine dipeptide
         # with neural network potential active
         # and nonzero velocities
@@ -460,11 +474,15 @@ def test_basic_read_tpr(
         u = mda.Universe(tpr_file, tpr_file)
     else:
         u = mda.Universe(tpr_file)
-    assert_allclose(u.atoms.positions[0, ...], exp_first_atom)
-    assert_allclose(u.atoms.positions[-1, ...], exp_last_atom)
+    assert_allclose(u.atoms.positions[0, ...], np.asarray(exp_first_atom) * 10)
+    assert_allclose(u.atoms.positions[-1, ...], np.asarray(exp_last_atom) * 10)
     assert_equal(u.atoms.positions.shape, exp_shape)
-    assert_allclose(u.atoms.velocities[0, ...], exp_vel_first_atom)
-    assert_allclose(u.atoms.velocities[-1, ...], exp_vel_last_atom)
+    assert_allclose(
+        u.atoms.velocities[0, ...], np.asarray(exp_vel_first_atom) * 10
+    )
+    assert_allclose(
+        u.atoms.velocities[-1, ...], np.asarray(exp_vel_last_atom) * 10
+    )
     assert_equal(u.atoms.velocities.shape, exp_shape)
 
 
@@ -483,8 +501,8 @@ def test_different_versions():
     # reading topology and positions/velocities
     # for the same system with different TPR
     # file versions
-    exp_first_atom = [3.25000e-01, 1.00400e00, 1.03800e00]
-    exp_last_atom = [-2.56000e-01, 1.37300e00, 3.59800e00]
+    exp_first_atom = [3.25000, 10.0400, 10.3800]
+    exp_last_atom = [-2.56000, 13.7300, 35.9800]
     exp_shape = (2263, 3)
     exp_vel = np.zeros(3)
     u = mda.Universe(TPR2020, TPR2024_4)
@@ -494,3 +512,101 @@ def test_different_versions():
     assert_allclose(u.atoms.velocities[-1, ...], exp_vel)
     assert_equal(u.atoms.positions.shape, exp_shape)
     assert_equal(u.atoms.velocities.shape, exp_shape)
+
+
+@pytest.mark.parametrize(
+    "convert_units",
+    [True, False],
+)
+def test_unit_swapping(convert_units):
+    reader = TPRReader(TPR_xvf_2024_4, convert_units=convert_units)
+    ts = reader.ts
+    actual_positions = ts.positions
+    actual_velocities = ts.velocities
+    # nm units:
+    expected_first_pos = np.asarray([3.19900e00, 1.62970e00, 1.54480e00])
+    expected_last_pos = np.asarray([3.39350e00, 3.49420e00, 3.02400e00])
+    expected_first_vel = np.asarray([-0.20668714, 0.26678202, -0.10564042])
+    expected_last_vel = np.asarray(
+        [-3.38010e-02, -3.22064e-01, -1.9863836e-01]
+    )
+    if convert_units:
+        # convert_units=True is the MDA default for readers, so we
+        # expect the nm to get converted to A
+        factor = 10
+    else:
+        # GROMACS "native" nm units are read in
+        factor = 1
+    assert_allclose(actual_positions[0, ...], expected_first_pos * factor)
+    assert_allclose(actual_positions[-1, ...], expected_last_pos * factor)
+    assert_allclose(actual_velocities[0, ...], expected_first_vel * factor)
+    assert_allclose(actual_velocities[-1, ...], expected_last_vel * factor)
+
+
+# ----- Tests for issue #5375: box vectors from TPR files -----
+
+
+@pytest.mark.parametrize(
+    "tpr_file, expected_dimensions",
+    [
+        # adk_oplsaa.tpr: rhombic dodecahedron box
+        # expected values verified against mda.Universe(TPR, XTC).dimensions
+        # see issue #5375
+        (
+            TPR_xvf_2024_4,
+            [52.763, 52.763, 52.763, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2024_4,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR2020,
+            [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+        ),
+        (
+            TPR455Double,
+            [43.7388, 43.7388, 107.9261, 90.0, 90.0, 90.0],
+        ),
+    ],
+)
+@pytest.mark.parametrize("double_incantation", [True, False])
+def test_tpr_box_vectors(tpr_file, expected_dimensions, double_incantation):
+    """TPR coordinate reader should expose box dimensions (issue #5375).
+
+    When a TPR file is used as the sole coordinate source (either
+    ``mda.Universe(tpr)`` or ``mda.Universe(tpr, tpr)``), the resulting
+    Universe should have non-None ``dimensions`` that match the box stored
+    inside the TPR file.
+    """
+    if double_incantation:
+        u = mda.Universe(tpr_file, tpr_file)
+    else:
+        u = mda.Universe(tpr_file)
+    assert u.dimensions is not None, (
+        "u.dimensions should not be None when using a TPR file as the "
+        "coordinate source (issue #5375)"
+    )
+    assert_allclose(u.dimensions, expected_dimensions, atol=1e-3)
+
+
+def test_tpr_box_vectors_unit_conversion():
+    """Box lengths from TPR reader should respect the convert_units flag.
+
+    With ``convert_units=True`` (default) lengths are in Angstroms; with
+    ``convert_units=False`` they remain in GROMACS native nanometres.
+    Angles are dimensionless and must be identical in both cases.
+    """
+    reader_angstrom = TPRReader(TPR2024_4, convert_units=True)
+    reader_nm = TPRReader(TPR2024_4, convert_units=False)
+
+    dims_ang = reader_angstrom.ts.dimensions
+    dims_nm = reader_nm.ts.dimensions
+
+    assert dims_ang is not None
+    assert dims_nm is not None
+
+    # lengths scale by factor 10 (nm -> Å)
+    assert_allclose(dims_ang[:3], dims_nm[:3] * 10, rtol=1e-5)
+    # angles are unchanged
+    assert_allclose(dims_ang[3:], dims_nm[3:], rtol=1e-5)

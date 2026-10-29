@@ -19,6 +19,7 @@ LLMs or other AI-powered tools (beyond simple IDE use cases) were used in this c
  - [ ] Documentation updated/added?
  - [ ] `package/CHANGELOG` file updated?
  - [ ] Is your name in `package/AUTHORS`? (If it is not, add it!)
+ - [ ] I have read and understand the current [AI Policy](https://github.com/MDAnalysis/mdanalysis/blob/develop/AI_POLICY.md)
  - [ ] LLM/AI disclosure was updated.
 
 ## Developers Certificate of Origin

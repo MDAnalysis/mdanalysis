@@ -53,6 +53,7 @@ Classes
 
 from . import base
 from ..lib import util
+from ..lib.mdamath import triclinic_box
 from .timestep import Timestep
 import MDAnalysis.topology.tpr.utils as tpr_utils
 import MDAnalysis.topology.tpr.setting as S
@@ -73,6 +74,8 @@ class TPRReader(base.SingleFrameReaderBase):
     """Class supporting read in of positions and velocities from GROMACS TPR files.
 
     .. versionadded:: 2.10.0
+    .. versionchanged:: 2.11.0
+       Read unit cell dimensions from TPR file.
     """
     format = "TPR"
     units = {"length": "nm", "velocity": "nm/ps"}
@@ -110,7 +113,10 @@ class TPRReader(base.SingleFrameReaderBase):
 
         state_ngtc = th.ngtc  # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            tpr_utils.extract_box_info(data, th.fver)
+            box_info = tpr_utils.extract_box_info(data, th.fver)
+            ts.dimensions = triclinic_box(*box_info.size)
+            if self.convert_units and ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
 
         if state_ngtc > 0:
             if th.fver < 69:  # redundancy due to  different versions
@@ -127,8 +133,12 @@ class TPRReader(base.SingleFrameReaderBase):
             self.ts._pos = np.asarray(
                 tpr_utils.ndo_rvec(data, th.natoms), dtype=np.float32
             )
+            if self.convert_units:
+                self.convert_pos_from_native(self.ts._pos)
         if th.bV:
             self.ts.velocities = np.asarray(
                 tpr_utils.ndo_rvec(data, th.natoms), dtype=np.float32
             )
+            if self.convert_units:
+                self.convert_velocities_from_native(self.ts.velocities)
             self.ts.has_velocities = True

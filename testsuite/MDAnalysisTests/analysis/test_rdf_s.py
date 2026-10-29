@@ -45,7 +45,7 @@ def sels(u):
     )
     s3 = u.select_atoms("name ZND and (resid 291 or resid 292)")
     s4 = u.select_atoms("(name OD1 or name OD2) and sphzone 5.0 (resid 291)")
-    ags = [[s1, s2], [s3, s4]]
+    ags = [[s1, s2], [s3, s4], [s4, s3]]
     return ags
 
 
@@ -70,19 +70,15 @@ def test_range(u, sels, client_InterRDF_s):
 
 
 def test_count_size(rdf):
-    # ZND vs OD1 & OD2
-    # should see 2 elements in rdf.results.count
-    # 1 element in rdf.results.count[0]
-    # 2 elements in rdf.results.count[0][0]
-    # 2 elements in rdf.results.count[1]
-    # 2 elements in rdf.results.count[1][0]
-    # 2 elements in rdf.results.count[1][1]
-    assert len(rdf.results.count) == 2
+    assert len(rdf.results.count) == 3
     assert len(rdf.results.count[0]) == 1
     assert len(rdf.results.count[0][0]) == 2
     assert len(rdf.results.count[1]) == 2
     assert len(rdf.results.count[1][0]) == 2
     assert len(rdf.results.count[1][1]) == 2
+    assert len(rdf.results.count[2]) == 2
+    assert len(rdf.results.count[2][0]) == 2
+    assert len(rdf.results.count[2][1]) == 2
 
 
 def test_count(rdf):
@@ -120,6 +116,13 @@ def test_density(u, sels, density, value, client_InterRDF_s):
     kwargs = {"density": density} if density is not None else {}
     rdf = InterRDF_s(u, sels, **kwargs).run(**client_InterRDF_s)
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    expected_box_vol = sum(ts.volume for ts in u.trajectory) / len(
+        u.trajectory
+    )
+    assert_allclose(rdf.results.box_volume, expected_box_vol)
+    assert_allclose(rdf.results.normalization_density, 1.0 / expected_box_vol)
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
@@ -198,3 +201,28 @@ def test_nested_array_sum():
 
     assert np.array_equal(result[0], arr_1 + arr_3)
     assert np.array_equal(result[1], arr_2 + arr_4)
+
+
+def test_density_zero_box(client_InterRDF_s):
+    u = mda.Universe(GRO_MEMPROT, in_memory=True)
+    trajectory_data = np.tile(u.atoms.positions, (2, 1, 1))
+    dimensions_data = np.zeros((2, 6))
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
+    s1 = u.select_atoms("name ZND and resid 289")
+    s2 = u.select_atoms("name OD1 and resid 51")
+    ags = [[s1, s2]]
+    rdf = InterRDF_s(u, ags, norm="density").run(**client_InterRDF_s)
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    assert rdf.results.box_volume is None
+    assert rdf.results.normalization_density is None
+
+
+@pytest.mark.parametrize("n_pairs", [1, 2, 3])
+def test_n_pairs(u, sels, n_pairs, client_InterRDF_s):
+    ags = sels[:n_pairs]
+    ref = InterRDF_s(u, ags).run()
+    rdf = InterRDF_s(u, ags).run(**client_InterRDF_s)
+    assert len(rdf.results.count) == n_pairs
+    for a, b in zip(ref.results.count, rdf.results.count):
+        assert_almost_equal(a, b)

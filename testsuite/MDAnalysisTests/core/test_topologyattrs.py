@@ -417,16 +417,21 @@ class TestAttr(object):
         return universe.atoms  # prototypical AtomGroup
 
     def test_principal_axes(self, ag):
-        assert_almost_equal(
-            ag.principal_axes(),
-            np.array(
-                [
-                    [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
-                    [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                    [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
-                ]
-            ),
+        ref = np.array(
+            [
+                [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
+                [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
+                [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+            ]
         )
+        result = ag.principal_axes()
+        # See PR #5404
+        # The direction (sign) of the principal axes is dependent on the
+        # specific algorithm used, but the direction itself is not physically
+        # relevant, so we get the signs to flip any anti-parallel vectors before
+        # comparing the two results arrays
+        signs = np.sign(np.einsum("ij,ij->i", result, ref))
+        assert_almost_equal(result * signs[:, np.newaxis], ref)
 
     @pytest.fixture()
     def universe_pa(self):
@@ -706,6 +711,28 @@ class TestStringInterning:
 
         assert len(ag2) == 5
         assert (ag2.ix == ag.ix).all()
+
+    def test_from_lookup(self):
+        # sorted lookup order (as from np.unique) differs from the first-seen
+        # order of __init__, which interning must not depend on
+        values = ["CA", "N", "CA", "O", "N"]
+        lookup, nmidx = np.unique(values, return_inverse=True)
+        attr = tpattrs.Atomnames._from_lookup(nmidx, lookup)
+        ref = tpattrs.Atomnames(values)
+
+        assert_equal(attr.values, ref.values)
+        assert attr.values.dtype == ref.values.dtype
+        assert all(
+            attr.name_lookup[i] == nm for nm, i in attr.namedict.items()
+        )
+
+        u = mda.Universe.empty(n_atoms=5)
+        u.add_TopologyAttr(attr)
+        assert_equal(u.select_atoms("name N").ix, [1, 4])
+
+        u.atoms[[0, 1]].names = ["N", "CB"]
+        assert_equal(u.atoms.names, ["N", "CB", "CA", "O", "N"])
+        assert_equal(u.select_atoms("name N").ix, [0, 4])
 
 
 class Testcenter_of_charge:

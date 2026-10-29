@@ -427,7 +427,12 @@ class EinsteinMSD(AnalysisBase):
         ]
 
     def _conclude(self):
-        if self.non_linear:
+        delta_time = np.diff(self.times)
+
+        if self.non_linear or (
+            len(delta_time) > 1
+            and not (np.allclose(delta_time, delta_time[0]))
+        ):
             self._conclude_non_linear()
         else:
             if self.fft:
