@@ -129,20 +129,20 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 .. _GitHub Discussions: https://github.com/MDAnalysis/mdanalysis/discussions
 
 """
-import scipy.io.netcdf
 import numpy as np
-import warnings
-import errno
-import logging
 from math import isclose
+from scipy.io import netcdf_file
 
 import MDAnalysis
 from .timestep import Timestep
 from . import base
 from ..lib import util
 from ..lib.util import store_init_arguments
-logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
+import warnings
+import errno
+import logging
+logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 try:
     import netCDF4
@@ -355,7 +355,232 @@ class TRJReader(base.ReaderBase):
         self.trjfile = None
 
 
-class NCDFReader(base.ReaderBase):
+class NCDFMixin():
+    def _check_conventions(self, n_atoms=None):
+        convention = 'AMBERRESTART' if self.__class__.__name__ == 'NCRSTReader' else 'AMBER'
+        file_format = 'restart file' if self.__class__.__name__ == 'NCRSTReader' else 'trajectory'
+
+        # AMBER NetCDF files should always have a convention
+        try:
+            conventions = self.trjfile.Conventions
+            check = [conventions.decode('utf-8').split(','),
+                     conventions.decode('utf-8').split()]
+
+            if not (convention in check[0] or convention in check[1]):
+                errmsg = ("NCDF {0} {1} does not conform to AMBER "
+                          "specifications, "
+                          "http://ambermd.org/netcdf/nctraj.xhtml "
+                          "({2} must be one of the token in attribute "
+                          "Conventions)".format(file_format, self.filename, convention))
+                logger.fatal(errmsg)
+                raise TypeError(errmsg)
+        except AttributeError:
+            errmsg = "NCDF {0} {1} is missing Conventions".format(
+                      file_format, self.filename)
+            logger.fatal(errmsg)
+            raise ValueError(errmsg) from None
+
+        # AMBER NetCDF files should also have a ConventionVersion
+        try:
+            ConventionVersion = self.trjfile.ConventionVersion.decode('utf-8')
+            if not ConventionVersion == self.version:
+                wmsg = ("NCDF {0} format is {1!s} but the reader "
+                        "implements format {2!s}".format(
+                         file_format, ConventionVersion, self.version))
+                warnings.warn(wmsg)
+                logger.warning(wmsg)
+        except AttributeError:
+            errmsg = "NCDF {0} {1} is missing ConventionVersion".format(
+                      file_format, self.filename)
+            raise ValueError(errmsg) from None
+
+        # The AMBER NetCDF standard enforces 64 bit offsets
+        if not self.trjfile.version_byte == 2:
+            errmsg = ("NCDF {0} {1} does not conform to AMBER "
+                      "specifications, as detailed in "
+                      "https://ambermd.org/netcdf/nctraj.xhtml "
+                      "(NetCDF file does not use 64 bit offsets "
+                      "[version_byte = 2])".format(file_format, self.filename))
+            logger.fatal(errmsg)
+            raise TypeError(errmsg)
+
+        # The AMBER NetCDF standard enforces 3D coordinates
+        try:
+            if not self.trjfile.dimensions['spatial'] == 3:
+                errmsg = "Incorrect spatial value for NCDF trajectory file"
+                raise TypeError(errmsg)
+        except KeyError:
+            errmsg = "NCDF {0} does not contain spatial dimension".format(file_format)
+            raise ValueError(errmsg) from None
+
+        # AMBER NetCDF specs require program and programVersion. Warn users
+        # if those attributes do not exist
+        if not (hasattr(self.trjfile, 'program') and
+                hasattr(self.trjfile, 'programVersion')):
+            wmsg = ("The NCDF {0} {1} may not fully adhere to AMBER "
+                    "standards as either the `program` or `programVersion` "
+                    "attributes are missing".format(file_format, self.filename))
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
+
+        try:
+            self.n_atoms = self.trjfile.dimensions['atom']
+            if n_atoms is not None and n_atoms != self.n_atoms:
+                errmsg = ("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
+                          "Note: n_atoms can be None and then the ncdf value "
+                          "is used!".format(n_atoms, self.n_atoms))
+                raise ValueError(errmsg)
+        except KeyError:
+            errmsg = ("NCDF {0} {1} does not contain atom "
+                      "information".format(file_format, self.filename))
+            raise ValueError(errmsg) from None
+
+        try:
+            self.remarks = self.trjfile.title
+        except AttributeError:
+            self.remarks = ""
+        # other metadata (*= requd):
+        # - application           AMBER
+        #
+
+        # checks for not-implemented features (other units would need to be
+        # hacked into MDAnalysis.units)
+        try:
+            self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+            self.has_time = True
+        except KeyError:
+            self.has_time = False
+            wmsg = ("NCDF {0} {1} does not contain `time` information;"
+                    " `time` will be set as an increasing index".format(
+                     file_format, self.filename))
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
+
+        # Check for scale_factor attributes for all data variables and
+        # store this to multiply through later (Issue #2323)
+        self.scale_factors = {'time': None,
+                              'cell_lengths': None,
+                              'cell_angles': None,
+                              'coordinates': None,
+                              'velocities': None,
+                              'forces': None}
+
+        for variable in self.trjfile.variables:
+            if hasattr(self.trjfile.variables[variable], 'scale_factor'):
+                if variable in self.scale_factors:
+                    scale_factor = self.trjfile.variables[variable].scale_factor
+                    if not isinstance(scale_factor, (float, np.floating)):
+                        raise TypeError(f"{scale_factor} is not a float")
+                    self.scale_factors[variable] = scale_factor
+                else:
+                    errmsg = ("scale_factors for variable {0} are "
+                              "not implemented".format(variable))
+                    raise NotImplementedError(errmsg)
+
+        # Default to length units of Angstrom
+        try:
+            self._verify_units(self.trjfile.variables['coordinates'].units,
+                               'angstrom')
+        except KeyError:
+            # Technically coordinate information is not required, however
+            # the lack of it in a restart file is highly unlikely
+            errmsg = ("NetCDF restart file {0} is missing coordinate "
+                      "information ".format(self.filename))
+            logger.fatal(errmsg)
+            raise ValueError(errmsg)
+
+        self.has_velocities = 'velocities' in self.trjfile.variables
+        if self.has_velocities:
+            self._verify_units(self.trjfile.variables['velocities'].units,
+                               'angstrom/picosecond')
+
+        self.has_forces = 'forces' in self.trjfile.variables
+        if self.has_forces:
+            self._verify_units(self.trjfile.variables['forces'].units,
+                               'kilocalorie/mole/angstrom')
+
+        self.periodic = 'cell_lengths' in self.trjfile.variables
+        if self.periodic:
+            self._verify_units(self.trjfile.variables['cell_lengths'].units,
+                               'angstrom')
+            # As of v1.0.0 only `degree` is accepted as a unit
+            cell_angle_units = self.trjfile.variables['cell_angles'].units
+            self._verify_units(cell_angle_units, 'degree')
+
+        self._current_frame = 0
+
+        self.ts = self._Timestep(self.n_atoms,
+                                 velocities=self.has_velocities,
+                                 forces=self.has_forces,
+                                 reader=self,  # for dt
+                                 **self._ts_kwargs)
+
+    def _read_values(self, frame):
+        ts = self.ts
+
+        if self.trjfile is None:
+            raise IOError("Trajectory is closed")
+        if (not isinstance(frame, tuple)) and (np.dtype(type(frame)) != np.dtype(int)):
+            # convention... for netcdf could also be a slice
+            raise TypeError("frame must be a positive integer or zero")
+        if (not isinstance(frame, tuple)) and (frame >= self.n_frames or frame < 0):
+            raise IndexError("frame index must be 0 <= frame < {0}".format(
+                self.n_frames))
+        # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
+
+        ts._pos[:] = self._get_var_and_scale('coordinates', frame)
+        if self.has_time:
+            time = self._get_var_and_scale('time', frame)
+            ts.time = time[0] if isinstance(time, (list, np.ndarray)) else time
+        if self.has_velocities:
+            ts._velocities[:] = self._get_var_and_scale('velocities', frame)
+        if self.has_forces:
+            ts._forces[:] = self._get_var_and_scale('forces', frame)
+        if self.periodic:
+            unitcell = np.zeros(6)
+            unitcell[:3] = self._get_var_and_scale('cell_lengths', frame)
+            unitcell[3:] = self._get_var_and_scale('cell_angles', frame)
+            ts.dimensions = unitcell
+        if self.convert_units:
+            self.convert_pos_from_native(ts._pos)  # in-place !
+            self.convert_time_from_native(ts.time)  # in-place !
+            if self.has_velocities:
+                self.convert_velocities_from_native(ts._velocities,
+                                                    inplace=True)
+            if self.has_forces:
+                self.convert_forces_from_native(ts._forces, inplace=True)
+            if self.periodic:
+                # in-place ! (only lengths)
+                self.convert_pos_from_native(ts.dimensions[:3])
+
+
+    @staticmethod
+    def _verify_units(eval_unit, expected_units):
+        if eval_unit.decode('utf-8') != expected_units:
+            errmsg = ("NETCDFReader currently assumes that the trajectory "
+                      "was written in units of {0} instead of {1}".format(
+                       eval_unit.decode('utf-8'), expected_units))
+            raise NotImplementedError(errmsg)
+
+
+    def _get_var_and_scale(self, variable, frame):
+        """Helper function to get variable at given frame from NETCDF file and
+        scale if necessary.
+
+        Note
+        ----
+        If scale_factor is 1.0 within numerical precision then we don't apply
+        the scaling.
+        """
+        scale_factor = self.scale_factors[variable]
+        if scale_factor is None or isclose(scale_factor, 1):
+            return self.trjfile.variables[variable][frame]
+        else:
+            return self.trjfile.variables[variable][frame] * scale_factor
+
+
+
+class NCDFReader(base.ReaderBase, NCDFMixin):
     """Reader for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
@@ -447,78 +672,7 @@ class NCDFReader(base.ReaderBase):
                                      mmap=self._mmap,
                                      maskandscale=False)
 
-        # AMBER NetCDF files should always have a convention
-        try:
-            conventions = self.trjfile.Conventions
-            if not ('AMBER' in conventions.decode('utf-8').split(',') or
-                    'AMBER' in conventions.decode('utf-8').split()):
-                errmsg = ("NCDF trajectory {0} does not conform to AMBER "
-                          "specifications, "
-                          "http://ambermd.org/netcdf/nctraj.xhtml "
-                          "('AMBER' must be one of the token in attribute "
-                          "Conventions)".format(self.filename))
-                logger.fatal(errmsg)
-                raise TypeError(errmsg)
-        except AttributeError:
-            errmsg = "NCDF trajectory {0} is missing Conventions".format(
-                      self.filename)
-            logger.fatal(errmsg)
-            raise ValueError(errmsg) from None
-
-        # AMBER NetCDF files should also have a ConventionVersion
-        try:
-            ConventionVersion = self.trjfile.ConventionVersion.decode('utf-8')
-            if not ConventionVersion == self.version:
-                wmsg = ("NCDF trajectory format is {0!s} but the reader "
-                        "implements format {1!s}".format(
-                         ConventionVersion, self.version))
-                warnings.warn(wmsg)
-                logger.warning(wmsg)
-        except AttributeError:
-            errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
-                      self.filename)
-            raise ValueError(errmsg) from None
-
-        # The AMBER NetCDF standard enforces 64 bit offsets
-        if not self.trjfile.version_byte == 2:
-            errmsg = ("NCDF trajectory {0} does not conform to AMBER "
-                      "specifications, as detailed in "
-                      "https://ambermd.org/netcdf/nctraj.xhtml "
-                      "(NetCDF file does not use 64 bit offsets "
-                      "[version_byte = 2])".format(self.filename))
-            logger.fatal(errmsg)
-            raise TypeError(errmsg)
-
-        # The AMBER NetCDF standard enforces 3D coordinates
-        try:
-            if not self.trjfile.dimensions['spatial'] == 3:
-                errmsg = "Incorrect spatial value for NCDF trajectory file"
-                raise TypeError(errmsg)
-        except KeyError:
-            errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise ValueError(errmsg) from None
-
-        # AMBER NetCDF specs require program and programVersion. Warn users
-        # if those attributes do not exist
-        if not (hasattr(self.trjfile, 'program') and
-                hasattr(self.trjfile, 'programVersion')):
-            wmsg = ("NCDF trajectory {0} may not fully adhere to AMBER "
-                    "standards as either the `program` or `programVersion` "
-                    "attributes are missing".format(self.filename))
-            warnings.warn(wmsg)
-            logger.warning(wmsg)
-
-        try:
-            self.n_atoms = self.trjfile.dimensions['atom']
-            if n_atoms is not None and n_atoms != self.n_atoms:
-                errmsg = ("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
-                          "Note: n_atoms can be None and then the ncdf value "
-                          "is used!".format(n_atoms, self.n_atoms))
-                raise ValueError(errmsg)
-        except KeyError:
-            errmsg = ("NCDF trajectory {0} does not contain atom "
-                      "information".format(self.filename))
-            raise ValueError(errmsg) from None
+        self._check_conventions(n_atoms)
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -534,145 +688,20 @@ class NCDFReader(base.ReaderBase):
                       f"frame information")
             raise ValueError(errmsg) from None
 
-        try:
-            self.remarks = self.trjfile.title
-        except AttributeError:
-            self.remarks = ""
-        # other metadata (*= requd):
-        # - application           AMBER
-        #
-
-        # checks for not-implemented features (other units would need to be
-        # hacked into MDAnalysis.units)
-        try:
-            self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
-            self.has_time = True
-        except KeyError:
-            self.has_time = False
-            wmsg = ("NCDF trajectory does not contain `time` information;"
-                    " `time` will be set as an increasing index")  
-            warnings.warn(wmsg)
-            logger.warning(wmsg)
-
-
-        self._verify_units(self.trjfile.variables['coordinates'].units,
-                           'angstrom')
-
-        # Check for scale_factor attributes for all data variables and
-        # store this to multiply through later (Issue #2323)
-        self.scale_factors = {'time': None,
-                              'cell_lengths': None,
-                              'cell_angles': None,
-                              'coordinates': None,
-                              'velocities': None,
-                              'forces': None}
-
-        for variable in self.trjfile.variables:
-            if hasattr(self.trjfile.variables[variable], 'scale_factor'):
-                if variable in self.scale_factors:
-                    scale_factor = self.trjfile.variables[variable].scale_factor
-                    if not isinstance(scale_factor, (float, np.floating)):
-                        raise TypeError(f"{scale_factor} is not a float")
-                    self.scale_factors[variable] = scale_factor
-                else:
-                    errmsg = ("scale_factors for variable {0} are "
-                              "not implemented".format(variable))
-                    raise NotImplementedError(errmsg)
-
-        self.has_velocities = 'velocities' in self.trjfile.variables
-        if self.has_velocities:
-            self._verify_units(self.trjfile.variables['velocities'].units,
-                               'angstrom/picosecond')
-
-        self.has_forces = 'forces' in self.trjfile.variables
-        if self.has_forces:
-            self._verify_units(self.trjfile.variables['forces'].units,
-                               'kilocalorie/mole/angstrom')
-
-        self.periodic = 'cell_lengths' in self.trjfile.variables
-        if self.periodic:
-            self._verify_units(self.trjfile.variables['cell_lengths'].units,
-                               'angstrom')
-            # As of v1.0.0 only `degree` is accepted as a unit
-            cell_angle_units = self.trjfile.variables['cell_angles'].units
-            self._verify_units(cell_angle_units, 'degree')
-
-        self._current_frame = 0
-
-        self.ts = self._Timestep(self.n_atoms,
-                                 velocities=self.has_velocities,
-                                 forces=self.has_forces,
-                                 reader=self,  # for dt
-                                 **self._ts_kwargs)
-
         # load first data frame
         self._read_frame(0)
 
     @staticmethod
-    def _verify_units(eval_unit, expected_units):
-        if eval_unit.decode('utf-8') != expected_units:
-            errmsg = ("NETCDFReader currently assumes that the trajectory "
-                      "was written in units of {0} instead of {1}".format(
-                       eval_unit.decode('utf-8'), expected_units))
-            raise NotImplementedError(errmsg)
-
-    @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with scipy.io.netcdf_file(filename, mmap=None) as f:
+        with netcdf_file(filename, mmap=None) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms
-
-    def _get_var_and_scale(self, variable, frame):
-        """Helper function to get variable at given frame from NETCDF file and
-        scale if necessary.
-
-        Note
-        ----
-        If scale_factor is 1.0 within numerical precision then we don't apply
-        the scaling.
-        """
-        scale_factor = self.scale_factors[variable]
-        if scale_factor is None or isclose(scale_factor, 1):
-            return self.trjfile.variables[variable][frame]
-        else:
-            return self.trjfile.variables[variable][frame] * scale_factor
 
     def _read_frame(self, frame):
         ts = self.ts
 
-        if self.trjfile is None:
-            raise IOError("Trajectory is closed")
-        if np.dtype(type(frame)) != np.dtype(int):
-            # convention... for netcdf could also be a slice
-            raise TypeError("frame must be a positive integer or zero")
-        if frame >= self.n_frames or frame < 0:
-            raise IndexError("frame index must be 0 <= frame < {0}".format(
-                self.n_frames))
-        # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
-        ts._pos[:] = self._get_var_and_scale('coordinates', frame)
-        if self.has_time:
-            ts.time = self._get_var_and_scale('time', frame)
-        if self.has_velocities:
-            ts._velocities[:] = self._get_var_and_scale('velocities', frame)
-        if self.has_forces:
-            ts._forces[:] = self._get_var_and_scale('forces', frame)
-        if self.periodic:
-            unitcell = np.zeros(6)
-            unitcell[:3] = self._get_var_and_scale('cell_lengths', frame)
-            unitcell[3:] = self._get_var_and_scale('cell_angles', frame)
-            ts.dimensions = unitcell
-        if self.convert_units:
-            self.convert_pos_from_native(ts._pos)  # in-place !
-            self.convert_time_from_native(
-                ts.time)  # in-place ! (hope this works...)
-            if self.has_velocities:
-                self.convert_velocities_from_native(ts._velocities,
-                                                    inplace=True)
-            if self.has_forces:
-                self.convert_forces_from_native(ts._forces, inplace=True)
-            if self.periodic:
-                # in-place ! (only lengths)
-                self.convert_pos_from_native(ts.dimensions[:3])
+        self._read_values(frame)
+
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
         return ts
@@ -960,9 +989,9 @@ class NCDFWriter(base.WriterBase):
             ncfile = netCDF4.Dataset(self.filename, 'w',
                                      format='NETCDF3_64BIT')
         else:
-            ncfile = scipy.io.netcdf_file(self.filename,
-                                          mode='w', version=2,
-                                          maskandscale=False)
+            ncfile = netcdf_file(self.filename,
+                                 mode='w', version=2,
+                                 maskandscale=False)
             wmsg = ("Could not find netCDF4 module. Falling back to MUCH "
                     "slower scipy.io.netcdf implementation for writing.")
             logger.warning(wmsg)
@@ -1181,12 +1210,15 @@ class NCDFWriter(base.WriterBase):
         self.curr_frame += 1
 
     def close(self):
-        if self.trjfile is not None:
-            self.trjfile.close()
-            self.trjfile = None
+        try:
+            if self.trjfile is not None:
+                self.trjfile.close()
+                self.trjfile = None
+        except AttributeError:
+            pass
 
 
-class NCDFPicklable(scipy.io.netcdf_file):
+class NCDFPicklable(netcdf_file):
     """NetCDF file object (read-only) that can be pickled.
 
     This class provides a file-like object (as returned by

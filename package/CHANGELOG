@@ -21,6 +21,8 @@ The rules for this file:
 Fixes
 
 Enhancements
+ * Allow NCDF reader to read Amber Restart Files with extension `.ncrst`
+   (Issue #5030, PR #5031)
  * InterRDF and InterRDF_s now expose computed average box volume and densities
    as results.box_volume, results.normalization_density, and (for InterRDF)
    results.density_1 and results.density_2 when norm is "rdf" or "density"
