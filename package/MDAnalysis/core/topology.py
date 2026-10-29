@@ -59,7 +59,7 @@ Helper functions
 import contextlib
 
 import numpy as np
-import typing
+import collections.abc
 
 from .topologyattrs import Atomindices, Resindices, Segindices
 from ..exceptions import NoDataError
@@ -560,7 +560,7 @@ class Topology(object):
         return filter(
             lambda x: (
                 x.is_guessed
-                if (not isinstance(x.is_guessed, typing.Container))
+                if (not isinstance(x.is_guessed, collections.abc.Container))
                 else True in x.is_guessed
             ),
             self.attrs,
@@ -572,7 +572,7 @@ class Topology(object):
         return filter(
             lambda x: (
                 not x.is_guessed
-                if (not isinstance(x.is_guessed, typing.Container))
+                if (not isinstance(x.is_guessed, collections.abc.Container))
                 else False in x.is_guessed
             ),
             self.attrs,

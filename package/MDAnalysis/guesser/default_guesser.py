@@ -136,7 +136,7 @@ class DefaultGuesser(GuesserBase):
     ----------
     universe : Universe
         The Universe to apply the guesser on
-    box : np.ndarray, optional
+    box : numpy.ndarray, optional
         The box of the Universe. This is used for bond guessing.
     vdwradii : dict, optional
         Dict relating atom types: vdw radii. This is used for bond guessing
@@ -202,14 +202,14 @@ class DefaultGuesser(GuesserBase):
 
         Parameters
         ----------
-        atom_types : Optional[np.ndarray]
+        atom_types : numpy.ndarray, optional
           Atom types/elements to guess masses from
-        indices_to_guess : Optional[np.ndarray]
+        indices_to_guess : numpy.ndarray, optional
           Mask array for partially guess masses for certain atoms
 
         Returns
         -------
-        atom_masses : np.ndarray dtype float64
+        atom_masses : numpy.ndarray dtype float64
 
         Raises
         ------
@@ -286,7 +286,7 @@ class DefaultGuesser(GuesserBase):
 
         Returns
         -------
-        atom_types : np.ndarray dtype object
+        atom_types : numpy.ndarray dtype object
 
         Raises
         ------
@@ -385,7 +385,7 @@ class DefaultGuesser(GuesserBase):
         ----------
         atoms: AtomGroup
             atoms for which bonds should be guessed
-        coords: np.ndarray, optional
+        coords: numpy.ndarray, optional
             coordinates of the atoms. If not provided, the coordinates
             of the ``atoms`` in the universe are used.
 

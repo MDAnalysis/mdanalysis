@@ -1109,7 +1109,7 @@ class Universe(object):
         topologyattr: TopologyAttr or string
           Either a MDAnalysis TopologyAttr object or the name of a possible
           topology attribute.
-        values: np.ndarray, optional
+        values: numpy.ndarray, optional
           If initiating an attribute from a string, the initial values to
           use.  If not supplied, the new TopologyAttribute will have empty
           or zero values.
@@ -1841,7 +1841,7 @@ class Universe(object):
         ----------
         context: str or :mod:`Guesser<MDAanalysis.guesser>` class
             For calling a matching guesser class for this specific context
-        to_guess: Optional[list[str]]
+        to_guess: list of str, optional
             TopologyAttrs to be guessed. These TopologyAttrs will be wholly
             guessed if they don't exist in the Universe. If they already exist in
             the Universe, only empty or missing values will be guessed.
@@ -1853,7 +1853,7 @@ class Universe(object):
                 by default** and it will be up to the user to request guessing
                 using ``to_guess`` and ``force_guess``.
 
-        force_guess: Optional[list[str]]
+        force_guess: list of str, optional
             TopologyAttrs in this list will be force guessed. If the
             TopologyAttr does not already exist in the Universe, this has no
             effect. If the TopologyAttr does already exist, all values will

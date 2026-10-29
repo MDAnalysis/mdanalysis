@@ -28,12 +28,13 @@ Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
+from typing import Literal
+
 import numpy as np
 from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core.groups import AtomGroup, SegmentGroup, ResidueGroup
 import numpy.typing as npt
-from typing import Optional, Union, List
 
 
 class AtomNeighborSearch(object):
@@ -45,7 +46,7 @@ class AtomNeighborSearch(object):
     """
 
     def __init__(
-        self, atom_group: AtomGroup, box: Optional[npt.ArrayLike] = None
+        self, atom_group: AtomGroup, box: npt.ArrayLike | None = None
     ) -> None:
         """
 
@@ -64,8 +65,11 @@ class AtomNeighborSearch(object):
         self._box = box
 
     def search(
-        self, atoms: AtomGroup, radius: float, level: str = "A"
-    ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
+        self,
+        atoms: AtomGroup,
+        radius: float,
+        level: Literal["A", "R", "S"] = "A",
+    ) -> AtomGroup | ResidueGroup | SegmentGroup | None:
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
@@ -76,7 +80,7 @@ class AtomNeighborSearch(object):
           AtomGroup object
         radius : float
           Radius for search in Angstrom.
-        level : str
+        level : {'A', 'R', 'S'}, optional
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
 
@@ -115,8 +119,8 @@ class AtomNeighborSearch(object):
         return self._index2level(unique_idx, level)
 
     def _index2level(
-        self, indices: List[int], level: str
-    ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
+        self, indices: list[int], level: Literal["A", "R", "S"]
+    ) -> AtomGroup | ResidueGroup | SegmentGroup:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 
@@ -124,7 +128,7 @@ class AtomNeighborSearch(object):
         ----------
         indices
            list of atom indices
-        level : str
+        level : {'A', 'R', 'S'}
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """

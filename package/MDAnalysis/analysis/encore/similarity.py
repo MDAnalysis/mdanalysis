@@ -266,17 +266,17 @@ def harmonic_ensemble_similarity(sigma1, sigma2, x1, x2):
     Parameters
     ----------
 
-    sigma1 : numpy.array
+    sigma1 : numpy.ndarray
         Covariance matrix for the first ensemble.
 
-    sigma2 : numpy.array
+    sigma2 : numpy.ndarray
         Covariance matrix for the second ensemble.
 
-    x1: numpy.array
+    x1: numpy.ndarray
         Mean for the estimated normal multivariate distribution of the first
         ensemble.
 
-    x2: numpy.array
+    x2: numpy.ndarray
         Mean for the estimated normal multivariate distribution of the second
         ensemble.
 
@@ -448,10 +448,10 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles, nsamples):
     Parameters
     ----------
 
-    embedded_space : numpy.array
+    embedded_space : numpy.ndarray
         Array containing the coordinates of the embedded space
 
-    ensemble_assignment : numpy.array
+    ensemble_assignment : numpy.ndarray
         Array containing one int per ensemble conformation. These allow to
         distinguish, in the complete embedded space, which conformations
         belong to each ensemble. For instance if ensemble_assignment
@@ -471,11 +471,11 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles, nsamples):
     kdes : scipy.stats.gaussian_kde
         KDEs calculated from ensembles
 
-    resamples : list of numpy.array
+    resamples : list of numpy.ndarray
         For each KDE, draw samples according to the probability distribution
         of the KDE mixture model
 
-    embedded_ensembles : list of numpy.array
+    embedded_ensembles : list of numpy.ndarray
         List of numpy.array containing, each one, the elements of the
         embedded space belonging to a certain ensemble
     """
@@ -545,14 +545,14 @@ def dimred_ensemble_similarity(
     kde1 : scipy.stats.gaussian_kde
         Kernel density estimation for ensemble 1
 
-    resamples1 : numpy.array
+    resamples1 : numpy.ndarray
         Samples drawn according do kde1. Will be used as samples to
         calculate the expected values according to 'P' as detailed before.
 
     kde2 : scipy.stats.gaussian_kde
             Kernel density estimation for ensemble 2
 
-    resamples2 : numpy.array
+    resamples2 : numpy.ndarray
         Samples drawn according do kde2. Will be used as sample to
         calculate the expected values according to 'Q' as detailed before.
 
@@ -624,10 +624,10 @@ def cumulative_gen_kde_pdfs(
     Parameters
     ----------
 
-    embedded_space : numpy.array
+    embedded_space : numpy.ndarray
             Array containing the coordinates of the embedded space
 
-    ensemble_assignment : numpy.array
+    ensemble_assignment : numpy.ndarray
             array containing one int per ensemble conformation. These allow
             to distinguish, in the complete embedded space, which
             conformations belong to each ensemble. For instance if
@@ -656,11 +656,11 @@ def cumulative_gen_kde_pdfs(
     kdes : scipy.stats.gaussian_kde
             KDEs calculated from ensembles
 
-    resamples : list of numpy.array
+    resamples : list of numpy.ndarray
             For each KDE, draw samples according to the probability
             distribution of the kde mixture model
 
-    embedded_ensembles : list of numpy.array
+    embedded_ensembles : list of numpy.ndarray
             List of numpy.array containing, each one, the elements of the
             embedded space belonging to a certain ensemble
 
@@ -827,7 +827,7 @@ def hes(
 
     Returns
     -------
-    hes, details : numpy.array, dictionary
+    hes, details : numpy.ndarray, dictionary
         Harmonic similarity measurements between each pair of ensembles,
         and dict containing mean and covariance matrix for each ensemble
 
@@ -1099,7 +1099,7 @@ def ces(
     Returns
     -------
 
-    ces, details : numpy.array, numpy.array
+    ces, details : numpy.ndarray, numpy.ndarray
 
         ces contains the similarity values, arranged in a numpy.array.
         If only one clustering_method is provided the output will be a
@@ -1379,7 +1379,7 @@ def dres(
     Returns
     -------
 
-    dres, details : numpy.array, numpy.array
+    dres, details : numpy.ndarray, numpy.ndarray
         dres contains the similarity values, arranged in numpy.array.
         If one number of dimensions is provided as an integer,
         the output will be a 2-dimensional square symmetrical numpy.array.
@@ -1646,7 +1646,7 @@ def ces_convergence(
     Returns
     -------
 
-    out : np.array
+    out : numpy.ndarray
         array of shape (number_of_frames / window_size, preference_values).
 
 
@@ -1757,7 +1757,7 @@ def dres_convergence(
     Returns
     -------
 
-    out : np.array
+    out : numpy.ndarray
         array of shape (number_of_frames / window_size, preference_values).
 
 
