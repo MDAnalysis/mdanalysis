@@ -828,6 +828,17 @@ class TimeTimestepNoBox:
         assert ts.dimensions is None
         assert ts.triclinic_dimenions is None
 
+    @pytest.mark.parametrize("value", [-1.0, -np.inf])
+    def test_set_negative_length_rejected(self, ts, value):
+        with pytest.raises(ValueError, match="non-negative"):
+            ts.dimensions = [value, 2, 3, 90, 90, 90]
+
+    def test_scalar_dimensions_broadcast_is_preserved(self, ts):
+        ts.dimensions = 7
+        assert np.all(ts.dimensions == 7)
+        with pytest.raises(ValueError, match="non-negative"):
+            ts.dimensions = -1
+
     def test_set_zero_box_triclinic(self, ts):
         ts.triclinic_dimensions = np.zeros((3, 3))
 
