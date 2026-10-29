@@ -2056,7 +2056,7 @@ def calc_dihedrals(
 def apply_PBC(
     coords: "npt.NDArray | AtomGroup",
     box: npt.NDArray,
-    backend: Literal["serial", "openmp"] = "serial",
+    backend: Literal["serial", "OpenMP", "openmp"] = "serial",
 ) -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
