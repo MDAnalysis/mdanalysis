@@ -176,7 +176,10 @@ class TestTimestep(object):
         ts.dimensions = 0
         assert ts.dimensions is None
 
-    @pytest.mark.parametrize("angles", ([0, 90, 90], [180, 90, 90], [-1, 90, 90], [np.nan, 90, 90], [np.inf, 90, 90]))
+    @pytest.mark.parametrize(
+        "angles",
+        ([0, 90, 90], [180, 90, 90], [-1, 90, 90], [np.nan, 90, 90], [np.inf, 90, 90]),
+    )
     def test_dimensions_reject_invalid_angles(self, ts, angles):
         with pytest.raises(ValueError, match="angles"):
             ts.dimensions = [10, 10, 10, *angles]
