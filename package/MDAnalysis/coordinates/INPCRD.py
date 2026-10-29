@@ -102,7 +102,7 @@ class INPReader(base.SingleFrameReaderBase):
     * Box information is not read (or checked for).
     * Velocities are currently *not supported*.
 
-    .. versionchanged: 2.10.0
+    .. versionchanged: 2.12.0
        Now automatically detects files with .rst7 extension.
 
     """
@@ -206,7 +206,8 @@ class NCRSTReader(base.SingleFrameReaderBase, NCDFMixin):
     :class:`~MDAnalysis.coordinates.TRJ.NCDFWriter`
 
 
-    .. versionadded: 2.10.0
+    .. versionadded: 2.12.0
+
     """
 
     format = ["NCRST", "NCRESTRT", "NCRST7"]
