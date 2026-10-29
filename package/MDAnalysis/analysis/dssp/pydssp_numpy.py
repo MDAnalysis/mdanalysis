@@ -11,7 +11,11 @@ designed to be used in per-frame manner in protein trajectories.
 
 import numpy as np
 
-from MDAnalysis.lib.distances import calc_bonds, capped_distance
+from MDAnalysis.lib.distances import (
+    DistanceBackendOptions,
+    calc_bonds,
+    capped_distance,
+)
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
@@ -126,7 +130,7 @@ def get_hbond_map(
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
     box: np.ndarray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> np.ndarray:
     """Returns hydrogen bond map
 
@@ -158,7 +162,7 @@ def get_hbond_map(
 
         .. versionadded:: 2.11.0
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Backend for distance calculations, by default ``"serial"``.
         Can be set to ``"distopia"`` if :mod:`distopia` is installed.
 
@@ -260,7 +264,7 @@ def assign(
     coord: np.ndarray,
     donor_mask: np.ndarray | None = None,
     box: np.ndarray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
@@ -287,7 +291,7 @@ def assign(
 
         .. versionadded:: 2.11.0
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Backend for distance calculations, by default ``"serial"``.
         Can be set to ``"distopia"`` if `distopia`_ is installed.
 

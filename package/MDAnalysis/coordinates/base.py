@@ -129,7 +129,7 @@ import abc
 import numpy as np
 import numbers
 import warnings
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from .timestep import Timestep
 from . import core
@@ -997,7 +997,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                    atomgroup: 'AtomGroup | None'=None,
                    start: int | None=None, stop: int | None=None,
                    step: int | None=None,
-                   order: str = 'fac') -> np.ndarray:
+                   order: Literal['fac', 'fca', 'afc', 'acf', 'caf', 'cfa'] = 'fac',
+                   ) -> np.ndarray:
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -1023,7 +1024,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         step : int, optional
             Step size for reading; the default ``None`` is equivalent to 1 and
             means to read every frame.
-        order : str
+        order : {'fac', 'fca', 'afc', 'acf', 'caf', 'cfa'}, optional
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array

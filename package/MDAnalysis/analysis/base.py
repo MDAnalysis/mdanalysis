@@ -152,7 +152,7 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Iterable
+from collections.abc import Iterable
 
 import numpy as np
 from .. import coordinates
@@ -164,6 +164,7 @@ from .backends import (
     BackendMultiprocessing,
     BackendSerial,
     BackendBase,
+    DefaultBackendOptions,
 )
 from .results import Results, ResultsGroup
 
@@ -638,7 +639,7 @@ class AnalysisBase(object):
 
     def _configure_backend(
         self,
-        backend: str | BackendBase,
+        backend: DefaultBackendOptions | BackendBase,
         n_workers: int,
         unsupported_backend: bool = False,
     ) -> BackendBase:
@@ -765,7 +766,7 @@ class AnalysisBase(object):
         verbose: bool | None = None,
         n_workers: int | None = None,
         n_parts: int | None = None,
-        backend: str | BackendBase | None = None,
+        backend: DefaultBackendOptions | BackendBase | None = None,
         *,
         unsupported_backend: bool = False,
         progressbar_kwargs=None,

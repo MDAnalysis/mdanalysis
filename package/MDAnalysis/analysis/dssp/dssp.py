@@ -151,6 +151,7 @@ import numpy as np
 from MDAnalysis import AtomGroup, Universe
 
 from ...due import Doi, due
+from ...lib.distances import DistanceBackendOptions
 from ..base import AnalysisBase, ResultsGroup
 
 due.cite(
@@ -236,7 +237,7 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         :ref:`Backend for distance calculations<selection-of-acceleration-backend>`, by default ``"serial"``.
         Can be set to ``"distopia"`` if `distopia`_ is installed.
 
@@ -316,7 +317,7 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str, ...] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
-        backend: str = "serial",
+        backend: DistanceBackendOptions = "serial",
     ):
         self._guess_hydrogens = guess_hydrogens
         self._backend = backend

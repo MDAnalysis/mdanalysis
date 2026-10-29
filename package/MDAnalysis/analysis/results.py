@@ -51,7 +51,7 @@ multiple workers, initialized during a parallel run:
 
 from collections import UserDict
 import numpy as np
-from typing import Callable, Sequence
+from collections.abc import Callable, Sequence
 
 
 class Results(UserDict):

@@ -142,7 +142,8 @@ Functions
 import numpy as np
 import numpy.typing as npt
 
-from typing import Callable
+from collections.abc import Callable
+from typing import Literal
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -225,6 +226,9 @@ from .c_distances import (
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
+DistanceBackendOptions = Literal["serial", "OpenMP", "openmp", "distopia"]
+CappedMethodOptions = Literal["bruteforce", "nsgrid", "pkdtree"]
+
 
 def _check_result_array(
     result: npt.NDArray | None, shape: tuple
@@ -285,7 +289,7 @@ def distance_array(
     configuration: "npt.NDArray | AtomGroup",
     box: npt.NDArray | None = None,
     result: npt.NDArray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
     configuration.
@@ -399,7 +403,7 @@ def self_distance_array(
     reference: "npt.NDArray | AtomGroup",
     box: npt.NDArray | None = None,
     result: npt.NDArray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
 
@@ -517,9 +521,9 @@ def capped_distance(
     max_cutoff: float,
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
-    method: str | None = None,
+    method: CappedMethodOptions | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
@@ -656,7 +660,7 @@ def _determine_method(
     max_cutoff: float,
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
-    method: str | None = None,
+    method: CappedMethodOptions | None = None,
 ) -> Callable:
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
@@ -745,7 +749,7 @@ def _bruteforce_capped(
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -849,7 +853,7 @@ def _pkdtree_capped(
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -1077,9 +1081,9 @@ def self_capped_distance(
     max_cutoff: float,
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
-    method: str | None = None,
+    method: CappedMethodOptions | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
@@ -1212,7 +1216,7 @@ def _determine_method_self(
     max_cutoff: float,
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
-    method: str | None = None,
+    method: CappedMethodOptions | None = None,
 ):
     """Guesses the fastest method for capped distance calculations based on the
     size of the `reference` coordinate set and the relative size of the target
@@ -1288,7 +1292,7 @@ def _bruteforce_capped_self(
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -1383,7 +1387,7 @@ def _pkdtree_capped_self(
     min_cutoff: float | None = None,
     box: npt.NDArray | None = None,
     return_distances: bool = True,
-    backend: str | None = "serial",
+    backend: DistanceBackendOptions = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -1680,7 +1684,7 @@ def calc_bonds(
     coords2: "npt.NDArray | AtomGroup",
     box: npt.NDArray | None = None,
     result: npt.NDArray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
@@ -1794,7 +1798,7 @@ def calc_angles(
     coords3: "npt.NDArray | AtomGroup",
     box: npt.NDArray | None = None,
     result: npt.NDArray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
@@ -1918,7 +1922,7 @@ def calc_dihedrals(
     coords4: "npt.NDArray | AtomGroup",
     box: npt.NDArray | None = None,
     result: npt.NDArray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
@@ -2052,7 +2056,7 @@ def calc_dihedrals(
 def apply_PBC(
     coords: "npt.NDArray | AtomGroup",
     box: npt.NDArray,
-    backend: str = "serial",
+    backend: Literal["serial", "openmp"] = "serial",
 ) -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
@@ -2067,7 +2071,7 @@ def apply_PBC(
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'openmp'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
