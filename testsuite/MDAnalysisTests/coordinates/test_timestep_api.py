@@ -170,6 +170,12 @@ class TestTimestep(object):
         assert ts.dimensions.dtype == np.float32
         assert_allclose(ts.dimensions, self.newbox)
 
+    def test_dimensions_reject_scalar_broadcast(self, ts):
+        with pytest.raises(ValueError, match="six values"):
+            ts.dimensions = 5
+        ts.dimensions = 0
+        assert ts.dimensions is None
+
     @pytest.mark.parametrize("angles", ([0, 90, 90], [180, 90, 90], [-1, 90, 90], [np.nan, 90, 90], [np.inf, 90, 90]))
     def test_dimensions_reject_invalid_angles(self, ts, angles):
         with pytest.raises(ValueError, match="angles"):

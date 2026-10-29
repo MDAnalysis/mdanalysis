@@ -469,8 +469,11 @@ cdef class Timestep:
             self._unitcell[:] = 0
         else:
             new_dimensions = np.asarray(new_dimensions, dtype=np.float32)
-            if new_dimensions.ndim == 0 and new_dimensions < 0:
-                raise ValueError("Unit cell lengths must be non-negative")
+            if new_dimensions.ndim == 0:
+                if new_dimensions != 0:
+                    raise ValueError("Unit cell dimensions must contain six values")
+                self._unitcell[:] = 0
+                return
             if new_dimensions.size == 6:
                 values = new_dimensions.reshape(-1)
                 if (values[:3] < 0).any():
