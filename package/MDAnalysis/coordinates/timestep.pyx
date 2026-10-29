@@ -468,6 +468,11 @@ cdef class Timestep:
         if new_dimensions is None:
             self._unitcell[:] = 0
         else:
+            new_dimensions = np.asarray(new_dimensions, dtype=np.float32)
+            if new_dimensions.shape != (6,):
+                raise ValueError("Unit cell dimensions must be a six-element sequence")
+            if not np.isfinite(new_dimensions).all():
+                raise ValueError("Unit cell dimensions must contain only finite values")
             self._unitcell[:] = new_dimensions
 
     @property

@@ -828,6 +828,11 @@ class TimeTimestepNoBox:
         assert ts.dimensions is None
         assert ts.triclinic_dimenions is None
 
+    @pytest.mark.parametrize("value", [np.nan, np.inf, -np.inf])
+    def test_set_nonfinite_box_rejected(self, ts, value):
+        with pytest.raises(ValueError, match="finite"):
+            ts.dimensions = [value, 2, 3, 90, 90, 90]
+
     def test_set_zero_box_triclinic(self, ts):
         ts.triclinic_dimensions = np.zeros((3, 3))
 
