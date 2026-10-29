@@ -63,7 +63,6 @@ Distances
 
 """
 
-from typing import List, Tuple
 import warnings
 
 import numpy as np
@@ -76,8 +75,8 @@ from MDAnalysis.core.groups import Residue, ResidueGroup
 
 # Deprecation: In 3.0.0 change type to just
 # ResidueClass = ResidueGroup
-ResidueClass = List[Residue] | ResidueGroup
-r"""A type alias for :code:`List[Residue] | ResidueGroup`
+ResidueClass = list[Residue] | ResidueGroup
+r"""A type alias for :code:`list[Residue] | ResidueGroup`
 
 Used as an alias for methods where either class is acceptable.
 """
@@ -94,10 +93,10 @@ class NucPairDist(AnalysisBase):
 
     Parameters
     ----------
-    selection1: List[AtomGroup]
+    selection1: list[AtomGroup]
         List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
         of each nucleic acid being analyzed.
-    selection2: List[AtomGroup]
+    selection2: list[AtomGroup]
         List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
         of each nucleic acid being analyzed.
     kwargs: dict
@@ -178,8 +177,8 @@ class NucPairDist(AnalysisBase):
 
     def __init__(
         self,
-        selection1: List[mda.AtomGroup],
-        selection2: List[mda.AtomGroup],
+        selection1: list[mda.AtomGroup],
+        selection2: list[mda.AtomGroup],
         **kwargs,
     ) -> None:
         super(NucPairDist, self).__init__(
@@ -209,7 +208,7 @@ class NucPairDist(AnalysisBase):
         u_name: str = "U",
         t_name: str = "T",
         c_name: str = "C",
-    ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
+    ) -> tuple[list[mda.AtomGroup], list[mda.AtomGroup]]:
         r"""
         A helper method for nucleic acid pair distance analyses.
         Used for selecting specific atoms from two strands of nucleic acids.
@@ -217,9 +216,9 @@ class NucPairDist(AnalysisBase):
 
         Parameters
         ----------
-        strand1: List[Residue]
+        strand1: list[Residue]
             The first nucleic acid strand
-        strand2: List[Residue]
+        strand2: list[Residue]
             The second nucleic acid strand
         a1_name: str
             The selection for the purine base of the strand pair
@@ -238,7 +237,7 @@ class NucPairDist(AnalysisBase):
 
         Returns
         -------
-        Tuple[List[AtomGroup], List[AtomGroup]]
+        tuple[list[AtomGroup], list[AtomGroup]]
             returns a tuple containing two lists of
             :class:`~MDAnalysis.core.groups.AtomGroup`\s
             corresponding to the provided selections from each strand.
@@ -262,11 +261,11 @@ class NucPairDist(AnalysisBase):
            residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the
            appropriate names via the keyword arguments.
         """
-        pyrimidines: List[str] = [c_name, t_name, u_name]
-        purines: List[str] = [a_name, g_name]
+        pyrimidines: list[str] = [c_name, t_name, u_name]
+        purines: list[str] = [a_name, g_name]
 
-        sel1: List[mda.AtomGroup] = []
-        sel2: List[mda.AtomGroup] = []
+        sel1: list[mda.AtomGroup] = []
+        sel2: list[mda.AtomGroup] = []
 
         for pair in zip(strand1.residues, strand2.residues):
             if pair[0].resname in pyrimidines:
@@ -282,7 +281,7 @@ class NucPairDist(AnalysisBase):
             ag2 = pair[1].atoms.select_atoms(f"name {a2}")
 
             if not all(len(ag) > 0 for ag in [ag1, ag2]):
-                err_info: Tuple[Residue, str] = (
+                err_info: tuple[Residue, str] = (
                     (pair[0], a1) if len(ag1) == 0 else (pair[1], a2)
                 )
 
@@ -435,7 +434,7 @@ class WatsonCrickDist(NucPairDist):
     .. versionchanged:: 2.7.0
         `strand1` and `strand2` now also accept a
         :class:`~MDAnalysis.core.groups.ResidueGroup` as input.
-        The previous input type, ``List[Residue]`` is still supported,
+        The previous input type, ``list[Residue]`` is still supported,
         but it is **deprecated** and will be removed in release 3.0.0.
 
     .. versionchanged:: 2.11.0
@@ -483,7 +482,7 @@ class WatsonCrickDist(NucPairDist):
         strand1: ResidueGroup = verify_strand(strand1)
         strand2: ResidueGroup = verify_strand(strand2)
 
-        strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
+        strand_atomgroups: tuple[list[mda.AtomGroup], list[mda.AtomGroup]] = (
             self.select_strand_atoms(
                 strand1,
                 strand2,
@@ -513,9 +512,9 @@ class MinorPairDist(NucPairDist):
 
     Parameters
     ----------
-    strand1: List[Residue]
+    strand1: list[Residue]
         First list of bases
-    strand2: List[Residue]
+    strand2: list[Residue]
         Second list of bases
     o2_name: str (optional)
         Name of Oxygen 2 of nucleic acids;
@@ -585,7 +584,7 @@ class MinorPairDist(NucPairDist):
         **kwargs,
     ) -> None:
 
-        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
+        selections: tuple[list[mda.AtomGroup], list[mda.AtomGroup]] = (
             self.select_strand_atoms(
                 strand1,
                 strand2,
@@ -616,9 +615,9 @@ class MajorPairDist(NucPairDist):
 
     Parameters
     ----------
-    strand1: List[Residue]
+    strand1: list[Residue]
         First list of bases
-    strand2: List[Residue]
+    strand2: list[Residue]
         Second list of bases
     o6_name: str (optional)
         Name of Oxygen 6 of nucleic acids;
@@ -689,7 +688,7 @@ class MajorPairDist(NucPairDist):
         **kwargs,
     ) -> None:
 
-        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
+        selections: tuple[list[mda.AtomGroup], list[mda.AtomGroup]] = (
             self.select_strand_atoms(
                 strand1,
                 strand2,

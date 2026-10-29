@@ -191,7 +191,6 @@ The actual data for each step is stored by instances of EDRStep.
 """
 from pathlib import Path
 import warnings
-from typing import Dict, List
 
 import numpy as np
 
@@ -422,8 +421,8 @@ class EDRReader(base.AuxReader):
         return self.data_dict[self.time_selector]
 
     def get_data(
-        self, data_selector: str | List[str] | None = None
-    ) -> Dict[str, np.ndarray]:
+        self, data_selector: str | list[str] | None = None
+    ) -> dict[str, np.ndarray]:
         """Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attr:`EDRReader.terms`. `Time` is

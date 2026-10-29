@@ -65,7 +65,7 @@ import warnings
 from collections import defaultdict
 from contextlib import suppress
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List, Tuple
+from typing import ClassVar
 
 import numpy as np
 
@@ -130,11 +130,11 @@ class MDAnalysisInferrer:
         See :meth:`~MDAnalysisInferrer._rebuild_conjugated_bonds`
     sanitize : bool
         Whether to sanitize the molecule or not.
-    MONATOMIC_CATION_CHARGES : ClassVar[Dict[int, int]]
+    MONATOMIC_CATION_CHARGES : ClassVar[dict[int, int]]
         Charges that should be assigned to monatomic cations. Maps atomic
         number to  their formal charge. Anion charges are directly handled by
         the code using the typical valence of the atom.
-    STANDARDIZATION_REACTIONS : ClassVar[List[str]]
+    STANDARDIZATION_REACTIONS : ClassVar[list[str]]
         Reactions uses by :meth:`~MDAnalysisInferrer._standardize_patterns` to
         fix challenging cases must have single reactant and product, and
         cannot add any atom.
@@ -149,7 +149,7 @@ class MDAnalysisInferrer:
     .. versionadded:: 2.10.0
     """
 
-    MONATOMIC_CATION_CHARGES: ClassVar[Dict[int, int]] = {
+    MONATOMIC_CATION_CHARGES: ClassVar[dict[int, int]] = {
         3: 1,
         11: 1,
         19: 1,
@@ -165,7 +165,7 @@ class MDAnalysisInferrer:
         26: 2,  # Fe could also be +3
         13: 3,
     }
-    STANDARDIZATION_REACTIONS: ClassVar[List[str]] = [
+    STANDARDIZATION_REACTIONS: ClassVar[list[str]] = [
         "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
         "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
         "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
@@ -199,7 +199,7 @@ class MDAnalysisInferrer:
         return mol
 
     @classmethod
-    def _atom_sorter(cls, atom: "Chem.Atom") -> Tuple[int, int]:
+    def _atom_sorter(cls, atom: "Chem.Atom") -> tuple[int, int]:
         """Sorts atoms in the molecule in a way that makes it easy for the bond
         order and charge infering code to get the correct state on the first
         try. Currently sorts by number of unpaired electrons, then by number of
@@ -303,7 +303,7 @@ class MDAnalysisInferrer:
                 mol.UpdatePropertyCache(strict=False)
 
     @staticmethod
-    def _get_nb_unpaired_electrons(atom: "Chem.Atom") -> List[int]:
+    def _get_nb_unpaired_electrons(atom: "Chem.Atom") -> list[int]:
         """Calculate the number of unpaired electrons (NUE) of an atom
 
         Parameters
@@ -313,7 +313,7 @@ class MDAnalysisInferrer:
 
         Returns
         -------
-        nue : List[int]
+        nue : list[int]
             The NUE for each possible valence of the atom
         """
         expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
@@ -414,7 +414,7 @@ class MDAnalysisInferrer:
 
     @staticmethod
     def _apply_reactions(
-        reactions: List["ChemicalReaction"], reactant: "Chem.Mol"
+        reactions: list["ChemicalReaction"], reactant: "Chem.Mol"
     ) -> None:
         """Applies a series of unimolecular reactions to a molecule. The
         reactions must not add any atom to the product. The molecule is
@@ -422,7 +422,7 @@ class MDAnalysisInferrer:
 
         Parameters
         ----------
-        reactions : List[rdkit.Chem.rdChemReactions.ChemicalReaction]
+        reactions : list[rdkit.Chem.rdChemReactions.ChemicalReaction]
             Reactions from SMARTS. Each reaction is applied until no more
             transformations can be made.
         reactant : rdkit.Chem.rdchem.Mol

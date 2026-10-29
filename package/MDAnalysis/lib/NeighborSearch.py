@@ -33,7 +33,6 @@ from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core.groups import AtomGroup, SegmentGroup, ResidueGroup
 import numpy.typing as npt
-from typing import List
 
 
 class AtomNeighborSearch(object):
@@ -115,7 +114,7 @@ class AtomNeighborSearch(object):
         return self._index2level(unique_idx, level)
 
     def _index2level(
-        self, indices: List[int], level: str
+        self, indices: list[int], level: str
     ) -> AtomGroup | ResidueGroup | SegmentGroup:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.

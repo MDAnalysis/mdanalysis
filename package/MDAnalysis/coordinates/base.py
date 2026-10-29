@@ -129,7 +129,7 @@ import abc
 import numpy as np
 import numbers
 import warnings
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from .timestep import Timestep
 from . import core
@@ -1082,7 +1082,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
-                      aux_spec: str | Dict[str, str] | None = None,
+                      aux_spec: str | dict[str, str] | None = None,
                       auxdata: str | AuxReader | None = None,
                       format: str | None = None,
                       **kwargs) -> None:

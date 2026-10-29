@@ -89,7 +89,6 @@ References
 """
 
 import warnings
-from typing import List
 
 import numpy as np
 from MDAnalysis.coordinates import base
@@ -322,7 +321,7 @@ class TNGReader(base.ReaderBase):
         return self._n_frames
 
     @property
-    def blocks(self) -> List[str]:
+    def blocks(self) -> list[str]:
         """list of the blocks that are in the file
 
         Returns
@@ -334,7 +333,7 @@ class TNGReader(base.ReaderBase):
         return self._block_names
 
     @property
-    def special_blocks(self) -> List[str]:
+    def special_blocks(self) -> list[str]:
         """list of the special blocks that are in the file
 
         Returns
@@ -347,7 +346,7 @@ class TNGReader(base.ReaderBase):
         return [k for k, v in self._special_block_present.items() if v]
 
     @property
-    def additional_blocks(self) -> List[str]:
+    def additional_blocks(self) -> list[str]:
         """list of the additional (non-special) blocks that are being read from
         the trajectory. This may be exclude some blocks present in the file if
         they do not fall on the same trajectory stride as the positions and

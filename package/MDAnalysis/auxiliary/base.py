@@ -43,7 +43,6 @@ import os
 import numbers
 import math
 import warnings
-from typing import Dict
 from collections import defaultdict
 import pickle
 
@@ -489,7 +488,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
     def attach_auxiliary(
         self,
         coord_parent,
-        aux_spec: str | Dict[str, str] | None = None,
+        aux_spec: str | dict[str, str] | None = None,
         format: str | None = None,
         **kwargs,
     ) -> None:
