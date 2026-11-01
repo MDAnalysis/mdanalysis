@@ -255,6 +255,12 @@ class GNMAnalysis(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
+
+    .. versionchanged:: 2.11.0
+       Fixed incorrect stacking of results from multiprocessing. Previously
+       ``results.eigenvectors`` would silently return an array of the wrong
+       shape. It now correctly use ``np.vstack`` for reducing the eigenvectors
+       from multiple workers.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -377,7 +383,7 @@ class GNMAnalysis(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "eigenvectors": ResultsGroup.ndarray_hstack,
+                "eigenvectors": ResultsGroup.ndarray_vstack,
                 "eigenvalues": ResultsGroup.ndarray_hstack,
                 "times": ResultsGroup.ndarray_hstack,
             }

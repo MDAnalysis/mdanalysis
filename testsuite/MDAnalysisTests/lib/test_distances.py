@@ -84,6 +84,33 @@ def test_transform_StoR_pass(coord_dtype):
     assert_allclose(original_r, test_r)
 
 
+# Triclinic boxes with both b_x and c_y non-zero, see Issue #4906
+SKEWED_TRICLINIC_BOXES = (
+    # truncated octahedron
+    np.array([97.16, 97.16, 97.16, 109.47, 109.47, 109.47], dtype=np.float32),
+    # LAMMPS cell from Issue #4906
+    np.array(
+        [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+        dtype=np.float32,
+    ),
+    np.array([26.24, 27.86, 34.66, 106.56, 77.20, 79.13], dtype=np.float32),
+    # rhombic dodecahedron
+    np.array([50.0, 50.0, 50.0, 60.0, 60.0, 90.0], dtype=np.float32),
+)
+
+
+def _skewed_box_coords(box, n, seed):
+    """Random coordinates spread over the box and its neighbouring images"""
+    rng = np.random.default_rng(seed)
+    frac = rng.uniform(-1.5, 2.5, size=(n, 3))
+    return (frac @ mdamath.triclinic_vectors(box)).astype(np.float32)
+
+
+def _away_from_cutoff(pairs, dists, cutoff, tol=1e-4):
+    """Drop pairs so close to the cutoff that rounding can decide them"""
+    return pairs[np.abs(dists - cutoff) > tol]
+
+
 class TestCappedDistances(object):
 
     npoints_1 = (1, 100)
@@ -121,6 +148,34 @@ class TestCappedDistances(object):
     method_1 = ("bruteforce", "pkdtree", "nsgrid")
 
     min_cutoff_1 = (None, 0.1)
+
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
+    def test_capped_distance_skewed_triclinic(self, box, method):
+        # Issue #4906: pkdtree and nsgrid missed pairs in skewed boxes
+        min_diag = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * min_diag
+        a = _skewed_box_coords(box, 1000, seed=1)
+        b = _skewed_box_coords(box, 1000, seed=2)
+
+        def pairs(m):
+            p, d = distances.capped_distance(a, b, cutoff, box=box, method=m)
+            return {tuple(x) for x in _away_from_cutoff(p, d, cutoff)}
+
+        assert pairs(method) == pairs("bruteforce")
+
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    @pytest.mark.parametrize("method", ("pkdtree", "nsgrid"))
+    def test_self_capped_distance_skewed_triclinic(self, box, method):
+        min_diag = mdamath.triclinic_vectors(box).diagonal().min()
+        cutoff = 0.1 * min_diag
+        a = _skewed_box_coords(box, 1000, seed=3)
+
+        def pairs(m):
+            p, d = distances.self_capped_distance(a, cutoff, box=box, method=m)
+            return {tuple(sorted(x)) for x in _away_from_cutoff(p, d, cutoff)}
+
+        assert pairs(method) == pairs("bruteforce")
 
     def test_capped_distance_noresults(self):
         point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
@@ -890,8 +945,10 @@ class TestTriclinicDistances(object):
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
     @pytest.mark.parametrize("S_mol", [S_mol, S_mol_single], indirect=True)
     def test_transforms(self, S_mol, tri_vec_box, box, backend):
-        # To check the cython coordinate transform, the same operation is done in numpy
-        # Is a matrix multiplication of Coords x tri_vec_box = NewCoords, so can use np.dot
+        # To check the cython coordinate transform, the same operation is done
+        # in numpy.
+        # Is a matrix multiplication of Coords x tri_vec_box = NewCoords, so
+        # can use np.dot
         S_mol1, S_mol2 = S_mol
         # Test transformation
         R_mol1 = distances.transform_StoR(S_mol1, box, backend=backend)
@@ -1115,8 +1172,8 @@ def test_HAS_DISTOPIA_distopia_too_old():
 
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
-    # Tests both numerical results as well as input types as Cython will silently
-    # produce nonsensical results if given wrong data types otherwise.
+    # Tests both numerical results as well as input types as Cython will
+    # silently produce nonsensical results if given wrong data types otherwise.
     prec = 5
 
     @staticmethod
@@ -1341,8 +1398,6 @@ class TestCythonFunctions(object):
         assert_equal(
             len(angles), 4, err_msg="calc_angles results have wrong length"
         )
-        #        assert_almost_equal(angles[0], 0.0, self.prec,
-        #                           err_msg="Zero length angle calculation failed") # What should this be?
         assert_almost_equal(
             angles[1],
             np.pi,
@@ -1586,7 +1641,8 @@ class TestCythonFunctions(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_bonds(self, positions, backend):
         a, b, c, d = positions
-        # Checks that the cython functions give identical results to the numpy versions
+        # Checks that the cython functions give identical results to the numpy
+        # versions
         bonds = distances.calc_bonds(a, b, backend=backend)
         bonds_numpy = np.array([mdamath.norm(y - x) for x, y in zip(a, b)])
 
@@ -1600,7 +1656,8 @@ class TestCythonFunctions(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_angles(self, positions, backend):
         a, b, c, d = positions
-        # Checks that the cython functions give identical results to the numpy versions
+        # Checks that the cython functions give identical results to the numpy
+        # versions
         angles = distances.calc_angles(a, b, c, backend=backend)
         vec1 = a - b
         vec2 = c - b
@@ -1618,7 +1675,8 @@ class TestCythonFunctions(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_dihedrals(self, positions, backend):
         a, b, c, d = positions
-        # Checks that the cython functions give identical results to the numpy versions
+        # Checks that the cython functions give identical results to the numpy
+        # versions
         dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
         ab = a - b
         bc = b - c
@@ -1787,11 +1845,21 @@ class Test_apply_PBC(object):
         assert np.all(relres >= 0.0)
         assert np.all(relres < 1.0)
 
+    @pytest.mark.parametrize("box", SKEWED_TRICLINIC_BOXES)
+    def test_coords_in_central_image_skewed_tric(self, backend, box):
+        # Issue #4906: boxes where both b_x and c_y are non-zero were wrapped
+        # to just outside the primary image along a.
+        coords = _skewed_box_coords(box, 1000, seed=4906)
+        res = distances.apply_PBC(coords, box, backend=backend)
+        relres = distances.transform_RtoS(res, box)
+        assert np.all(relres >= -1e-6)
+        assert np.all(relres < 1.0 + 1e-6)
+
 
 @pytest.mark.parametrize("backend", ["serial", "openmp"])
 class TestPeriodicAngles(object):
-    """Test case for properly considering minimum image convention when calculating angles and dihedrals
-    (Issue 172)
+    """Test case for properly considering minimum image convention when
+    calculating angles and dihedrals(Issue 172)
     """
 
     @staticmethod
@@ -1807,7 +1875,8 @@ class TestPeriodicAngles(object):
     prec = 5
 
     def test_angles(self, positions, backend):
-        # Shift atom coordinates a few box lengths in random directions and see if we still get same results
+        # Shift atom coordinates a few box lengths in random directions and
+        # see if we still get same results
         a, b, c, d, box = positions
         a2 = a + box * (-1, 0, 0)
         b2 = b + box * (1, 0, 1)
@@ -2257,7 +2326,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_distance_array(self, incoords, box, backend):
         res = distances.distance_array(*incoords, box=box, backend=backend)
-        assert type(res) == np.ndarray
+        assert isinstance(res, np.ndarray)
         assert res.shape == (
             incoords[0].shape[0] % 2,
             incoords[1].shape[0] % 2,
@@ -2269,7 +2338,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_self_distance_array(self, incoords, box, backend):
         res = distances.self_distance_array(incoords, box=box, backend=backend)
-        assert type(res) == np.ndarray
+        assert isinstance(res, np.ndarray)
         assert res.shape == (0,)
         assert res.dtype.type == np.float64
 
@@ -2295,12 +2364,12 @@ class TestOutputTypes(object):
             pairs, dist = res
         else:
             pairs = res
-        assert type(pairs) == np.ndarray
+        assert isinstance(pairs, np.ndarray)
         assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:
-            assert type(dist) == np.ndarray
+            assert isinstance(dist, np.ndarray)
             assert dist.dtype.type == np.float64
             assert dist.shape == (pairs.shape[0],)
 
@@ -2326,12 +2395,12 @@ class TestOutputTypes(object):
             pairs, dist = res
         else:
             pairs = res
-        assert type(pairs) == np.ndarray
+        assert isinstance(pairs, np.ndarray)
         assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:
-            assert type(dist) == np.ndarray
+            assert isinstance(dist, np.ndarray)
             assert dist.dtype.type == np.float64
             assert dist.shape == (pairs.shape[0],)
 
@@ -2340,7 +2409,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_output_dtype_transform_RtoS(self, incoords, box, backend):
         res = distances.transform_RtoS(incoords, box, backend=backend)
-        assert type(res) == np.ndarray
+        assert isinstance(res, np.ndarray)
         assert res.dtype.type == np.float32
         assert res.shape == incoords.shape
 
@@ -2349,7 +2418,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_output_dtype_transform_RtoS(self, incoords, box, backend):
         res = distances.transform_RtoS(incoords, box, backend=backend)
-        assert type(res) == np.ndarray
+        assert isinstance(res, np.ndarray)
         assert res.dtype.type == np.float32
         assert res.shape == incoords.shape
 
@@ -2362,9 +2431,9 @@ class TestOutputTypes(object):
         res = distances.calc_bonds(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
         if maxdim == 1:
-            assert type(res) == np.float64
+            assert isinstance(res, np.float64)
         else:
-            assert type(res) == np.ndarray
+            assert isinstance(res, np.ndarray)
             assert res.dtype.type == np.float64
             coord = [crd for crd in incoords if crd.ndim == maxdim][0]
             assert res.shape == (coord.shape[0],)
@@ -2378,9 +2447,9 @@ class TestOutputTypes(object):
         res = distances.calc_angles(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
         if maxdim == 1:
-            assert type(res) == np.float64
+            assert isinstance(res, np.float64)
         else:
-            assert type(res) == np.ndarray
+            assert isinstance(res, np.ndarray)
             assert res.dtype.type == np.float64
             coord = [crd for crd in incoords if crd.ndim == maxdim][0]
             assert res.shape == (coord.shape[0],)
@@ -2394,9 +2463,9 @@ class TestOutputTypes(object):
         res = distances.calc_dihedrals(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
         if maxdim == 1:
-            assert type(res) == np.float64
+            assert isinstance(res, np.float64)
         else:
-            assert type(res) == np.ndarray
+            assert isinstance(res, np.ndarray)
             assert res.dtype.type == np.float64
             coord = [crd for crd in incoords if crd.ndim == maxdim][0]
             assert res.shape == (coord.shape[0],)
@@ -2406,7 +2475,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_output_type_apply_PBC(self, incoords, box, backend):
         res = distances.apply_PBC(incoords, box, backend=backend)
-        assert type(res) == np.ndarray
+        assert isinstance(res, np.ndarray)
         assert res.dtype.type == np.float32
         assert res.shape == incoords.shape
 
@@ -2470,7 +2539,8 @@ def test_used_openmpflag():
 @pytest.mark.parametrize("dtype", (np.float32, np.float64))
 def test_minimize_vectors(box, shift, dtype):
     # test vectors pointing in all directions
-    # these currently all obey minimum convention as they're much smaller than the box
+    # these currently all obey minimum convention as they're much smaller
+    # than the box
     vec = np.array(
         list(itertools.product(range(-1, 2), range(-1, 2), range(-1, 2))),
         dtype=dtype,

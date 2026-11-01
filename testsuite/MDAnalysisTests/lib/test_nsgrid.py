@@ -94,7 +94,8 @@ def test_nsgrid_badcutoff(universe, cutoff, match):
 
 
 def test_ns_grid_noneighbor(universe):
-    """Check that grid search returns empty lists/arrays when there is no neighbors"""
+    """Check that grid search returns empty lists/arrays when there is no
+    neighbors"""
     ref_id = 0
     cutoff = 0.5
 
@@ -367,7 +368,8 @@ def test_nsgrid_probe_close_to_box_boundary():
 
 def test_zero_max_dist():
     # see issue #2656
-    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite subboxes)
+    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite
+    # subboxes)
     ref = np.array([1.0, 1.0, 1.0], dtype=np.float32)
     conf = np.array([2.0, 1.0, 1.0], dtype=np.float32)
 
@@ -503,6 +505,73 @@ def test_issue_2670():
 
     # should return the one atom overlap
     assert len(ag2.select_atoms("around 0.0 resid 3")) == 1
+
+
+@pytest.mark.parametrize(
+    "box, cutoff_frac",
+    [
+        # truncated octahedron
+        ([97.16, 97.16, 97.16, 109.47, 109.47, 109.47], 0.1),
+        # LAMMPS cell from Issue #4906
+        (
+            [15.173525, 14.923327, 14.475218, 109.888, 109.3786, 115.684875],
+            0.1,
+        ),
+        # rhombic dodecahedron: the old cutoff / sin(angle) cell sizing only
+        # gave cells thinner than the cutoff for some cutoffs, e.g. 10.8
+        ([50.0, 50.0, 50.0, 60.0, 60.0, 90.0], 0.216),
+    ],
+)
+def test_issue_4906(box, cutoff_frac):
+    # In boxes with both b_x and c_y non-zero, or more than one non-90º angle,
+    # atoms were binned into the wrong cells and cells could be thinner than
+    # the cutoff, so neighbours were missed.
+    box = np.array(box, dtype=np.float32)
+    rng = np.random.default_rng(4906)
+    frac = rng.uniform(0, 1, size=(1000, 3))
+    coords = (frac @ mda.lib.mdamath.triclinic_vectors(box)).astype(np.float32)
+    cutoff = cutoff_frac * box[:3].min()
+
+    dists = mda.lib.distances.distance_array(coords, coords, box=box)
+    # skip pairs so close to the cutoff that rounding can decide them
+    ambiguous = np.abs(dists - cutoff) <= 1e-4
+
+    def found(results):
+        pairs = results.get_pairs()
+        return {tuple(p) for p in pairs if not ambiguous[p[0], p[1]]}
+
+    searcher = nsgrid.FastNS(cutoff, coords, box)
+    i, j = np.triu_indices(len(coords), k=1)
+    within = (dists[i, j] <= cutoff) & ~ambiguous[i, j]
+    expected = set(zip(i[within], j[within]))
+    pairs = {tuple(sorted(p)) for p in found(searcher.self_search())}
+    assert pairs == expected
+
+    i, j = np.nonzero((dists <= cutoff) & ~ambiguous)
+    assert found(searcher.search(coords)) == set(zip(i, j))
+
+
+def test_issue_4906_cell_thickness():
+    # Check the fix for placing atoms in the wrong cells; b_x = 0, so only the
+    # cell sizing matters. This test engineers pairs just inside the cutoff
+    # along the face normals, with cutoff so chose that the incorrect code
+    # gives cells that are too thin.
+    box = np.array([50.0, 50.0, 50.0, 60.0, 60.0, 90.0], dtype=np.float32)
+    cutoff = 6.18
+    tv = mda.lib.mdamath.triclinic_vectors(box).astype(np.float64)
+    rng = np.random.default_rng(4906)
+    n = 2000
+    p = rng.uniform(0, 1, size=(n, 3)) @ tv
+    # unit normals of the bc and ca faces
+    normals = np.array([np.cross(tv[1], tv[2]), np.cross(tv[2], tv[0])])
+    normals /= np.linalg.norm(normals, axis=1)[:, None]
+    q = p + 0.99 * cutoff * normals[rng.integers(0, 2, n)]
+    coords = np.concatenate([p, q]).astype(np.float32)
+
+    pairs = nsgrid.FastNS(cutoff, coords, box).self_search().get_pairs()
+    found = {tuple(sorted(pair)) for pair in pairs}
+    missing = [k for k in range(n) if (k, k + n) not in found]
+    assert not missing
 
 
 def high_mem_tests_enabled():

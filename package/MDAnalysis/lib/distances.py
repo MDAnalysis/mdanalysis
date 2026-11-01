@@ -2086,6 +2086,10 @@ def apply_PBC(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.11.0
+       Fixed wrapping in triclinic boxes where both the *x* component of the
+       second box vector and the *y* component of the third are non-zero
+       (Issue #4906).
     """
     # coords is an array, the check_coords decorator made sure of that.
     # Mypy, however, is not aware of that so we have to tell it explicitly.

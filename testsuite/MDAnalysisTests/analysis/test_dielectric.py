@@ -41,16 +41,23 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=False).run()
-        assert_allclose(eps.results["eps_mean"], 721.711, rtol=1e-03)
+        # reference values depend on correct PBC handling
+        # (reference values changed after the apply_PBC fix for Issue #4906)
+        assert_allclose(eps.results["eps_mean"], 630.326, rtol=1e-03)
 
     def test_broken_repaired_molecules(self, ag):
+        intact = DielectricConstant(ag, make_whole=True).run()
         # cut molecules apart
         ag.universe.transfer_to_memory()
         for ts in ag.universe.trajectory:
             ag.wrap()
 
+        # repairing the molecules should recover the intact result
         eps = DielectricConstant(ag, make_whole=True).run()
-        assert_allclose(eps.results["eps_mean"], 5.088, rtol=1e-03)
+        assert_allclose(
+            eps.results["eps_mean"], intact.results["eps_mean"], rtol=1e-03
+        )
+        assert_allclose(eps.results["eps_mean"], 3.874, rtol=1e-03)
 
     def test_temperature(self, ag):
         eps = DielectricConstant(ag, temperature=100).run()

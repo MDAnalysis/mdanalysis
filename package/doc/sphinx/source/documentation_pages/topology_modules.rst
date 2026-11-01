@@ -9,7 +9,7 @@ files. MDAnalysis uses topology files to identify atoms and bonds
 between the atoms. It can use topology files from MD packages such as
 CHARMM's and NAMD's PSF format or Amber's PRMTOP files. In addition,
 it can also glean atom information from single frame coordinate files
-such the PDB, CRD, or PQR formats (see the :ref:`Supported topology
+such the PDB, CRD, MMCIF, or PQR formats (see the :ref:`Supported topology
 formats`).
 
 Typically, MDAnalysis recognizes formats by the file extension and
@@ -38,6 +38,7 @@ topology file format in the *topology_format* keyword argument to
    topology/MinimalParser
    topology/MMTFParser
    topology/MOL2Parser
+   topology/MMCIFParser
    topology/PDBParser
    topology/ExtendedPDBParser
    topology/PDBQTParser

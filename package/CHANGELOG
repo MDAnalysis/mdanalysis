@@ -14,23 +14,69 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
-         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
-         raulloiscuns, Aryaman-Chaudhri, sici17, erikfransson
+??/??/?? IAlibay, sumitsaraswat362, erikfransson
 
- * 2.11.0
+ * 2.12.0
 
 Fixes
- * Mass (u) has been added to MDAnalysis base units and clarified that physical
-   constants use CODATA 2010 values (Issue #3944, PR #5439)
  * The NCDF reader now releases the pages of the memory map once a frame has
    been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
    (the default for a file name) no longer grows the resident memory of the
    process towards the size of the whole trajectory file. Requires a platform
    that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792,
    PR #5463).
+
+Enhancements
+ * InterRDF and InterRDF_s now expose computed average box volume and densities
+   as results.box_volume, results.normalization_density, and (for InterRDF)
+   results.density_1 and results.density_2 when norm is "rdf" or "density"
+   (Issue #5362, PR #5482)
+
+Changes
+
+Deprecations
+
+
+10/21/26 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2,
+         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
+         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
+         raulloiscuns, Aryaman-Chaudhri, sici17, AkshitBoora
+
+ * 2.11.0
+
+Fixes
+ * Fixed PBC handling in triclinic boxes in `_triclinic_pbc()` (used by
+   `distances.apply_PBC()`) and `lib.nsgrid.NSGrid` (used by `capped_distance`
+   and `self_capped_distance`):
+   - `apply_PBC()`, `AtomGroup.wrap()`/`pack_into_box()`, `center*(wrap=True)`,
+     `AtomGroup.unwrap()` with `reference="com"`/`"cog"` and the
+     `transformations.wrap` transformation could leave atoms (or compound
+     centers) outside the primary unit cell in boxes with both b_x and c_y
+     non-zero (e.g. truncated octahedra); they were shifted by whole box
+     vectors, so periodic distances were unaffected, but results that depend on
+     absolute wrapped positions (e.g. dipole moments, densities, written
+     coordinates) may change.
+   - `capped_distance()` and `self_capped_distance()` with the `nsgrid` or
+     `pkdtree` methods (and hence bond guessing, distance-based selections)
+     could miss pairs within the cutoff; `nsgrid` was affected in triclinic
+     boxes with two or more non-90º angles (e.g. rhombic dodecahedron),
+     `pkdtree` in boxes with both b_x and c_y non-zero (e.g. truncated
+     octahedron).
+   (Issue #4906, PR #5496)
+ * `InterRDF_s` with a parallel backend returned wrong counts for one
+   pair of groups and failed for more than two (`nested_array_sum`
+   summed exactly two pairs) (Issue #5496, PR #5497)
+ * Fixed `HydrogenBondAutoCorrel.run()` returning NaN when a run starts
+   without hydrogen bonds. Such runs are now skipped with a RuntimeWarning,
+   and a ValueError is raised if all runs are skipped (Issue #5483, PR #5492)
+ * `GNMAnalysis` silently and wrongly reduced the split `eigenvectors` array
+   via hstack instead of vstack when using multiprocessing, and would raise
+   an error with uneven split of frames across workers (Issue #5494, PR #5495)
+ * `AnalysisBase.run()` now interprets NumPy boolean arrays passed to `frames`
+   as frame masks instead of integer frame indices (Issue #5472)
+ * Mass (u) has been added to MDAnalysis base units and clarified that physical
+   constants use CODATA 2010 values (Issue #3944, PR #5439)
  * Added `.gitattributes` to enforce LF (\n) as line endings and renormalized
    existing files to conform (Issue #5315, PR #5446)
  * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
@@ -86,6 +132,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Add reading single-frame files from mmCIF, also known as PDBx format, using
+   crystallographic library `gemmi` as a backend (Issue #2367 and extension of
+   #4303, also solves #5089, PR #4712).
  * Added ASV benchmark for XYZ trajectory reading (PR #5441)
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and
@@ -114,12 +163,12 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+ * TPRReader now reads box vectors from TPR files and exposes them as
+   ``Universe.dimensions`` (Issue #5375)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
-
-Deprecations
 
 
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
@@ -199,7 +248,6 @@ Enhancements
    MDAnalysisTest.util (PR #5038)
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
 
-
 Changes
  * Output precision for LAMMPS Data files set to 10 decimals (PR #5053)
  * Support for Python 3.10 was removed, in line with SPEC0 (PR #5121).
@@ -209,7 +257,6 @@ Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)
-
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
