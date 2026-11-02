@@ -50,16 +50,89 @@ numbers up to 99,999.
    Partial charges are not set. Elements are parsed if they are
    valid. If partially missing or incorrect, empty records are assigned.
 
-.. Note::
+.. _PDB-gemmi-backend:
 
-   You can also use :mod:`~MDAnalysis.topology.MMCIFParser` to parse PDB files
-   that you're having trouble parsing with the standard PDB parser. For example::
+Reading PDB files with gemmi
+----------------------------
 
-       import MDAnalysis as mda
-       u = mda.Universe("problematic.pdb", topology_format="MMCIF")
+PDB files can also be read with the `gemmi <https://gemmi.readthedocs.io>`_
+library, which also powers the :mod:`~MDAnalysis.topology.MMCIFParser` and
+:class:`~MDAnalysis.coordinates.MMCIF.MMCIFReader`::
 
-   ``MMCIFParser`` uses the `gemmi <https://gemmi.readthedocs.io>`_ library,
-   which is developed together with RCSB and may handle edge cases better.
+    import MDAnalysis as mda
+    u = mda.Universe("structure.pdb", format="pdb_gemmi")
+
+The two backends are written for different kinds of PDB files. The default
+``PDB`` backend is designed for files produced by simulation packages, while
+gemmi follows the wwPDB format specification as used for experimental
+structures. They can give different topologies for the same file:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 35 40
+
+   * -
+     - ``format="PDB"`` (default)
+     - ``format="pdb_gemmi"``
+   * - Multiple ``MODEL`` records
+     - read as a trajectory
+     - only the first model is read (with a warning)
+   * - ``CONECT`` records
+     - read as bonds
+     - read as bonds
+   * - Segment IDs
+     - from the segment identifier (columns 73-76), falling back to chain IDs
+     - always from chain IDs; blank chain IDs give empty segids
+   * - Residue numbers above 9999 written in `hybrid-36`_ (``A000`` = 10000)
+     - not decoded: set to 1 with a warning, so neighbouring residues are
+       merged into one
+     - decoded correctly
+   * - Residue numbers above 9999 written in hexadecimal (``A000`` = 10000,
+       as written by e.g. OpenMM and VMD)
+     - not decoded: set to 1 with a warning, so neighbouring residues are
+       merged into one
+     - decoded as if they were hybrid-36, which gives the right number of
+       residues but different resids from the ones written once the
+       hexadecimal and hybrid-36 digits diverge (``A010`` is 10016 in
+       hexadecimal but 10036 in hybrid-36)
+   * - Residue numbers that wrap around after 9999 (as written by many
+       simulation packages)
+     - unwrapped into increasing resids
+     - kept as written; atoms with the same chain ID and residue number are
+       merged into one residue, which **reorders the atoms**
+   * - Elements
+     - read if present and valid
+     - read if present, otherwise inferred from the atom name where gemmi
+       can do so reliably (e.g. standard protein atoms)
+   * - Masses, types and formal charges
+     - masses and types guessed when the Universe is created
+     - taken from the elements; atoms without an element get type ``X`` and
+       a mass of 1.0
+   * - Speed
+     - pure Python
+     - several times faster for large files
+   * - Dependencies
+     - none
+     - requires gemmi
+
+As a rule of thumb, use ``pdb_gemmi`` for single-model experimental structures,
+in particular when they contain hybrid-36 residue numbers, or files with
+hexadecimal residue numbers where the residues must be kept apart but the exact
+resids do not matter. Keep the default for other files written by simulation
+packages, multi-model trajectories, files where ``CONECT`` records or segment
+IDs matter, and any PDB file used as the topology for a trajectory.
+
+.. warning::
+
+   Because gemmi can change the atom order (see the table above), do not use
+   ``pdb_gemmi`` for a topology that is combined with a trajectory unless you
+   have checked that the atom order matches the file. No error is raised when
+   it does not, the coordinates are simply assigned to the wrong atoms.
+
+Writing PDB files always uses :class:`~MDAnalysis.coordinates.PDB.PDBWriter`,
+whichever backend was used for reading.
+
+.. _hybrid-36: http://cci.lbl.gov/hybrid_36/
 
 See Also
 --------
