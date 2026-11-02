@@ -990,3 +990,29 @@ class TestLammpsTriclinic(object):
             )
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
+
+
+def test_missing_requested_coordinate_convention(tmpdir):
+    f = tmpdir.join("bad_lammps.dump")
+    f.write(
+        "ITEM: TIMESTEP\n"
+        "0\n"
+        "ITEM: NUMBER OF ATOMS\n"
+        "1\n"
+        "ITEM: BOX BOUNDS pp pp pp\n"
+        "0.0 10.0\n"
+        "0.0 10.0\n"
+        "0.0 10.0\n"
+        "ITEM: ATOMS id type xs ys zs\n"
+        "1 1 0.5 0.5 0.5\n"
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r"No coordinates following convention unwrapped found in timestep",
+    ):
+        mda.Universe(
+            str(f),
+            format="LAMMPSDUMP",
+            lammps_coordinate_convention="unwrapped",
+        )
