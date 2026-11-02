@@ -5,9 +5,9 @@ on:
     - cron: "0 3 * * 2,5"
   workflow_dispatch:
   # Uncomment when you need to test on a PR
-  # pull_request:
-  #   branches:
-  #     - develop
+  pull_request:
+     branches:
+       - develop
 
 
 concurrency:
@@ -99,7 +99,7 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         environment-name: mda
         create-args: >-
@@ -141,6 +141,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, macos-14]
+        include:
+          - hole2: hole2
+            os: ubuntu-22.04
+
 
     steps:
     - uses: actions/checkout@v6
@@ -151,7 +155,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         environment-name: mda
         create-args: >-
@@ -167,6 +171,7 @@ jobs:
       with:
         micromamba: true
         full-deps: true
+        hole2: ${{ matrix.hole2 }}
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -242,7 +247,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         environment-name: mda
         create-args: >-
