@@ -1634,11 +1634,8 @@ class SameSelection(Selection):
 
         # Fragment must come before self.prop_trans lookups!
         if self.prop == "fragment":
-            # Combine all fragments together, then check where group
-            # indices are same as fragment(s) indices
-            allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
-
-            mask = np.isin(group.indices, allfrags.indices)
+            # select atoms of group in the same fragment(s) as res
+            mask = np.isin(group.fragindices, res.fragindices)
             return group[mask]
         # [xyz] must come before self.prop_trans lookups too!
         try:
