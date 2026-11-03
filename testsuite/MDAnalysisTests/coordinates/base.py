@@ -858,7 +858,7 @@ class BaseWriterTest(object):
     def test_write_trajectory_atomgroup(self, ref, reader, universe, tmpdir):
         outfile = "write-atoms-test." + ref.ext
         with tmpdir.as_cwd():
-            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+            with reader.Writer(outfile) as w:
                 for ts in universe.trajectory:
                     w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
@@ -866,7 +866,7 @@ class BaseWriterTest(object):
     def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = "write-uni-test." + ref.ext
         with tmpdir.as_cwd():
-            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+            with reader.Writer(outfile) as w:
                 for ts in universe.trajectory:
                     w.write(universe)
             self._check_copy(outfile, ref, reader)
@@ -924,12 +924,14 @@ class BaseWriterTest(object):
                 with pytest.raises(TypeError):
                     ref.writer("foo")
 
-    def test_write_not_changing_ts(self, ref, universe, tmpdir):
+    def test_write_not_changing_ts(self, ref, reader, universe, tmpdir):
         outfile = "write-not-changing-ts." + ref.ext
 
         copy_ts = universe.trajectory.ts.copy()
         with tmpdir.as_cwd():
-            with ref.writer(outfile, n_atoms=5) as W:
+            with reader.Writer(
+                outfile, n_atoms=universe.atoms.n_atoms
+            ) as W:
                 W.write(universe)
                 assert_timestep_almost_equal(copy_ts, universe.trajectory.ts)
 

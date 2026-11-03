@@ -28,6 +28,8 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
+from MDAnalysis.coordinates.LAMMPS import DCDReader
+from MDAnalysis.coordinates.DCD import DCDWriter
 
 from numpy.testing import assert_equal, assert_allclose
 
@@ -37,6 +39,11 @@ from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSDataMini,
     RefLAMMPSDataDCD,
     RefLAMMPSDataAdditionalColumns,
+)
+from MDAnalysisTests.coordinates.base import (
+    BaseReference,
+    BaseReaderTest,
+    BaseWriterTest,
 )
 from MDAnalysisTests.datafiles import (
     LAMMPScnt,
@@ -328,7 +335,77 @@ class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
 # need more tests of the LAMMPS DCDReader
 
 
-class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
+class LAMMPSDCDReference(BaseReference):
+    def __init__(self):
+        super().__init__()
+        self.topology = RefLAMMPSDataDCD.topology
+        self.trajectory = RefLAMMPSDataDCD.trajectory
+        self.reader = DCDReader
+
+        self.writer = DCDWriter
+        self.mean_dimensions = RefLAMMPSDataDCD.mean_dimensions
+        trajectory = self.reader(self.trajectory)
+
+        self.n_atoms = trajectory.n_atoms
+        self.n_frames = len(trajectory)
+        self.dt = trajectory.dt
+        self.totaltime = trajectory.totaltime
+        self.aux_lowf_data = [
+            [2**0],
+            [np.nan],
+            [np.nan],
+            [np.nan],
+            [2**1],
+        ]
+        self.aux_highf_data = [
+            [2**0],
+            [2**1],
+            [2**2],
+            [2**3],
+            [2**4],
+        ]
+        self.ext = "dcd"
+
+        self.first_frame = trajectory[0].copy()
+        self.second_frame = trajectory[1].copy()
+        self.last_frame = trajectory[-1].copy()
+        self.jump_to_frame = trajectory[3].copy()
+        for i, frame in enumerate([
+            self.first_frame,
+            self.second_frame,
+            self.last_frame,
+            self.jump_to_frame,
+        ]):
+            frame.aux.lowf = np.array(self.aux_lowf_data[
+                [0, 1, 4, 3][i]
+            ])
+            frame.aux.highf = np.array(self.aux_highf_data[
+                [0, 1, 4, 3][i]
+            ])
+
+        self.dimensions = self.first_frame.dimensions.copy()
+        self.dimensions_second_frame = self.second_frame.dimensions.copy()
+        self.volume = self.first_frame.volume
+
+        trajectory.close()
+
+    def iter_ts(self, i):
+        trajectory = self.reader(self.trajectory)
+        ts = trajectory[i].copy()
+        trajectory.close()
+
+        ts.aux.lowf = np.array(self.aux_lowf_data[i])
+        ts.aux.highf = np.array(self.aux_highf_data[i])
+
+        return ts
+
+
+class TestLAMMPSDCDReader(BaseReaderTest, RefLAMMPSDataDCD):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return LAMMPSDCDReference()
+
     flavor = "LAMMPS"
 
     @pytest.fixture(scope="class")
@@ -409,7 +486,18 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
             wrong_load()
 
 
-class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
+class TestLAMMPSDCDWriter(BaseWriterTest, RefLAMMPSDataDCD):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(
+            self.topology, self.trajectory, format=self.format
+        )
+
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return LAMMPSDCDReference()
+
     flavor = "LAMMPS"
 
     @pytest.fixture(scope="class")
