@@ -228,7 +228,9 @@ class DCDReader(DCD.DCDReader):
         if n_atoms is None:
             n_atoms = self.n_atoms
 
-        dt = units.convert(self.ts.dt, "ps", "fs") / units.convert(1.0, "ps", "AKMA")
+        dt = units.convert(self.ts.dt, "ps", "fs") / units.convert(
+            1.0, "ps", "AKMA"
+        )
 
         return DCD.DCDWriter(
             filename,
@@ -268,7 +270,9 @@ class DATAReader(base.SingleFrameReaderBase):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             try:
-                self.convert_velocities_from_native(self.ts._velocities)  # in-place !
+                self.convert_velocities_from_native(
+                    self.ts._velocities
+                )  # in-place !
             except AttributeError:
                 pass
 
@@ -343,7 +347,9 @@ class DATAWriter(base.WriterBase):
         moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
 
         if self.convert_units:
-            coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
+            coordinates = self.convert_pos_to_native(
+                atoms.positions, inplace=False
+            )
 
         if has_charges:
             for index, moltag, atype, charge, coords in zip(
@@ -368,7 +374,9 @@ class DATAWriter(base.WriterBase):
         self.f.write("Velocities\n")
         self.f.write("\n")
         indices = atoms.indices + 1
-        velocities = self.convert_velocities_to_native(atoms.velocities, inplace=False)
+        velocities = self.convert_velocities_to_native(
+            atoms.velocities, inplace=False
+        )
         for index, vel in zip(indices, velocities):
             self.f.write(
                 "{i:d} {x:.10f} {y:.10f} {z:.10f}\n".format(
@@ -385,7 +393,9 @@ class DATAWriter(base.WriterBase):
         for atype in range(1, max_type + 1):
             # search entire universe for mass info, not just writing selection
             masses = set(
-                atoms.universe.atoms.select_atoms("type {:d}".format(atype)).masses
+                atoms.universe.atoms.select_atoms(
+                    "type {:d}".format(atype)
+                ).masses
             )
             if len(masses) == 0:
                 mass_dict[atype] = 1.0
@@ -478,7 +488,10 @@ class DATAWriter(base.WriterBase):
         try:
             atoms.types.astype(np.int32)
         except ValueError:
-            errmsg = "LAMMPS.DATAWriter: atom types must be convertible to " "integers"
+            errmsg = (
+                "LAMMPS.DATAWriter: atom types must be convertible to "
+                "integers"
+            )
             raise ValueError(errmsg) from None
 
         try:
@@ -503,18 +516,24 @@ class DATAWriter(base.WriterBase):
 
             for btype, attr_name in attrs:
                 features[btype] = atoms.__getattribute__(attr_name)
-                self.f.write("{:>12d}  {}\n".format(len(features[btype]), attr_name))
+                self.f.write(
+                    "{:>12d}  {}\n".format(len(features[btype]), attr_name)
+                )
                 features[btype] = features[btype].atomgroup_intersection(
                     atoms, strict=True
                 )
 
             self.f.write("\n")
             self.f.write(
-                "{:>12d}  atom types\n".format(max(atoms.types.astype(np.int32)))
+                "{:>12d}  atom types\n".format(
+                    max(atoms.types.astype(np.int32))
+                )
             )
 
             for btype, attr in features.items():
-                self.f.write("{:>12d}  {} types\n".format(len(attr.types()), btype))
+                self.f.write(
+                    "{:>12d}  {} types\n".format(len(attr.types()), btype)
+                )
 
             self._write_dimensions(atoms.dimensions)
 
@@ -821,7 +840,9 @@ class DumpReader(base.ReaderBase):
             try:
                 # this will automatically select in order of priority
                 # unscaled, scaled, unwrapped, scaled_unwrapped
-                self.lammps_coordinate_convention = list(convention_to_col_ix)[0]
+                self.lammps_coordinate_convention = list(convention_to_col_ix)[
+                    0
+                ]
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
@@ -848,7 +869,9 @@ class DumpReader(base.ReaderBase):
                     "Some of the additional columns are not present "
                     "in the file, they will be ignored"
                 )
-            additional_keys = [key for key in self._additional_columns if key in attrs]
+            additional_keys = [
+                key for key in self._additional_columns if key in attrs
+            ]
         else:
             additional_keys = []
         for key in additional_keys:
@@ -859,7 +882,9 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            coords = np.array([fields[dim] for dim in coord_cols], dtype=np.float32)
+            coords = np.array(
+                [fields[dim] for dim in coord_cols], dtype=np.float32
+            )
 
             if self._unwrap:
                 images = coords[3:]
@@ -876,7 +901,9 @@ class DumpReader(base.ReaderBase):
 
             # Collect additional cols
             for attribute_key in additional_keys:
-                ts.data[attribute_key][i] = fields[attr_to_col_ix[attribute_key]]
+                ts.data[attribute_key][i] = fields[
+                    attr_to_col_ix[attribute_key]
+                ]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
@@ -891,7 +918,9 @@ class DumpReader(base.ReaderBase):
 
         if self.lammps_coordinate_convention.startswith("scaled"):
             # if coordinates are given in scaled format, undo that
-            ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+            ts.positions = distances.transform_StoR(
+                ts.positions, ts.dimensions
+            )
         # Transform to origin after transformation of scaled variables
         ts.positions -= np.array([xlo, ylo, zlo])[None, :]
 
