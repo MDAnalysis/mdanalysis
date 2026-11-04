@@ -228,9 +228,8 @@ class DCDReader(DCD.DCDReader):
         if n_atoms is None:
             n_atoms = self.n_atoms
 
-        dt = (
-            units.convert(self.ts.dt, "ps", "fs")
-            / units.convert(1.0, "ps", "AKMA")
+        dt = units.convert(self.ts.dt, "ps", "fs") / units.convert(
+            1.0, "ps", "AKMA"
         )
 
         return DCD.DCDWriter(
