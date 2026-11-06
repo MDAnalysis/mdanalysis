@@ -279,11 +279,11 @@ cdef inline void _minimum_image_orthogonal(cython.floating[:] dx,
 
     Parameters
     ----------
-    dx : numpy.array, shape (3,)
+    dx : numpy.ndarray, shape (3,)
       vector to minimize
-    box : numpy.array, shape (3,)
+    box : numpy.ndarray, shape (3,)
       box length in each dimension
-    inverse_box : numpy.array, shape (3,)
+    inverse_box : numpy.ndarray, shape (3,)
       inverse of box
 
     Operates in-place on dx!
@@ -306,11 +306,11 @@ cdef inline void _minimum_image_triclinic(cython.floating[:] dx,
 
     Parameters
     ----------
-    dx : numpy.array, shape (3,)
+    dx : numpy.ndarray, shape (3,)
       the vector to apply minimum image convention to
-    box : numpy.array, shape (9,)
+    box : numpy.ndarray, shape (9,)
       flattened 3x3 representation of the unit cell
-    inverse_box : numpy.array, shape (3,)
+    inverse_box : numpy.ndarray, shape (3,)
       inverse of the **diagonal** of the 3x3 representation
 
     This version is near identical to the version in calc_distances.h, with the

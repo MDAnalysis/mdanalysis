@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston
 
  * 2.12.0
 
@@ -27,6 +27,12 @@ Enhancements
    (Issue #5362, PR #5482)
 
 Changes
+ * Type hints now use PEP 604 syntax (``X | None``, ``A | B``) instead of
+   ``typing.Optional``/``typing.Union``; parameters that default to ``None``
+   are annotated as optional and their docstrings updated to match.
+   `lib.distances.apply_PBC` no longer defaults ``box`` to ``None`` (it was
+   always required) and ``return_distances`` in the capped distance functions
+   is annotated as ``bool`` (PR #XXXX)
 
 Deprecations
 
