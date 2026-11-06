@@ -134,6 +134,7 @@ import numpy as np
 import warnings
 import errno
 import logging
+import mmap
 from math import isclose
 
 import MDAnalysis
@@ -675,6 +676,10 @@ class NCDFReader(base.ReaderBase):
                 self.convert_pos_from_native(ts.dimensions[:3])
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
+        # the frame is now copied into ts, so its pages can be dropped again
+        mm = getattr(self.trjfile, "_mm", None)
+        if mm is not None and hasattr(mmap, "MADV_DONTNEED"):
+            mm.madvise(mmap.MADV_DONTNEED)
         return ts
 
     def _reopen(self):

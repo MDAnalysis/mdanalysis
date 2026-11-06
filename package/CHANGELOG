@@ -14,11 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362
+??/??/?? IAlibay, sumitsaraswat362, erikfransson
 
  * 2.12.0
 
 Fixes
+ * The NCDF reader now releases the pages of the memory map once a frame has
+   been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
+   (the default for a file name) no longer grows the resident memory of the
+   process towards the size of the whole trajectory file. Requires a platform
+   that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792,
+   PR #5463).
 
 Enhancements
  * InterRDF and InterRDF_s now expose computed average box volume and densities
