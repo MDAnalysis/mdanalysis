@@ -14,11 +14,15 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362
+??/??/?? IAlibay, sumitsaraswat362, dhrubchatterjee16-lang
 
  * 2.12.0
 
 Fixes
+ * Fixed streamlines `generate_streamlines` to correctly accumulate and
+   time-average displacements over all frames in the requested frame range,
+   stop cleanly at `end_frame`, and added input validation for frame indices,
+   grid spacing, and coordinate limits (Issue #4549)
 
 Enhancements
  * InterRDF and InterRDF_s now expose computed average box volume and densities
