@@ -171,3 +171,49 @@ def test_backend(sels, backend):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
     assert_allclose(max(rdf.results.rdf), 4)
+
+
+@pytest.mark.parametrize("norm", ("rdf", "density"))
+def test_exposed_density(sels, norm, client_InterRDF):
+    s1, s2 = sels
+    expected_volume = 1_000_000.0
+    rdf = InterRDF(s1, s2, norm=norm).run(**client_InterRDF)
+
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    assert hasattr(rdf.results, "density_1")
+    assert hasattr(rdf.results, "density_2")
+
+    assert_allclose(rdf.results.box_volume, expected_volume)
+    assert_allclose(rdf.results.density_1, len(s1) / expected_volume)
+    assert_allclose(rdf.results.density_2, len(s2) / expected_volume)
+    assert_allclose(
+        rdf.results.normalization_density,
+        (len(s1) * len(s2)) / expected_volume,
+    )
+
+
+def test_exposed_density_norm_none(sels, client_InterRDF):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm="none").run(**client_InterRDF)
+    assert not hasattr(rdf.results, "box_volume")
+    assert not hasattr(rdf.results, "normalization_density")
+    assert not hasattr(rdf.results, "density_1")
+    assert not hasattr(rdf.results, "density_2")
+
+
+def test_density_zero_box(u, client_InterRDF):
+    trajectory_data = np.tile(u.atoms.positions, (NFRAMES, 1, 1))
+    dimensions_data = np.zeros((NFRAMES, 6))
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
+    s1 = u.select_atoms("name OW")
+    s2 = u.select_atoms("name HW1 HW2")
+    rdf = InterRDF(s1, s2, norm="density").run(**client_InterRDF)
+    assert hasattr(rdf.results, "box_volume")
+    assert hasattr(rdf.results, "normalization_density")
+    assert hasattr(rdf.results, "density_1")
+    assert hasattr(rdf.results, "density_2")
+    assert rdf.results.box_volume is None
+    assert rdf.results.normalization_density is None
+    assert rdf.results.density_1 is None
+    assert rdf.results.density_2 is None
