@@ -32,7 +32,7 @@ Changes
    are annotated as optional and their docstrings updated to match.
    `lib.distances.apply_PBC` no longer defaults ``box`` to ``None`` (it was
    always required) and ``return_distances`` in the capped distance functions
-   is annotated as ``bool`` (PR #XXXX)
+   is annotated as ``bool`` (PR #5531)
 
 Deprecations
 
