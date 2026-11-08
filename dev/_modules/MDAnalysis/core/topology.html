@@ -202,7 +202,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atomindices</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">,</span> <span class="n">Segindices</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
@@ -756,7 +756,7 @@
         <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
                 <span class="k">else</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
             <span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
@@ -768,7 +768,7 @@
         <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
                 <span class="k">else</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
             <span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>

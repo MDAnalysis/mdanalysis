@@ -281,7 +281,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">        The Universe to apply the guesser on</span>
-<span class="sd">    box : np.ndarray, optional</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The box of the Universe. This is used for bond guessing.</span>
 <span class="sd">    vdwradii : dict, optional</span>
 <span class="sd">        Dict relating atom types: vdw radii. This is used for bond guessing</span>
@@ -349,14 +349,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atom_types : Optional[np.ndarray]</span>
+<span class="sd">        atom_types : numpy.ndarray, optional</span>
 <span class="sd">          Atom types/elements to guess masses from</span>
-<span class="sd">        indices_to_guess : Optional[np.ndarray]</span>
+<span class="sd">        indices_to_guess : numpy.ndarray, optional</span>
 <span class="sd">          Mask array for partially guess masses for certain atoms</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        atom_masses : np.ndarray dtype float64</span>
+<span class="sd">        atom_masses : numpy.ndarray dtype float64</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -442,7 +442,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        atom_types : np.ndarray dtype object</span>
+<span class="sd">        atom_types : numpy.ndarray dtype object</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -547,7 +547,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        atoms: AtomGroup</span>
 <span class="sd">            atoms for which bonds should be guessed</span>
-<span class="sd">        coords: np.ndarray, optional</span>
+<span class="sd">        coords: numpy.ndarray, optional</span>
 <span class="sd">            coordinates of the atoms. If not provided, the coordinates</span>
 <span class="sd">            of the ``atoms`` in the universe are used.</span>
 

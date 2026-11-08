@@ -267,7 +267,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        np.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.</span>
+<span class="sd">        numpy.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.</span>
 <span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gemmi</span><span class="o">.</span><span class="n">FlatStructure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
 

@@ -520,7 +520,7 @@ all AtomGroups etc throughout the Universe.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><em>string</em>) – Either a MDAnalysis TopologyAttr object or the name of a possible
 topology attribute.</p></li>
-<li><p><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – If initiating an attribute from a string, the initial values to
+<li><p><strong>values</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – If initiating an attribute from a string, the initial values to
 use.  If not supplied, the new TopologyAttribute will have empty
 or zero values.</p></li>
 </ul>
@@ -918,7 +918,7 @@ the input SMILES string; coordinates are included if
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (str or <code class="xref py py-mod docutils literal notranslate"><span class="pre">Guesser</span></code> class) – For calling a matching guesser class for this specific context</p></li>
-<li><p><strong>to_guess</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em><em>]</em>) – <p>TopologyAttrs to be guessed. These TopologyAttrs will be wholly
+<li><p><strong>to_guess</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – <p>TopologyAttrs to be guessed. These TopologyAttrs will be wholly
 guessed if they don’t exist in the Universe. If they already exist in
 the Universe, only empty or missing values will be guessed.</p>
 <div class="admonition warning">
@@ -930,7 +930,7 @@ by default</strong> and it will be up to the user to request guessing
 using <code class="docutils literal notranslate"><span class="pre">to_guess</span></code> and <code class="docutils literal notranslate"><span class="pre">force_guess</span></code>.</p>
 </div>
 </p></li>
-<li><p><strong>force_guess</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em><em>]</em>) – TopologyAttrs in this list will be force guessed. If the
+<li><p><strong>force_guess</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – TopologyAttrs in this list will be force guessed. If the
 TopologyAttr does not already exist in the Universe, this has no
 effect. If the TopologyAttr does already exist, all values will
 be overwritten by guessed values.</p></li>

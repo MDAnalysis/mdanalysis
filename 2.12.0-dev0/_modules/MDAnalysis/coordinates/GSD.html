@@ -193,6 +193,8 @@
 <span class="sd">.. autofunction:: gsd_pickle_open</span>
 
 <span class="sd">"""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -383,7 +385,7 @@
 
 <div class="viewcode-block" id="gsd_pickle_open">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.gsd_pickle_open">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">gsd_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"r"</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gsd_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"r"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"r"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Open hoomd schema GSD file with pickle function implemented.</span>
 
 <span class="sd">    This function returns a GSDPicklable object. It can be used as a</span>
@@ -400,7 +402,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        a filename given a text or byte string.</span>
-<span class="sd">    mode: str, optional</span>
+<span class="sd">    mode: {'r'}, optional</span>
 <span class="sd">        'r':  open for reading.</span>
 
 <span class="sd">    Returns</span>

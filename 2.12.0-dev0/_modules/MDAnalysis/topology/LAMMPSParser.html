@@ -563,13 +563,13 @@
 <span class="sd">        ----------</span>
 <span class="sd">        datalines : list</span>
 <span class="sd">          list of strings from file</span>
-<span class="sd">        order : np.array</span>
+<span class="sd">        order : numpy.ndarray</span>
 <span class="sd">          array which rearranges the velocities into correct order</span>
 <span class="sd">          (from argsort on atom ids)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        velocities : np.ndarray</span>
+<span class="sd">        velocities : numpy.ndarray</span>
 <span class="sd">        """</span>
         <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 

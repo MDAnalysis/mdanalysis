@@ -169,7 +169,7 @@
 <span class="sd">===================================================================</span>
 
 <span class="sd">Fast C-routines to calculate arrays of distances or angles from coordinate</span>
-<span class="sd">arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an</span>
+<span class="sd">arrays. Distance functions can accept a NumPy :class:`numpy.ndarray` or an</span>
 <span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist</span>
 <span class="sd">in parallel versions, which typically provide higher performance than the</span>
 <span class="sd">serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can</span>
@@ -251,7 +251,7 @@
 <span class="sd">.. versionadded:: 0.13.0</span>
 <span class="sd">.. versionchanged:: 2.3.0</span>
 <span class="sd">   Distance functions can now accept an</span>
-<span class="sd">   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`</span>
+<span class="sd">   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`numpy.ndarray`</span>
 <span class="sd">.. versionchanged:: 2.5.0</span>
 <span class="sd">   Interface to the `distopia`_ package added.</span>
 <span class="sd">.. versionchanged:: 2.9.0</span>
@@ -285,7 +285,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -323,8 +324,8 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span>
     <span class="n">funcname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Helper function to select a backend function `funcname`."""</span>
@@ -368,9 +369,12 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.c_distances_openmp</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPENMP_ENABLED</span> <span class="k">as</span> <span class="n">USED_OPENMP</span>
 
+<span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"OpenMP"</span><span class="p">,</span> <span class="s2">"openmp"</span><span class="p">,</span> <span class="s2">"distopia"</span><span class="p">]</span>
+<span class="n">CappedMethodOptions</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"bruteforce"</span><span class="p">,</span> <span class="s2">"nsgrid"</span><span class="p">,</span> <span class="s2">"pkdtree"</span><span class="p">]</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_result_array</span><span class="p">(</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Check if the result array is ok to use.</span>
 
@@ -426,11 +430,11 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">distance_array</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">configuration</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculate all possible distances between a reference set and another</span>
 <span class="sd">    configuration.</span>
@@ -544,10 +548,10 @@
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">"reference"</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">self_distance_array</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculate all possible distances within a configuration `reference`.</span>
 
@@ -663,14 +667,14 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">capped_distance</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">configuration</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">CappedMethodOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    and `configuration` arrays which are separated by a distance lying within</span>
@@ -806,9 +810,9 @@
     <span class="n">reference</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">CappedMethodOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Guesses the fastest method for capped distance calculations based on the</span>
 <span class="sd">    size of the coordinate sets and the relative size of the target volume.</span>
@@ -825,7 +829,7 @@
 <span class="sd">    min_cutoff : float, optional</span>
 <span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
 <span class="sd">        coordinates.</span>
-<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
@@ -891,13 +895,13 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_bruteforce_capped</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">configuration</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a brute force method.</span>
 
@@ -995,13 +999,13 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_pkdtree_capped</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">configuration</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a KDtree method.</span>
 
@@ -1107,12 +1111,12 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_nsgrid_capped</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">configuration</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a grid-based search method.</span>
 
@@ -1227,13 +1231,13 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">self_capped_distance</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">CappedMethodOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    array which are separated by a distance lying within the specified</span>
@@ -1365,9 +1369,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_determine_method_self</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">CappedMethodOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Guesses the fastest method for capped distance calculations based on the</span>
 <span class="sd">    size of the `reference` coordinate set and the relative size of the target</span>
@@ -1381,7 +1385,7 @@
 <span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
 <span class="sd">    min_cutoff : float, optional</span>
 <span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
-<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
@@ -1438,12 +1442,12 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_bruteforce_capped_self</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a brute force method.</span>
 
@@ -1533,12 +1537,12 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_pkdtree_capped_self</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a KDtree method.</span>
 
@@ -1633,11 +1637,11 @@
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_nsgrid_capped_self</span><span class="p">(</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">min_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_distances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Capped distance evaluations using a grid-based search method.</span>
 
@@ -1839,11 +1843,11 @@
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">"coords1"</span><span class="p">,</span> <span class="s2">"coords2"</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">calc_bonds</span><span class="p">(</span>
-    <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">coords1</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords2</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculates the bond lengths between pairs of atom positions from the two</span>
 <span class="sd">    coordinate arrays `coords1` and `coords2`, which must contain the same</span>
@@ -1955,12 +1959,12 @@
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">"coords1"</span><span class="p">,</span> <span class="s2">"coords2"</span><span class="p">,</span> <span class="s2">"coords3"</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">calc_angles</span><span class="p">(</span>
-    <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">coords1</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords2</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords3</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculates the angles formed between triplets of atom positions from the</span>
 <span class="sd">    three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate</span>
@@ -2081,13 +2085,13 @@
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">"coords1"</span><span class="p">,</span> <span class="s2">"coords2"</span><span class="p">,</span> <span class="s2">"coords3"</span><span class="p">,</span> <span class="s2">"coords4"</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">calc_dihedrals</span><span class="p">(</span>
-    <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">coords4</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">coords1</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords2</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords3</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">coords4</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculates the dihedral angles formed between quadruplets of positions</span>
 <span class="sd">    from the four coordinate arrays `coords1`, `coords2`, `coords3`, and</span>
@@ -2222,9 +2226,9 @@
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">"coords"</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply_PBC</span><span class="p">(</span>
-    <span class="n">coords</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">"AtomGroup"</span><span class="p">],</span>
-    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+    <span class="n">coords</span><span class="p">:</span> <span class="s2">"npt.NDArray | AtomGroup"</span><span class="p">,</span>
+    <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"serial"</span><span class="p">,</span> <span class="s2">"OpenMP"</span><span class="p">,</span> <span class="s2">"openmp"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Moves coordinates into the primary unit cell.</span>
 
@@ -2239,7 +2243,7 @@
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    backend : {'serial', 'OpenMP'}, optional</span>
+<span class="sd">    backend : {'serial', 'openmp'}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>

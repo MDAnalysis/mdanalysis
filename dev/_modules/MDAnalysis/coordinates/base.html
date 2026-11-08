@@ -272,7 +272,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.timestep</span><span class="w"> </span><span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">core</span>
@@ -284,11 +284,13 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..auxiliary.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuxReader</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..auxiliary.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">auxreader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..auxiliary.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_auxreader_for</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..auxiliary</span><span class="w"> </span><span class="kn">import</span> <span class="n">_AUXREADERS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">store_init_arguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedStream</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span>
 
 
 <div class="viewcode-block" id="FrameIteratorBase">
@@ -1198,16 +1200,17 @@
 
 <div class="viewcode-block" id="ProtoReader.timeseries">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.timeseries">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AtomGroup'</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">atomgroup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'Atomgroup'</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s1">'fac'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">:</span> <span class="s1">'AtomGroup | None'</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">atomgroup</span><span class="p">:</span> <span class="s1">'AtomGroup | None'</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">'fac'</span><span class="p">,</span> <span class="s1">'fca'</span><span class="p">,</span> <span class="s1">'afc'</span><span class="p">,</span> <span class="s1">'acf'</span><span class="p">,</span> <span class="s1">'caf'</span><span class="p">,</span> <span class="s1">'cfa'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'fac'</span><span class="p">,</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return a subset of coordinate data for an AtomGroup</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        asel : AtomGroup (optional)</span>
+<span class="sd">        asel : AtomGroup, optional</span>
 <span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the</span>
 <span class="sd">            coordinates from. Defaults to ``None``, in which case the full set</span>
 <span class="sd">            of coordinate data is returned.</span>
@@ -1215,20 +1218,20 @@
 <span class="sd">            .. deprecated:: 2.7.0</span>
 <span class="sd">                asel argument will be renamed to atomgroup in 3.0.0</span>
 
-<span class="sd">        atomgroup: AtomGroup (optional)</span>
+<span class="sd">        atomgroup : AtomGroup, optional</span>
 <span class="sd">            Same as `asel`, will replace `asel` in 3.0.0</span>
-<span class="sd">        start :  int (optional)</span>
+<span class="sd">        start : int, optional</span>
 <span class="sd">            Begin reading the trajectory at frame index `start` (where 0 is the</span>
 <span class="sd">            index of the first frame in the trajectory); the default</span>
 <span class="sd">            ``None`` starts at the beginning.</span>
-<span class="sd">        stop : int (optional)</span>
+<span class="sd">        stop : int, optional</span>
 <span class="sd">            End reading the trajectory at frame index `stop`-1, i.e, `stop` is</span>
 <span class="sd">            excluded. The trajectory is read to the end with the default</span>
 <span class="sd">            ``None``.</span>
-<span class="sd">        step : int (optional)</span>
+<span class="sd">        step : int, optional</span>
 <span class="sd">            Step size for reading; the default ``None`` is equivalent to 1 and</span>
 <span class="sd">            means to read every frame.</span>
-<span class="sd">        order : str (optional)</span>
+<span class="sd">        order : {'fac', 'fca', 'afc', 'acf', 'caf', 'cfa'}, optional</span>
 <span class="sd">            the order/shape of the return data array, corresponding</span>
 <span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
 <span class="sd">            of 'a', 'f', 'c' are allowed ie "fac" - return array</span>
@@ -1290,9 +1293,9 @@
 <div class="viewcode-block" id="ProtoReader.add_auxiliary">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_auxiliary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                      <span class="n">aux_spec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                      <span class="n">auxdata</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                      <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">aux_spec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">auxdata</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AuxReader</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add auxiliary data to be read alongside trajectory.</span>
 

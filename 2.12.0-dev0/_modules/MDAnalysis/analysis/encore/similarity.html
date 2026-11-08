@@ -417,17 +417,17 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    sigma1 : numpy.array</span>
+<span class="sd">    sigma1 : numpy.ndarray</span>
 <span class="sd">        Covariance matrix for the first ensemble.</span>
 
-<span class="sd">    sigma2 : numpy.array</span>
+<span class="sd">    sigma2 : numpy.ndarray</span>
 <span class="sd">        Covariance matrix for the second ensemble.</span>
 
-<span class="sd">    x1: numpy.array</span>
+<span class="sd">    x1: numpy.ndarray</span>
 <span class="sd">        Mean for the estimated normal multivariate distribution of the first</span>
 <span class="sd">        ensemble.</span>
 
-<span class="sd">    x2: numpy.array</span>
+<span class="sd">    x2: numpy.ndarray</span>
 <span class="sd">        Mean for the estimated normal multivariate distribution of the second</span>
 <span class="sd">        ensemble.</span>
 
@@ -608,10 +608,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    embedded_space : numpy.array</span>
+<span class="sd">    embedded_space : numpy.ndarray</span>
 <span class="sd">        Array containing the coordinates of the embedded space</span>
 
-<span class="sd">    ensemble_assignment : numpy.array</span>
+<span class="sd">    ensemble_assignment : numpy.ndarray</span>
 <span class="sd">        Array containing one int per ensemble conformation. These allow to</span>
 <span class="sd">        distinguish, in the complete embedded space, which conformations</span>
 <span class="sd">        belong to each ensemble. For instance if ensemble_assignment</span>
@@ -631,11 +631,11 @@
 <span class="sd">    kdes : scipy.stats.gaussian_kde</span>
 <span class="sd">        KDEs calculated from ensembles</span>
 
-<span class="sd">    resamples : list of numpy.array</span>
+<span class="sd">    resamples : list of numpy.ndarray</span>
 <span class="sd">        For each KDE, draw samples according to the probability distribution</span>
 <span class="sd">        of the KDE mixture model</span>
 
-<span class="sd">    embedded_ensembles : list of numpy.array</span>
+<span class="sd">    embedded_ensembles : list of numpy.ndarray</span>
 <span class="sd">        List of numpy.array containing, each one, the elements of the</span>
 <span class="sd">        embedded space belonging to a certain ensemble</span>
 <span class="sd">    """</span>
@@ -708,14 +708,14 @@
 <span class="sd">    kde1 : scipy.stats.gaussian_kde</span>
 <span class="sd">        Kernel density estimation for ensemble 1</span>
 
-<span class="sd">    resamples1 : numpy.array</span>
+<span class="sd">    resamples1 : numpy.ndarray</span>
 <span class="sd">        Samples drawn according do kde1. Will be used as samples to</span>
 <span class="sd">        calculate the expected values according to 'P' as detailed before.</span>
 
 <span class="sd">    kde2 : scipy.stats.gaussian_kde</span>
 <span class="sd">            Kernel density estimation for ensemble 2</span>
 
-<span class="sd">    resamples2 : numpy.array</span>
+<span class="sd">    resamples2 : numpy.ndarray</span>
 <span class="sd">        Samples drawn according do kde2. Will be used as sample to</span>
 <span class="sd">        calculate the expected values according to 'Q' as detailed before.</span>
 
@@ -790,10 +790,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    embedded_space : numpy.array</span>
+<span class="sd">    embedded_space : numpy.ndarray</span>
 <span class="sd">            Array containing the coordinates of the embedded space</span>
 
-<span class="sd">    ensemble_assignment : numpy.array</span>
+<span class="sd">    ensemble_assignment : numpy.ndarray</span>
 <span class="sd">            array containing one int per ensemble conformation. These allow</span>
 <span class="sd">            to distinguish, in the complete embedded space, which</span>
 <span class="sd">            conformations belong to each ensemble. For instance if</span>
@@ -822,11 +822,11 @@
 <span class="sd">    kdes : scipy.stats.gaussian_kde</span>
 <span class="sd">            KDEs calculated from ensembles</span>
 
-<span class="sd">    resamples : list of numpy.array</span>
+<span class="sd">    resamples : list of numpy.ndarray</span>
 <span class="sd">            For each KDE, draw samples according to the probability</span>
 <span class="sd">            distribution of the kde mixture model</span>
 
-<span class="sd">    embedded_ensembles : list of numpy.array</span>
+<span class="sd">    embedded_ensembles : list of numpy.ndarray</span>
 <span class="sd">            List of numpy.array containing, each one, the elements of the</span>
 <span class="sd">            embedded space belonging to a certain ensemble</span>
 
@@ -1002,7 +1002,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    hes, details : numpy.array, dictionary</span>
+<span class="sd">    hes, details : numpy.ndarray, dictionary</span>
 <span class="sd">        Harmonic similarity measurements between each pair of ensembles,</span>
 <span class="sd">        and dict containing mean and covariance matrix for each ensemble</span>
 
@@ -1277,7 +1277,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    ces, details : numpy.array, numpy.array</span>
+<span class="sd">    ces, details : numpy.ndarray, numpy.ndarray</span>
 
 <span class="sd">        ces contains the similarity values, arranged in a numpy.array.</span>
 <span class="sd">        If only one clustering_method is provided the output will be a</span>
@@ -1560,7 +1560,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    dres, details : numpy.array, numpy.array</span>
+<span class="sd">    dres, details : numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        dres contains the similarity values, arranged in numpy.array.</span>
 <span class="sd">        If one number of dimensions is provided as an integer,</span>
 <span class="sd">        the output will be a 2-dimensional square symmetrical numpy.array.</span>
@@ -1830,7 +1830,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    out : np.array</span>
+<span class="sd">    out : numpy.ndarray</span>
 <span class="sd">        array of shape (number_of_frames / window_size, preference_values).</span>
 
 
@@ -1944,7 +1944,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    out : np.array</span>
+<span class="sd">    out : numpy.ndarray</span>
 <span class="sd">        array of shape (number_of_frames / window_size, preference_values).</span>
 
 

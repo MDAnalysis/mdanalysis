@@ -494,7 +494,7 @@
 <span class="sd">            used, the cached molecule and the new one have to be made from the</span>
 <span class="sd">            same AtomGroup selection and with the same arguments passed</span>
 <span class="sd">            to the converter</span>
-<span class="sd">        inferrer : Optional[Callable[[Chem.Mol], Chem.Mol]]</span>
+<span class="sd">        inferrer : callable, optional</span>
 <span class="sd">            A callable to infer bond orders and charges for the RDKit molecule</span>
 <span class="sd">            created by the converter. If ``None``, inferring is skipped.</span>
 <span class="sd">        implicit_hydrogens : bool</span>
@@ -612,7 +612,7 @@
 <span class="sd">    force : bool</span>
 <span class="sd">        Force the conversion when no hydrogens were detected but ``inferrer``</span>
 <span class="sd">        is not ``None``. Useful for inorganic molecules mostly.</span>
-<span class="sd">    inferrer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]</span>
+<span class="sd">    inferrer : callable, optional</span>
 <span class="sd">        A callable to infer bond orders and charges for the RDKit molecule</span>
 <span class="sd">        created by the converter. If ``None``, inferring is skipped.</span>
 <span class="sd">    NoImplicit : bool</span>

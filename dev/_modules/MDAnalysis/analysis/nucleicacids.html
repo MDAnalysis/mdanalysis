@@ -206,7 +206,6 @@
 
 <span class="sd">"""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -219,8 +218,8 @@
 
 <span class="c1"># Deprecation: In 3.0.0 change type to just</span>
 <span class="c1"># ResidueClass = ResidueGroup</span>
-<span class="n">ResidueClass</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span> <span class="n">ResidueGroup</span><span class="p">]</span>
-<span class="sa">r</span><span class="sd">"""A type alias for :code:`Union[List[Residue], ResidueGroup]`</span>
+<span class="n">ResidueClass</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span> <span class="o">|</span> <span class="n">ResidueGroup</span>
+<span class="sa">r</span><span class="sd">"""A type alias for :code:`list[Residue] | ResidueGroup`</span>
 
 <span class="sd">Used as an alias for methods where either class is acceptable.</span>
 <span class="sd">"""</span>
@@ -239,10 +238,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    selection1: List[AtomGroup]</span>
+<span class="sd">    selection1: list[AtomGroup]</span>
 <span class="sd">        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom</span>
 <span class="sd">        of each nucleic acid being analyzed.</span>
-<span class="sd">    selection2: List[AtomGroup]</span>
+<span class="sd">    selection2: list[AtomGroup]</span>
 <span class="sd">        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom</span>
 <span class="sd">        of each nucleic acid being analyzed.</span>
 <span class="sd">    kwargs: dict</span>
@@ -326,8 +325,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">selection1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
-        <span class="n">selection2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
+        <span class="n">selection1</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
+        <span class="n">selection2</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -359,7 +358,7 @@
         <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"U"</span><span class="p">,</span>
         <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"T"</span><span class="p">,</span>
         <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C"</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">        A helper method for nucleic acid pair distance analyses.</span>
 <span class="sd">        Used for selecting specific atoms from two strands of nucleic acids.</span>
@@ -367,9 +366,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        strand1: List[Residue]</span>
+<span class="sd">        strand1: list[Residue]</span>
 <span class="sd">            The first nucleic acid strand</span>
-<span class="sd">        strand2: List[Residue]</span>
+<span class="sd">        strand2: list[Residue]</span>
 <span class="sd">            The second nucleic acid strand</span>
 <span class="sd">        a1_name: str</span>
 <span class="sd">            The selection for the purine base of the strand pair</span>
@@ -388,7 +387,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Tuple[List[AtomGroup], List[AtomGroup]]</span>
+<span class="sd">        tuple[list[AtomGroup], list[AtomGroup]]</span>
 <span class="sd">            returns a tuple containing two lists of</span>
 <span class="sd">            :class:`~MDAnalysis.core.groups.AtomGroup`\s</span>
 <span class="sd">            corresponding to the provided selections from each strand.</span>
@@ -412,11 +411,11 @@
 <span class="sd">           residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the</span>
 <span class="sd">           appropriate names via the keyword arguments.</span>
 <span class="sd">        """</span>
-        <span class="n">pyrimidines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_name</span><span class="p">,</span> <span class="n">t_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">]</span>
-        <span class="n">purines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_name</span><span class="p">,</span> <span class="n">g_name</span><span class="p">]</span>
+        <span class="n">pyrimidines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_name</span><span class="p">,</span> <span class="n">t_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">]</span>
+        <span class="n">purines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_name</span><span class="p">,</span> <span class="n">g_name</span><span class="p">]</span>
 
-        <span class="n">sel1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">sel2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel1</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel2</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">strand1</span><span class="o">.</span><span class="n">residues</span><span class="p">,</span> <span class="n">strand2</span><span class="o">.</span><span class="n">residues</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span> <span class="ow">in</span> <span class="n">pyrimidines</span><span class="p">:</span>
@@ -432,7 +431,7 @@
             <span class="n">ag2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">"name </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">]):</span>
-                <span class="n">err_info</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Residue</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">err_info</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Residue</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a1</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">a2</span><span class="p">)</span>
                 <span class="p">)</span>
 
@@ -589,7 +588,7 @@
 <span class="sd">    .. versionchanged:: 2.7.0</span>
 <span class="sd">        `strand1` and `strand2` now also accept a</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.ResidueGroup` as input.</span>
-<span class="sd">        The previous input type, ``List[Residue]`` is still supported,</span>
+<span class="sd">        The previous input type, ``list[Residue]`` is still supported,</span>
 <span class="sd">        but it is **deprecated** and will be removed in release 3.0.0.</span>
 
 <span class="sd">    .. versionchanged:: 2.11.0</span>
@@ -637,7 +636,7 @@
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span> <span class="o">=</span> <span class="n">verify_strand</span><span class="p">(</span><span class="n">strand1</span><span class="p">)</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span> <span class="o">=</span> <span class="n">verify_strand</span><span class="p">(</span><span class="n">strand2</span><span class="p">)</span>
 
-        <span class="n">strand_atomgroups</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">strand_atomgroups</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select_strand_atoms</span><span class="p">(</span>
                 <span class="n">strand1</span><span class="p">,</span>
                 <span class="n">strand2</span><span class="p">,</span>
@@ -670,9 +669,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    strand1: List[Residue]</span>
+<span class="sd">    strand1: list[Residue]</span>
 <span class="sd">        First list of bases</span>
-<span class="sd">    strand2: List[Residue]</span>
+<span class="sd">    strand2: list[Residue]</span>
 <span class="sd">        Second list of bases</span>
 <span class="sd">    o2_name: str (optional)</span>
 <span class="sd">        Name of Oxygen 2 of nucleic acids;</span>
@@ -742,7 +741,7 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="n">selections</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">selections</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select_strand_atoms</span><span class="p">(</span>
                 <span class="n">strand1</span><span class="p">,</span>
                 <span class="n">strand2</span><span class="p">,</span>
@@ -776,9 +775,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    strand1: List[Residue]</span>
+<span class="sd">    strand1: list[Residue]</span>
 <span class="sd">        First list of bases</span>
-<span class="sd">    strand2: List[Residue]</span>
+<span class="sd">    strand2: list[Residue]</span>
 <span class="sd">        Second list of bases</span>
 <span class="sd">    o6_name: str (optional)</span>
 <span class="sd">        Name of Oxygen 6 of nucleic acids;</span>
@@ -849,7 +848,7 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="n">selections</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">selections</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select_strand_atoms</span><span class="p">(</span>
                 <span class="n">strand1</span><span class="p">,</span>
                 <span class="n">strand2</span><span class="p">,</span>

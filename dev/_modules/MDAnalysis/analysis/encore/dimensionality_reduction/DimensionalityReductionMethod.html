@@ -225,7 +225,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.array</span>
+<span class="sd">        numpy.ndarray</span>
 <span class="sd">            coordinates in reduced space</span>
 
 <span class="sd">        """</span>
@@ -294,7 +294,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.array</span>
+<span class="sd">        numpy.ndarray</span>
 <span class="sd">            coordinates in reduced space</span>
 
 <span class="sd">        """</span>
@@ -345,13 +345,13 @@
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
 
-<span class="sd">            coordinates : np.array</span>
+<span class="sd">            coordinates : numpy.ndarray</span>
 <span class="sd">                trajectory atom coordinates</span>
 
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array</span>
+<span class="sd">            numpy.ndarray</span>
 <span class="sd">                coordinates in reduced space</span>
 <span class="sd">            """</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>

@@ -339,7 +339,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 and dict containing mean and covariance matrix for each ensemble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, dictionary</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, dictionary</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -455,7 +455,7 @@ each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, numpy.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -552,7 +552,7 @@ symmetrical similarity matrix.</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, numpy.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -651,7 +651,7 @@ each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, numpy.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -724,7 +724,7 @@ clustering class.</p></li>
 <dd class="field-even"><p><strong>out</strong> – array of shape (number_of_frames / window_size, preference_values).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -823,8 +823,8 @@ particular, will use ensembles with ID [ens_id_min, ens_id_max].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</p></li>
-<li><p><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – array containing one int per ensemble conformation. These allow
+<li><p><strong>embedded_space</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Array containing the coordinates of the embedded space</p></li>
+<li><p><strong>ensemble_assignment</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – array containing one int per ensemble conformation. These allow
 to distinguish, in the complete embedded space, which
 conformations belong to each ensemble. For instance if
 ensemble_assignment is [1,1,1,1,2,2], it means that the first
@@ -842,9 +842,9 @@ ensembles.</p></li>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>kdes</strong> (<em>scipy.stats.gaussian_kde</em>) – KDEs calculated from ensembles</p></li>
-<li><p><strong>resamples</strong> (<em>list of numpy.array</em>) – For each KDE, draw samples according to the probability
+<li><p><strong>resamples</strong> (<em>list of numpy.ndarray</em>) – For each KDE, draw samples according to the probability
 distribution of the kde mixture model</p></li>
-<li><p><strong>embedded_ensembles</strong> (<em>list of numpy.array</em>) – List of numpy.array containing, each one, the elements of the
+<li><p><strong>embedded_ensembles</strong> (<em>list of numpy.ndarray</em>) – List of numpy.array containing, each one, the elements of the
 embedded space belonging to a certain ensemble</p></li>
 </ul>
 </p>
@@ -875,10 +875,10 @@ expectation values:</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kde1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.18.0)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 1</p></li>
-<li><p><strong>resamples1</strong> (<em>numpy.array</em>) – Samples drawn according do kde1. Will be used as samples to
+<li><p><strong>resamples1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Samples drawn according do kde1. Will be used as samples to
 calculate the expected values according to ‘P’ as detailed before.</p></li>
 <li><p><strong>kde2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.18.0)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 2</p></li>
-<li><p><strong>resamples2</strong> (<em>numpy.array</em>) – Samples drawn according do kde2. Will be used as sample to
+<li><p><strong>resamples2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Samples drawn according do kde2. Will be used as sample to
 calculate the expected values according to ‘Q’ as detailed before.</p></li>
 <li><p><strong>ln_P1_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><em>None</em>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(P(x))\rangle{}_P\)</span>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 calculate it instead</p></li>
@@ -995,7 +995,7 @@ symmetrical similarity matrix.</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, numpy.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1068,7 +1068,7 @@ This is akin to the nsamples parameter of dres().</p></li>
 <dd class="field-even"><p><strong>out</strong> – array of shape (number_of_frames / window_size, preference_values).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -1098,8 +1098,8 @@ elaborate the coordinates for later use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</p></li>
-<li><p><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – Array containing one int per ensemble conformation. These allow to
+<li><p><strong>embedded_space</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Array containing the coordinates of the embedded space</p></li>
+<li><p><strong>ensemble_assignment</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Array containing one int per ensemble conformation. These allow to
 distinguish, in the complete embedded space, which conformations
 belong to each ensemble. For instance if ensemble_assignment
 is [1,1,1,1,2,2], it means that the first four conformations belong
@@ -1112,9 +1112,9 @@ a later stage in order to calculate dJS.</p></li>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>kdes</strong> (<em>scipy.stats.gaussian_kde</em>) – KDEs calculated from ensembles</p></li>
-<li><p><strong>resamples</strong> (<em>list of numpy.array</em>) – For each KDE, draw samples according to the probability distribution
+<li><p><strong>resamples</strong> (<em>list of numpy.ndarray</em>) – For each KDE, draw samples according to the probability distribution
 of the KDE mixture model</p></li>
-<li><p><strong>embedded_ensembles</strong> (<em>list of numpy.array</em>) – List of numpy.array containing, each one, the elements of the
+<li><p><strong>embedded_ensembles</strong> (<em>list of numpy.ndarray</em>) – List of numpy.array containing, each one, the elements of the
 embedded space belonging to a certain ensemble</p></li>
 </ul>
 </p>
@@ -1130,11 +1130,11 @@ as defined in <a class="footnote-reference brackets" href="#footcite-tiberti2015
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sigma1</strong> (<em>numpy.array</em>) – Covariance matrix for the first ensemble.</p></li>
-<li><p><strong>sigma2</strong> (<em>numpy.array</em>) – Covariance matrix for the second ensemble.</p></li>
-<li><p><strong>x1</strong> (<em>numpy.array</em>) – Mean for the estimated normal multivariate distribution of the first
+<li><p><strong>sigma1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Covariance matrix for the first ensemble.</p></li>
+<li><p><strong>sigma2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Covariance matrix for the second ensemble.</p></li>
+<li><p><strong>x1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Mean for the estimated normal multivariate distribution of the first
 ensemble.</p></li>
-<li><p><strong>x2</strong> (<em>numpy.array</em>) – Mean for the estimated normal multivariate distribution of the second
+<li><p><strong>x2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Mean for the estimated normal multivariate distribution of the second
 ensemble.</p></li>
 </ul>
 </dd>
@@ -1178,7 +1178,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 and dict containing mean and covariance matrix for each ensemble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.array, dictionary</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, dictionary</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>

@@ -288,13 +288,13 @@
 <span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">Universe</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">...due</span><span class="w"> </span><span class="kn">import</span> <span class="n">Doi</span><span class="p">,</span> <span class="n">due</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...lib.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistanceBackendOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
@@ -355,7 +355,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    atoms : Union[Universe, AtomGroup]</span>
+<span class="sd">    atoms : Universe or AtomGroup</span>
 <span class="sd">        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will</span>
 <span class="sd">        be chosen prior to the analysis via `select_atoms('protein')`.</span>
 <span class="sd">        Heavy atoms of the protein are then selected by name</span>
@@ -382,7 +382,7 @@
 <span class="sd">           (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`</span>
 <span class="sd">           for your specific case.</span>
 
-<span class="sd">    backend : str, optional</span>
+<span class="sd">    backend : {'serial', 'OpenMP', 'distopia'}, optional</span>
 <span class="sd">        :ref:`Backend for distance calculations&lt;selection-of-acceleration-backend&gt;`, by default ``"serial"``.</span>
 <span class="sd">        Can be set to ``"distopia"`` if `distopia`_ is installed.</span>
 
@@ -460,12 +460,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">],</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">Universe</span> <span class="o">|</span> <span class="n">AtomGroup</span><span class="p">,</span>
         <span class="n">guess_hydrogens</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">heavyatom_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"N"</span><span class="p">,</span> <span class="s2">"CA"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">,</span> <span class="s2">"O O1 OT1"</span><span class="p">),</span>
+        <span class="n">heavyatom_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"N"</span><span class="p">,</span> <span class="s2">"CA"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">,</span> <span class="s2">"O O1 OT1"</span><span class="p">),</span>
         <span class="n">hydrogen_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"H HN HT1 HT2 HT3"</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="n">DistanceBackendOptions</span> <span class="o">=</span> <span class="s2">"serial"</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span> <span class="o">=</span> <span class="n">guess_hydrogens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="n">backend</span>
@@ -483,7 +483,7 @@
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">heavyatom_names</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_donor_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span> <span class="o">!=</span> <span class="s2">"PRO"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donor_mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span> <span class="o">!=</span> <span class="s2">"PRO"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_box</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
@@ -542,7 +542,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
+<span class="sd">        numpy.ndarray</span>
 <span class="sd">            coordinates of (N,CA,C,O,H) atoms</span>
 
 <span class="sd">        Raises</span>
@@ -625,12 +625,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    onehot : np.ndarray</span>
+<span class="sd">    onehot : numpy.ndarray</span>
 <span class="sd">        input array of one-hot encoding in ('-', 'H', 'E') order</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
+<span class="sd">    numpy.ndarray</span>
 <span class="sd">        array of '-', 'H' and 'E' symbols with secondary structure</span>
 
 

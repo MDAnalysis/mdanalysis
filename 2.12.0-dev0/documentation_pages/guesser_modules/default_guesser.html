@@ -240,7 +240,7 @@ the <a class="reference internal" href="../core/universe.html#MDAnalysis.core.un
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The Universe to apply the guesser on</p></li>
-<li><p><strong>box</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – The box of the Universe. This is used for bond guessing.</p></li>
+<li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – The box of the Universe. This is used for bond guessing.</p></li>
 <li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii. This is used for bond guessing</p></li>
 <li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap each other to be considered
 a bond.  Larger values will increase the number of bonds found. [0.55]</p></li>
@@ -394,7 +394,7 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</p></li>
-<li><p><strong>coords</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – coordinates of the atoms. If not provided, the coordinates
+<li><p><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – coordinates of the atoms. If not provided, the coordinates
 of the <code class="docutils literal notranslate"><span class="pre">atoms</span></code> in the universe are used.</p></li>
 </ul>
 </dd>
@@ -485,15 +485,15 @@ types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atom_types</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em>) – Atom types/elements to guess masses from</p></li>
-<li><p><strong>indices_to_guess</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em>) – Mask array for partially guess masses for certain atoms</p></li>
+<li><p><strong>atom_types</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Atom types/elements to guess masses from</p></li>
+<li><p><strong>indices_to_guess</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Mask array for partially guess masses for certain atoms</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>atom_masses</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray dtype float64</p>
+<dd class="field-odd"><p>numpy.ndarray dtype float64</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If there are no atom types or elements to guess mass from.</p>
@@ -516,7 +516,7 @@ types.</p>
 <dd class="field-even"><p><strong>atom_types</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray dtype object</p>
+<dd class="field-odd"><p>numpy.ndarray dtype object</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If there is no names to guess types from.</p>

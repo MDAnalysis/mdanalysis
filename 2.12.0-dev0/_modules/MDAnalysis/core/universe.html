@@ -1271,7 +1271,7 @@
 <span class="sd">        topologyattr: TopologyAttr or string</span>
 <span class="sd">          Either a MDAnalysis TopologyAttr object or the name of a possible</span>
 <span class="sd">          topology attribute.</span>
-<span class="sd">        values: np.ndarray, optional</span>
+<span class="sd">        values: numpy.ndarray, optional</span>
 <span class="sd">          If initiating an attribute from a string, the initial values to</span>
 <span class="sd">          use.  If not supplied, the new TopologyAttribute will have empty</span>
 <span class="sd">          or zero values.</span>
@@ -2042,7 +2042,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        context: str or :mod:`Guesser&lt;MDAanalysis.guesser&gt;` class</span>
 <span class="sd">            For calling a matching guesser class for this specific context</span>
-<span class="sd">        to_guess: Optional[list[str]]</span>
+<span class="sd">        to_guess: list of str, optional</span>
 <span class="sd">            TopologyAttrs to be guessed. These TopologyAttrs will be wholly</span>
 <span class="sd">            guessed if they don't exist in the Universe. If they already exist in</span>
 <span class="sd">            the Universe, only empty or missing values will be guessed.</span>
@@ -2054,7 +2054,7 @@
 <span class="sd">                by default** and it will be up to the user to request guessing</span>
 <span class="sd">                using ``to_guess`` and ``force_guess``.</span>
 
-<span class="sd">        force_guess: Optional[list[str]]</span>
+<span class="sd">        force_guess: list of str, optional</span>
 <span class="sd">            TopologyAttrs in this list will be force guessed. If the</span>
 <span class="sd">            TopologyAttr does not already exist in the Universe, this has no</span>
 <span class="sd">            effect. If the TopologyAttr does already exist, all values will</span>

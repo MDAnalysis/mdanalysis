@@ -295,7 +295,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">coordinates</span>
@@ -307,6 +307,7 @@
     <span class="n">BackendMultiprocessing</span><span class="p">,</span>
     <span class="n">BackendSerial</span><span class="p">,</span>
     <span class="n">BackendBase</span><span class="p">,</span>
+    <span class="n">DefaultBackendOptions</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
@@ -502,7 +503,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._define_run_frames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_define_run_frames</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">slice</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Defines limits for the whole run, as passed by self.run() arguments</span>
 
 <span class="sd">        Parameters</span>
@@ -521,7 +522,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Union[slice, np.ndarray]</span>
+<span class="sd">        slice or numpy.ndarray</span>
 <span class="sd">            Appropriate slicer for the trajectory that would give correct iteraction</span>
 <span class="sd">            order via trajectory[slicer]</span>
 
@@ -552,14 +553,14 @@
 
 <div class="viewcode-block" id="AnalysisBase._prepare_sliced_trajectory">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_sliced_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slicer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_sliced_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slicer</span><span class="p">:</span> <span class="nb">slice</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Prepares sliced trajectory for use in subsequent parallel computations:</span>
 <span class="sd">        namely, assigns self._sliced_trajectory and its appropriate attributes,</span>
 <span class="sd">        self.n_frames, self.frames and self.times.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        slicer : Union[slice, np.ndarray]</span>
+<span class="sd">        slicer : slice or numpy.ndarray</span>
 <span class="sd">            appropriate slicer for the trajectory</span>
 
 
@@ -679,7 +680,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">indexed_frames</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AnalysisBase"</span><span class="p">:</span>
@@ -688,8 +689,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        indexed_frames : np.ndarray</span>
-<span class="sd">            np.ndarray of (n, 2) shape, where first column is frame iteration</span>
+<span class="sd">        indexed_frames : numpy.ndarray</span>
+<span class="sd">            numpy.ndarray of (n, 2) shape, where first column is frame iteration</span>
 <span class="sd">            indices and second is frame numbers</span>
 
 <span class="sd">        verbose : bool, optional</span>
@@ -738,10 +739,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_setup_computation_groups</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n_parts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">frames</span><span class="p">:</span> <span class="nb">slice</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Splits the trajectory frames, defined by ``start/stop/step`` or</span>
@@ -771,7 +772,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        computation_groups : list[np.ndarray]</span>
+<span class="sd">        computation_groups : list[numpy.ndarray]</span>
 <span class="sd">            list of (n, 2) shaped np.ndarrays with frame indices and numbers</span>
 
 
@@ -812,7 +813,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._configure_backend">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_configure_backend</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">],</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="n">DefaultBackendOptions</span> <span class="o">|</span> <span class="n">BackendBase</span><span class="p">,</span>
         <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">unsupported_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendBase</span><span class="p">:</span>
@@ -822,7 +823,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        backend : Union[str, BackendBase]</span>
+<span class="sd">        backend : str or BackendBase</span>
 <span class="sd">            backend to be used:</span>
 <span class="sd">               - ``str`` is matched to a builtin backend (one of "serial",</span>
 <span class="sd">                 "multiprocessing" and "dask")</span>
@@ -935,14 +936,14 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">frames</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">n_parts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">frames</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_parts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="n">DefaultBackendOptions</span> <span class="o">|</span> <span class="n">BackendBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">unsupported_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -973,7 +974,7 @@
 <span class="sd">            ProgressBar keywords with custom parameters regarding progress bar</span>
 <span class="sd">            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`</span>
 <span class="sd">            for full list. Available only for ``backend='serial'``</span>
-<span class="sd">        backend : Union[str, BackendBase], optional</span>
+<span class="sd">        backend : str or BackendBase, optional</span>
 <span class="sd">            By default, performs calculations in a serial fashion.</span>
 <span class="sd">            Otherwise, user can choose a backend: ``str`` is matched to a</span>
 <span class="sd">            builtin backend (one of ``serial``, ``multiprocessing`` and</span>
@@ -981,7 +982,7 @@
 <span class="sd">            subclass.</span>
 
 <span class="sd">            .. versionadded:: 2.8.0</span>
-<span class="sd">        n_workers : int</span>
+<span class="sd">        n_workers : int, optional</span>
 <span class="sd">            positive integer with number of workers (processes, in case of</span>
 <span class="sd">            built-in backends) to split the work between</span>
 
