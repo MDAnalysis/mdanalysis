@@ -128,7 +128,7 @@ def guess_masses(atom_types):
 
     Returns
     -------
-    atom_masses : np.ndarray dtype float64
+    atom_masses : numpy.ndarray dtype float64
     """
     validate_atom_types(atom_types)
     masses = np.array(
@@ -178,7 +178,7 @@ def guess_types(atom_names):
 
     Returns
     -------
-    atom_types : np.ndarray dtype object
+    atom_types : numpy.ndarray dtype object
     """
     return np.array(
         [guess_atom_element(name) for name in atom_names], dtype=object

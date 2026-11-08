@@ -1196,13 +1196,13 @@ class PDBWriter(base.WriterBase):
 
         Parameters
         ----------
-        charges: np.ndarray
+        charges: numpy.ndarray
             NumPy array of integers representing the formal charges of
             the atoms being written.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             NumPy array of dtype object with strings representing the
             formal charges of the atoms being written.
         """
