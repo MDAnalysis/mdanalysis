@@ -61,6 +61,7 @@ import warnings
 import contextlib
 import collections
 import inspect
+import pathlib
 
 import MDAnalysis
 import sys
@@ -219,6 +220,9 @@ def _check_file_like(topology):
         else:
             _name = None
         return NamedStream(topology, _name)
+
+    elif isinstance(topology, pathlib.Path):
+        return str(topology)
     return topology
 
 

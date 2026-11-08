@@ -493,6 +493,18 @@ class TestReadTop(BaseITP):
         )
         assert_equal(universe.atoms.chargegroups[-1], 63)
 
+    def test_pathlib_input(self, filename):
+        path = Path(filename)
+
+        with self.parser(filename) as p:
+            top_str = p.parse(include_dir=GMX_DIR)
+        with self.parser(path) as p:
+            top_path = p.parse(include_dir=GMX_DIR)
+
+        assert top_str.n_atoms == top_path.n_atoms
+        assert top_str.n_residues == top_path.n_residues
+        assert top_str.n_segments == top_path.n_segments
+
 
 class TestErrors:
 
