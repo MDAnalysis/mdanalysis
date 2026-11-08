@@ -874,6 +874,20 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span>
 
 
+<div class="viewcode-block" id="ChainSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ChainSelection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChainSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Select atoms by chainID, alias of the ``chainID`` keyword</span>
+
+<span class="sd">    .. versionadded:: 2.12.0</span>
+<span class="sd">    """</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">"chain"</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s2">"chainIDs"</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="s2">"ix"</span></div>
+
+
+
 <div class="viewcode-block" id="AromaticSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
@@ -1813,6 +1827,7 @@
         <span class="s2">"resname"</span><span class="p">:</span> <span class="s2">"resnames"</span><span class="p">,</span>
         <span class="s2">"resid"</span><span class="p">:</span> <span class="s2">"resids"</span><span class="p">,</span>
         <span class="s2">"segid"</span><span class="p">:</span> <span class="s2">"segids"</span><span class="p">,</span>
+        <span class="s2">"chain"</span><span class="p">:</span> <span class="s2">"chainIDs"</span><span class="p">,</span>
         <span class="s2">"mass"</span><span class="p">:</span> <span class="s2">"masses"</span><span class="p">,</span>
         <span class="s2">"charge"</span><span class="p">:</span> <span class="s2">"charges"</span><span class="p">,</span>
         <span class="s2">"radius"</span><span class="p">:</span> <span class="s2">"radii"</span><span class="p">,</span>
