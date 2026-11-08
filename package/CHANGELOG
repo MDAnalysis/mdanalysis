@@ -14,13 +14,15 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston
 
  * 2.12.0
 
 Fixes
 
 Enhancements
+ * Added `chain` selection keyword as an alias of `chainID`, also usable in
+   `same chain as` selections
  * InterRDF and InterRDF_s now expose computed average box volume and densities
    as results.box_volume, results.normalization_density, and (for InterRDF)
    results.density_1 and results.density_2 when norm is "rdf" or "density"
