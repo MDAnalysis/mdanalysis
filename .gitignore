@@ -53,3 +53,5 @@ benchmarks/results
 .idea
 .vscode
 *.lock
+myTest
+myTest2
