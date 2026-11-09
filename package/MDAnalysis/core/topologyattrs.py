@@ -2170,6 +2170,11 @@ class Charges(AtomAttr):
     transplants = defaultdict(list)
     dtype = float
 
+
+    def __init__(self, values, guessed=False, round_val=None):
+        super().__init__(values, guessed)
+        self.round = round_val
+
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
@@ -2183,6 +2188,9 @@ class Charges(AtomAttr):
             charges = np.empty(len(rg))
             for i, row in enumerate(resatoms):
                 charges[i] = self.values[row].sum()
+
+        if self.round is not None:
+            charges = np.round(charges, self.round)
 
         return charges
 
