@@ -390,6 +390,37 @@ class TestMultiFrameReader(_Multi):
         with pytest.raises(IndexError):
             partial_reader[idx2]
 
+    @pytest.mark.parametrize(
+        "mask",
+        [
+            [True, False],
+            [True] * 12,
+            np.array([True, False]),
+            np.ones(12, dtype=bool),
+            np.array([], dtype=bool),
+            np.ones((10, 1), dtype=bool),
+        ],
+    )
+    def test_getitem_bool_length_mismatch(self, mask, reader):
+        with pytest.raises(IndexError, match="boolean index did not match"):
+            reader[mask]
+
+    @pytest.mark.parametrize(
+        "mask",
+        [
+            np.array([True, False] * 5),
+            np.array([False] * 9 + [True]),
+            np.array([True] + [False] * 9),
+            np.zeros(10, dtype=bool),
+            np.ones(10, dtype=bool),
+        ],
+    )
+    def test_getitem_bool_array(self, mask, reader):
+        res = [ts.frame for ts in reader[mask]]
+        ref = self.reference[mask]
+        assert_equal(res, ref)
+        assert len(reader[mask]) == len(ref)
+
 
 class _Single(_TestReader):
     n_frames = 1
