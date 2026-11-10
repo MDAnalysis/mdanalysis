@@ -170,6 +170,25 @@ class TestTimestep(object):
         assert ts.dimensions.dtype == np.float32
         assert_allclose(ts.dimensions, self.newbox)
 
+    @pytest.mark.parametrize("index", (0, 1, 2))
+    @pytest.mark.parametrize("length", (-1.0, -np.inf))
+    def test_dimensions_negative_lengths(self, ts, index, length):
+        dimensions = self.newbox.copy()
+        dimensions[index] = length
+
+        with pytest.raises(ValueError):
+            ts.dimensions = dimensions
+
+    def test_dimensions_negative_length_preserves_previous(self, ts):
+        original_dimensions = ts.dimensions.copy()
+        invalid_dimensions = self.newbox.copy()
+        invalid_dimensions[0] = -1.0
+
+        with pytest.raises(ValueError):
+            ts.dimensions = invalid_dimensions
+
+        assert_allclose(ts.dimensions, original_dimensions)
+
     def test_volume(self, ts):
         ts.dimensions = self.newbox
         assert_equal(ts.volume, self.ref_volume)
