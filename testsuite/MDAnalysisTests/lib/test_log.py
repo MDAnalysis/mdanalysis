@@ -51,3 +51,14 @@ class TestProgressBar(object):
         expected = ""
         actual = err.strip().split("\r")[-1]
         assert actual == expected
+
+    def test_trajectory_remains_open_when_disabled(self):
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import PSF, DCD
+
+        u = mda.Universe(PSF, DCD)
+
+        for ts in ProgressBar(u.trajectory, verbose=False):
+            break
+
+        assert u.trajectory[0].frame == 0
