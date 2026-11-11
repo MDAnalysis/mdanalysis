@@ -61,9 +61,7 @@ class TestProgressBar(object):
             yield from self.iterable
 
         tqdm_class = ProgressBar.__mro__[1]
-        monkeypatch.setattr(
-            tqdm_class, "__iter__", iter_with_yield_from
-        )
+        monkeypatch.setattr(tqdm_class, "__iter__", iter_with_yield_from)
 
         u = mda.Universe(PSF, DCD)
 
