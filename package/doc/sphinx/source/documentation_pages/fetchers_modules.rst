@@ -15,4 +15,5 @@ module.
    :maxdepth: 1
 
    fetchers/init
+   fetchers/fetchers
    fetchers/PDB
