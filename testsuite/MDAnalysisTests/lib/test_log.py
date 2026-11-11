@@ -52,13 +52,26 @@ class TestProgressBar(object):
         actual = err.strip().split("\r")[-1]
         assert actual == expected
 
-    def test_trajectory_remains_open_when_disabled(self):
+    def test_trajectory_remains_open_when_disabled(self, monkeypatch):
+        """Ensure early iterator closure leaves the trajectory accessible."""
         import MDAnalysis as mda
         from MDAnalysis.tests.datafiles import PSF, DCD
 
+        def iter_with_yield_from(self):
+            yield from self.iterable
+
+        tqdm_class = ProgressBar.__mro__[1]
+        monkeypatch.setattr(
+            tqdm_class, "__iter__", iter_with_yield_from
+        )
+
         u = mda.Universe(PSF, DCD)
 
-        for ts in ProgressBar(u.trajectory, verbose=False):
-            break
+        progress = ProgressBar(u.trajectory, verbose=False)
+        iterator = iter(progress)
+
+        next(iterator)
+        iterator.close()
 
         assert u.trajectory[0].frame == 0
+        u.trajectory.close()

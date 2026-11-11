@@ -346,6 +346,7 @@ class ProgressBar(tqdm):
         super(ProgressBar, self).__init__(*args, **kwargs)
 
     def __iter__(self):
+        """Iterate without closing the underlying iterable when disabled."""
         if self.disable:
             for obj in self.iterable:
                 yield obj
