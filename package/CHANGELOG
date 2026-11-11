@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362, erikfransson
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, erikfransson
 
  * 2.12.0
 
@@ -23,16 +23,24 @@ Fixes
    been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
    (the default for a file name) no longer grows the resident memory of the
    process towards the size of the whole trajectory file. Requires a platform
-   that provides `MADV_DONTNEED`, i.e. not Windows (Discussion #4792,
+   that provides `MADV_DONTNEED`, i.e. not Windows (#5541, Discussion #4792,
    PR #5463).
 
 Enhancements
+ * Added `chain` selection keyword as an alias of `chainID`, also usable in
+   `same chain as` selections
  * InterRDF and InterRDF_s now expose computed average box volume and densities
    as results.box_volume, results.normalization_density, and (for InterRDF)
    results.density_1 and results.density_2 when norm is "rdf" or "density"
    (Issue #5362, PR #5482)
 
 Changes
+ * Type hints now use PEP 604 syntax (``X | None``, ``A | B``) instead of
+   ``typing.Optional``/``typing.Union``; parameters that default to ``None``
+   are annotated as optional and their docstrings updated to match.
+   `lib.distances.apply_PBC` no longer defaults ``box`` to ``None`` (it was
+   always required) and ``return_distances`` in the capped distance functions
+   is annotated as ``bool`` (PR #5531)
 
 Deprecations
 

@@ -92,7 +92,7 @@ def split_grid(grid, num_cores):
 
     Parameters
     ----------
-    grid : numpy.array
+    grid : numpy.ndarray
         2D array
     num_cores : int
         number of partitions to generate
