@@ -111,6 +111,44 @@ cdef inline float fmin(float a, float b):
     else:
         return b
 
+cdef inline double _distsq(const float* a, const float* b, int mode,
+                           float* dims, float* half, float* box,
+                           const double* inv) nogil:
+    # mode: 0 no pbc, 1 orthogonal, 2 triclinic by rounding, 3 triclinic 27 images
+    cdef double dx[3]
+    cdef int ix, iy, iz
+    cdef double rx, ry0, ry1, rz0, rz1, rz2
+
+    dx[0] = a[0] - b[0]
+    dx[1] = a[1] - b[1]
+    dx[2] = a[2] - b[2]
+    if mode == 2:
+        # A separation d has length >= |s_k| * width_k for each fractional
+        # component s_k. Any pair within the cutoff (< width_k / 2) therefore
+        # has all |s_k| < 1/2 in its minimum image, which is the image
+        # obtained by rounding. For pairs beyond the cutoff every image is
+        # beyond it too, so the result of the comparison is unchanged.
+        # Shifts are applied with the arithmetic of minimum_image_triclinic.
+        iz = -<int> math.rint(dx[2] * inv[2])
+        iy = -<int> math.rint((dx[1] + box[YZ] * iz) * inv[1])
+        ix = -<int> math.rint((dx[0] + box[XY] * iy + box[XZ] * iz) * inv[0])
+        ix = max(-1, min(1, ix))
+        iy = max(-1, min(1, iy))
+        iz = max(-1, min(1, iz))
+        rx = dx[0] + box[0] * ix
+        ry0 = rx + box[3] * iy
+        ry1 = dx[1] + box[4] * iy
+        rz0 = ry0 + box[6] * iz
+        rz1 = ry1 + box[7] * iz
+        rz2 = dx[2] + box[8] * iz
+        return rz0*rz0 + rz1*rz1 + rz2*rz2
+    elif mode == 1:
+        _minimum_image_ortho_lazy(dx, dims, half)
+    elif mode == 3:
+        minimum_image_triclinic(dx, box)
+    return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
+
+
 cdef inline float degsin(float deg):
     # sin in degrees
     deg *= math.M_PI / 180.
@@ -158,7 +196,11 @@ cdef class NSResults(object):
             pairs of atom indices of neighbors from query
             and initial atom coordinates of shape ``(N, 2)``
         """
-        return np.asarray(self.pairs, dtype=np.intp).reshape(-1, 2)
+        cdef Py_ssize_t k, n = self.pairs.size()
+        cdef Py_ssize_t[::1] out = np.empty(n, dtype=np.intp)
+        for k in range(n):
+            out[k] = self.pairs[k]
+        return np.asarray(out).reshape(-1, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
@@ -180,9 +222,11 @@ cdef class NSResults(object):
         :meth:`~NSResults.get_pairs`
 
         """
-        dist2 = np.asarray(self.distances2)
-
-        return np.sqrt(dist2)
+        cdef Py_ssize_t k, n = self.distances2.size()
+        cdef double[::1] out = np.empty(n, dtype=np.float64)
+        for k in range(n):
+            out[k] = math.sqrt(self.distances2[k])
+        return np.asarray(out)
 
 
 cdef class FastNS(object):
@@ -211,6 +255,12 @@ cdef class FastNS(object):
 
     cdef int[::1] head_id  # first coord id for a given cell
     cdef int[::1] next_id  # next coord id after a given cell
+    # the same cell lists stored contiguously: atoms of cell c are
+    # sorted_idx[cell_start[c]:cell_start[c + 1]], in linked-list order
+    cdef int[::1] cell_start
+    cdef int[::1] sorted_idx
+    cdef float[:, ::1] sorted_xyz
+    cdef double inv_box[3]
     cdef bint triclinic
     cdef float[6] dimensions
     cdef float[3] half_dimensions
@@ -219,6 +269,10 @@ cdef class FastNS(object):
     # are we periodic in the X, Y and Z dimension?
     cdef bint pbc  # periodic at all?
     cdef bint periodic[3]
+    # cutoff is safely below half of every perpendicular box width, so the
+    # minimum image of any pair within the cutoff is the one found by
+    # rounding fractional coordinates (no need to try all 27 images)
+    cdef bint round_image
 
     def __init__(self, cutoff, coords, box, pbc=True):
         """
@@ -361,6 +415,12 @@ cdef class FastNS(object):
                                            + (bx * cy - by * cx) ** 2)
             widths[1] = by * cz / math.sqrt(cy * cy + cz * cz)
             widths[2] = cz
+        if volume > 0:
+            self.inv_box[0] = 1.0 / ax
+            self.inv_box[1] = 1.0 / by
+            self.inv_box[2] = 1.0 / cz
+        self.round_image = (pbc and self.triclinic and
+                            self.cutoff <= 0.4999 * min(widths[0], widths[1], widths[2]))
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
         min_cellsize = cutoff + 0.001
@@ -409,7 +469,13 @@ cdef class FastNS(object):
         coords : numpy.ndarray float of shape (ncoords, 3)
             Coordinates to populate the box
         """
-        cdef int i, j
+        cdef int i, j, k
+        cdef int n = coords.shape[0]
+        cdef int ncell = self.cell_offsets[2] * self.ncells[2]
+        cdef int[::1] cellid = np.empty(n, dtype=np.int32)
+        self.cell_start = np.zeros(ncell + 1, dtype=np.int32)
+        self.sorted_idx = np.empty(n, dtype=np.int32)
+        self.sorted_xyz = np.empty((n, 3), dtype=np.float32)
 
         # Linked list for each cell
         # Starting coordinate index for each cell (END if empty cell)
@@ -432,6 +498,25 @@ cdef class FastNS(object):
                 j = self.coord2cellid(&self.coords_bbox[i][0])
                 self.next_id[i] = self.head_id[j]
                 self.head_id[j] = i
+                cellid[i] = j
+                self.cell_start[j + 1] += 1
+
+            # counting sort; walking i downwards reproduces the linked-list
+            # order (highest index first) inside every cell
+            for j in range(ncell):
+                self.cell_start[j + 1] += self.cell_start[j]
+            for i in range(n - 1, -1, -1):
+                j = cellid[i]
+                k = self.cell_start[j]
+                self.sorted_idx[k] = i
+                self.sorted_xyz[k, 0] = self.coords_bbox[i, 0]
+                self.sorted_xyz[k, 1] = self.coords_bbox[i, 1]
+                self.sorted_xyz[k, 2] = self.coords_bbox[i, 2]
+                self.cell_start[j] = k + 1
+            # cell_start[j] now holds the end of cell j: shift back to starts
+            for j in range(ncell, 0, -1):
+                self.cell_start[j] = self.cell_start[j - 1]
+            self.cell_start[0] = 0
 
     cdef int coord2cellid(self, const float* coord) nogil:
         """Finds the cell-id for the given coordinate
@@ -529,21 +614,17 @@ cdef class FastNS(object):
 
         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
 
+    cdef int distance_mode(self) nogil:
+        if not self.pbc:
+            return 0
+        if not self.triclinic:
+            return 1
+        return 2 if self.round_image else 3
+
     cdef double calc_distsq(self, const float* a, const float* b) nogil:
-        cdef double dx[3]
-
-        dx[0] = a[0] - b[0]
-        dx[1] = a[1] - b[1]
-        dx[2] = a[2] - b[2]
-
-        if self.pbc:
-            if self.triclinic:
-                minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
-            else:
-                _minimum_image_ortho_lazy(dx, &self.dimensions[0],
-                                          &self.half_dimensions[0])
-
-        return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
+        return _distsq(a, b, self.distance_mode(), &self.dimensions[0],
+                       &self.half_dimensions[0], &self.triclinic_dimensions[0],
+                       &self.inv_box[0])
 
     def search(self, float[:, :] search_coords):
         """Search a group of atoms against initialized coordinates
@@ -585,12 +666,23 @@ cdef class FastNS(object):
 
         cdef NSResults results = NSResults()
         cdef double d2, cutoff2
+        cdef int k
+        cdef int mode = self.distance_mode()
+        cdef int* cstart
+        cdef int* sidx
+        cdef float* sxyz
 
         cutoff2 = self.cutoff * self.cutoff
 
         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
+
+        if self.sorted_idx.shape[0] == 0:
+            return results
+        cstart = &self.cell_start[0]
+        sidx = &self.sorted_idx[0]
+        sxyz = &self.sorted_xyz[0, 0]
 
         with nogil:
             size_search = search_coords.shape[0]
@@ -618,14 +710,15 @@ cdef class FastNS(object):
                             if cellid == END:  # out of bounds
                                 continue
                             # for loop over atoms in searchcoord
-                            j = self.head_id[cellid]
-                            while (j != END):
-                                d2 = self.calc_distsq(&tmpcoord[0],
-                                                      &self.coords_bbox[j][0])
+                            for k in range(cstart[cellid], cstart[cellid + 1]):
+                                d2 = _distsq(&tmpcoord[0], sxyz + 3 * k, mode,
+                                             &self.dimensions[0],
+                                             &self.half_dimensions[0],
+                                             &self.triclinic_dimensions[0],
+                                             &self.inv_box[0])
                                 if d2 <= cutoff2:
                                     # place search_coords then self.bbox_coords
-                                    results.add_neighbors(i, j, d2)
-                                j = self.next_id[j]
+                                    results.add_neighbors(i, sidx[k], d2)
         return results
 
     def self_search(self):
@@ -648,26 +741,38 @@ cdef class FastNS(object):
         cdef NSResults results = NSResults()
         cdef double d2
         cdef double cutoff2 = self.cutoff * self.cutoff
+        cdef int ki, kj
+        cdef int mode = self.distance_mode()
+        cdef int* cstart
+        cdef int* sidx
+        cdef float* sxyz
         # route over 13 neighbouring cells
         cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
                                  [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
                                  [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]]
+
+        if self.sorted_idx.shape[0] == 0:
+            return results
+        cstart = &self.cell_start[0]
+        sidx = &self.sorted_idx[0]
+        sxyz = &self.sorted_xyz[0, 0]
 
         for cx in range(self.ncells[0]):
             for cy in range(self.ncells[1]):
                 for cz in range(self.ncells[2]):
                     ci = self.cellxyz2cellid(cx, cy, cz)
 
-                    i = self.head_id[ci]
-                    while (i != END):
+                    for ki in range(cstart[ci], cstart[ci + 1]):
+                        i = sidx[ki]
                         # pairwise within this cell
-                        j = self.next_id[i]
-                        while (j != END):
-                            d2 = self.calc_distsq(&self.coords_bbox[i][0],
-                                                  &self.coords_bbox[j][0])
+                        for kj in range(ki + 1, cstart[ci + 1]):
+                            d2 = _distsq(sxyz + 3 * ki, sxyz + 3 * kj, mode,
+                                         &self.dimensions[0],
+                                         &self.half_dimensions[0],
+                                         &self.triclinic_dimensions[0],
+                                         &self.inv_box[0])
                             if d2 <= cutoff2:
-                                results.add_neighbors(i, j, d2)
-                            j = self.next_id[j]
+                                results.add_neighbors(i, sidx[kj], d2)
 
                         # loop over 13 neighbouring cells
                         for nj in range(13):
@@ -679,15 +784,13 @@ cdef class FastNS(object):
                             if cj == END:
                                 continue
 
-                            j = self.head_id[cj]
-                            while (j != END):
-                                d2 = self.calc_distsq(&self.coords_bbox[i][0],
-                                                      &self.coords_bbox[j][0])
+                            for kj in range(cstart[cj], cstart[cj + 1]):
+                                d2 = _distsq(sxyz + 3 * ki, sxyz + 3 * kj, mode,
+                                             &self.dimensions[0],
+                                             &self.half_dimensions[0],
+                                             &self.triclinic_dimensions[0],
+                                             &self.inv_box[0])
                                 if d2 <= cutoff2:
-                                    results.add_neighbors(i, j, d2)
-                                j = self.next_id[j]
-
-                        # move to next position in cell *ci*
-                        i = self.next_id[i]
+                                    results.add_neighbors(i, sidx[kj], d2)
 
         return results
