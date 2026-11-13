@@ -348,20 +348,24 @@ class MOL2Writer(base.WriterBase):
             raise NotImplementedError(errmsg) from None
 
         # Need to remap atom indices to 1 based in this selection
-        mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
+        mapping = np.zeros(obj.universe.atoms.n_atoms, dtype=np.intp)
+        mapping[obj.atoms.ix] = np.arange(1, len(obj.atoms) + 1)
 
         # only write bonds if the Bonds attribute exists (Issue #3057)
         if hasattr(obj, "bonds"):
             # Grab only bonds between atoms in the obj
             # ie none that extend out of it
             bondgroup = obj.intra_bonds
-            bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
+            bix = np.asarray(bondgroup.indices, dtype=np.intp).reshape(-1, 2)
+            bond_order = np.lexsort((bix[:, 1], bix[:, 0]))
+            bonds = zip(
+                mapping[bix[bond_order]].tolist(),
+                np.asarray(bondgroup._order)[bond_order].tolist(),
+            )
             bond_lines = ["@<TRIPOS>BOND"]
             bls = [
-                "{0:>5} {1:>5} {2:>5} {3:>2}".format(
-                    bid, mapping[atom1], mapping[atom2], order
-                )
-                for bid, (atom1, atom2, order) in enumerate(bonds, start=1)
+                "{0:>5} {1:>5} {2:>5} {3:>2}".format(bid, atom1, atom2, order)
+                for bid, ((atom1, atom2), order) in enumerate(bonds, start=1)
             ]
             bond_lines.extend(bls)
             bond_lines.append("\n")
@@ -371,21 +375,20 @@ class MOL2Writer(base.WriterBase):
             bond_lines = ""
 
         atom_lines = ["@<TRIPOS>ATOM"]
+        atoms = obj.atoms
         atom_lines.extend(
             "{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"
             " {5:>4} {6} {7} {8:>7.4f}"
-            "".format(
-                mapping[a],
-                a.name,
-                a.position[0],
-                a.position[1],
-                a.position[2],
-                a.type,
-                a.resid,
-                a.resname,
-                a.charge,
+            "".format(serial, name, x, y, z, type_, resid, resname, charge)
+            for serial, name, (x, y, z), type_, resid, resname, charge in zip(
+                mapping[atoms.ix].tolist(),
+                atoms.names.tolist(),
+                atoms.positions.tolist(),
+                atoms.types.tolist(),
+                atoms.resids.tolist(),
+                atoms.resnames.tolist(),
+                atoms.charges.tolist(),
             )
-            for a in obj.atoms
         )
         atom_lines.append("\n")
         atom_lines = "\n".join(atom_lines)
@@ -428,4 +431,4 @@ class MOL2Writer(base.WriterBase):
             Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         block = self.encode_block(obj)
-        self.file.writelines(block)
+        self.file.write(block)

@@ -143,7 +143,6 @@ Classes
 from io import StringIO, BytesIO
 import os
 import errno
-import itertools
 import textwrap
 import warnings
 import logging
@@ -162,6 +161,20 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple("Atom", "resname name")
+
+
+def _ltruncate_ints(values, ndigits):
+    """Vectorized :func:`MDAnalysis.lib.util.ltruncate_int`, as a list"""
+    values = np.asarray(values, dtype=np.int64)
+    modulus = 10**ndigits
+    # keep the last ndigits characters of str(value): a minus sign survives
+    # only when the whole number fits
+    fits = values > -(modulus // 10)
+    return np.where(
+        values >= 0,
+        values % modulus,
+        np.where(fits, values, -values % modulus),
+    ).tolist()
 
 
 class PDBReader(base.ReaderBase):
@@ -959,56 +972,46 @@ class PDBWriter(base.WriterBase):
         ):
             return
 
-        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
-        if self._reindex:
-            index_attribute = "index"
-            mapping = {
-                index: i
-                for i, index in enumerate(self.obj.atoms.indices, start=1)
-            }
-            atoms = np.sort(self.obj.atoms.indices)
-        else:
-            index_attribute = "id"
-            mapping = {id_: id_ for id_ in self.obj.atoms.ids}
-            atoms = np.sort(self.obj.atoms.ids)
+        if self.bonds not in ("conect", "all"):
+            raise ValueError("bonds has to be either None, 'conect' or 'all'")
+        bonds = self.obj.atoms.bonds
+        bix = np.asarray(bonds.indices, dtype=np.intp).reshape(-1, 2)
         if self.bonds == "conect":
             # Write out only the bonds that were defined in CONECT records
-            bonds = (
-                (
-                    getattr(bond[0], index_attribute),
-                    getattr(bond[1], index_attribute),
-                )
-                for bond in bondset
-                if not bond.is_guessed
-            )
-        elif self.bonds == "all":
-            bonds = (
-                (
-                    getattr(bond[0], index_attribute),
-                    getattr(bond[1], index_attribute),
-                )
-                for bond in bondset
-            )
-        else:
-            raise ValueError("bonds has to be either None, 'conect' or 'all'")
+            bix = bix[~bonds._guessed.astype(bool)]
 
-        con = collections.defaultdict(list)
-        for a1, a2 in bonds:
-            if not (a1 in mapping and a2 in mapping):
-                continue
-            if mapping[a1] >= 100000 or mapping[a2] >= 100000:
-                warnings.warn(
-                    "Atom with index >=100000 cannot write "
-                    "bonds to PDB CONECT records."
-                )
-                return
-            con[a2].append(a1)
-            con[a1].append(a2)
+        if self._reindex:
+            # bonds are between atom indices, written as serials from 1
+            atoms = self.obj.atoms.indices
+            serial = np.zeros(self.obj.universe.atoms.n_atoms, dtype=np.intp)
+            serial[atoms] = np.arange(1, len(atoms) + 1)
+        else:
+            # bonds are between atom ids, written as they are
+            atoms = self.obj.atoms.ids
+            bix = self.obj.universe.atoms.ids[bix]
+        # only bonds with both atoms being written
+        bix = bix[np.isin(bix, atoms).all(axis=1)]
+        mapped = serial[bix] if self._reindex else bix
+        if (mapped >= 100000).any():
+            warnings.warn(
+                "Atom with index >=100000 cannot write "
+                "bonds to PDB CONECT records."
+            )
+            return
+
+        # each bond appears in the CONECT record of both of its atoms,
+        # partners sorted by their written serial
+        atom = np.concatenate([bix[:, 0], bix[:, 1]])
+        partner = np.concatenate([mapped[:, 1], mapped[:, 0]])
+        order = np.lexsort((partner, atom))
+        atom, partner = atom[order], partner[order]
+        bonded, first = np.unique(atom, return_index=True)
+        partners = dict(zip(bonded.tolist(), np.split(partner, first[1:])))
 
         conect = (
-            [mapping[a]] + sorted([mapping[at] for at in con[a]])
-            for a in atoms
-            if a in con
+            [serial[a] if self._reindex else a] + partners[a].tolist()
+            for a in np.sort(atoms).tolist()
+            if a in partners
         )
 
         for c in conect:
@@ -1309,16 +1312,20 @@ class PDBWriter(base.WriterBase):
             invalid_char_ids = False
             missing_ids = False
 
-            for i, chainid in enumerate(chainids):
+            # check each distinct chainID once
+            replace = set()
+            for chainid in set(chainids):
                 if chainid == "":
                     missing_ids = True
-                    chainids[i] = default
+                    replace.add(chainid)
                 elif len(chainid) > 1:
                     invalid_length_ids = True
-                    chainids[i] = default
+                    replace.add(chainid)
                 elif not chainid.isalnum():
                     invalid_char_ids = True
-                    chainids[i] = default
+                    replace.add(chainid)
+            if replace:
+                chainids[np.isin(chainids, list(replace))] = default
 
             if invalid_length_ids:
                 warnings.warn(
@@ -1355,35 +1362,72 @@ class PDBWriter(base.WriterBase):
         else:
             atom_ids = np.arange(len(atoms)) + 1
 
-        for i in range(len(atoms)):
-            vals = {}
-            vals["serial"] = util.ltruncate_int(
-                atom_ids[i], 5
-            )  # check for overflow here?
-            vals["name"] = self._deduce_PDB_atom_name(
-                atomnames[i], resnames[i]
-            )
-            vals["altLoc"] = altlocs[i][:1]
-            vals["resName"] = resnames[i][:4]
-            vals["resSeq"] = util.ltruncate_int(resids[i], 4)
-            vals["iCode"] = icodes[i][:1]
-            vals["pos"] = pos[i]  # don't take off atom so conversion works
-            vals["occupancy"] = occupancies[i]
-            vals["tempFactor"] = tempfactors[i]
-            vals["segID"] = segids[i][:4]
-            vals["chainID"] = chainids[i]
-            vals["element"] = elements[i][:2].upper()
-            vals["charge"] = formal_charges[i]
-
-            # record_type attribute, if exists, can be ATOM or HETATM
-            try:
-                self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
-            except KeyError:
+        # record_type attribute, if exists, can be ATOM or HETATM
+        record_types = record_types.tolist()
+        for record_type in record_types:
+            if record_type not in self.fmt:
                 errmsg = (
-                    f"Found {record_types[i]} for the record type, but "
+                    f"Found {record_type} for the record type, but "
                     f"only allowed types are ATOM or HETATM"
                 )
-                raise ValueError(errmsg) from None
+                raise ValueError(errmsg)
+
+        # build all records from plain Python values; this is much faster
+        # than formatting numpy scalars atom by atom
+        resnames = resnames.tolist()
+        names = [
+            self._deduce_PDB_atom_name(name, resname)
+            for name, resname in zip(atomnames.tolist(), resnames)
+        ]
+        records = (
+            self.fmt[record_type].format(
+                serial=serial,
+                name=name,
+                altLoc=altloc[:1],
+                resName=resname[:4],
+                chainID=chainid,
+                resSeq=resseq,
+                iCode=icode[:1],
+                pos=xyz,
+                occupancy=occupancy,
+                tempFactor=tempfactor,
+                segID=segid[:4],
+                element=element[:2].upper(),
+                charge=charge,
+            )
+            for (
+                record_type,
+                serial,
+                name,
+                altloc,
+                resname,
+                chainid,
+                resseq,
+                icode,
+                xyz,
+                occupancy,
+                tempfactor,
+                segid,
+                element,
+                charge,
+            ) in zip(
+                record_types,
+                _ltruncate_ints(atom_ids, 5),
+                names,
+                altlocs.tolist(),
+                resnames,
+                chainids.tolist(),
+                _ltruncate_ints(resids, 4),
+                icodes.tolist(),
+                pos.tolist(),
+                occupancies.tolist(),
+                tempfactors.tolist(),
+                segids.tolist(),
+                elements.tolist(),
+                formal_charges.tolist(),
+            )
+        )
+        self.pdbfile.writelines(records)
 
         if multiframe:
             self.ENDMDL()
