@@ -6,6 +6,7 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysis.analysis.dssp import DSSP, assign, translate
+from MDAnalysis.analysis.dssp.pydssp_numpy import _get_hydrogen_atom_position
 
 from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
@@ -171,3 +172,42 @@ def test_insufficient_residues_raises_error(client_DSSP):
     dssp = DSSP(res6)
     result = dssp.run(**client_DSSP, stop=1)
     assert result.results.dssp.shape[1] == 6
+
+
+def _hydrogens_per_residue(ag, hydrogen_name):
+    """hydrogens selected one residue at a time (the selection DSSP made
+    before it was vectorised): the reference for the selection now"""
+    return [
+        res.atoms.select_atoms(f"name {hydrogen_name}")
+        for res in ag.select_atoms("protein").residues
+    ]
+
+
+@pytest.mark.parametrize(
+    "hydrogen_name", ["H HN HT1 HT2 HT3", "H HN H1", "H*"]
+)
+@pytest.mark.parametrize("selection", ["all", "protein and not name H HN"])
+def test_hydrogens_match_per_residue_selection(hydrogen_name, selection):
+    # without H and HN in the selection, the hydrogens are still looked up
+    # among all atoms of each residue
+    ag = mda.Universe(TPR, XTC).select_atoms(selection)
+    dssp = DSSP(ag, hydrogen_name=hydrogen_name)
+    expected = _hydrogens_per_residue(ag, hydrogen_name)
+    np.testing.assert_equal(dssp._has_hydrogen, [bool(h) for h in expected])
+    np.testing.assert_equal(
+        dssp._first_hydrogens.ix, [h.ix[0] for h in expected if h]
+    )
+
+
+def test_coords_with_hydrogens_match_per_residue_lookup():
+    # residues without a hydrogen (here the N-terminal MET, whose hydrogens
+    # are H1-H3, and prolines) take the guessed hydrogen of the same index
+    u = mda.Universe(TPR, XTC)
+    coords = DSSP(u, guess_hydrogens=False)._get_coords()
+    guessed = _get_hydrogen_atom_position(coords[:, :4])
+    hydrogens = _hydrogens_per_residue(u.atoms, "H HN HT1 HT2 HT3")
+    assert not all(hydrogens)
+    expected = [
+        h.positions[0] if h else guessed[k] for k, h in enumerate(hydrogens)
+    ]
+    np.testing.assert_equal(coords[:, 4], expected)
