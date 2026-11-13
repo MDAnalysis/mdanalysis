@@ -19,12 +19,11 @@ The rules for this file:
  * 2.12.0
 
 Fixes
- * The NCDF reader now releases the pages of the memory map once a frame has
-   been read into the Timestep. Reading a netCDF trajectory with `mmap=True`
-   (the default for a file name) no longer grows the resident memory of the
-   process towards the size of the whole trajectory file. Requires a platform
-   that provides `MADV_DONTNEED`, i.e. not Windows (#5541, Discussion #4792,
-   PR #5463).
+ * partial fix of memory leak in the NCDF (Amber) file reader when used with
+   `mmap=True` (default for files on disk). Reading a netCDF trajectory no 
+   longer grows the resident memory of the process towards the size of the
+   whole trajectory file. ONLY FIXED ON LINUX (#5541, Discussion #4792, see
+   PR #5463 for details).
 
 Enhancements
  * Added `chain` selection keyword as an alias of `chainID`, also usable in
