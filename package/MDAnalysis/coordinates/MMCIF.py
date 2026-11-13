@@ -35,6 +35,13 @@ Basic usage
     # or from a compressed file
     u = mda.Universe("structure.cif.gz")
 
+    # PDB files can also be read with gemmi
+    u = mda.Universe("structure.pdb", format="pdb_gemmi")
+
+Reading PDB files with gemmi behaves differently from the default PDB reader,
+for example only the first ``MODEL`` is read. See :ref:`PDB-gemmi-backend`
+for when to choose which.
+
 See Also
 --------
 * `wwPDB MMCIF Resources <http://mmcif.wwpdb.org>`_
@@ -142,7 +149,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
     .. versionadded:: 2.11.0
     """
 
-    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz", "pdb_gemmi"]
     units = {"time": None, "length": "Angstrom"}
 
     def __init__(self, filename, **kwargs):

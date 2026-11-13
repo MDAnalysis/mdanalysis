@@ -157,8 +157,8 @@ the attributes they provide.
                                 dihedrals         :mod:`MDAnalysis.topology.GSDParser`
 
    MMCIF [#a]_       cif,       ids, names,       macromolecular structures in the `PDBx/mmCIF`_
-                     mmcif      types, altLocs,   format, as distributed by, e.g., the RCSB PDB
-                                chainids,         (requires the gemmi_ package);
+                     mmcif,     types, altLocs,   format, as distributed by, e.g., the RCSB PDB
+                     pdb_gemmi  chainids,         (requires the gemmi_ package);
                                 elements, masses, :mod:`MDAnalysis.topology.MMCIFParser`
                                 formalcharges,
                                 occupancies,
