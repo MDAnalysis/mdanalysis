@@ -406,7 +406,7 @@ cdef class FastNS(object):
 
         Parameters
         ----------
-        coords : np.ndarray float of shape (ncoords, 3)
+        coords : numpy.ndarray float of shape (ncoords, 3)
             Coordinates to populate the box
         """
         cdef int i, j

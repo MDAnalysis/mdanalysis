@@ -43,7 +43,6 @@ import os
 import numbers
 import math
 import warnings
-from typing import Union, Optional, Dict
 from collections import defaultdict
 import pickle
 
@@ -489,8 +488,8 @@ class AuxReader(metaclass=_AuxReaderMeta):
     def attach_auxiliary(
         self,
         coord_parent,
-        aux_spec: Optional[Union[str, Dict[str, str]]] = None,
-        format: Optional[str] = None,
+        aux_spec: str | dict[str, str] | None = None,
+        format: str | None = None,
         **kwargs,
     ) -> None:
         """Attaches the data specified in `aux_spec` to the `coord_parent`
@@ -509,7 +508,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         coord_parent : MDAnalysis.coordinates.base.ReaderBase
             Reader object to which to attach the auxiliary data.
 
-        aux_spec : str, Dict[str, str], None
+        aux_spec : str or dict, optional
             Specifies which data to add to `coord_parent`. String types are
             for :class:`MDAnalysis.auxiliary.XVG.XVGReader` only. Dictionaries
             are the standard way of providing `aux_spec` information (see also:

@@ -49,8 +49,8 @@ jobs:
               full-deps: false
               codecov: false
               cython: "cython>=3.1"
-            - name: macOS_14_arm64_py313
-              os: macOS-14
+            - name: macos_arm64_py313
+              os: macos-latest
               python-version: "3.13"
               full-deps: false
               codecov: true

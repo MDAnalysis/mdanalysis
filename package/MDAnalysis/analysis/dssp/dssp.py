@@ -145,13 +145,13 @@ Functions
 """
 
 import warnings
-from typing import Optional, Union
 
 import numpy as np
 
 from MDAnalysis import AtomGroup, Universe
 
 from ...due import Doi, due
+from ...lib.distances import DistanceBackendOptions
 from ..base import AnalysisBase, ResultsGroup
 
 due.cite(
@@ -210,7 +210,7 @@ class DSSP(AnalysisBase):
 
     Parameters
     ----------
-    atoms : Union[Universe, AtomGroup]
+    atoms : Universe or AtomGroup
         input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
@@ -237,7 +237,7 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         :ref:`Backend for distance calculations<selection-of-acceleration-backend>`, by default ``"serial"``.
         Can be set to ``"distopia"`` if `distopia`_ is installed.
 
@@ -312,12 +312,12 @@ class DSSP(AnalysisBase):
 
     def __init__(
         self,
-        atoms: Union[Universe, AtomGroup],
+        atoms: Universe | AtomGroup,
         guess_hydrogens: bool = True,
         *,
-        heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
+        heavyatom_names: tuple[str, ...] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
-        backend: str = "serial",
+        backend: DistanceBackendOptions = "serial",
     ):
         self._guess_hydrogens = guess_hydrogens
         self._backend = backend
@@ -335,7 +335,7 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._donor_mask: np.ndarray | None = ag.residues.resnames != "PRO"
         self._box = self._trajectory.ts.dimensions
         if self._box is not None and np.allclose(
             self._box, [1, 1, 1, 90, 90, 90]
@@ -394,7 +394,7 @@ class DSSP(AnalysisBase):
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             coordinates of (N,CA,C,O,H) atoms
 
         Raises
@@ -474,12 +474,12 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    onehot : np.ndarray
+    onehot : numpy.ndarray
         input array of one-hot encoding in ('-', 'H', 'E') order
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         array of '-', 'H' and 'E' symbols with secondary structure
 
 
