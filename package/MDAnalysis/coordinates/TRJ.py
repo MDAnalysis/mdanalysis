@@ -677,6 +677,8 @@ class NCDFReader(base.ReaderBase):
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
         # the frame is now copied into ts, so its pages can be dropped again
+        # (see #5541 and PR #5463 - only works on Linux; macOS has MADV_DONTNEED
+        # but does not free the memory, Windows does not have it)
         mm = getattr(self.trjfile, "_mm", None)
         if mm is not None and hasattr(mmap, "MADV_DONTNEED"):
             mm.madvise(mmap.MADV_DONTNEED)
