@@ -223,6 +223,23 @@ class DCDReader(DCD.DCDReader):
                 raise ValueError(f"LAMMPS DCDReader: unknown unit {unit}")
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        """Return a DCD writer with the correct LAMMPS time conversion."""
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+
+        dt = units.convert(self.ts.dt, "ps", "fs") / units.convert(
+            1.0, "ps", "AKMA"
+        )
+
+        return DCD.DCDWriter(
+            filename,
+            n_atoms=n_atoms,
+            dt=dt,
+            convert_units=self.convert_units,
+            **kwargs,
+        )
+
 
 class DATAReader(base.SingleFrameReaderBase):
     """Reads a single frame of coordinate information from a LAMMPS DATA file.
