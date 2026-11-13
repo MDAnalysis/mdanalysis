@@ -21,6 +21,9 @@ The rules for this file:
 Fixes
 
 Enhancements
+ * Speed up FastNS neighbor searches using contiguous cell storage, direct
+   result conversion, and a guarded triclinic minimum-image fast path
+   (PR #5547).
  * Added `chain` selection keyword as an alias of `chainID`, also usable in
    `same chain as` selections
  * InterRDF and InterRDF_s now expose computed average box volume and densities

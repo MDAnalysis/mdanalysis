@@ -574,6 +574,36 @@ def test_issue_4906_cell_thickness():
     assert not missing
 
 
+@pytest.mark.parametrize("angles", [(86, 121, 57), (70, 77, 120)])
+@pytest.mark.parametrize("cutoff_fraction", [0.4998, 0.49995])
+@pytest.mark.parametrize("self_search", [False, True])
+def test_triclinic_rounding_threshold(angles, cutoff_fraction, self_search):
+    box = np.array([50, 50, 50, *angles], dtype=np.float32)
+    vectors = mda.lib.mdamath.triclinic_vectors(box).astype(np.float64)
+    widths = 1 / np.linalg.norm(np.linalg.inv(vectors), axis=0)
+    # Exercise both sides of the fast-path threshold in skewed boxes.
+    cutoff = cutoff_fraction * widths.min()
+    rng = np.random.default_rng(20261112)
+    fractional = rng.random((100, 3))
+    fractional[:2] = [[0, 0, 0], [1, 1, 1]]
+    coords = (fractional @ vectors).astype(np.float32)
+    dists = mda.lib.distances.distance_array(coords, coords, box=box)
+    expected = dists <= cutoff
+    if self_search:
+        expected = np.triu(expected, k=1)
+    grid = nsgrid.FastNS(cutoff, coords, box)
+    results = grid.self_search() if self_search else grid.search(coords)
+    pairs = results.get_pairs()
+    canonical = np.sort(pairs, axis=1) if self_search else pairs
+    assert len(pairs) == np.count_nonzero(expected)
+    assert {tuple(p) for p in canonical} == set(zip(*np.nonzero(expected)))
+    assert_allclose(
+        results.get_pair_distances(),
+        dists[pairs[:, 0], pairs[:, 1]],
+        atol=2e-5,
+    )
+
+
 def high_mem_tests_enabled():
     """Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
     env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="false").lower()
