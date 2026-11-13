@@ -59,7 +59,6 @@ import logging
 import copy
 import warnings
 import contextlib
-import collections
 import inspect
 
 import MDAnalysis
@@ -1702,8 +1701,9 @@ class Universe(object):
     # Fragments then gets its own Class/namespace/jazz.
     @property
     @cached("fragments")
-    def _fragdict(self):
-        """
+    def _fragments(self):
+        """Fragment index of every atom, and the tuple of fragments
+
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.16.0
            Fragment atoms are sorted by their index, and framgents are sorted
@@ -1714,6 +1714,9 @@ class Universe(object):
            * _fragdict keys are now atom indices instead of Atoms
            * _fragdict items are now a namedtuple ``fraginfo(ix, fragment)``
              storing the fragindex ``ix`` along with the fragment.
+        .. versionchanged:: 2.11.0
+           Replaces ``_fragdict``: an array of fragment indices per atom
+           replaces the per-atom dict.
         """
         atoms = self.atoms.ix
         bonds = self.atoms.bonds.to_indices()
@@ -1721,13 +1724,13 @@ class Universe(object):
         frag_indices = find_fragments(atoms, bonds)
         frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
 
-        fragdict = {}
-        fraginfo = collections.namedtuple("fraginfo", "ix, fragment")
-        for i, f in enumerate(frags):
-            for a in f:
-                fragdict[a.ix] = fraginfo(i, f)
-
-        return fragdict
+        fragindices = np.full(len(atoms), -1, dtype=np.intp)
+        if frags:
+            sizes = [len(ix) for ix in frag_indices]
+            fragindices[np.concatenate(frag_indices)] = np.repeat(
+                np.arange(len(frags)), sizes
+            )
+        return fragindices, frags
 
     @classmethod
     def from_smiles(
