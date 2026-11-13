@@ -464,10 +464,22 @@ cdef class Timestep:
             return self._unitcell
 
     @dimensions.setter
-    def dimensions(self,  new_dimensions):
+    def dimensions(self, new_dimensions):
         if new_dimensions is None:
             self._unitcell[:] = 0
         else:
+            new_dimensions = np.asarray(new_dimensions, dtype=np.float32)
+
+            if new_dimensions.shape != (6,):
+                raise ValueError(
+                    "Timestep dimensions must be a 6-element array"
+                )
+
+            if np.any(new_dimensions[:3] < 0):
+                raise ValueError(
+                    "Unit cell lengths must be non-negative"
+                )
+
             self._unitcell[:] = new_dimensions
 
     @property
