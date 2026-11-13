@@ -54,6 +54,18 @@ def does_not_raise():
     yield
 
 
+def _assert_rotation_matches_rmsd(a, b, rotation, rmsd, weights):
+    a = np.asarray(a, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    weights = np.ones(len(a)) if weights is None else np.asarray(weights)
+    achieved = np.sqrt(
+        np.average(np.sum((a @ rotation.T - b) ** 2, axis=1), weights=weights)
+    )
+    assert_allclose(rotation @ rotation.T, np.eye(3), atol=1e-10)
+    assert np.linalg.det(rotation) == pytest.approx(1.0, abs=1e-10)
+    assert achieved == pytest.approx(rmsd, abs=1e-7)
+
+
 class TestRotationMatrix:
     a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
     b = np.array([[0.1, 0.1, 0.1], [1.1, 1.1, 1.1]])
@@ -68,7 +80,7 @@ class TestRotationMatrix:
     )
     def test_rotation_matrix_input(self, a, b, weights, expected):
         rot, rmsd = align.rotation_matrix(a, b, weights)
-        assert_equal(rot, np.eye(3))
+        _assert_rotation_matches_rmsd(a, b, rot, rmsd, weights)
         assert rmsd == pytest.approx(expected)
 
     def test_list_args(self):
@@ -76,7 +88,7 @@ class TestRotationMatrix:
         b = [[0.1, 0.1, 0.1], [1.1, 1.1, 1.1]]
         w = [1.3, 2.3]
         rot, rmsd = align.rotation_matrix(a, b, w)
-        assert_equal(rot, np.eye(3))
+        _assert_rotation_matches_rmsd(a, b, rot, rmsd, w)
         assert rmsd == pytest.approx(0.13424643502242328)
 
     def test_exception(self):
