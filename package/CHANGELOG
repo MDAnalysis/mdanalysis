@@ -14,11 +14,13 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, Srikar025, carlosvega
 
  * 2.12.0
 
 Fixes
+ * Fixed `ProgressBar` closing the underlying trajectory reader when a loop
+   is interrupted with progress display disabled (Issue #5540)
 
 Enhancements
  * Added the `compute_pairs_only` keyword to `analysis.contacts.Contacts` to
