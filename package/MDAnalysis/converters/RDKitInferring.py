@@ -193,7 +193,11 @@ class MDAnalysisInferrer:
         """
         self._infer_bo_and_charges(mol)
         mol = self._standardize_patterns(mol)
-        mol = reorder_atoms(mol)
+        if (
+            mol.GetNumAtoms() > 0
+            and mol.GetAtomWithIdx(0).HasProp("_MDAnalysis_index")
+        ):
+            mol = reorder_atoms(mol)
         if self.sanitize:
             sanitize_mol(mol)
         return mol
@@ -483,14 +487,17 @@ class MDAnalysisInferrer:
         Chem.KekulizeIfPossible(mol)
         # pattern used to find problematic conjugated bonds
         # there's usually an even number of matches for this
-        pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
+        # excludes carboxylate [O-]-C(=O) groups (#3996)
+        pattern = Chem.MolFromSmarts(
+            "[!$([O-][#6]=O);*-{1-2}]-,=[*+0]=,#[*+0]"
+        )
         # pattern used to finish fixing a series of conjugated bonds
         base_end_pattern = Chem.MolFromSmarts(
-            "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]"
+            "[!$([O-][#6]=O);*-{1-2}]-,=[*+0]=,#[*+0]-,=[!$([O-][#6]=O);*-{1-2}]"
         )
         # used when there's an odd number of matches for `pattern`
         odd_end_pattern = Chem.MolFromSmarts(
-            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"
+            "[!$([O-][#6]=O);*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"
         )
         # number of unique matches with the pattern
         n_matches = len(

@@ -14,11 +14,16 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega, RK-NerdyBirdy
 
  * 2.12.0
 
 Fixes
+ * Excluded carboxylates from conjugated bonds rebuilding in RDKit converter,
+   preventing infinite resonance oscillations and iteration warnings
+   (Issue #3996)
+ * Guarded atom reordering in MDAnalysisInferrer to avoid spurious warnings
+   when inferring generic RDKit molecules without _MDAnalysis_index
 
 Enhancements
  * Added the `compute_pairs_only` keyword to `analysis.contacts.Contacts` to

@@ -798,6 +798,34 @@ class TestRDKitMDAnalysisInferrer(BaseInferrer):
         ):
             inferrer._rebuild_conjugated_bonds(mol)
 
+    @pytest.mark.parametrize(
+        "smi",
+        [
+            "CC(=O)[O-]",
+            "c1ccccc1C(=O)[O-]",
+            "NC(CC(=O)[O-])C(=O)[O-]",
+            "[O-]C(=O)c1ccccc1C(=O)[O-]",
+            "[O-]C(=O)/C=C/c1ccccc1",
+            "[O-]C(=O)/C=C/C(=O)[O-]",
+        ],
+    )
+    def test_rebuild_conjugated_bonds_excludes_carboxylates(self, smi):
+        mol = Chem.MolFromSmiles(smi)
+        inferrer = MDAnalysisInferrer()
+        inferrer._rebuild_conjugated_bonds(mol)
+        expected = Chem.MolToSmiles(Chem.MolFromSmiles(smi))
+        assert Chem.MolToSmiles(mol) == expected
+
+    def test_inferrer_call_without_mdanalysis_index_no_warning(self):
+        mol = Chem.MolFromSmiles("CCO")
+        inferrer = MDAnalysisInferrer()
+        with warnings.catch_warnings(record=True) as recorded:
+            warnings.simplefilter("always")
+            inferrer(mol)
+            assert not any(
+                "_MDAnalysis_index" in str(w.message) for w in recorded
+            )
+
     def test_deprecation_warning_max_iter(self):
         smi = "c1ccccc1"
         mol = Chem.MolFromSmiles(smi)
