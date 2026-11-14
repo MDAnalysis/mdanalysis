@@ -157,6 +157,13 @@ def test_norm(u, sels, norm, value, client_InterRDF_s):
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
+def test_density_matches_rdf_times_bulk_density(u, sels, client_InterRDF_s):
+    rdf = InterRDF_s(u, sels, norm="rdf").run(**client_InterRDF_s)
+    density = InterRDF_s(u, sels, norm="density").run(**client_InterRDF_s)
+    for rdf_arr, dens_arr in zip(rdf.results.rdf, density.results.rdf):
+        assert_allclose(dens_arr, rdf_arr * rdf.results.normalization_density)
+
+
 @pytest.mark.parametrize(
     "norm, norm_required", [("Density", "density"), (None, "none")]
 )

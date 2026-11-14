@@ -146,6 +146,10 @@ class InterRDF(AnalysisBase):
           particles occurences in each spherical shell.
 
           .. versionadded:: 2.3.0
+          .. versionchanged:: 2.12.0
+             The output for ``norm='density'`` is now divided by the
+             number of reference particles :math:`n_A` to correctly
+             report the single-particle density :math:`n_{ab}(r)`.
 
     exclusion_block : tuple
         A tuple representing the tile to exclude from the distance array.
@@ -431,6 +435,8 @@ class InterRDF(AnalysisBase):
 
             if self.norm == "rdf":
                 norm *= self.results.normalization_density
+            else:
+                norm *= nA
 
         self.results.rdf = self.results.count / norm
 
