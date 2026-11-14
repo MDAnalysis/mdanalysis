@@ -14,7 +14,8 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, erikfransson
+??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega, erikfransson,
+         orbeckst
 
  * 2.12.0
 
@@ -26,6 +27,10 @@ Fixes
    (issue #5541, Discussion #4792, see PR #5463 for details).
 
 Enhancements
+ * Added the `compute_pairs_only` keyword to `analysis.contacts.Contacts` to
+   evaluate only the reference contact pairs instead of the full distance
+   matrix, as a performance option; the default is unchanged
+   (Issue #5517, PR #5515)
  * Added `chain` selection keyword as an alias of `chainID`, also usable in
    `same chain as` selections
  * InterRDF and InterRDF_s now expose computed average box volume and densities
