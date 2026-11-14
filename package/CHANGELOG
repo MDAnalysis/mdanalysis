@@ -19,11 +19,11 @@ The rules for this file:
  * 2.12.0
 
 Fixes
- * partial fix of memory leak in the NCDF (Amber) file reader when used with
-   `mmap=True` (default for files on disk). Reading a netCDF trajectory no 
-   longer grows the resident memory of the process towards the size of the
-   whole trajectory file. ONLY FIXED ON LINUX (#5541, Discussion #4792, see
-   PR #5463 for details).
+ * reduced resident memory (RSS) of the NCDF (Amber) file reader when used with
+   `mmap=True` (default for files on disk): on Linux, it no longer grows the RSS
+   towards the size of the whole trajectory file. Not changed on macOS (where
+   growth is file cache that is reclaimed under memory pressure) and Windows.
+   (issue #5541, Discussion #4792, see PR #5463 for details).
 
 Enhancements
  * Added `chain` selection keyword as an alias of `chainID`, also usable in
