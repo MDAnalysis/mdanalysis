@@ -79,7 +79,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@v7.0.1
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -87,7 +87,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v3.2.1
+      uses: mamba-org/setup-micromamba@v3.2.1
       with:
         environment-name: mda
         create-args: >-
@@ -145,7 +145,7 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+      uses: codecov/codecov-action@v7.1.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
@@ -162,10 +162,10 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@v7.0.1
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v3.2.1
+      uses: mamba-org/setup-micromamba@v3.2.1
       with:
         environment-name: mda
         create-args: >-
@@ -259,9 +259,9 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@v7.0.1
 
-    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+    - uses: actions/setup-python@v7.1.0
       with:
         python-version: 3.12
 
