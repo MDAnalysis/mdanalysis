@@ -152,7 +152,7 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Iterable, Union
+from collections.abc import Iterable
 
 import numpy as np
 from .. import coordinates
@@ -164,6 +164,7 @@ from .backends import (
     BackendMultiprocessing,
     BackendSerial,
     BackendBase,
+    DefaultBackendOptions,
 )
 from .results import Results, ResultsGroup
 
@@ -352,7 +353,7 @@ class AnalysisBase(object):
 
     def _define_run_frames(
         self, trajectory, start=None, stop=None, step=None, frames=None
-    ) -> Union[slice, np.ndarray]:
+    ) -> slice | np.ndarray:
         """Defines limits for the whole run, as passed by self.run() arguments
 
         Parameters
@@ -371,7 +372,7 @@ class AnalysisBase(object):
 
         Returns
         -------
-        Union[slice, np.ndarray]
+        slice or numpy.ndarray
             Appropriate slicer for the trajectory that would give correct iteraction
             order via trajectory[slicer]
 
@@ -399,14 +400,14 @@ class AnalysisBase(object):
         self.start, self.stop, self.step = start, stop, step
         return slicer
 
-    def _prepare_sliced_trajectory(self, slicer: Union[slice, np.ndarray]):
+    def _prepare_sliced_trajectory(self, slicer: slice | np.ndarray):
         """Prepares sliced trajectory for use in subsequent parallel computations:
         namely, assigns self._sliced_trajectory and its appropriate attributes,
         self.n_frames, self.frames and self.times.
 
         Parameters
         ----------
-        slicer : Union[slice, np.ndarray]
+        slicer : slice or numpy.ndarray
             appropriate slicer for the trajectory
 
 
@@ -511,7 +512,7 @@ class AnalysisBase(object):
     def _compute(
         self,
         indexed_frames: np.ndarray,
-        verbose: bool = None,
+        verbose: bool | None = None,
         *,
         progressbar_kwargs=None,
     ) -> "AnalysisBase":
@@ -520,8 +521,8 @@ class AnalysisBase(object):
 
         Parameters
         ----------
-        indexed_frames : np.ndarray
-            np.ndarray of (n, 2) shape, where first column is frame iteration
+        indexed_frames : numpy.ndarray
+            numpy.ndarray of (n, 2) shape, where first column is frame iteration
             indices and second is frame numbers
 
         verbose : bool, optional
@@ -567,10 +568,10 @@ class AnalysisBase(object):
     def _setup_computation_groups(
         self,
         n_parts: int,
-        start: int = None,
-        stop: int = None,
-        step: int = None,
-        frames: Union[slice, np.ndarray] = None,
+        start: int | None = None,
+        stop: int | None = None,
+        step: int | None = None,
+        frames: slice | np.ndarray | None = None,
     ) -> list[np.ndarray]:
         """
         Splits the trajectory frames, defined by ``start/stop/step`` or
@@ -600,7 +601,7 @@ class AnalysisBase(object):
 
         Returns
         -------
-        computation_groups : list[np.ndarray]
+        computation_groups : list[numpy.ndarray]
             list of (n, 2) shaped np.ndarrays with frame indices and numbers
 
 
@@ -638,7 +639,7 @@ class AnalysisBase(object):
 
     def _configure_backend(
         self,
-        backend: Union[str, BackendBase],
+        backend: DefaultBackendOptions | BackendBase,
         n_workers: int,
         unsupported_backend: bool = False,
     ) -> BackendBase:
@@ -648,7 +649,7 @@ class AnalysisBase(object):
 
         Parameters
         ----------
-        backend : Union[str, BackendBase]
+        backend : str or BackendBase
             backend to be used:
                - ``str`` is matched to a builtin backend (one of "serial",
                  "multiprocessing" and "dask")
@@ -758,14 +759,14 @@ class AnalysisBase(object):
 
     def run(
         self,
-        start: int = None,
-        stop: int = None,
-        step: int = None,
-        frames: Iterable = None,
-        verbose: bool = None,
-        n_workers: int = None,
-        n_parts: int = None,
-        backend: Union[str, BackendBase] = None,
+        start: int | None = None,
+        stop: int | None = None,
+        step: int | None = None,
+        frames: Iterable | None = None,
+        verbose: bool | None = None,
+        n_workers: int | None = None,
+        n_parts: int | None = None,
+        backend: DefaultBackendOptions | BackendBase | None = None,
         *,
         unsupported_backend: bool = False,
         progressbar_kwargs=None,
@@ -796,7 +797,7 @@ class AnalysisBase(object):
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
             for full list. Available only for ``backend='serial'``
-        backend : Union[str, BackendBase], optional
+        backend : str or BackendBase, optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
             builtin backend (one of ``serial``, ``multiprocessing`` and
@@ -804,7 +805,7 @@ class AnalysisBase(object):
             subclass.
 
             .. versionadded:: 2.8.0
-        n_workers : int
+        n_workers : int, optional
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between
 

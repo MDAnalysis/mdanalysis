@@ -124,7 +124,7 @@ def _get_coordinates(structure: "Structure") -> np.ndarray:
 
     Returns
     -------
-        np.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.
+        numpy.ndarray, shape [n, 3], where ``n`` is the number of atoms in the structure.
     """
     return np.asarray(gemmi.FlatStructure(structure).pos)
 

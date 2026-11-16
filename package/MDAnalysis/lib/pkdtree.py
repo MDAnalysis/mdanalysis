@@ -38,7 +38,7 @@ from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
 import numpy.typing as npt
-from typing import Optional, ClassVar
+from typing import ClassVar
 
 __all__ = ["PeriodicKDTree"]
 
@@ -63,7 +63,7 @@ class PeriodicKDTree(object):
     """
 
     def __init__(
-        self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10
+        self, box: npt.ArrayLike | None = None, leafsize: int = 10
     ) -> None:
         """
 
@@ -85,7 +85,7 @@ class PeriodicKDTree(object):
         self.dim = 3  # 3D systems
         self.box = box
         self._built = False
-        self.cutoff: Optional[float] = None
+        self.cutoff: float | None = None
 
     @property
     def pbc(self):
@@ -99,7 +99,7 @@ class PeriodicKDTree(object):
         return self.box is not None
 
     def set_coords(
-        self, coords: npt.ArrayLike, cutoff: Optional[float] = None
+        self, coords: npt.ArrayLike, cutoff: float | None = None
     ) -> None:
         """Constructs KDTree from the coordinates
 
@@ -117,7 +117,7 @@ class PeriodicKDTree(object):
         ----------
         coords: array_like
           Coordinate array of shape ``(N, 3)`` for N atoms.
-        cutoff: float
+        cutoff: float, optional
           Specified cutoff distance to create duplicate images
           Typically equivalent to the desired search radius
           or the maximum of the desired cutoff radius. Relevant images

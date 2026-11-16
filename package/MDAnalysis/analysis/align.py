@@ -1019,12 +1019,12 @@ class AverageStructure(AnalysisBase):
                Will be removed in MDAnalysis 3.0.0. Please use
                :attr:`results.universe` instead.
 
-        results.positions : np.ndarray(dtype=float)
+        results.positions : numpy.ndarray(dtype=float)
             Average positions
 
             .. versionadded:: 2.0.0
 
-        positions : np.ndarray(dtype=float)
+        positions : numpy.ndarray(dtype=float)
             Alias to the :attr:`results.positions` attribute.
 
             .. deprecated:: 2.0.0

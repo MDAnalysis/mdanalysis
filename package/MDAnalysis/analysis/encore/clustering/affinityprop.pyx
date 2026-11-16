@@ -53,7 +53,7 @@ def AffinityPropagation(s, preference, float lam, int max_iterations, int conver
         clustering elements. Notice that the current implementation does not
         allow for asymmetric values (i.e. similarity(a,b) is assumed to be
         equal to similarity(b,a))
-    preference : numpy.array of floats or float
+    preference : numpy.ndarray of floats or float
         Preference values, which the determine the number of clusters. If a
         single value is given, all the preference values are set to that.
         Otherwise, the list is used to set the preference values (one value per

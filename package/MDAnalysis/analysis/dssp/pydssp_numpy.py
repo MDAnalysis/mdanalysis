@@ -11,7 +11,11 @@ designed to be used in per-frame manner in protein trajectories.
 
 import numpy as np
 
-from MDAnalysis.lib.distances import calc_bonds, capped_distance
+from MDAnalysis.lib.distances import (
+    DistanceBackendOptions,
+    calc_bonds,
+    capped_distance,
+)
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
@@ -53,14 +57,14 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
 
     Parameters
     ----------
-    a : np.ndarray
+    a : numpy.ndarray
         input array
     window : int
         upsample window
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         unfolded array
     """
     return _unfold(_unfold(a, window, -2), window, -2)
@@ -83,13 +87,13 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in Angstrom, shape (n_residues, 4, 3),
         where second axes corresponds to (N, CA, C, O) atom coordinates
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         coordinates of additional hydrogens, shape (n_residues-1, 3)
 
     .. versionadded:: 2.8.0
@@ -126,18 +130,18 @@ def get_hbond_map(
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
     box: np.ndarray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> np.ndarray:
     """Returns hydrogen bond map
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape
         (without or with hydrogens respectively), where ``n`` is number of residues.
         If hydrogens are not present, then ideal positions (see :func:_get_hydrogen_atom_positions)
         are used.
-    donor_mask : np.array
+    donor_mask : numpy.ndarray, optional
          Mask out any hydrogens that should not be considered (in particular HN
          in PRO). If ``None`` then all H will be used (behavior up to 2.10.0).
 
@@ -158,7 +162,7 @@ def get_hbond_map(
 
         .. versionadded:: 2.11.0
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Backend for distance calculations, by default ``"serial"``.
         Can be set to ``"distopia"`` if :mod:`distopia` is installed.
 
@@ -166,7 +170,7 @@ def get_hbond_map(
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         output hbond map or energy depending on return_e param
 
 
@@ -260,20 +264,20 @@ def assign(
     coord: np.ndarray,
     donor_mask: np.ndarray | None = None,
     box: np.ndarray | None = None,
-    backend: str = "serial",
+    backend: DistanceBackendOptions = "serial",
 ) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
 
     Parameters
     ----------
-    coord : np.ndarray
+    coord : numpy.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
         without or with hydrogens, respectively. Second dimension `k` represents
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
         (when k=5).
 
-    donor_mask : np.array | None, optional
+    donor_mask : numpy.ndarray, optional
          Mask out any hydrogens that should not be considered (in particular HN
          in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
 
@@ -287,7 +291,7 @@ def assign(
 
         .. versionadded:: 2.11.0
 
-    backend : str, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Backend for distance calculations, by default ``"serial"``.
         Can be set to ``"distopia"`` if `distopia`_ is installed.
 
@@ -295,7 +299,7 @@ def assign(
 
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
         representing loop, helix and sheet, respectively.
 

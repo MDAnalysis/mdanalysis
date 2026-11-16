@@ -68,7 +68,6 @@ from ._cutil import (
     _sarrus_det_multiple,
 )
 import numpy.typing as npt
-from typing import Union
 
 # geometric functions
 
@@ -204,7 +203,7 @@ def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
     return x if stp(ab, bc, cd) <= 0.0 else -x
 
 
-def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
+def sarrus_det(matrix: npt.NDArray) -> float | npt.NDArray:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 

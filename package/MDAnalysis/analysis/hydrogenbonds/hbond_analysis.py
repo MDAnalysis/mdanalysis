@@ -725,7 +725,7 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Returns
         -------
-        mask: np.ndarray
+        mask: numpy.ndarray
 
         .. versionchanged:: 2.5.0
            Change return value to a mask instead of separate AtomGroups.
@@ -886,9 +886,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Returns
         -------
-        tau_timeseries : np.array
+        tau_timeseries : numpy.ndarray
             tau from 1 to `tau_max`
-        timeseries : np.array
+        timeseries : numpy.ndarray
             autcorrelation value for each value of `tau`
         """
 

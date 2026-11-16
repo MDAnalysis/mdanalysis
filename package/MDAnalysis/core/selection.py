@@ -713,6 +713,17 @@ class _ProtoStringSelection(Selection):
         return group[np.isin(nmidx, matches)]
 
 
+class ChainSelection(_ProtoStringSelection):
+    """Select atoms by chainID, alias of the ``chainID`` keyword
+
+    .. versionadded:: 2.12.0
+    """
+
+    token = "chain"
+    field = "chainIDs"
+    level = "ix"
+
+
 class AromaticSelection(Selection):
     """Select aromatic atoms.
 
@@ -1605,6 +1616,7 @@ class SameSelection(Selection):
         "resname": "resnames",
         "resid": "resids",
         "segid": "segids",
+        "chain": "chainIDs",
         "mass": "masses",
         "charge": "charges",
         "radius": "radii",

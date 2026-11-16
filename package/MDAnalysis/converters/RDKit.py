@@ -344,7 +344,7 @@ class RDKitConverter(base.ConverterBase):
             used, the cached molecule and the new one have to be made from the
             same AtomGroup selection and with the same arguments passed
             to the converter
-        inferrer : Optional[Callable[[Chem.Mol], Chem.Mol]]
+        inferrer : callable, optional
             A callable to infer bond orders and charges for the RDKit molecule
             created by the converter. If ``None``, inferring is skipped.
         implicit_hydrogens : bool
@@ -460,7 +460,7 @@ def atomgroup_to_mol(
     force : bool
         Force the conversion when no hydrogens were detected but ``inferrer``
         is not ``None``. Useful for inorganic molecules mostly.
-    inferrer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
+    inferrer : callable, optional
         A callable to infer bond orders and charges for the RDKit molecule
         created by the converter. If ``None``, inferring is skipped.
     NoImplicit : bool

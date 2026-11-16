@@ -80,7 +80,7 @@ class DimensionalityReductionMethod(object):
 
         Returns
         -------
-        numpy.array
+        numpy.ndarray
             coordinates in reduced space
 
         """
@@ -146,7 +146,7 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
 
         Returns
         -------
-        numpy.array
+        numpy.ndarray
             coordinates in reduced space
 
         """
@@ -194,13 +194,13 @@ if sklearn:
             Parameters
             ----------
 
-            coordinates : np.array
+            coordinates : numpy.ndarray
                 trajectory atom coordinates
 
 
             Returns
             -------
-            numpy.array
+            numpy.ndarray
                 coordinates in reduced space
             """
             coordinates = self.pca.fit_transform(coordinates)

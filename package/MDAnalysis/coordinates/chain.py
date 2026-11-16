@@ -44,7 +44,6 @@ import warnings
 
 import os.path
 import bisect
-from typing import Tuple
 import numpy as np
 
 from ..lib import util
@@ -430,7 +429,7 @@ class ChainReader(base.ReaderBase):
             and not util.isstream(thing)
         )
 
-    def _get_local_frame(self, k) -> Tuple[int, int]:
+    def _get_local_frame(self, k) -> tuple[int, int]:
         """Find trajectory index and trajectory frame for chained frame `k`.
 
         Parameters

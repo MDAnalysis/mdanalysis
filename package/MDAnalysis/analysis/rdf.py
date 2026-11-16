@@ -217,6 +217,39 @@ class InterRDF(AnalysisBase):
            This attribute will be removed in 3.0.0.
            Use :attr:`results.count` instead.
 
+    results.normalization_density : float
+       The pair normalization density :math:`N_{\text{pairs}} / \langle V \rangle`
+       used to normalize the RDF (or ``None`` if box volume is not available),
+       where :math:`\langle V \rangle` is the average box volume and
+       :math:`N_{\text{pairs}} = N_1 N_2 - N_{\text{excl}}`.
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.12.0
+
+    results.box_volume : float
+       The average box volume :math:`\langle V \rangle` across analyzed frames
+       (or ``None`` if box volume is not available).
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.12.0
+
+    results.density_1 : float
+       The bulk number density :math:`\rho_1 = N_1 / \langle V \rangle` of the
+       first selection `g1` (or ``None`` if box volume is not available).
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.12.0
+
+    results.density_2 : float
+       The bulk number density :math:`\rho_2 = N_2 / \langle V \rangle` of the
+       second selection `g2` (or ``None`` if box volume is not available).
+       This corresponds to the bulk density :math:`\rho` appearing in the
+       equations for :ref:`cumulative coordination counts<equation-countab>`
+       and :ref:`radial densities<equation-nab>`.
+       This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+       .. versionadded:: 2.12.0
+
     Example
     -------
     First create the :class:`InterRDF` object, by supplying two
@@ -318,7 +351,7 @@ class InterRDF(AnalysisBase):
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
         # Set the max range to filter the search radius
@@ -349,7 +382,7 @@ class InterRDF(AnalysisBase):
         count, _ = np.histogram(dist, **self.rdf_settings)
         self.results.count += count
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             self.results.volume_cum += self._ts.volume
 
     def _get_aggregator(self):
@@ -369,7 +402,7 @@ class InterRDF(AnalysisBase):
             vols = np.power(self.results.edges, 3)
             norm *= 4 / 3 * np.pi * np.diff(vols)
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Number of each selection
             nA = len(self.g1)
             nB = len(self.g2)
@@ -381,10 +414,23 @@ class InterRDF(AnalysisBase):
                 nblocks = nA / xA
                 N -= xA * xB * nblocks
 
-            # Average number density
+            # Average box volume and densities
             self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
-            norm *= N / box_vol
+
+            if box_vol > 0:
+                self.results.box_volume = box_vol
+                self.results.normalization_density = N / box_vol
+                self.results.density_1 = nA / box_vol
+                self.results.density_2 = nB / box_vol
+            else:
+                self.results.box_volume = None
+                self.results.normalization_density = None
+                self.results.density_1 = None
+                self.results.density_2 = None
+
+            if self.norm == "rdf":
+                norm *= self.results.normalization_density
 
         self.results.rdf = self.results.count / norm
 
@@ -569,6 +615,21 @@ class InterRDF_s(AnalysisBase):
             This attribute will be removed in 3.0.0.
             Use :attr:`results.cdf` instead.
 
+    results.normalization_density : float
+        The normalization density :math:`1 / \langle V \rangle` used for
+        normalizing site-specific pair RDFs (or ``None`` if box volume is not
+        available), where :math:`\langle V \rangle` is the average box volume.
+        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+        .. versionadded:: 2.12.0
+
+    results.box_volume : float
+        The average box volume :math:`\langle V \rangle` across analyzed frames
+        (or ``None`` if box volume is not available).
+        This attribute only exists if `norm` is ``"rdf"`` or ``"density"``.
+
+        .. versionadded:: 2.12.0
+
     Example
     -------
     First create the :class:`InterRDF_s` object, by supplying one Universe and
@@ -704,7 +765,7 @@ class InterRDF_s(AnalysisBase):
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
@@ -730,7 +791,7 @@ class InterRDF_s(AnalysisBase):
             idx2s = pairs[:, 1]
             self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
-        if self.norm == "rdf":
+        if self.norm in ["rdf", "density"]:
             self.results.volume_cum += self._ts.volume
 
     def _conclude(self):
@@ -740,10 +801,19 @@ class InterRDF_s(AnalysisBase):
             vols = np.power(self.results.edges, 3)
             norm *= 4 / 3 * np.pi * np.diff(vols)
 
-        if self.norm == "rdf":
-            # Average number density
+        if self.norm in ["rdf", "density"]:
+            # Average box volume and normalization density
             self.volume_cum = self.results.volume_cum
-            norm *= 1 / (self.volume_cum / self.n_frames)
+            if self.volume_cum > 0:
+                box_vol = self.volume_cum / self.n_frames
+                self.results.box_volume = box_vol
+                self.results.normalization_density = 1.0 / box_vol
+            else:
+                self.results.box_volume = None
+                self.results.normalization_density = None
+
+            if self.norm == "rdf":
+                norm *= self.results.normalization_density
 
         # Empty lists to restore indices, RDF
         self.results.indices = []
