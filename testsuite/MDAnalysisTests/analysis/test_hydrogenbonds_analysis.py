@@ -440,6 +440,7 @@ class TestHydrogenBondAnalysisBetween(object):
             n_residues=n_residues,
             atom_resindex=[0, 0, 0, 1, 1, 1, 2, 2, 3, 3],
             residue_segindex=[0, 0, 1, 1],
+            n_segments=2,
             trajectory=True,  # necessary for adding coordinates
         )
 
