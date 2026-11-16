@@ -147,7 +147,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.14.2
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
