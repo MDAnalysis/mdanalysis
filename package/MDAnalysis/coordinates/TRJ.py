@@ -134,6 +134,8 @@ import numpy as np
 import warnings
 import errno
 import logging
+import mmap
+import sys
 from math import isclose
 
 import MDAnalysis
@@ -675,6 +677,21 @@ class NCDFReader(base.ReaderBase):
                 self.convert_pos_from_native(ts.dimensions[:3])
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
+        # the frame is now copied into ts, so its pages can be dropped from
+        # the resident memory (RSS) of the process (see #5541 and PR #5463).
+        # Only done on Linux where ``madvise(MADV_DONTNEED)`` unmaps the pages
+        # immediately. On macOS ``MADV_DONTNEED`` leaves pages mapped so RSS
+        # grows although the memory can be reclaimed under memory pressure:
+        # this looks like a memory leak but it is not.
+        # Windows has no ``MADV_DONTNEED``.
+        mm = getattr(self.trjfile, "_mm", None)
+        if (
+            mm is not None
+            and hasattr(mmap, "MADV_DONTNEED")
+            and sys.platform != "darwin"
+        ):
+            # skip macOS: does not reduce RSS and slows down reading
+            mm.madvise(mmap.MADV_DONTNEED)
         return ts
 
     def _reopen(self):
