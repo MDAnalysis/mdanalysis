@@ -180,7 +180,8 @@ altLoc *alternative-location*
     that have an altLoc B record.
 
 chainID *chain-name*
-    a selection for atoms where chainIDs have been defined.
+    a selection for atoms where chainIDs have been defined. ``chain`` can be
+    used as an alias, e.g. ``chain A``.
 
 element *element-name*
     a selection for atoms where elements have been defined. e.g. ``element H C``

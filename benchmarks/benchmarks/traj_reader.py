@@ -34,6 +34,12 @@ try:
 except ImportError:
     pass
 
+try:
+    from MDAnalysis.coordinates.XYZ import XYZReader
+    from MDAnalysisTests.datafiles import XYZ
+except ImportError:
+    pass
+
 traj_dict = {
     "XTC": [XTC, XTCReader],
     "TRR": [TRR, TRRReader],
@@ -41,13 +47,14 @@ traj_dict = {
     "NCDF": [NCDF, NCDFReader],
     "TRC": [TRC_TRAJ_SOLV, TRCReader],
     "PDB": [PDB_multiframe, PDBReader],
+    "XYZ": [XYZ, XYZReader],
 }
 
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB", "XYZ"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):
@@ -64,7 +71,7 @@ class TrajReaderCreation(object):
 class TrajReaderIteration(object):
     """Benchmarks for trajectory file format striding."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB", "XYZ"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):

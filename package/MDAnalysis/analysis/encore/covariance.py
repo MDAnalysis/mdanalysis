@@ -47,16 +47,16 @@ def ml_covariance_estimator(coordinates, reference_coordinates=None):
     Parameters
     ----------
 
-    coordinates : numpy.array
+    coordinates : numpy.ndarray
         Flattened array of coordiantes
 
-    reference_coordinates : numpy.array
+    reference_coordinates : numpy.ndarray
         Optional reference to use instead of mean
 
     Returns
     -------
 
-    cov_mat : numpy.array
+    cov_mat : numpy.ndarray
         Estimate of  covariance matrix
 
     """
@@ -96,10 +96,10 @@ def shrinkage_covariance_estimator(
     Parameters
     ----------
 
-    coordinates : numpy.array
+    coordinates : numpy.ndarray
         Flattened array of coordinates
 
-    reference_coordinates: numpy.array
+    reference_coordinates: numpy.ndarray
         Optional reference to use instead of mean
 
     shrinkage_parameter: None or float
@@ -213,7 +213,7 @@ def covariance_matrix(
 
     Returns
     -------
-    cov_mat : numpy.array
+    cov_mat : numpy.ndarray
         Covariance matrix
 
     """

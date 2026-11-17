@@ -160,7 +160,7 @@ class AffinityPropagationNative(ClusteringMethod):
 
         Returns
         -------
-        numpy.array : array, shape(n_elements)
+        numpy.ndarray, shape (n_elements,)
             centroid frames of the clusters for all of the elements
 
         .. versionchanged:: 1.0.0
@@ -240,7 +240,7 @@ if sklearn:
 
             Returns
             -------
-            numpy.array : array, shape(n_elements)
+            numpy.ndarray, shape (n_elements,)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0
@@ -326,7 +326,7 @@ if sklearn:
 
             Returns
             -------
-            numpy.array : array, shape(n_elements)
+            numpy.ndarray, shape (n_elements,)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0
@@ -432,13 +432,13 @@ if sklearn:
             Parameters
             ----------
 
-            coordinates : np.array
+            coordinates : numpy.ndarray
                 trajectory atom coordinates
 
 
             Returns
             -------
-            numpy.array : array, shape(n_elements)
+            numpy.ndarray, shape (n_elements,)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0

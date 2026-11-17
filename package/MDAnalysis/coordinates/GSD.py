@@ -50,6 +50,8 @@ Classes
 .. autofunction:: gsd_pickle_open
 
 """
+from typing import Literal
+
 import numpy as np
 
 try:
@@ -226,7 +228,7 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
         self.__init__(gsdfileobj)
 
 
-def gsd_pickle_open(name: str, mode: str = "r"):
+def gsd_pickle_open(name: str, mode: Literal["r"] = "r"):
     """Open hoomd schema GSD file with pickle function implemented.
 
     This function returns a GSDPicklable object. It can be used as a
@@ -243,7 +245,7 @@ def gsd_pickle_open(name: str, mode: str = "r"):
     ----------
     name : str
         a filename given a text or byte string.
-    mode: str, optional
+    mode: {'r'}, optional
         'r':  open for reading.
 
     Returns

@@ -712,6 +712,28 @@ class TestStringInterning:
         assert len(ag2) == 5
         assert (ag2.ix == ag.ix).all()
 
+    def test_from_lookup(self):
+        # sorted lookup order (as from np.unique) differs from the first-seen
+        # order of __init__, which interning must not depend on
+        values = ["CA", "N", "CA", "O", "N"]
+        lookup, nmidx = np.unique(values, return_inverse=True)
+        attr = tpattrs.Atomnames._from_lookup(nmidx, lookup)
+        ref = tpattrs.Atomnames(values)
+
+        assert_equal(attr.values, ref.values)
+        assert attr.values.dtype == ref.values.dtype
+        assert all(
+            attr.name_lookup[i] == nm for nm, i in attr.namedict.items()
+        )
+
+        u = mda.Universe.empty(n_atoms=5)
+        u.add_TopologyAttr(attr)
+        assert_equal(u.select_atoms("name N").ix, [1, 4])
+
+        u.atoms[[0, 1]].names = ["N", "CB"]
+        assert_equal(u.atoms.names, ["N", "CB", "CA", "O", "N"])
+        assert_equal(u.select_atoms("name N").ix, [0, 4])
+
 
 class Testcenter_of_charge:
 

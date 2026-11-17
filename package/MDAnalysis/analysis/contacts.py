@@ -222,6 +222,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.lib.distances import calc_bonds
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase, ResultsGroup
 
@@ -353,6 +354,25 @@ class Contacts(AnalysisBase):
     signature ``func(r, r0, **kwargs)`` and must be provided in the keyword
     argument `method`.
 
+    .. note::
+
+       With ``compute_pairs_only=True``, the reference distances are computed
+       once per run and the same `r0` array is passed to `method` in every
+       frame. A custom `method` must therefore not modify its `r0` argument
+       in place, and changes to ``initial_contacts`` only take effect in the
+       next call to ``run()``.
+
+    .. rubric:: Evaluating only the reference contacts
+
+    By default the distances between *all* pairs of atoms of the two
+    selections are computed in every frame, and the pairs that are in contact
+    in the reference are then picked out. When only a small fraction of all
+    pairs is in contact in the reference (for example, all heavy atoms of a
+    large protein), it can be much faster and use much less memory to compute
+    only the distances of the reference contacts. This is a performance option
+    that does not change the results; it is enabled with
+    ``compute_pairs_only=True`` (see below for when it is not beneficial).
+
     Attributes
     ----------
     results.timeseries : numpy.ndarray
@@ -380,6 +400,9 @@ class Contacts(AnalysisBase):
        Introduced :meth:`get_supported_backends` allowing
        for parallel execution on :mod:`multiprocessing`
        and :mod:`dask` backends.
+    .. versionchanged:: 2.12.0
+       Added the `compute_pairs_only` keyword to evaluate only the reference
+       contact pairs.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -401,6 +424,7 @@ class Contacts(AnalysisBase):
         radius=4.5,
         pbc=True,
         kwargs=None,
+        compute_pairs_only=False,
         **basekwargs,
     ):
         """
@@ -410,7 +434,7 @@ class Contacts(AnalysisBase):
             trajectory
         select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
             two contacting groups that change over time
-        refgroup : tuple(AtomGroup, AtomGroup)
+        refgroup : tuple(AtomGroup, AtomGroup) | list(tuple(AtomGroup, AtomGroup), ...)
             two contacting atomgroups in their reference conformation. This
             can also be a list of tuples containing different atom groups
         radius : float, optional (4.5 Angstroms)
@@ -424,6 +448,21 @@ class Contacts(AnalysisBase):
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
+        compute_pairs_only : bool (optional)
+            If ``True``, compute distances only for the atom pairs that are
+            in contact in each reference (using
+            :func:`~MDAnalysis.lib.distances.calc_bonds`) instead of the full
+            distance matrix of the two selections. This is only a performance
+            option and does not change the results. It can be much faster
+            when the reference contacts are a small fraction of all possible
+            pairs (e.g. all heavy atoms of a protein) but is slower when most
+            pairs are in contact, when the selections are small, or when
+            several references share many pairs, because shared pairs are
+            recomputed for each reference. A custom `method` must not modify
+            its `r0` argument (see the note on the **Contact API** above).
+            The default is ``False``.
+
+            .. versionadded:: 2.12.0
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -445,6 +484,7 @@ class Contacts(AnalysisBase):
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
 
         self.fraction_kwargs = kwargs if kwargs is not None else {}
+        self.compute_pairs_only = compute_pairs_only
 
         if method == "hard_cut":
             self.fraction_contacts = hard_cut_q
@@ -539,21 +579,40 @@ class Contacts(AnalysisBase):
 
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0) + 1))
+        if self.compute_pairs_only:
+            # (row index, column index, reference distances) per reference,
+            # in the same order as boolean mask extraction
+            self._initial_pairs = [
+                (*np.nonzero(contacts), r0[contacts])
+                for contacts, r0 in zip(self.initial_contacts, self.r0)
+            ]
 
-    def _single_frame(self):
-        self.results.timeseries[self._frame_index][0] = self._ts.frame
-
+    def _distances_all_pairs(self):
+        """Yield ``(r, r0)`` per reference from the full distance matrix."""
         # compute distance array for a frame
         d = distance_array(
             self.grA.positions, self.grB.positions, box=self._get_box(self._ts)
         )
-
-        for i, (initial_contacts, r0) in enumerate(
-            zip(self.initial_contacts, self.r0), 1
-        ):
+        for initial_contacts, r0 in zip(self.initial_contacts, self.r0):
             # select only the contacts that were formed in the reference state
-            r = d[initial_contacts]
-            r0 = r0[initial_contacts]
+            yield d[initial_contacts], r0[initial_contacts]
+
+    def _distances_initial_pairs(self):
+        """Yield ``(r, r0)`` per reference, computing only the contacts."""
+        posA, posB = self.grA.positions, self.grB.positions
+        box = self._get_box(self._ts)
+        for ia, ib, r0 in self._initial_pairs:
+            yield calc_bonds(posA[ia], posB[ib], box=box), r0
+
+    def _single_frame(self):
+        self.results.timeseries[self._frame_index][0] = self._ts.frame
+
+        if self.compute_pairs_only:
+            distances = self._distances_initial_pairs()
+        else:
+            distances = self._distances_all_pairs()
+
+        for i, (r, r0) in enumerate(distances, 1):
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
             self.results.timeseries[self._frame_index][i] = q
 

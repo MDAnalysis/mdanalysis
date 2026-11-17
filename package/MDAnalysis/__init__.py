@@ -154,7 +154,6 @@ __all__ = ["Universe", "Writer", "AtomGroup", "ResidueGroup", "SegmentGroup"]
 
 import logging
 import warnings
-from typing import Dict
 
 
 logger = logging.getLogger("MDAnalysis.__init__")
@@ -169,21 +168,21 @@ except ImportError:
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
-_READERS: Dict = {}
-_READER_HINTS: Dict = {}
-_SINGLEFRAME_WRITERS: Dict = {}
-_MULTIFRAME_WRITERS: Dict = {}
-_PARSERS: Dict = {}
-_PARSER_HINTS: Dict = {}
-_SELECTION_WRITERS: Dict = {}
-_CONVERTERS: Dict = {}
+_READERS: dict = {}
+_READER_HINTS: dict = {}
+_SINGLEFRAME_WRITERS: dict = {}
+_MULTIFRAME_WRITERS: dict = {}
+_PARSERS: dict = {}
+_PARSER_HINTS: dict = {}
+_SELECTION_WRITERS: dict = {}
+_CONVERTERS: dict = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS: Dict = {}  # {attrname: cls}
-_TOPOLOGY_TRANSPLANTS: Dict = (
+_TOPOLOGY_ATTRS: dict = {}  # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS: dict = (
     {}
 )  # {name: [attrname, method, transplant class]}
-_TOPOLOGY_ATTRNAMES: Dict = {}  # {lower case name w/o _ : name}
-_GUESSERS: Dict = {}
+_TOPOLOGY_ATTRNAMES: dict = {}  # {lower case name w/o _ : name}
+_GUESSERS: dict = {}
 
 # custom exceptions and warnings
 from .exceptions import (

@@ -37,8 +37,11 @@ Classes
 """
 
 import warnings
-from typing import Callable
+from collections.abc import Callable
+from typing import Literal
 from MDAnalysis.lib.util import is_installed
+
+DefaultBackendOptions = Literal["serial", "multiprocessing", "dask"]
 
 
 class BackendBase:

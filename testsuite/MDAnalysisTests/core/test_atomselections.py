@@ -1550,6 +1550,20 @@ def test_chain_sel():
     assert len(u.select_atoms("chainID A")) == len(u.atoms)
 
 
+@pytest.mark.parametrize(
+    "sel",
+    ["chain A", "chain A B", "chain A*", "same chain as index 0"],
+)
+def test_chain_alias_sel(sel):
+    u = mda.Universe(PDB_elements)
+    assert_equal(u.select_atoms(sel).ix, u.select_atoms("chainID A").ix)
+
+
+def test_chain_alias_nomatch():
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("chain B")) == 0
+
+
 @pytest.fixture()
 def u_fake_masses():
     u = mda.Universe(TPR)

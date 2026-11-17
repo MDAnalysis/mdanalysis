@@ -181,6 +181,7 @@ class TestBaseUnits:
             "charge": "e",
             "force": "kJ/(mol*A)",
             "speed": "A/ps",
+            "mass": "u",
         }
         return ref
 

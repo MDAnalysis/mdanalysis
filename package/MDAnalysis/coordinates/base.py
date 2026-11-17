@@ -129,7 +129,7 @@ import abc
 import numpy as np
 import numbers
 import warnings
-from typing import Any, Union, Optional, List, Dict
+from typing import TYPE_CHECKING, Any, Literal
 
 from .timestep import Timestep
 from . import core
@@ -141,11 +141,13 @@ from .. import (
 )
 from .. import units
 from ..auxiliary.base import AuxReader
-from ..auxiliary.core import auxreader
 from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
-from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import asiterable, store_init_arguments
 from ..lib.util import NamedStream
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..core.groups import AtomGroup
 
 
 class FrameIteratorBase(object):
@@ -991,16 +993,17 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def timeseries(self, asel: Optional['AtomGroup']=None,
-                   atomgroup: Optional['Atomgroup']=None,
-                   start: Optional[int]=None, stop: Optional[int]=None,
-                   step: Optional[int]=None,
-                   order: Optional[str]='fac') -> np.ndarray:
+    def timeseries(self, asel: 'AtomGroup | None'=None,
+                   atomgroup: 'AtomGroup | None'=None,
+                   start: int | None=None, stop: int | None=None,
+                   step: int | None=None,
+                   order: Literal['fac', 'fca', 'afc', 'acf', 'caf', 'cfa'] = 'fac',
+                   ) -> np.ndarray:
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
         ----------
-        asel : AtomGroup (optional)
+        asel : AtomGroup, optional
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to ``None``, in which case the full set
             of coordinate data is returned.
@@ -1008,20 +1011,20 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             .. deprecated:: 2.7.0
                 asel argument will be renamed to atomgroup in 3.0.0
 
-        atomgroup: AtomGroup (optional)
+        atomgroup : AtomGroup, optional
             Same as `asel`, will replace `asel` in 3.0.0
-        start :  int (optional)
+        start : int, optional
             Begin reading the trajectory at frame index `start` (where 0 is the
             index of the first frame in the trajectory); the default
             ``None`` starts at the beginning.
-        stop : int (optional)
+        stop : int, optional
             End reading the trajectory at frame index `stop`-1, i.e, `stop` is
             excluded. The trajectory is read to the end with the default
             ``None``.
-        step : int (optional)
+        step : int, optional
             Step size for reading; the default ``None`` is equivalent to 1 and
             means to read every frame.
-        order : str (optional)
+        order : {'fac', 'fca', 'afc', 'acf', 'caf', 'cfa'}, optional
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
@@ -1080,9 +1083,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
-                      aux_spec: Union[str, Dict[str, str]] = None,
-                      auxdata: Union[str, AuxReader] = None,
-                      format: str = None,
+                      aux_spec: str | dict[str, str] | None = None,
+                      auxdata: str | AuxReader | None = None,
+                      format: str | None = None,
                       **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
