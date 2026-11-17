@@ -95,6 +95,10 @@ MDAnalysis get in touch on `GitHub Discussions`_. To set up a
 development environment and run the test suite read the `developer
 guide`_.
 
+AI Policy
+=========
+
+Please read our AI policy `AI_POLICY.md`.
 
 Citation
 ========

@@ -10,6 +10,9 @@ Changes made in this Pull Request:
 
 ## LLM / AI generated code disclosure
 <!-- Please update this disclosure to reflect if you did or did not use LLMs / AI to generate code -->
+
+- [ ] I have read and understood MDAnalysis's AI policy in `AI_POLICY.md`.
+
 LLMs or other AI-powered tools (beyond simple IDE use cases) were used in this contribution: yes / no
 
 ## PR Checklist
