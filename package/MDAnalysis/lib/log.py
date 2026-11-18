@@ -344,3 +344,12 @@ class ProgressBar(tqdm):
         # disable should take precedence over verbose if both are set
         kwargs["disable"] = kwargs.pop("disable", disable)
         super(ProgressBar, self).__init__(*args, **kwargs)
+
+    def __iter__(self):
+        """Iterate without closing the underlying iterable when disabled."""
+        if self.disable:
+            for obj in self.iterable:
+                yield obj
+            return
+
+        yield from super().__iter__()
