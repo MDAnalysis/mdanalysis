@@ -26,21 +26,21 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7.0.1
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7.1.0
       with:
-        python-version: "3.11"
+        python-version: "3.12"
 
-    - uses: psf/black@stable
+    - uses: psf/black@26.10.1
       with:
         options: "--check"
         src: "./package"
         version: "~= 24.0"
 
-    - uses: psf/black@stable
+    - uses: psf/black@26.10.1
       with:
         options: "--check"
         src: "./testsuite"
@@ -52,11 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7.0.1
 
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7.1.0
       with:
-        python-version: "3.11"
+        python-version: "3.12"
 
     - name: install
       run: |
@@ -74,14 +74,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
 
       - name: setup_micromamba
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3.2.1
         with:
           environment-name: mda
           create-args: >-
-            python=3.11
+            python=3.12
             pip
           condarc: |
             channels:
