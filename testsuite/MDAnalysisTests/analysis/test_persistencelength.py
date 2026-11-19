@@ -189,16 +189,20 @@ class TestPersistenceLengthSlicedRun(object):
             for frag in u.atoms.fragments
         ]
 
-    def test_sliced_run_normalization(self, chains):
+    @pytest.mark.parametrize(
+        "run_kwargs, expected",
+        [
+            ({"stop": 3}, [1.0, 0.668924, 0.501065, 0.401645, 0.319162]),
+            ({"step": 2}, [1.0, 0.666655, 0.487504, 0.392062, 0.312935]),
+        ],
+    )
+    def test_sliced_run_normalization(self, chains, run_kwargs, expected):
         # Issue #5453: normalize by the frames analyzed, not by the total
-        # number of frames. Expected values are the first five entries for
-        # frames 0 to 2, calculated with plain numpy.
-        p = polymer.PersistenceLength(chains).run(stop=3)
+        # number of frames.
+        p = polymer.PersistenceLength(chains).run(**run_kwargs)
         assert p.n_frames == 3
         assert_allclose(
-            p.results.bond_autocorrelation[:5],
-            [1.0, 0.668924, 0.501065, 0.401645, 0.319162],
-            atol=1e-5,
+            p.results.bond_autocorrelation[:5], expected, atol=1e-5
         )
 
     def test_zero_frames_raises(self, chains):
