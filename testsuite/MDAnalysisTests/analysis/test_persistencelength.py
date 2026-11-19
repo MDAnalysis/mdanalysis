@@ -31,7 +31,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 
 from MDAnalysisTests.datafiles import Plength, TRZ_psf, TRZ
 
@@ -177,3 +177,34 @@ class TestSortBackbone(object):
         u.add_TopologyAttr(Bonds(bondlist))
         with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
+
+
+class TestPersistenceLengthSlicedRun(object):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def chains():
+        u = mda.Universe(TRZ_psf, TRZ)
+        return [
+            polymer.sort_backbone(frag.select_atoms("not name O* H*"))
+            for frag in u.atoms.fragments
+        ]
+
+    @pytest.mark.parametrize(
+        "run_kwargs, expected",
+        [
+            ({"stop": 3}, [1.0, 0.668924, 0.501065, 0.401645, 0.319162]),
+            ({"step": 2}, [1.0, 0.666655, 0.487504, 0.392062, 0.312935]),
+        ],
+    )
+    def test_sliced_run_normalization(self, chains, run_kwargs, expected):
+        # Issue #5453: normalize by the frames analyzed, not by the total
+        # number of frames.
+        p = polymer.PersistenceLength(chains).run(**run_kwargs)
+        assert p.n_frames == 3
+        assert_allclose(
+            p.results.bond_autocorrelation[:5], expected, atol=1e-5
+        )
+
+    def test_zero_frames_raises(self, chains):
+        with pytest.raises(ValueError, match="analyzed zero frames"):
+            polymer.PersistenceLength(chains).run(start=2, stop=2)

@@ -140,6 +140,15 @@ class PersistenceLength(AnalysisBase):
     verbose : bool, optional
        Show detailed progress of the calculation if set to ``True``.
 
+    Raises
+    ------
+    ValueError
+       If the AtomGroups do not all have the same number of atoms, or if
+       :meth:`run` analyzes zero frames (for example ``run(start=2, stop=2)``).
+
+
+    .. versionadded:: 2.12.0
+
     Attributes
     ----------
     results.bond_autocorrelation : numpy.ndarray
@@ -316,8 +325,13 @@ class PersistenceLength(AnalysisBase):
         return self.results.fit
 
     def _conclude(self):
+        if self.n_frames == 0:
+            raise ValueError(
+                "PersistenceLength.run() analyzed zero frames; check the "
+                "start/stop/step or frames selection passed to run()."
+            )
         norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
-        norm *= len(self._atomgroups) * self._trajectory.n_frames
+        norm *= len(self._atomgroups) * self.n_frames
         self.results.bond_autocorrelation = (
             self.results.raw_bond_autocorr / norm
         )

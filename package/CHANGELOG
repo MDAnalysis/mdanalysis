@@ -15,11 +15,15 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega, erikfransson,
-         orbeckst
+         orbeckst, srikarjy
 
  * 2.12.0
 
 Fixes
+ * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation`
+   using the number of frames actually analyzed instead of the total trajectory
+   frame count, fixing incorrect results when `run()` is called with `start`/
+   `stop`/`step` (Issue #5453).
  * reduced resident memory (RSS) of the NCDF (Amber) file reader when used with
    `mmap=True` (default for files on disk): on Linux, it no longer grows the RSS
    towards the size of the whole trajectory file. Not changed on macOS (where
