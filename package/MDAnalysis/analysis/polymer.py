@@ -146,7 +146,8 @@ class PersistenceLength(AnalysisBase):
        If the AtomGroups do not all have the same number of atoms, or if
        :meth:`run` analyzes zero frames (for example ``run(start=2, stop=2)``).
 
-       .. versionadded:: 2.12.0
+
+    .. versionadded:: 2.12.0
 
     Attributes
     ----------
