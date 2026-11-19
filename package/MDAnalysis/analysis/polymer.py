@@ -140,6 +140,12 @@ class PersistenceLength(AnalysisBase):
     verbose : bool, optional
        Show detailed progress of the calculation if set to ``True``.
 
+    Raises
+    ------
+    ValueError
+       If the AtomGroups do not all have the same number of atoms, or if
+       :meth:`run` analyzes zero frames (for example ``run(start=2, stop=2)``).
+
     Attributes
     ----------
     results.bond_autocorrelation : numpy.ndarray
@@ -234,6 +240,12 @@ class PersistenceLength(AnalysisBase):
     .. versionchanged:: 2.10.0
        introduced :meth:`get_supported_backends` allowing for parallel
        execution on ``multiprocessing`` and ``dask`` backends.
+    .. versionchanged:: 2.12.0
+       :attr:`results.bond_autocorrelation` is now normalized by the number of
+       frames analyzed instead of the total number of trajectory frames, which
+       corrects results when :meth:`run` is called with ``start``, ``stop``,
+       ``step`` or ``frames``. A :exc:`ValueError` is now raised if zero frames
+       are analyzed.
     """
 
     _analysis_algorithm_is_parallelizable = True
