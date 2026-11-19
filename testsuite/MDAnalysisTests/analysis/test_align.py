@@ -456,6 +456,210 @@ class TestAlign(object):
             ).run()
             assert_equal(aligner._writer.precision, 2)
 
+    def test_AlignTraj_subselection_str(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join("sub_align.dcd"))
+        full_outfile = str(tmpdir.join("full_align.dcd"))
+        reference.trajectory[-1]
+        sub_sel = "resid 1-50"
+        sub_atoms = universe.select_atoms(sub_sel)
+
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_sel,
+            filename=outfile,
+        ).run()
+
+        # Run reference alignment of the full system for comparison
+        align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            filename=full_outfile,
+        ).run()
+
+        # Output trajectory should only have atoms from subselection
+        sub_u = mda.Merge(sub_atoms)
+        sub_u.load_new(outfile)
+        full_u = mda.Universe(PSF, full_outfile)
+
+        assert sub_u.atoms.n_atoms == sub_atoms.n_atoms
+        assert len(sub_u.trajectory) == len(universe.trajectory)
+
+        # Assert equality of coordinates with the full trajectory subselection
+        for ts_sub, ts_full in zip(sub_u.trajectory, full_u.trajectory):
+            assert_allclose(
+                sub_u.atoms.positions,
+                full_u.select_atoms(sub_sel).positions,
+                atol=1.5e-3,
+            )
+
+        # Verify RMSD at reference frame (-1) and frame 0
+        sub_u.trajectory[-1]
+        sub_ca = sub_u.select_atoms("name CA and resid 1-50")
+        ref_ca = reference.select_atoms("name CA and resid 1-50")
+        assert_allclose(
+            rms.rmsd(sub_ca.positions, ref_ca.positions), 0.0, atol=1.5e-3
+        )
+
+        sub_u.trajectory[0]
+        assert_allclose(
+            rms.rmsd(sub_ca.positions, ref_ca.positions),
+            aligner.results.rmsd[0],
+            atol=1.5e-3,
+        )
+
+    def test_AlignTraj_subselection_atomgroup(
+        self, universe, reference, tmpdir
+    ):
+        outfile = str(tmpdir.join("sub_ag_align.dcd"))
+        full_outfile = str(tmpdir.join("full_ag_align.dcd"))
+        reference.trajectory[-1]
+        sub_atoms = universe.select_atoms("resid 1-50")
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_atoms,
+            filename=outfile,
+        ).run()
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            filename=full_outfile,
+        ).run()
+
+        sub_u = mda.Merge(sub_atoms)
+        sub_u.load_new(outfile)
+        full_u = mda.Universe(PSF, full_outfile)
+
+        assert sub_u.atoms.n_atoms == sub_atoms.n_atoms
+        assert len(sub_u.trajectory) == len(universe.trajectory)
+
+        # Assert equality on the output data itself
+        for ts_sub, ts_full in zip(sub_u.trajectory, full_u.trajectory):
+            assert_allclose(
+                sub_u.atoms.positions,
+                full_u.select_atoms("resid 1-50").positions,
+                atol=1.5e-3,
+            )
+
+        sub_u.trajectory[-1]
+        sub_ca = sub_u.select_atoms("name CA and resid 1-50")
+        ref_ca = reference.select_atoms("name CA and resid 1-50")
+        assert_allclose(
+            rms.rmsd(sub_ca.positions, ref_ca.positions), 0.0, atol=1.5e-3
+        )
+
+    def test_AlignTraj_subselection_in_memory(self, universe, reference):
+        reference.trajectory[-1]
+        sub_sel = "resid 1-50"
+        universe.trajectory[0]
+        orig_non_sub = universe.select_atoms(
+            "not (resid 1-50)"
+        ).positions.copy()
+
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=sub_sel,
+            in_memory=True,
+        ).run()
+
+        assert aligner.filename is None
+
+        # Verify RMSD of aligned subselected atoms
+        universe.trajectory[-1]
+        ca_sub = universe.select_atoms("name CA and resid 1-50")
+        ca_ref = reference.select_atoms("name CA and resid 1-50")
+        assert_allclose(
+            rms.rmsd(ca_sub.positions, ca_ref.positions), 0.0, atol=1.5e-3
+        )
+
+        universe.trajectory[0]
+        assert_allclose(
+            rms.rmsd(ca_sub.positions, ca_ref.positions),
+            aligner.results.rmsd[0],
+            atol=1.5e-3,
+        )
+
+        # Non-subselected atoms should remain untouched in memory
+        assert_allclose(
+            universe.select_atoms("not (resid 1-50)").positions,
+            orig_non_sub,
+        )
+
+    def test_AlignTraj_subselection_universe(
+        self, universe, reference, tmpdir
+    ):
+        outfile = str(tmpdir.join("sub_u_align.dcd"))
+        aligner = align.AlignTraj(
+            universe,
+            reference,
+            select="name CA and resid 1-50",
+            subselection=universe,
+            filename=outfile,
+        ).run()
+        assert aligner.mobile.n_atoms == universe.atoms.n_atoms
+
+    def test_AlignTraj_subselection_non_overlapping(
+        self, universe, reference, tmpdir
+    ):
+        # Test case where fit selection A and output subselection B are disjoint
+        sel_fit = "name CA and resid 1-20"
+        sel_out = "name CA and resid 50-70"
+        fit_atoms = universe.select_atoms(sel_fit)
+        out_atoms = universe.select_atoms(sel_out)
+        # Ensure selections are non-overlapping / disjoint
+        assert len(set(fit_atoms.indices) & set(out_atoms.indices)) == 0
+
+        sub_outfile = str(tmpdir.join("sub_disjoint.dcd"))
+        full_outfile = str(tmpdir.join("full_disjoint.dcd"))
+        reference.trajectory[-1]
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select=sel_fit,
+            subselection=sel_out,
+            filename=sub_outfile,
+        ).run()
+
+        align.AlignTraj(
+            universe,
+            reference,
+            select=sel_fit,
+            filename=full_outfile,
+        ).run()
+
+        sub_u = mda.Merge(out_atoms)
+        sub_u.load_new(sub_outfile)
+        full_u = mda.Universe(PSF, full_outfile)
+
+        assert sub_u.atoms.n_atoms == out_atoms.n_atoms
+        for ts_sub, ts_full in zip(sub_u.trajectory, full_u.trajectory):
+            assert_allclose(
+                sub_u.atoms.positions,
+                full_u.select_atoms(sel_out).positions,
+                atol=1.5e-3,
+            )
+
+    def test_AlignTraj_subselection_invalid(self, universe, reference):
+        with pytest.raises(
+            TypeError, match="subselection must be a selection string"
+        ):
+            align.AlignTraj(
+                universe,
+                reference,
+                select="name CA",
+                subselection=12345,
+            )
+
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(
