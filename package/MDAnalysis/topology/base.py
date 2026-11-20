@@ -183,14 +183,6 @@ def change_squash(criteria, to_squash):
     new_segids: ['A', 'A', 'B']
     """
 
-    def get_borders(*arrays):
-        """Generator of indices to slice arrays when they change"""
-        borders = np.nonzero(
-            reduce(np.logical_or, (a[:-1] != a[1:] for a in arrays))
-        )
-        # Add Nones so we can slice from start to end
-        return [None] + list(borders[0] + 1) + [None]
-
     l0 = len(criteria[0])
     if not all(
         len(other) == l0 for other in itertools.chain(criteria[1:], to_squash)
@@ -198,23 +190,16 @@ def change_squash(criteria, to_squash):
         raise ValueError("All arrays must be equally sized")
 
     # 1) Detect where resids change
-    borders = get_borders(*criteria)
-    # Number of groups = number of changes + 1
-    # 2 `None`s have been added, so -1
-    nres = len(borders) - 1
+    changes = reduce(np.logical_or, (a[:-1] != a[1:] for a in criteria))
+    # first atom of each residue
+    starts = np.concatenate([[0], np.nonzero(changes)[0] + 1])
 
-    # 2) Allocate new arrays
-    # Per atom record of what residue they belong to
+    # 2) Per atom record of what residue they belong to
     residx = np.zeros_like(criteria[0], dtype=int)
-    # Per residue record of various attributes
-    new_others = [np.zeros(nres, dtype=o.dtype) for o in to_squash]
+    residx[1:] = np.cumsum(changes)
 
-    # 3) Slice through resids and others to find values
-    for i, (x, y) in enumerate(zip(borders[:-1], borders[1:])):
-        residx[x:y] = i  # atoms between x & y are in the i'th residue
-        for old, new in zip(to_squash, new_others):
-            new[i] = old[x:y][0]  # TODO: Check that x:y is the same
-            # Should be the same for self consistency...
+    # 3) Per residue record of various attributes, from each first atom
+    new_others = [o[starts] for o in to_squash]
 
     return residx, new_others
 

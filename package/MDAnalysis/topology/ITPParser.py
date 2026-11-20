@@ -295,6 +295,9 @@ class Molecule:
     def __init__(self, name):
         self.name = name
         self.ids = []
+        # first position of each atom id in self.ids, for index_ids
+        self._id_index = {}
+        self._n_indexed = 0
         self.types = []
         self.resids = []
         self.resnames = []
@@ -481,7 +484,15 @@ class Molecule:
         """
         Get indices of atom ids (list of strings)
         """
-        return tuple(map(self.ids.index, values))
+        # bring the lookup up to date with any newly parsed atoms; like
+        # list.index, it holds the first position of each id
+        for i in range(self._n_indexed, len(self.ids)):
+            self._id_index.setdefault(self.ids[i], i)
+        self._n_indexed = len(self.ids)
+        try:
+            return tuple(self._id_index[value] for value in values)
+        except KeyError as err:
+            raise ValueError(f"{err} is not in list") from None
 
 
 class ITPParser(TopologyReaderBase):
