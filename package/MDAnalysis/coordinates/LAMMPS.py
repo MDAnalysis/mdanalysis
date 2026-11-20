@@ -860,33 +860,36 @@ class DumpReader(base.ReaderBase):
         for key in additional_keys:
             ts.data[key] = np.empty(self.n_atoms)
 
-        # Parse all the atoms
-        for i in range(self.n_atoms):
-            fields = f.readline().split()
-            if ids:
-                indices[i] = fields[attr_to_col_ix["id"]]
-            coords = np.array(
-                [fields[dim] for dim in coord_cols], dtype=np.float32
+        # Parse all the atoms: split them into one table of strings, then
+        # convert column by column
+        lines = [f.readline() for _ in range(self.n_atoms)]
+        fields = " ".join(lines).split()
+        if len(fields) == self.n_atoms * len(attrs):
+            fields = np.array(fields, dtype=object).reshape(self.n_atoms, -1)
+        else:
+            # irregular lines: use the leading columns of each
+            fields = np.array(
+                [line.split()[: len(attrs)] for line in lines], dtype=object
             )
+        if ids:
+            indices[:] = fields[:, attr_to_col_ix["id"]].astype(int)
+        coords = fields[:, coord_cols].astype(np.float32)
+        if self._unwrap:
+            images = coords[:, 3:]
+            coords = coords[:, :3]
+            coords += images * ts.dimensions[:3]
+        ts.positions[:] = coords[:, :3]
 
-            if self._unwrap:
-                images = coords[3:]
-                coords = coords[:3]
-                coords += images * ts.dimensions[:3]
-            else:
-                coords = coords[:3]
-            ts.positions[i] = coords
+        if self._has_vels:
+            ts.velocities[:] = fields[:, vel_cols].astype(np.float32)
+        if self._has_forces:
+            ts.forces[:] = fields[:, force_cols].astype(np.float32)
 
-            if self._has_vels:
-                ts.velocities[i] = [fields[dim] for dim in vel_cols]
-            if self._has_forces:
-                ts.forces[i] = [fields[dim] for dim in force_cols]
-
-            # Collect additional cols
-            for attribute_key in additional_keys:
-                ts.data[attribute_key][i] = fields[
-                    attr_to_col_ix[attribute_key]
-                ]
+        # Collect additional cols
+        for attribute_key in additional_keys:
+            ts.data[attribute_key][:] = fields[
+                :, attr_to_col_ix[attribute_key]
+            ].astype(np.float64)
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
