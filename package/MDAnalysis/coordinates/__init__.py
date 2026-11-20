@@ -268,8 +268,8 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
    +---------------+-----------+-------+------------------------------------------------------+
    | MMCIF [#a]_   | cif,      |  r    | Single frame of coordinates from macromolecular      |
-   |               | mmcif     |       | structures in the PDBx/mmCIF format (requires the    |
-   |               |           |       | gemmi_ package).                                     |
+   |               | mmcif,    |       | structures in the PDBx/mmCIF format (requires the    |
+   |               | pdb_gemmi |       | gemmi_ package).                                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.MMCIF`                  |
    +---------------+-----------+-------+------------------------------------------------------+
    | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |

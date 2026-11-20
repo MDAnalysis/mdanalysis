@@ -3,11 +3,12 @@ import pytest
 from pathlib import Path
 from io import StringIO
 import gzip
-from numpy.testing import assert_equal
+from numpy.testing import assert_allclose, assert_equal
 from MDAnalysis.lib import util
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
+from MDAnalysisTests.datafiles import CONECT, PDB_multiframe
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
@@ -220,3 +221,77 @@ def test_multimodel_warning_msg():
 )
 def test_input_methods(filename, fmt):
     mda.Universe(filename, topology_format=fmt)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize("basename", ["1BD2_short", "1BD2", "3PWP", "3KPR"])
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_pdb_gemmi_matches_mmcif(basename):
+    u_pdb = mda.Universe(
+        f"{MMCIF_FOLDER}/{basename}.pdb.gz", format="pdb_gemmi"
+    )
+    u_cif = mda.Universe(f"{MMCIF_FOLDER}/{basename}.cif.gz")
+    assert isinstance(u_pdb.trajectory, mda.coordinates.MMCIF.MMCIFReader)
+    for attr in (
+        "names",
+        "resnames",
+        "resids",
+        "elements",
+        "chainIDs",
+        "altLocs",
+        "record_types",
+        "icodes",
+    ):
+        assert_equal(getattr(u_pdb.atoms, attr), getattr(u_cif.atoms, attr))
+    assert_allclose(u_pdb.atoms.positions, u_cif.atoms.positions, atol=1e-3)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_pdb_gemmi_hybrid36_resids():
+    # residue numbers above 9999 are written in hybrid-36: A000 is 10000
+    record = (
+        "HETATM{:5d}  O   HOH W{:>4}    {:8.3f}   0.000   0.000"
+        "  1.00  0.00           O"
+    )
+    lines = [
+        record.format(i, resid, i)
+        for i, resid in enumerate(["9999", "A000", "A001"], start=1)
+    ]
+    pdb = util.NamedStream(StringIO("\n".join(lines) + "\nEND\n"), "water.pdb")
+    u = mda.Universe(pdb, format="pdb_gemmi")
+    assert_equal(u.residues.resids, [9999, 10000, 10001])
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize("filename", [CONECT, PDB_multiframe])
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_pdb_gemmi_conect_bonds(filename):
+    u_gemmi = mda.Universe(filename, format="pdb_gemmi")
+    u_pdb = mda.Universe(filename)
+    # bonds are matched by atom serial since gemmi may reorder atoms
+    gemmi_bonds = {tuple(sorted(b.atoms.ids)) for b in u_gemmi.bonds}
+    pdb_bonds = {tuple(sorted(b.atoms.ids)) for b in u_pdb.bonds}
+    assert len(gemmi_bonds) > 0
+    assert gemmi_bonds == pdb_bonds
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_mmcif_no_bonds():
+    u = mda.Universe(f"{MMCIF_FOLDER}/1BD2.cif.gz")
+    assert not hasattr(u.atoms, "bonds")
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_pdb_gemmi_conect_duplicate_serials():
+    record = (
+        "ATOM  {:5d}  C   UNK A   1    {:8.3f}   0.000   0.000"
+        "  1.00  0.00           C"
+    )
+    lines = [record.format(serial, x) for x, serial in enumerate([1, 1, 2])]
+    lines.append("CONECT    1    2")
+    pdb = util.NamedStream(StringIO("\n".join(lines) + "\nEND\n"), "dup.pdb")
+    with pytest.warns(UserWarning, match="bonds will not be parsed"):
+        u = mda.Universe(pdb, format="pdb_gemmi")
+    assert not hasattr(u.atoms, "bonds")
