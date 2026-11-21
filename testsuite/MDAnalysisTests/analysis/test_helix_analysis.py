@@ -597,4 +597,4 @@ def test_vector_of_best_fit():
 
     vector = hel.vector_of_best_fit(data)
     cos = np.dot(vector, unit)
-    assert_almost_equal(abs(cos), 1.0, decimal=5)
+    assert abs(cos) == pytest.approx(1.0, abs=1e-5)
