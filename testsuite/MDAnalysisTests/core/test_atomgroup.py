@@ -221,6 +221,36 @@ class TestAtomGroupWriting(object):
             with pytest.raises(TypeError):
                 u.atoms.write("dummy.pdb", bogus="what?")
 
+    def test_write_frames_verbose(self, u, tmpdir):
+        # writing multiple frames with verbose=True should write the
+        # requested frames correctly
+        destination = str(tmpdir / "test.dcd")
+        frames = [2, 3, 3, 1]
+        u.atoms.write(destination, frames=frames, verbose=True)
+
+        u_new = mda.Universe(destination, to_guess=())
+        new_positions = np.stack(
+            [ts.positions.copy() for ts in u_new.trajectory]
+        )
+        ref_positions = np.stack(
+            [ts.positions.copy() for ts in u.trajectory[frames]]
+        )
+
+        assert_array_almost_equal(new_positions, ref_positions)
+
+    def test_write_frames_verbose_progress(self, u, tmpdir, capsys):
+        # verbose=True should display a progress bar with the description
+        # "Writing frames" on stderr, while the default should be silent
+        destination = str(tmpdir / "test.dcd")
+        u.atoms.write(destination, frames=[1, 2, 3])
+        captured = capsys.readouterr()
+        assert "Writing frames" not in captured.err
+        assert captured.out == ""
+
+        u.atoms.write(destination, frames=[1, 2, 3], verbose=True)
+        captured = capsys.readouterr()
+        assert "Writing frames" in captured.err
+
 
 class _WriteAtoms(object):
     """Set up the standard AdK system in implicit solvent."""

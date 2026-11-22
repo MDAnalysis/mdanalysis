@@ -106,6 +106,7 @@ from .. import (
     _TOPOLOGY_ATTRNAMES,
 )
 from ..lib import util
+from ..lib.log import ProgressBar
 from ..lib.util import (
     cached,
     warn_if_not_unique,
@@ -3824,6 +3825,7 @@ class AtomGroup(GroupBase):
         file_format=None,
         filenamefmt="{trjname}_{frame}",
         frames=None,
+        verbose=False,
         **kwargs,
     ):
         """Write `AtomGroup` to a file.
@@ -3868,15 +3870,21 @@ class AtomGroup(GroupBase):
             By default, `frames` is set to ``None`` and only the current frame
             is written. If `frames` is set to "all", then all the frame from
             trajectory are written.
+        verbose : bool, optional
+            Whether to display a progress bar when writing multiple frames
+            (i.e. when `frames` is not ``None``). If ``True``, a progress bar
+            is displayed while writing the frames (see
+            :class:`MDAnalysis.lib.log.ProgressBar`); if ``False`` (the
+            default), no progress bar is displayed.
 
+            .. versionadded:: 2.12.0
 
         .. versionchanged:: 0.9.0 Merged with write_selection. This method can
             now write both selections out.
         .. versionchanged:: 0.19.0
             Can write multiframe trajectories with the 'frames' argument.
-        """
-        # TODO: Add a 'verbose' option alongside 'frames'.
 
+        """
         # check that AtomGroup actually has any atoms (Issue #434)
         if len(self.atoms) == 0:
             raise IndexError("Cannot write an AtomGroup with 0 atoms")
@@ -3946,7 +3954,11 @@ class AtomGroup(GroupBase):
                 else:
                     current_frame = trj.ts.frame
                     try:
-                        for _ in trj_frames:
+                        for _ in ProgressBar(
+                            trj_frames,
+                            verbose=verbose,
+                            desc="Writing frames",
+                        ):
                             w.write(self.atoms)
                     finally:
                         trj[current_frame]
