@@ -2558,3 +2558,19 @@ def test_minimize_vectors(box, shift, dtype):
 
     assert_allclose(res, vec, atol=0.00001)
     assert res.dtype == dtype
+
+
+@pytest.mark.parametrize("box", (np.array([10, 10, 10, 90, 90, 90]), np.array([10, 10, 10, 90, 90, 60])))
+@pytest.mark.parametrize("dtype", (np.float32, np.float64))
+def test_minimize_vectors_readonly_input(box, dtype):
+    vectors = np.array([[12.0, 1.0, -3.0], [-2.0, 5.0, 11.0]], dtype=dtype)
+    writable_vectors = vectors.copy()
+    readonly_vectors = vectors.copy()
+    readonly_vectors.setflags(write=False)
+
+    expected = distances.minimize_vectors(writable_vectors, box.astype(dtype))
+    result = distances.minimize_vectors(readonly_vectors, box.astype(dtype))
+
+    assert_allclose(result, expected)
+    assert_allclose(readonly_vectors, writable_vectors)
+    assert not readonly_vectors.flags.writeable

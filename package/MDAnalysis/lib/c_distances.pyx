@@ -369,7 +369,7 @@ cdef inline void _minimum_image_triclinic(cython.floating[:] dx,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
-def _minimize_vectors_ortho(cython.floating[:, :] vectors not None, cython.floating[:] box not None,
+def _minimize_vectors_ortho(const cython.floating[:, :] vectors not None, cython.floating[:] box not None,
                             cython.floating[:, :] output not None):
     cdef int i, n
     cdef cython.floating box_inverse[3]
@@ -392,7 +392,7 @@ def _minimize_vectors_ortho(cython.floating[:, :] vectors not None, cython.float
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _minimize_vectors_triclinic(cython.floating[:, :] vectors not None, cython.floating[:] box not None,
+def _minimize_vectors_triclinic(const cython.floating[:, :] vectors not None, cython.floating[:] box not None,
                                 cython.floating[:, :] output not None):
     cdef int i, n
     cdef cython.floating box_inverse[3]
