@@ -28,7 +28,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.11", "3.12", "3.13"]
+          python-version: ["3.12", "3.13", "3.14"]
           full-deps: [true, ]
           codecov: [true, ]
           cython: ["cython<3.1", ]
@@ -37,40 +37,40 @@ jobs:
             # and cython >=3.1 to deal temporarily with
             # keeping on testing Cython whilst issue #5057
             # is not fixed
-            - name: python_314_nocov
+            - name: python_315_nocov
               os: ubuntu-latest
-              python-version: "3.14"
+              python-version: "3.15"
               full-deps: false
               codecov: false
               cython: "cython>=3.1"
-            - name: python_311_nocov
+            - name: python_312_nocov
               os: ubuntu-latest
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: false
               codecov: false
               cython: "cython>=3.1"
-            - name: macos_arm64_py313
+            - name: macos_arm64_py314
               os: macos-latest
-              python-version: "3.13"
+              python-version: "3.14"
               full-deps: false
               codecov: true
               cython: "cython<3.1"
             - name: ubuntu_arm
-              os: ubuntu-24.04-arm
-              python-version: "3.13"
+              os: ubuntu-latest-arm
+              python-version: "3.14"
               full-deps: false
               codecov: false
               cython: "cython>3.1"
             - name: numpy_min
               os: ubuntu-latest
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: false
               codecov: true
-              numpy: numpy=1.26.0
+              numpy: numpy=2.2.0
               cython: "cython<3.1"
             - name: asv_check
               os: ubuntu-latest
-              python-version: "3.11"
+              python-version: "3.14"
               full-deps: true
               codecov: false
               extra-pip-deps: asv
@@ -169,7 +169,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.11
+          python=3.12
           pip
         condarc: |
           channels:
@@ -263,7 +263,7 @@ jobs:
 
     - uses: actions/setup-python@v6
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: install_deps
       run: |
