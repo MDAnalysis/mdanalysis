@@ -22,7 +22,7 @@
 #
 #
 
-"""Fast distance array computation --- :mod:`MDAnalysis.lib.distances`
+"""Distance array computation --- :mod:`MDAnalysis.lib.distances`
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
