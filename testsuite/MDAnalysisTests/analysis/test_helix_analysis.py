@@ -289,7 +289,7 @@ def zigzag():
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     properties = hel.helix_analysis(zigzag.atoms.positions, ref_axis=ref_axis)
     assert_almost_equal(properties["local_twists"], 180, decimal=4)
-    assert_almost_equal(properties["local_nres_per_turn"], 2, decimal=4)
+    assert properties["local_nres_per_turn"] == pytest.approx(2, abs=1e-4)
     assert_almost_equal(properties["global_axis"], [0, 0, -1], decimal=4)
     # all 0 vectors
     assert_almost_equal(properties["local_axes"], 0, decimal=4)
