@@ -7,7 +7,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "MDAnalysisTests"
 description = "MDAnalysis testsuite"
-license = {file = "LICENSE" }
+license = "LGPL-3.0-or-later"
+license-files = [ "LICENSE" ]
 authors = [
     {name = "MDAnalysis", email = "mdanalysis@numfocus.org"},
 ]

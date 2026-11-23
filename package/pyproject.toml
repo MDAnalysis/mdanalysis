@@ -19,7 +19,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "MDAnalysis"
 dynamic = ['version', 'readme']
-license = {file = "LICENSE"}
+license = "LGPL-3.0-or-later"
+license-files = [ "LICENSE" ]
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
