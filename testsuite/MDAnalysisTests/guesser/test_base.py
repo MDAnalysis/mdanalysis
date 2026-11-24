@@ -26,7 +26,7 @@ import numpy as np
 import pytest
 from MDAnalysis import _GUESSERS, _TOPOLOGY_ATTRS
 from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import Atomnames, Atomtypes, Masses
+from MDAnalysis.core.topologyattrs import Atomnames, Atomtypes, Elements, Masses
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.guesser.base import GuesserBase, get_guesser
 from numpy.testing import assert_allclose, assert_equal
@@ -58,16 +58,13 @@ class TestBaseGuesser:
     def test_guess_invalid_attribute(self):
         with pytest.raises(
             ValueError,
-            match="default guesser can not guess "
-            "the following attribute: foo",
+            match="default guesser can not guess " "the following attribute: foo",
         ):
             mda.Universe(datafiles.PDB_xsmall, to_guess=["foo"])
 
     def test_guess_attribute_with_missing_parent_attr(self):
         names = Atomnames(np.array(["C", "HB", "HA", "O"], dtype=object))
-        masses = Masses(
-            np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
-        )
+        masses = Masses(np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[names, masses])
         u = mda.Universe(top, to_guess=["masses"])
         assert_allclose(
@@ -88,9 +85,7 @@ class TestBaseGuesser:
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[types, masses])
         u = mda.Universe(top, to_guess=["masses"])
-        assert_allclose(
-            u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0
-        )
+        assert_allclose(u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0)
 
     def test_force_guess_priority(self):
         "check that passing the attribute to force_guess have higher power"
@@ -104,14 +99,21 @@ class TestBaseGuesser:
             atol=0,
         )
 
-    def test_partial_guess_attr_with_unknown_no_value_label(self):
-        "trying to partially guess attribute tha doesn't have declared"
-        "no_value_label should gives no effect"
+    def test_partial_guess_types_with_missing_value_label(self):
+        """Atomtypes with empty string values are guessed because
+        missing_value_label is defined as an empty string."""
         names = Atomnames(np.array(["C", "H", "H", "O"], dtype=object))
         types = Atomtypes(np.array(["", "", "", ""], dtype=object))
         top = Topology(4, 1, 1, attrs=[names, types])
         u = mda.Universe(top, to_guess=["types"])
-        assert_equal(u.atoms.types, ["", "", "", ""])
+        assert_equal(u.atoms.types, ["C", "H", "H", "O"])
+
+    def test_partial_guess_elements_with_missing_value_label(self):
+        names = Atomnames(np.array(["C1", "N1"], dtype=object))
+        elements = Elements(np.array(["C", ""], dtype=object))
+        top = Topology(2, 1, 1, attrs=[names, elements])
+        u = mda.Universe(top, to_guess=["elements"])
+        assert_equal(u.atoms.elements, ["C", "N"])
 
     def test_guess_topology_objects_existing_read(self):
         u = mda.Universe(datafiles.CONECT)
@@ -185,9 +187,7 @@ class TestBaseGuesser:
         with pytest.raises(NoDataError):
             u.atoms.angles
 
-        u.guess_TopologyAttrs(
-            "default", to_guess=["dihedrals", "angles", "bonds"]
-        )
+        u.guess_TopologyAttrs("default", to_guess=["dihedrals", "angles", "bonds"])
         assert len(u.atoms.angles) == 290
         assert len(u.atoms.dihedrals) == 411
 
@@ -249,9 +249,7 @@ class TestBaseGuesser:
 
 
 def test_Universe_guess_bonds_deprecated():
-    with pytest.warns(
-        DeprecationWarning, match="`guess_bonds` keyword is deprecated"
-    ):
+    with pytest.warns(DeprecationWarning, match="`guess_bonds` keyword is deprecated"):
         u = mda.Universe(datafiles.PDB_xsmall, guess_bonds=True)
 
 
