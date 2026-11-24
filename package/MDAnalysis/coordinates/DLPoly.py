@@ -29,6 +29,7 @@ Read DL Poly_ format coordinate files
 .. _Poly: https://www.sc.stfc.ac.uk/software/type/computational-materials-and-molecular-science/?searchquery=dl_poly
 """
 import numpy as np
+import warnings
 
 from . import base
 from . import core
@@ -170,6 +171,9 @@ class HistoryReader(base.ReaderBase):
         self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
+        if ts:
+            warnings.warn("ts argument to _read_next_timestep is deprecated  as of 2.7.0 and will be removed in 3.0.0, see #3928")
+        
         if ts is None:
             ts = self.ts
 
