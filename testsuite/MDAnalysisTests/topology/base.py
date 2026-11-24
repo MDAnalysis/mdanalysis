@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+import pathlib
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
@@ -123,3 +124,21 @@ class ParserBase(object):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs
+
+    def test_pathlib_input(self, filename):
+        """Check that pathlib.Path objects are accepted by the parser."""
+        if not isinstance(filename, (str, pathlib.Path)):
+            pytest.skip(
+                f"Pathlib input test only applies to string/path-like filenames, "
+                f"got {type(filename).__name__}"
+            )  # Cover OpenMM Parser case
+        path = pathlib.Path(filename)
+
+        with self.parser(filename) as p:
+            top_str = p.parse()
+        with self.parser(path) as p:
+            top_path = p.parse()
+
+        assert top_str.n_atoms == top_path.n_atoms
+        assert top_str.n_residues == top_path.n_residues
+        assert top_str.n_segments == top_path.n_segments
