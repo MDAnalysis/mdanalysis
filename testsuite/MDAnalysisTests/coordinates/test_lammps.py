@@ -28,6 +28,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
+from MDAnalysis.lib.util import anyopen
 
 from numpy.testing import assert_equal, assert_allclose
 
@@ -53,6 +54,8 @@ from MDAnalysisTests.datafiles import (
     LAMMPSdata_additional_columns,
     LAMMPSDUMP_additional_columns,
 )
+from MDAnalysis.coordinates.LAMMPS import DumpReader
+from MDAnalysis import units
 
 
 def test_datareader_ValueError():
@@ -767,6 +770,186 @@ class TestLammpsDumpReader(object):
     def test_warning(self, system, request):
         with pytest.warns(match="Some of the additional"):
             request.getfixturevalue(system)
+
+    def test_dump_reader_units_attribute(self):
+        """Test that DumpReader has proper units defined"""
+
+        expected_units = {
+            "time": "fs",
+            "length": "Angstrom",
+            "velocity": "Angstrom/fs",
+            "force": "kcal/(mol*Angstrom)",
+        }
+
+        assert DumpReader.units == expected_units
+
+    def test_force_unit_conversion_factor(self):
+        """Test that the force conversion factor is correct"""
+
+        # Get conversion factor from kcal/(mol*Angstrom) to kJ/(mol*Angstrom)
+        factor = units.get_conversion_factor(
+            "force",
+            "kcal/(mol*Angstrom)",  # from (LAMMPS native)
+            "kJ/(mol*Angstrom)",  # to (MDAnalysis base)
+        )
+
+        expected_factor = 4.184  # 1 kcal = 4.184 kJ
+        assert_allclose(factor, expected_factor, rtol=1e-6)
+
+    def test_force_conversion_with_image_vf_file(self):
+        """Test force unit conversion using existing test file with forces"""
+        # Test with convert_units=True (default)
+        u_converted = mda.Universe(
+            LAMMPS_image_vf, LAMMPSDUMP_image_vf, format="LAMMPSDUMP"
+        )
+
+        # Test with convert_units=False
+        u_native = mda.Universe(
+            LAMMPS_image_vf,
+            LAMMPSDUMP_image_vf,
+            format="LAMMPSDUMP",
+            convert_units=False,
+        )
+
+        # Both should have forces
+        assert hasattr(u_converted.atoms, "forces")
+        assert hasattr(u_native.atoms, "forces")
+
+        # Go to last frame where we know forces exist
+        u_converted.trajectory[-1]
+        u_native.trajectory[-1]
+
+        forces_converted = u_converted.atoms.forces
+        forces_native = u_native.atoms.forces
+
+        # Check that forces are different (converted vs native)
+        # The conversion factor should be 4.184
+        expected_factor = 4.184
+        forces_expected = forces_native * expected_factor
+
+        # Test that converted forces match expected values
+        assert_allclose(forces_converted, forces_expected, rtol=1e-6)
+
+        # Test that native forces are unchanged when convert_units=False
+        # Just check they are reasonable values (not zero everywhere)
+        assert not np.allclose(forces_native, 0.0)
+
+    def test_force_conversion_consistency_across_frames(self):
+        """Test that force conversion works consistently across all frames"""
+        u_converted = mda.Universe(
+            LAMMPS_image_vf, LAMMPSDUMP_image_vf, format="LAMMPSDUMP"
+        )
+
+        u_native = mda.Universe(
+            LAMMPS_image_vf,
+            LAMMPSDUMP_image_vf,
+            format="LAMMPSDUMP",
+            convert_units=False,
+        )
+
+        conversion_factor = 4.184
+
+        # Test conversion in all frames
+        for ts_conv, ts_native in zip(
+            u_converted.trajectory, u_native.trajectory
+        ):
+            if ts_conv.has_forces:
+                forces_converted = ts_conv.forces
+                forces_native = ts_native.forces
+                forces_expected = forces_native * conversion_factor
+
+                assert_allclose(
+                    forces_converted,
+                    forces_expected,
+                    rtol=1e-6,
+                    err_msg=f"Force conversion failed at frame {ts_conv.frame}",
+                )
+
+    def test_native_forces_preserved_first_last_atom(self):
+        """Check that native forces (convert_units=False) match raw dump values
+        for first and last atom (by LAMMPS id) on the last frame.
+
+        This tightens the previous loose check that merely ensured native forces
+        were non-zero, by validating exact preservation of raw values.
+        """
+
+        # Parse last frame forces from the raw dump (keyed by LAMMPS atom id)
+        def parse_last_frame_forces(path):
+            last_forces = None
+            n_atoms = None
+            id_idx = fx_idx = fy_idx = fz_idx = None
+            with anyopen(path) as f:
+                while True:
+                    line = f.readline()
+                    if not line:
+                        break
+                    if line.startswith("ITEM: TIMESTEP"):
+                        # timestep line and number
+                        _ = f.readline()
+                        # number of atoms header and value
+                        assert f.readline().startswith("ITEM: NUMBER OF ATOMS")
+                        n_atoms = int(f.readline().strip())
+                        # box bounds header + 3 lines
+                        assert f.readline().startswith("ITEM: BOX BOUNDS")
+                        f.readline(); f.readline(); f.readline()
+                        # atoms header with columns
+                        atoms_header = f.readline().strip()
+                        assert atoms_header.startswith("ITEM: ATOMS ")
+                        cols = atoms_header.split()[2:]  # after 'ITEM: ATOMS'
+                        # Identify indices for id and fx fy fz
+                        try:
+                            id_idx = cols.index("id")
+                            fx_idx = cols.index("fx")
+                            fy_idx = cols.index("fy")
+                            fz_idx = cols.index("fz")
+                        except ValueError as e:
+                            raise AssertionError(
+                                "Required columns 'id fx fy fz' not found in dump header"
+                            ) from e
+                        # Read this frame's atoms
+                        frame_forces = {}
+                        for _ in range(n_atoms):
+                            parts = f.readline().split()
+                            aid = int(parts[id_idx])
+                            fx = float(parts[fx_idx])
+                            fy = float(parts[fy_idx])
+                            fz = float(parts[fz_idx])
+                            frame_forces[aid] = np.array([fx, fy, fz], dtype=float)
+                        # Keep updating last_forces; at EOF it will be the last frame
+                        last_forces = frame_forces
+            assert last_forces is not None and n_atoms is not None
+            return last_forces, n_atoms
+
+        raw_forces_by_id, n_atoms = parse_last_frame_forces(LAMMPSDUMP_image_vf)
+
+        # Universe with native units preserved
+        u_native = mda.Universe(
+            LAMMPS_image_vf,
+            LAMMPSDUMP_image_vf,
+            format="LAMMPSDUMP",
+            convert_units=False,
+        )
+
+        u_native.trajectory[-1]
+        forces_native = u_native.atoms.forces
+
+        # Determine smallest and largest atom ids present in the frame
+        min_id = min(raw_forces_by_id.keys())
+        max_id = max(raw_forces_by_id.keys())
+
+        # Universe sorts by id, so index 0 corresponds to min_id, and -1 to max_id
+        expected_first = raw_forces_by_id[min_id]
+        expected_last = raw_forces_by_id[max_id]
+
+        # Allow tiny numerical differences due to float32 storage in trajectory
+        assert_allclose(
+            forces_native[0], expected_first, rtol=0, atol=1e-6,
+            err_msg="Native first-atom force does not match raw dump value",
+        )
+        assert_allclose(
+            forces_native[-1], expected_last, rtol=0, atol=1e-6,
+            err_msg="Native last-atom force does not match raw dump value",
+        )
 
 
 @pytest.mark.parametrize(
