@@ -3424,6 +3424,16 @@ class AtomGroup(GroupBase):
                 For example, ``prop z >= 5.0`` selects all atoms with z
                 coordinate greater than 5.0; ``prop abs z <= 5.0`` selects all
                 atoms within -5.0 <= z <= 5.0.
+            relprop [abs] *property*  *operator*  *value*  *selection*
+                selects atoms based on position relative to the center of
+                geometry (COG) of a given selection, using *property*
+                **x**, **y**, or **z** coordinate. Supports the **abs**
+                keyword (for absolute value) and the following
+                *operators*: **<, >, <=, >=, ==, !=**.
+                For example, ``relprop z >= 5.0 protein`` selects all atoms
+                with z coordinate greater than 5.0 relative to the COG
+                of protein; ``relprop abs z <= 5.0 protein`` selects all
+                atoms within -5.0 <= z <= 5.0 relative to the COG of protein.
             sphzone *radius* *selection*
                 Selects all atoms that are within *radius* of the center of
                 geometry of *selection*
