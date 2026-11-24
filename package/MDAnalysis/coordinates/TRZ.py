@@ -467,6 +467,12 @@ class TRZWriter(base.WriterBase):
             )
 
         self.convert_units = convert_units
+        if not convert_units:
+            self.units = {
+                **self.units,
+                "length": "Angstrom",
+                "velocity": "Angstrom/ps",
+            }
 
         self.trzfile = util.anyopen(self.filename, "wb")
 
