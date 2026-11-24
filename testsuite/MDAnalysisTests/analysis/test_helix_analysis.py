@@ -247,7 +247,10 @@ def zigzag():
     """
     n_atoms = 100
     u = mda.Universe.empty(
-        100, atom_resindex=np.arange(n_atoms), trajectory=True
+        100,
+        atom_resindex=np.arange(n_atoms),
+        n_residues=n_atoms,
+        trajectory=True,
     )
     xyz = np.array(
         list(
