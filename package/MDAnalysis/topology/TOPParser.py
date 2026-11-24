@@ -453,7 +453,12 @@ class TOPParser(TopologyReaderBase):
         vals = self.parsesection_mapper(numlines, lambda x: float(x))
         charges = np.array(vals, dtype=np.float32)
         charges /= 18.2223  # to electron charge units
-        attr = Charges(charges)
+        # in practice, the precision of partial charges
+        # in MD simulation forcefields is typically limited
+        # to a few decimal places (i.e., 1e-4 is already optimistic)
+        # see gh-5032
+        # here, we round the residue net charges to 4 decimal places
+        attr = Charges(charges, round_val=4)
         return attr
 
     def parse_masses(self, num_per_record, numlines):
