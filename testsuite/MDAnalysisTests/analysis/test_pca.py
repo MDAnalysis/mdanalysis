@@ -103,10 +103,12 @@ def test_pcs(pca):
         pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3)
     )
 
+
 def test_pca_results_are_real_valued(pca):
     assert np.isrealobj(pca.results.variance)
     assert np.isrealobj(pca.results.cumulated_variance)
     assert np.isrealobj(pca.results.p_components)
+
 
 def test_pcs_n_components(u):
     pca = PCA(u, select=SELECTION).run()
