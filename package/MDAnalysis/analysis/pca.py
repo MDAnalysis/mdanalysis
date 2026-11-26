@@ -333,10 +333,10 @@ class PCA(AnalysisBase):
 
     def _conclude(self):
         self.cov /= self.n_frames - 1
-        e_vals, e_vects = np.linalg.eig(self.cov)
-        sort_idx = np.argsort(e_vals)[::-1]
-        self._variance = e_vals[sort_idx]
-        self._p_components = e_vects[:, sort_idx]
+        e_vals, e_vects = np.linalg.eigh(self.cov)
+        self._variance = e_vals[::-1]
+        # f-order helps performance of downstream matmuls
+        self._p_components = np.asfortranarray(e_vects[:, ::-1])
         self._calculated = True
         self.n_components = self._n_components
 
