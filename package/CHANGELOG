@@ -20,14 +20,14 @@ The rules for this file:
  * 2.12.0
 
 Fixes
+ * PCA now uses `eigh`, which fixes complex-valued `variance` and `p_components`
+   on numpy 2.5 and later (issue #5351). It also lowers memory use and
+   speeds up `run()` and `transform()`. Eigenvector signs may differ.
  * reduced resident memory (RSS) of the NCDF (Amber) file reader when used with
    `mmap=True` (default for files on disk): on Linux, it no longer grows the RSS
    towards the size of the whole trajectory file. Not changed on macOS (where
    growth is file cache that is reclaimed under memory pressure) and Windows.
    (issue #5541, Discussion #4792, see PR #5463 for details).
- * PCA now uses `eigh`, which fixes complex-valued `variance` and `p_components`
-   on numpy 2.5 and later. It also lowers memory use and speeds up `run()` and
-   `transform()`. Eigenvector signs may differ. (issue #5351).
 
 Enhancements
  * Added the `compute_pairs_only` keyword to `analysis.contacts.Contacts` to
