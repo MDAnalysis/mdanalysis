@@ -17,7 +17,7 @@ We invite comments and further discussion (via our [discussion channels](https:/
 ## Guiding principles
 
 * Humans are always responsible for AI output.
-* Contributors must be transparent and honest; this includes that AI-use must always be declared.
+* Contributors must be transparent and honest; this includes that AI use must always be declared.
 * In forums designed for humans (e.g., issue tracker, discussions) only humans are allowed to speak. We want to spend our time talking with humans, not with LLMs (or human proxies for LLMs).
 * Human time is precious. Core Developers can always decide that a contribution does not justify the review effort and close it.
 * The project benefits most from expertise, not just code/documentation.
