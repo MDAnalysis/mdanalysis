@@ -820,12 +820,12 @@ class TestWaterBridgeAnalysis(object):
             )
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -864,12 +864,12 @@ class TestWaterBridgeAnalysis(object):
             )
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -899,12 +899,12 @@ class TestWaterBridgeAnalysis(object):
             )
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -959,12 +959,12 @@ class TestWaterBridgeAnalysis(object):
             )
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,

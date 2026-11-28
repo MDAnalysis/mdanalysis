@@ -47,6 +47,7 @@ Classes
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 
 """
+
 import numpy as np
 
 from ..lib.util import openany

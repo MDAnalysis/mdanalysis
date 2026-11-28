@@ -114,6 +114,7 @@ Classes and Functions
 .. autofunction:: cumulative_overlap
 
 """
+
 import warnings
 
 import numpy as np

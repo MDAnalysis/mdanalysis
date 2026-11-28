@@ -36,6 +36,7 @@ Classes
 .. autofunction:: get_guesser
 
 """
+
 from .. import _GUESSERS, _TOPOLOGY_ATTRS
 from ..core.topologyattrs import _Connection
 import numpy as np

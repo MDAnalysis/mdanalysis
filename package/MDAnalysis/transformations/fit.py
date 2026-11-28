@@ -32,6 +32,7 @@ a given AtomGroup to a reference structure.
 .. autoclass:: fit_rot_trans
 
 """
+
 import numpy as np
 
 from ..analysis import align

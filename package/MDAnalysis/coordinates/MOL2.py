@@ -126,6 +126,7 @@ MOL2 format notes
     1   BENZENE 1   PERM    0   ****    ****    0   ROOT
 
 """
+
 import numpy as np
 
 from . import base

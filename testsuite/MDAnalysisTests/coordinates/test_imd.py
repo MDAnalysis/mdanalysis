@@ -1,5 +1,4 @@
-"""Test for MDAnalysis trajectory reader expectations
-"""
+"""Test for MDAnalysis trajectory reader expectations"""
 
 import importlib
 import pickle

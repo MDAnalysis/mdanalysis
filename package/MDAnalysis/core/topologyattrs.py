@@ -247,18 +247,14 @@ def _build_stub(method_name, method, attribute_name):
         )
         raise NoDataError(message)
 
-    annotation = textwrap.dedent(
-        """\
+    annotation = textwrap.dedent("""\
         .. note::
 
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
 
-    """.format(
-            attribute_name
-        )
-    )
+    """.format(attribute_name))
     # The original docstring is assumed to be formatted with black
     # (i.e., *all text* lines are already indented, the first line
     # is a triple quote followed by newline)
@@ -1947,7 +1943,7 @@ class Masses(AtomAttr):
                 recenteredpos = atomgroup.positions - com
             eig_vals = _gyration(recenteredpos, masses)
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 
@@ -2408,7 +2404,7 @@ class Charges(AtomAttr):
                 "ij,ij->j", recenteredpos, charges[:, np.newaxis]
             )
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 
@@ -2619,7 +2615,7 @@ class Charges(AtomAttr):
                 recenteredpos = atomgroup.positions - ref
             quad_tensor = __quadrupole_tensor(recenteredpos, charges)
         else:
-            (atom_masks, compound_masks, n_compounds) = (
+            atom_masks, compound_masks, n_compounds = (
                 atomgroup._split_by_compound_indices(compound)
             )
 

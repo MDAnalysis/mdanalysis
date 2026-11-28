@@ -79,10 +79,8 @@ def test_presence_cutil():
         try:
             import MDAnalysis.lib._cutil
         except ImportError:
-            pytest.fail(
-                msg="""MDAnalysis.lib._cutil should not raise
-                         an ImportError if cutil is available."""
-            )
+            pytest.fail(msg="""MDAnalysis.lib._cutil should not raise
+                         an ImportError if cutil is available.""")
 
 
 def convert_aa_code_long_data():

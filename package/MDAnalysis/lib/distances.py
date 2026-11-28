@@ -139,6 +139,7 @@ Functions
 .. autofunction:: minimize_vectors(vectors, box)
 
 """
+
 import numpy as np
 import numpy.typing as npt
 
@@ -154,7 +155,6 @@ from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
 from ._distopia import HAS_DISTOPIA
-
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is

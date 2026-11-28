@@ -35,6 +35,7 @@ The algorithm used is based on :footcite:p:`Kulke2022`.
 .. autoclass:: NoJump
 
 """
+
 import numpy as np
 import warnings
 

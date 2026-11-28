@@ -90,6 +90,7 @@ that two objects are of the same level, or to access a particular class
     at.level.plural  # Returns AtomGroup class
 
 """
+
 from collections import namedtuple
 import numpy as np
 import functools
@@ -1193,7 +1194,7 @@ class GroupBase(_MutableBase):
         # preempt at this point whether or not stable sorting will be needed
         # later for unwrap (so that we don't split now with non-stable sort,
         # only to have to re-split with stable sort if unwrap is requested).
-        (atom_masks, compound_masks, n_compounds) = (
+        atom_masks, compound_masks, n_compounds = (
             self._split_by_compound_indices(comp)
         )
 
@@ -1404,7 +1405,7 @@ class GroupBase(_MutableBase):
         if comp == "group":
             return function(attribute_values, axis=0)
 
-        (atom_masks, compound_masks, n_compounds) = (
+        atom_masks, compound_masks, n_compounds = (
             self._split_by_compound_indices(comp)
         )
 

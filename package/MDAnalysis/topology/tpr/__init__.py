@@ -38,6 +38,7 @@ The :mod:`MDAnalysis.topology.tpr` module is required for the
 * :mod:`MDAnalysis.topology.tpr.utils`
 
 """
+
 from .setting import SUPPORTED_VERSIONS
 
 __all__ = ["obj", "setting", "utils"]

@@ -38,13 +38,13 @@ jobs:
       with:
         options: "--check"
         src: "./package"
-        version: "~= 24.0"
+        version: "~= 26.0"
 
     - uses: psf/black@stable
       with:
         options: "--check"
         src: "./testsuite"
-        version: "~= 24.0"
+        version: "~= 26.0"
 
 
   pylint_check:

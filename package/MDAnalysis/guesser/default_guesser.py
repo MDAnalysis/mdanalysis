@@ -102,6 +102,7 @@ Classes
    :inherited-members:
 
 """
+
 from .base import GuesserBase
 import numpy as np
 import warnings

@@ -37,6 +37,7 @@ methods.
 .. autofunction:: join
 
 """
+
 import os.path
 
 from ..lib import util

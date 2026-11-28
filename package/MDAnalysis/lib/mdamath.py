@@ -57,6 +57,7 @@ Connectivity
    Unused function :func:`_angle()` has now been removed.
 
 """
+
 import numpy as np
 
 from ..exceptions import NoDataError

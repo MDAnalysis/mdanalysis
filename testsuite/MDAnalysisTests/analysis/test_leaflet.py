@@ -29,7 +29,6 @@ import numpy as np
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff, HAS_NX
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 
-
 LIPID_HEAD_STRING = "name PO4"
 
 

@@ -165,4 +165,4 @@ testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py
 )
 '''
-required-version = '24'
+required-version = '26'

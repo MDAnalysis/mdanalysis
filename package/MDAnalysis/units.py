@@ -52,7 +52,7 @@ table on :ref:`table-baseunits`.
 
 MDAnalysis currently uses the NIST `CODATA 2010`_ values for physical constants.
 
-.. _`CODATA 2010`: 
+.. _`CODATA 2010`:
    https://physics.nist.gov/cuu/Constants/ArchiveASCII/allascii_2010.txt
 
 
@@ -294,7 +294,7 @@ timeUnit_factor = {
     "millisecond": 1e-9,  # 1/1e9,
     "us": 1e-6,
     "microsecond": 1e-6,
-    "\u03BCs": 1e-6,  # 1/1e6,
+    "\u03bcs": 1e-6,  # 1/1e6,
     "second": 1e-12,
     "sec": 1e-12,
     "s": 1e-12,  # 1/1e12,
@@ -323,12 +323,12 @@ speedUnit_factor = {
     "Angstrom/us": 1.0 * 1e6,
     "angstrom/us": 1.0 * 1e6,
     "A/us": 1.0 * 1e6,
-    "A/\u03BCs": 1.0 * 1e6,
-    "\u212b/\u03BCs": 1.0 * 1e6,
+    "A/\u03bcs": 1.0 * 1e6,
+    "\u212b/\u03bcs": 1.0 * 1e6,
     "Angstrom/microsecond": 1.0 * 1e6,
     "angstrom/microsecond": 1.0 * 1e6,
-    "Angstrom/\u03BCs": 1.0 * 1e6,
-    "angstrom/\u03BCs": 1.0 * 1e6,
+    "Angstrom/\u03bcs": 1.0 * 1e6,
+    "angstrom/\u03bcs": 1.0 * 1e6,
     "Angstrom/ms": 1.0 * 1e9,
     "Angstrom/millisecond": 1.0 * 1e9,
     "angstrom/millisecond": 1.0 * 1e9,

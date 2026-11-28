@@ -306,9 +306,7 @@ class _StreamData(object):
             with open(fn) as filed:
                 self.buffers[name] = "".join(filed.readlines())
         self.filenames["XYZ_PSF"] = "bogus/path/mini.psf"
-        self.buffers[
-            "XYZ_PSF"
-        ] = """\
+        self.buffers["XYZ_PSF"] = """\
 PSF CMAP
 
       1 !NTITLE
@@ -325,9 +323,7 @@ Mini PSF for in memory XYZ
        8 A    380  THR  O    O     -0.510000       15.9990           0
 """
         self.filenames["XYZ"] = "bogus/path/mini.xyz"
-        self.buffers[
-            "XYZ"
-        ] = """\
+        self.buffers["XYZ"] = """\
 8
 frame 1
        N     0.93100   17.31800   16.42300

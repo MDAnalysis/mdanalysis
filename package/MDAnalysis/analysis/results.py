@@ -10,7 +10,7 @@ Classes
 -------
 
 The :class:`Results` class is an extension of a built-in dictionary
-type, that holds all assigned attributes in :attr:`self.data` and 
+type, that holds all assigned attributes in :attr:`self.data` and
 allows for access either via dict-like syntax, or via class-like syntax:
 
 .. code-block:: python
@@ -22,7 +22,7 @@ allows for access either via dict-like syntax, or via class-like syntax:
 
 
 The :class:`ResultsGroup` can merge multiple :class:`Results` objects.
-It is mainly used by :class:`MDAnalysis.analysis.base.AnalysisBase` class, 
+It is mainly used by :class:`MDAnalysis.analysis.base.AnalysisBase` class,
 that uses :meth:`ResultsGroup.merge()` method to aggregate results from
 multiple workers, initialized during a parallel run:
 
@@ -30,7 +30,7 @@ multiple workers, initialized during a parallel run:
 
     from MDAnalysis.analysis.results import Results, ResultsGroup
     import numpy as np
-    
+
     r1, r2 = Results(), Results()
     r1.masses = [1, 2, 3, 4, 5]
     r2.masses = [0, 0, 0, 0]

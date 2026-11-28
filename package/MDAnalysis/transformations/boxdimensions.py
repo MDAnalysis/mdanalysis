@@ -30,6 +30,7 @@ all timesteps or to a specified vector at each frame.
 
 .. autoclass:: set_dimensions
 """
+
 import numpy as np
 
 from .base import TransformationBase

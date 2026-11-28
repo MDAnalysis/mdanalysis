@@ -157,6 +157,7 @@ References
 .. footbibliography::
 
 """
+
 import logging
 import warnings
 
@@ -404,9 +405,9 @@ class BAT(AnalysisBase):
         # It is described in two degrees of freedom
         # by the polar angle and azimuth
         if self._root.dimensions is None:
-            (p0, p1, p2) = self._root.positions
+            p0, p1, p2 = self._root.positions
         else:
-            (p0, p1, p2) = make_whole(self._root, inplace=False)
+            p0, p1, p2 = make_whole(self._root, inplace=False)
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
@@ -546,8 +547,8 @@ class BAT(AnalysisBase):
         """
         # Split the bat vector into more convenient variables
         origin = bat_frame[:3]
-        (phi, theta, omega) = bat_frame[3:6]
-        (r01, r12, a012) = bat_frame[6:9]
+        phi, theta, omega = bat_frame[3:6]
+        r01, r12, a012 = bat_frame[6:9]
         n_torsions = self._ag.n_atoms - 3
         bonds = bat_frame[9 : n_torsions + 9]
         angles = bat_frame[n_torsions + 9 : 2 * n_torsions + 9]

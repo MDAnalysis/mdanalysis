@@ -68,6 +68,7 @@ Classes and Functions
 .. autofunction:: optimize_cutoff
 
 """
+
 import warnings
 
 import numpy as np
@@ -76,7 +77,6 @@ from .. import core
 from . import distances
 from .. import selections
 from ..due import due, Doi
-
 
 # networkx is an optional import
 try:

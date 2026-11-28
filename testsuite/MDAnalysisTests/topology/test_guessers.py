@@ -35,7 +35,6 @@ import MDAnalysis.tests.datafiles as datafiles
 
 from MDAnalysisTests.util import import_not_available
 
-
 try:
     from rdkit import Chem
     from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges

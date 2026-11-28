@@ -140,4 +140,4 @@ __pycache__
 | .*\.pyx
 )
 '''
-required-version = '24'
+required-version = '26'

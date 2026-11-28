@@ -37,7 +37,6 @@ from MDAnalysisTests.coordinates.base import (
 )
 from MDAnalysisTests.coordinates.test_xyz import XYZReference
 
-
 # skip entire test module if no appropriate chemfiles
 chemfiles = pytest.importorskip("chemfiles")
 

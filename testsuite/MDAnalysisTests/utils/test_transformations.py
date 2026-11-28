@@ -35,7 +35,6 @@ from MDAnalysis.lib import transformations as t
 
 from unittest import TestCase
 
-
 """
 Testing transformations is weird because there are 2 versions of many of
 these functions.  This is because both python and Cython versions of

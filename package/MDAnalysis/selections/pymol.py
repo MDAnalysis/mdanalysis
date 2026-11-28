@@ -40,6 +40,7 @@ The selections should appear in the user interface.
 .. autoclass:: SelectionWriter
    :inherited-members:
 """
+
 from . import base
 
 

@@ -28,6 +28,7 @@ Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
+
 from typing import Literal
 
 import numpy as np

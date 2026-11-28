@@ -193,6 +193,7 @@ Data format checks
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
 """
+
 import sys
 
 __docformat__ = "restructuredtext en"
@@ -2454,15 +2455,11 @@ class _Deprecate(object):
         except TypeError:
             doc = ""
 
-        deprecation_text = dedent_docstring(
-            """\n\n
+        deprecation_text = dedent_docstring("""\n\n
         .. deprecated:: {0}
            {1}
            {2}
-        """.format(
-                release, message if message else depdoc, remove_text
-            )
-        )
+        """.format(release, message if message else depdoc, remove_text))
 
         doc = "{0}\n\n{1}\n{2}\n".format(depdoc, doc, deprecation_text)
 

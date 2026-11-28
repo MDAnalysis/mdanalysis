@@ -1,6 +1,4 @@
-"""Tests for core.groups.requires decorator
-
-"""
+"""Tests for core.groups.requires decorator"""
 
 import numpy as np
 
