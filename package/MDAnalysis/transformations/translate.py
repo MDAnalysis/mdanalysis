@@ -36,6 +36,7 @@ or defined by centering an AtomGroup in the unit cell using the function
 
 
 """
+
 import numpy as np
 from functools import partial
 

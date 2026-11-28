@@ -31,6 +31,7 @@ Class definitions for the TPRParser
 ===================================
 
 """
+
 from collections import namedtuple
 from ...guesser.tables import Z2SYMB
 

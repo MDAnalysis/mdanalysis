@@ -24,7 +24,6 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysisTests.util import import_not_available
 
-
 requires_rdkit = pytest.mark.skipif(
     import_not_available("rdkit"), reason="requires RDKit"
 )

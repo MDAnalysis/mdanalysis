@@ -100,6 +100,7 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 
 """
+
 import re
 
 import itertools

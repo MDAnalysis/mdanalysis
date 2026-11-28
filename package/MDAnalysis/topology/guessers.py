@@ -26,7 +26,7 @@ Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 
 .. deprecated:: 2.8.0
    The :mod:`MDAnalysis.topology.guessers` module will be removed in release 3.0.0.
-   It is deprecated in favor of the new Guessers API. See 
+   It is deprecated in favor of the new Guessers API. See
    :mod:`MDAnalysis.guesser.default_guesser` for more details.
 
 In general `guess_atom_X` returns the guessed value for a single value,
@@ -101,6 +101,7 @@ More information on adding topology attributes can found in the `user guide`_.
 .. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes
 
 """
+
 import numpy as np
 import warnings
 import re
@@ -108,7 +109,6 @@ import re
 from ..lib import distances
 from MDAnalysis.guesser import tables
 from MDAnalysis.lib.util import deprecate
-
 
 deprecation_msg = (
     "MDAnalysis.topology.guessers is deprecated in favour of "

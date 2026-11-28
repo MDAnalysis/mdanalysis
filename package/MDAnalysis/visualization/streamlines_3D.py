@@ -46,6 +46,7 @@ MDAnalysis.visualization.streamlines : streamplots in 2D
 .. autofunction:: generate_streamlines_3d
 
 """
+
 import multiprocessing
 
 import numpy as np

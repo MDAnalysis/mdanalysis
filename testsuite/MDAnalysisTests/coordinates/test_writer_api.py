@@ -24,7 +24,6 @@ import pytest
 
 import MDAnalysis as mda
 
-
 # grab all known writers
 # sort so test order is predictable for parallel tests
 writers = sorted(

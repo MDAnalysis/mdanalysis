@@ -28,6 +28,7 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
+
 import numbers
 import numpy as np
 import functools

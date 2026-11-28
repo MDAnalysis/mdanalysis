@@ -214,6 +214,7 @@ References
 .. footbibliography::
 
 """
+
 import numpy as np
 import scipy.optimize
 import warnings

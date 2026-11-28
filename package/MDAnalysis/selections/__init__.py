@@ -44,6 +44,7 @@ exception of `:func:get_writer`:
 
 .. autofunction:: get_writer
 """
+
 import os.path
 
 from .. import _SELECTION_WRITERS

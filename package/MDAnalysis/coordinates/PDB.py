@@ -140,6 +140,7 @@ Classes
     http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
+
 from io import StringIO, BytesIO
 import os
 import errno
@@ -156,7 +157,6 @@ from ..lib.util import store_init_arguments
 from . import base
 from .timestep import Timestep
 from ..exceptions import NoDataError
-
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 

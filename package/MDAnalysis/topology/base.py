@@ -36,6 +36,7 @@ Classes
    :inherited-members:
 
 """
+
 from functools import reduce
 
 import itertools

@@ -236,6 +236,7 @@ The class and its methods
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.hbonds` instead.
 """
+
 import logging
 import warnings
 from collections.abc import Iterable
@@ -252,7 +253,6 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import (
 )
 
 from ...due import due, Doi
-
 
 logger = logging.getLogger(__name__)
 

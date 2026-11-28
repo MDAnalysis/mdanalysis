@@ -88,6 +88,7 @@ Classes
    :inherited-members:
 
 """
+
 import numpy as np
 import itertools
 
@@ -256,9 +257,9 @@ class TOPParser(TopologyReaderBase):
 
             while next_section is not None:
                 try:
-                    (num_per_record, per_line, func, name, sect_num) = (
-                        sections[next_section]
-                    )
+                    num_per_record, per_line, func, name, sect_num = sections[
+                        next_section
+                    ]
                 except KeyError:
 
                     def next_getter():

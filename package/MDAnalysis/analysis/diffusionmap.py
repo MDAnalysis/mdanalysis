@@ -135,6 +135,7 @@ module in published work please :footcite:p:`Theobald2005`.
 
 .. footbibliography::
 """
+
 import logging
 import warnings
 

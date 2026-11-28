@@ -52,6 +52,7 @@ in a object composition approach.
 
 .. versionadded:: 2.0.0
 """
+
 import io
 import os
 

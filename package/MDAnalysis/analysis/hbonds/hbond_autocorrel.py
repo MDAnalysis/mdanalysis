@@ -42,6 +42,7 @@ See Also
 :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`
 
 """
+
 import warnings
 
 with warnings.catch_warnings():
@@ -56,7 +57,6 @@ with warnings.catch_warnings():
 from MDAnalysis.lib.util import deprecate
 
 from ..hydrogenbonds import hbond_autocorrel
-
 
 find_hydrogen_donors = deprecate(
     hbond_autocorrel.find_hydrogen_donors,

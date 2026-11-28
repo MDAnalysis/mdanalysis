@@ -42,6 +42,7 @@ Functions
 .. autofunction:: from_PDB
 
 """
+
 from pathlib import Path
 
 try:

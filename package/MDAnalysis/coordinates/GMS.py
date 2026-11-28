@@ -37,6 +37,7 @@ will need to tweak the :class:`GMSReader`.
    :members:
 
 """
+
 import os
 import errno
 import re

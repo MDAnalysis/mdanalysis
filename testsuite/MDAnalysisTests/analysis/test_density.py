@@ -509,7 +509,5 @@ class TestGridImport(object):
             try:
                 import MDAnalysis.analysis.density
             except ImportError:
-                pytest.fail(
-                    msg="""MDAnalysis.analysis.density should not raise
-                             an ImportError if gridData is available."""
-                )
+                pytest.fail(msg="""MDAnalysis.analysis.density should not raise
+                             an ImportError if gridData is available.""")

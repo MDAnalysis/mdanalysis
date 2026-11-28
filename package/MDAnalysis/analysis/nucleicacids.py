@@ -72,7 +72,6 @@ from .distances import calc_bonds
 from .base import AnalysisBase, ResultsGroup
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
-
 # Deprecation: In 3.0.0 change type to just
 # ResidueClass = ResidueGroup
 ResidueClass = list[Residue] | ResidueGroup

@@ -31,9 +31,9 @@ charges, chargegroups, masses, moltypes, and molnums.
 Any masses that are in the file will be read; any missing values will be guessed.
 Bonds, angles, dihedrals and impropers are also read from the file.
 
-If an ITP file is passed without a ``[ molecules ]`` directive, passing 
-``infer_system=True`` (the default option) will create a Universe with 
-1 molecule of each defined ``moleculetype``. 
+If an ITP file is passed without a ``[ molecules ]`` directive, passing
+``infer_system=True`` (the default option) will create a Universe with
+1 molecule of each defined ``moleculetype``.
 If a ``[ molecules ]`` section is present, ``infer_system`` is ignored.
 
 If files are included with the `#include` directive, they will also be read.
@@ -70,7 +70,7 @@ Examples
 Preprocessor variables
 ----------------------
 
-ITP files are often defined with lines that depend on 
+ITP files are often defined with lines that depend on
 whether a keyword flag is given. For example, this modified TIP5P water file:
 
 .. code-block:: none
@@ -98,8 +98,8 @@ whether a keyword flag is given. For example, this modified TIP5P water file:
     #endif
 
 
-Define these preprocessor variables by passing keyword arguments. Any arguments that you 
-pass in *override* any variables defined in the file. For example, the universe below 
+Define these preprocessor variables by passing keyword arguments. Any arguments that you
+pass in *override* any variables defined in the file. For example, the universe below
 will have charges of 3 for the HW1 and HW2 atoms::
 
     import MDAnalysis as mda
@@ -127,6 +127,7 @@ Classes
    :inherited-members:
 
 """
+
 from collections import defaultdict
 import os
 

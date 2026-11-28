@@ -38,6 +38,7 @@ This is all invisible to the user through the
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 """
+
 import collections
 import re
 import fnmatch

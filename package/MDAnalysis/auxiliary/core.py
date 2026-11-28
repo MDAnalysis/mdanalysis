@@ -28,6 +28,7 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 .. autofunction:: get_auxreader_for
 .. autofunction:: auxreader
 """
+
 from . import _AUXREADERS
 from ..lib import util
 

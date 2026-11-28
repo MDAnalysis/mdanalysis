@@ -63,7 +63,6 @@ Classes
 
 """
 
-
 import numpy as np
 
 from ..coordinates import base

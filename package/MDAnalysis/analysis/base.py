@@ -122,7 +122,7 @@ you have your :meth:`_single_frame` method storing important values under
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        
+
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
@@ -147,6 +147,7 @@ simple wrappers that make it even easier to create fully-featured analysis
 tools if only the single-frame analysis function needs to be written.
 
 """
+
 import inspect
 import itertools
 import logging

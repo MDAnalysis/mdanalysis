@@ -29,6 +29,7 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 "crd"). The CHARMM "extended format" is handled automatically.
 
 """
+
 import itertools
 import numpy as np
 import warnings

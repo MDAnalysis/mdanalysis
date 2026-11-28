@@ -40,6 +40,7 @@ Classes
 .. _MMTF: https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c
 
 """
+
 import warnings
 import mmtf
 

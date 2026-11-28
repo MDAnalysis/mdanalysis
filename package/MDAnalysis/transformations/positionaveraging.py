@@ -32,6 +32,7 @@ returned.
 .. autoclass:: PositionAverager
 
 """
+
 import numpy as np
 import warnings
 

@@ -34,7 +34,6 @@ from MDAnalysisTests.datafiles import (
     mol2_molecules,
 )
 
-
 mol2_wo_opt_col = """\
 @<TRIPOS>MOLECULE
 mol2_wo_opt_col

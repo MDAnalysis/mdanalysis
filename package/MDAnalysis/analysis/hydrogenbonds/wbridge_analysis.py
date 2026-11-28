@@ -706,6 +706,7 @@ Classes
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.timeseries` instead.
 """
+
 import logging
 import warnings
 from collections import defaultdict

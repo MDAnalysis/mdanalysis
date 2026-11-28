@@ -161,6 +161,7 @@ Analysis classes
          instead.
 
 """
+
 import numpy as np
 
 import logging
@@ -170,7 +171,6 @@ from ..lib import qcprot as qcp
 from ..analysis.base import AnalysisBase, ResultsGroup
 from ..exceptions import SelectionError
 from ..lib.util import asiterable, iterable, get_weights
-
 
 logger = logging.getLogger("MDAnalysis.analysis.rmsd")
 

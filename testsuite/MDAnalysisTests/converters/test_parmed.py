@@ -41,7 +41,6 @@ from MDAnalysisTests.datafiles import (
     PRM_UreyBradley,
 )
 
-
 pmd = pytest.importorskip("parmed")
 
 

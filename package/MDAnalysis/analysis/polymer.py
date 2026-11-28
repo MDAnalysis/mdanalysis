@@ -32,6 +32,7 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 
 This module contains various commonly used tools in analysing polymers.
 """
+
 import numpy as np
 import scipy.optimize
 import warnings

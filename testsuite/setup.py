@@ -39,6 +39,7 @@ Also free to ask on GitHub Discussions for help:
   https://github.com/MDAnalysis/mdanalysis/discussions
 
 """
+
 from setuptools import setup
 from setuptools.command import sdist
 

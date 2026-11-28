@@ -28,7 +28,6 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
 
-
 try:
     from openmm.app import Element, Topology
     from openmm.unit import daltons

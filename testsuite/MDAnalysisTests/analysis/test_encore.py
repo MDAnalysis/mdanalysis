@@ -377,9 +377,7 @@ inconsistent results",
             rtol=0,
             atol=1.5e-7,
             err_msg="Harmonic Ensemble Similarity to itself\
-                                 not zero:{0:f}".format(
-                result_value
-            ),
+                                 not zero:{0:f}".format(result_value),
         )
 
     def test_hes(self, ens1, ens2):

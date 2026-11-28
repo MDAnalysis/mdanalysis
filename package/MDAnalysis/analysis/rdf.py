@@ -76,6 +76,7 @@ in a shell at distance :math:`r` around a :math:`a` particle, which is
 .. - Structure factor?
 .. - Coordination number
 """
+
 import warnings
 import numpy as np
 
