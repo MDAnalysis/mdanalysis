@@ -7,15 +7,13 @@ import numpy as np
 import pytest
 from MDAnalysis.analysis.dssp import DSSP, assign, translate
 
-from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
+from MDAnalysisTests.datafiles import DSSP_DIR
 from MDAnalysisTests.datafiles import TPR, XTC
 
 
-# Files that match glob pattern '????.pdb.gz' and matching '????.pdb.dssp' files,
+# Files that match glob pattern '?????.pdb.gz' and matching '?????.pdb.dssp' files,
 # containing the secondary structure assignment string, will be tested automatically.
-@pytest.mark.parametrize(
-    "pdb_filename", glob.glob(f"{DSSP_FOLDER}/?????.pdb.gz")
-)
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_DIR}/?????.pdb.gz"))
 def test_file_guess_hydrogens(pdb_filename, client_DSSP):
     u = mda.Universe(pdb_filename)
     with open(f"{pdb_filename.rstrip('.gz')}.dssp", "r") as fin:
@@ -84,7 +82,7 @@ def test_donor_mask_none():
 def test_placeholder_box_warnings():
     """Test that placeholder (1,1,1,90,90,90) box dimensions trigger a warning
     and disable PBC."""
-    u = mda.Universe(f"{DSSP_FOLDER}/2va0A.pdb.gz")
+    u = mda.Universe(f"{DSSP_DIR}/2va0A.pdb.gz")
     u.trajectory.ts.dimensions = np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])
 
     with warnings.catch_warnings(record=True) as w:
@@ -121,9 +119,7 @@ def test_trajectory_with_hydrogens(client_DSSP):
     )
 
 
-@pytest.mark.parametrize(
-    "pdb_filename", glob.glob(f"{DSSP_FOLDER}/2xdgA.pdb.gz")
-)
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_DIR}/2xdgA.pdb.gz"))
 def test_trajectory_without_hydrogen_fails(pdb_filename, client_DSSP):
     u = mda.Universe(pdb_filename)
     with pytest.raises(ValueError):
@@ -131,7 +127,7 @@ def test_trajectory_without_hydrogen_fails(pdb_filename, client_DSSP):
 
 
 @pytest.mark.parametrize(
-    "pdb_filename", glob.glob(f"{DSSP_FOLDER}/1mr1D_failing.pdb.gz")
+    "pdb_filename", glob.glob(f"{DSSP_DIR}/1mr1D_failing.pdb.gz")
 )
 def test_trajectory_with_uneven_number_of_atoms_fails(
     pdb_filename, client_DSSP
@@ -142,7 +138,7 @@ def test_trajectory_with_uneven_number_of_atoms_fails(
 
 
 @pytest.mark.parametrize(
-    "pdb_filename", glob.glob(f"{DSSP_FOLDER}/wrong_hydrogens.pdb.gz")
+    "pdb_filename", glob.glob(f"{DSSP_DIR}/wrong_hydrogens.pdb.gz")
 )
 def test_exception_raises_with_atom_index(pdb_filename, client_DSSP):
     u = mda.Universe(pdb_filename)
