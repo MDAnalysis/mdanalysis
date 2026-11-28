@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, sumitsaraswat362, BradyAJohnston, carlosvega, erikfransson,
-         orbeckst, jberg5
+         orbeckst, jberg5, javin1106
 
  * 2.12.0
 
@@ -42,6 +42,8 @@ Enhancements
    (Issue #5362, PR #5482)
 
 Changes
+ * `MDAnalysisTests.datafiles.DSSP` renamed to `DSSP_DIR` to make clear it
+   is a directory and not a single file (Issue #5475)
  * Type hints now use PEP 604 syntax (``X | None``, ``A | B``) instead of
    ``typing.Optional``/``typing.Union``; parameters that default to ``None``
    are annotated as optional and their docstrings updated to match.
